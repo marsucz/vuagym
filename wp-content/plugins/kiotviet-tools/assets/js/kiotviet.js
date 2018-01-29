@@ -37,6 +37,8 @@ jQuery(document).ready(function($) {
     function check_quantity_on_kiotviet(item_id, quantity) {
         
         var result = false;
+
+        $('.modal-body').html('');
         
         $.ajax({
             url: global.ajax,
@@ -54,11 +56,15 @@ jQuery(document).ready(function($) {
                     result = true;
                 } else {
                     if (response.data.max_quantity == 0) {
-                        $('#alert-message').html('Sản phẩm bạn đặt hiện đang hết hàng. Mong bạn quay lại sau.');
+                        var error_string = "Sản phẩm bạn đặt hiện đang hết hàng. Mong bạn quay lại sau.";
+                        $('#alert-message').html(error_string);
                         $('#alert-max-quantity').html('');
+                        $('.modal-body').append("<span class='alert-message'>" + error_string + "</span>");
                     } else {
-                        $('#alert-message').html('Số lượng bạn đặt vượt quá giới hạn kho hàng. Tối đa: ');
+                        var error_string = "Số lượng bạn đặt vượt quá giới hạn kho hàng. Tối đa: ";
+                        $('#alert-message').html(error_string);
                         $('#alert-max-quantity').html(response.data.new_quantity + "/" + response.data.max_quantity);
+                        $('.modal-body').append("<span class='alert-message'>" + error_string + " " + response.data.new_quantity + "/" + response.data.max_quantity + "</span>");
                     }
                     result = false;
                 }
@@ -70,12 +76,16 @@ jQuery(document).ready(function($) {
                 } else {
                     atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-cross xoo-wsc-icon-atc');
                     $('#alert-box').fadeIn();
+                    $('#addToCartModal').modal('show');
                 }
             },
             error: function(response) {
-                $('#alert-message').html('Có lỗi phát sinh trong quá trình thêm sản phẩm. Bạn vui lòng thử lại.');
+                var error_string = "<span class='alert-message'>Có lỗi phát sinh trong quá trình thêm sản phẩm. Bạn vui lòng thử lại.</span>";
+                $('#alert-message').html(error_string);
                 $('#alert-max-quantity').html('');
                 $('#alert-box').fadeIn();
+                $('.modal-body').append(error_string);
+                $('#addToCartModal').modal('show');
                 console.log(response);
                 result = false;
             }

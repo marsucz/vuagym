@@ -1,0 +1,14 @@
+/* 
+    Created on : Jan 30, 2018, 12:23:50 AM
+    Author     : Tartarus
+*/
+
+/*.modal-body {
+  overflow-x: auto;
+  padding-top: 10%;
+}*/
+
+.alert-message {
+    font-weight: bold;
+    color: red;
+}

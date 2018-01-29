@@ -21,13 +21,7 @@ function global_admin_ajax() {
 //            true
 //    );
 //    
-//    wp_enqueue_script(
-//            'jquery-migrate',
-//            'https://code.jquery.com/jquery-migrate-3.0.0.min.js',
-//             array( 'jquery' ),
-//            '3.0.0',
-//            true
-//    );
+    wp_enqueue_style('custom-css', WC_PLUGIN_URL . 'assets/css/kiotviet.css' );
     
     wp_enqueue_script(
             'jquery-validate',

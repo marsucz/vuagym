@@ -21,10 +21,11 @@ function ja_ajax_check_quantity_cart(){
             if($product_type == 'product_variation'){
                     $product_id = wp_get_post_parent_id($item_id);
                     $variation_id = $item_id;
-//                    $attribute_values = wc_get_product_variation_attributes($variation_id);
+                    $attribute_values = wc_get_product_variation_attributes($variation_id);
 //                    $cart_success = WC()->cart->add_to_cart($product_id,$quantity,$variation_id,$attribute_values );
             }
             else{
+                    $attribute_values = array();
                     $product_id = $item_id;
 //                    $cart_success = WC()->cart->add_to_cart($product_id,$quantity);
             }
@@ -51,7 +52,7 @@ function ja_ajax_check_quantity_cart(){
             $cart_item_data = (array) apply_filters( 'woocommerce_add_cart_item_data', $cart_item_data, $product_id, $variation_id );
 
             // Generate a ID based on product ID, variation ID, variation data, and other cart item data.
-            $cart_id        = WC()->cart->generate_cart_id( $product_id, $variation_id, $variation, $cart_item_data );
+            $cart_id        = WC()->cart->generate_cart_id( $product_id, $variation_id, $attribute_values, $cart_item_data );
 
             // Find the cart item key in the existing cart.
             $cart_item_key  = WC()->cart->find_product_in_cart( $cart_id );
