@@ -1,0 +1,12 @@
+<input type="text" class="list-filter keyup" data-fn="filter" value="<#=filter_string#>" placeholder="<?php esc_attr_e( 'Filter list...', 'thrive-cb' ) ?>">
+<ul class="tcb-scroll list-container">
+	<# if (collection.length) { #>
+		<# collection.each( function ( item ) { #>
+			<li class="item click" data-fn="select" data-value="<#=item.get('id')#>" title="<#=item.get('title')#>">
+				<div class="item-title"><#=item.get('title')#></div>
+			</li>
+		<# } ) #>
+	<# } #>
+	<li class="no-entry" style="display: none"><?php esc_html_e( 'No item found.', 'thrive-cb' ) ?></li>
+</ul>
+<div class="selected-item"></div>

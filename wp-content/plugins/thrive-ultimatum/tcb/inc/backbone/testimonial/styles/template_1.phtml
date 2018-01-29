@@ -1,0 +1,49 @@
+<div class="tcb-flex-row tcb--cols--2 tcb-resized">
+	<div class="tcb-flex-col ui-resizable tcb-testimonial-image" style="max-width: 30%">
+		<div class="tcb-col tve_empty_dropzone ">
+
+			<div class="thrv_wrapper tve_image_caption tve-draggable tve-droppable img_style_circle" style="width: 150px;">
+				<span class="tve_image_frame">
+					<img src="<#= item.image #>" class="tve_image" alt="testimonial_placeholder">
+				</span>
+			</div>
+			<div class="thrv_wrapper thrv_text_element tve_empty_dropzone tve-draggable tve-droppable">
+				<p class="tve-testimonial-author tve-droppable" data-default="Enter your text here...">
+					<strong>
+						<#= item.name #>
+					</strong>
+				</p>
+			</div>
+			<div class="thrv_wrapper thrv_text_element tve_empty_dropzone tve-draggable tve-droppable">
+				<p class="tve-testimonial-role tve-droppable">
+					<span>
+						<#= item.title #>
+					</span>
+				</p>
+			</div>
+
+		</div>
+		<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90; padding: 0px 4.5px;"></div>
+	</div>
+	<div class="tcb-flex-col ui-resizable" style="max-width: 70%">
+		<div class="tcb-col tve_empty_dropzone">
+
+			<div class="thrv_wrapper thrv_icon tve-draggable tve-droppable thrv-testimonial-icon-one" style="text-align: left; margin-bottom: 20px; display: block;">
+				<svg class="tcb-icon" viewBox="0 0 26 28" data-name="quote-left">
+					<title>quote-left</title>
+					<path
+						d="M12 15v6c0 1.656-1.344 3-3 3h-6c-1.656 0-3-1.344-3-3v-11c0-4.406 3.594-8 8-8h1c0.547 0 1 0.453 1 1v2c0 0.547-0.453 1-1 1h-1c-2.203 0-4 1.797-4 4v0.5c0 0.828 0.672 1.5 1.5 1.5h3.5c1.656 0 3 1.344 3 3zM26 15v6c0 1.656-1.344 3-3 3h-6c-1.656 0-3-1.344-3-3v-11c0-4.406 3.594-8 8-8h1c0.547 0 1 0.453 1 1v2c0 0.547-0.453 1-1 1h-1c-2.203 0-4 1.797-4 4v0.5c0 0.828 0.672 1.5 1.5 1.5h3.5c1.656 0 3 1.344 3 3z"></path>
+				</svg>
+			</div>
+			<div class="thrv_wrapper thrv_text_element tve_empty_dropzone tve-draggable tve-droppable tve-testimonial-content">
+				<p class="tve-droppable">
+					<#= item.text #>
+				</p>
+			</div>
+
+		</div>
+		<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90; display: block; padding: 0px 4.5px;"></div>
+	</div>
+</div>
+
+

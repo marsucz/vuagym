@@ -1,0 +1,70 @@
+1.1
+Fixed: 
+	- Search commit not work
+	- update data import
+
+1.2
+Updated:
+	- 6 Home page layout
+	- RTL support fix
+	- Catalog mode ready
+	- Menu custom style
+
+1.3
+Fixed:
+	- Variable click thumbnail
+Updated:
+	- Visual Composer ver 5.1
+	- Header meta element
+	- Increase compatibility more plugin
+
+1.4
+Fixed:
+	- Shop default sort by not work
+	- Ajax shop page navigation
+	- Woocommerce big update ver 3.0
+
+Updated:
+	- Coupon Settings + Element
+	- Visual Composer Plugin
+
+1.5
+Fixed:
+	- Variable product in firefox
+
+Updated: 
+	- Add home 19 - fashion layout
+
+1.6
+Fixed:
+	- Ajax missing e
+
+1.7
+Fixed:
+	- Clear both item product
+	- Attribute filter not work in new woocommerce version
+
+Updated:
+	- Visual Composer Plugin
+	- Blog Filter list/grid
+
+1.8
+Updated:
+	- Filter list/grid in Category page and blog element
+
+1.9
+Fixed:
+	- Search result with load more and ajax load
+	- Product variable loop image
+	- Woocommerce update cart/checkout url function
+	
+Updated:
+	- Visual composer plugin
+
+2.0
+Fixed:
+	- Featured product query
+	- Css load carousel
+
+Updated:
+	- Visual composer plugin
