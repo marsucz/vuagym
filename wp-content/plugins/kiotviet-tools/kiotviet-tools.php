@@ -21,6 +21,11 @@ if (!defined('WC_PLUGIN_URL')) {
     define('WC_PLUGIN_URL', plugin_dir_url(__FILE__));
 }
 
+// Define WC_PLUGIN_FILE.
+if (!defined('MAX_QUANTITY')) {
+    define('MAX_QUANTITY', 250);
+}
+
 require_once('autoload.php');
 require_once('includes/add_to_cart.php');
 

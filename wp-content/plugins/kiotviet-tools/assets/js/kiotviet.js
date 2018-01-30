@@ -6,8 +6,11 @@
 
 jQuery(document).ready(function($) {
     
-    $('input[name=woocommerce_checkout_place_order]').click(function(e) {
+//    $('#place_order').click(function(e) {
+    $('.woocommerce-checkout').on('click', '#place_order', function(e) {
        e.preventDefault();
+       
+       console.log("Checking quantity on KiotViet...");
        
        if ($('#checkoutModal').length) {
            $('#checkoutModal').modal('show');
@@ -55,43 +58,10 @@ jQuery(document).ready(function($) {
        }
        
     });
-
-//    $('#place_order').click(function(e) {
-//       e.preventDefault();
-//       console.log("TEST ORDER");
-//       
-//       //$(this).parents('form').submit();
-//       
-//    });
-    
     
     $('#hide-alert').click(function() {
         $('#alert-box').fadeOut();
     });
-    
-//    var validator = $('form.checkout').validate({
-//        rules: {
-//            quantity: {
-//                required: true,
-//                max: 9999,
-//                checkQuantity: true,
-//            },
-//            messages: {
-//                quantity: {
-//                    required: 'khong trong'
-//                }
-//            }
-//        },
-//         errorPlacement: function(error) {
-//         },
-//         success: function(label){
-//             $('#alert-box').hide();
-//             console.log("DONE");
-//         },
-//        onkeyup: false,
-//        onclick: false,
-//        onfocusout: false
-//    });
     
     function check_quantity_on_kiotviet(item_id, quantity) {
         
@@ -226,25 +196,6 @@ jQuery(document).ready(function($) {
         var screen = $(window).height();
         $('.xoo-wsc-body').outerHeight(screen-(header+footer));
     };
-    
-    
-//    var validator = $('form.checkout').validate({
-//        rules: {
-//            _wpnonce: {
-//                required: true,
-//                max: 9999,
-//                checkQuantityonCheckout: true,
-//            },
-//        }
-////        ,
-////        onkeyup: false,
-////        onclick: false,
-////        onfocusout: false
-//    });
-//    
-//    jQuery.validator.addMethod("checkQuantityonCheckout", function(value, element) {
-//        return false;
-//    }, "Thanh toan khong thanh cong!");
     
 });
 

@@ -9,43 +9,65 @@
 require_once 'kiotviet_api.php';
 require_once 'function.php';
 
-add_action( 'wp_enqueue_scripts', 'global_admin_ajax' );
-
-function global_admin_ajax() {
-    
+//add_action( 'wp_enqueue_scripts', 'global_admin_ajax' );
+//
+//function global_admin_ajax() {
+//    
+////    wp_enqueue_script(
+////            'jquery-min',
+////            WC_PLUGIN_URL . 'assets/lib/jquery-3.3.1.min.js',
+////             array( 'jquery' ),
+////            '3.3.1',
+////            true
+////    );
+////    
+//    wp_enqueue_style('kiotviet-css', WC_PLUGIN_URL . 'assets/css/kiotviet.css' );
+//    
+////    wp_enqueue_script(
+////            'jquery-validate',
+////            WC_PLUGIN_URL . 'assets/lib/jquery.validate.min.js',
+////             array( 'jquery' ),
+////            '1.17.0',
+////            true
+////    );
+//    
+//
+//        
 //    wp_enqueue_script(
-//            'jquery-min',
-//            WC_PLUGIN_URL . 'assets/lib/jquery-3.3.1.min.js',
-//             array( 'jquery' ),
-//            '3.3.1',
-//            true
+//		'global',
+//		WC_PLUGIN_URL . 'assets/js/kiotviet.js',
+//		array( 'jquery' ),
+//		'1.0.0',
+//		true
 //    );
 //    
-    wp_enqueue_style('custom-css', WC_PLUGIN_URL . 'assets/css/kiotviet.css' );
-    
-    wp_enqueue_script(
-            'jquery-validate',
-            WC_PLUGIN_URL . 'assets/lib/jquery.validate.min.js',
-             array( 'jquery' ),
-            '1.17.0',
-            true
+//    wp_localize_script(
+//            'global',
+//            'global',
+//            array(
+//                    'ajax' => ,
+//            )
+//    );
+//    
+//
+//}
+
+add_action( 'wp_enqueue_scripts', 'theme_register_scripts', 10 );
+function theme_register_scripts() {
+
+    wp_register_script( 'kiotviet-js', WC_PLUGIN_URL . 'assets/js/kiotviet.js', array( 'jquery' ), '1.0', true );
+ 
+    $php_array = array( 
+        'ajax' => admin_url( 'admin-ajax.php' ) 
     );
-    
-    wp_enqueue_script(
-		'global',
-		WC_PLUGIN_URL . 'assets/js/kiotviet.js',
-		array( 'jquery' ),
-		'1.0.0',
-		true
-    );
-    
-    wp_localize_script(
-		'global',
-		'global',
-		array(
-			'ajax' => admin_url( 'admin-ajax.php' ),
-		)
-	);
+    wp_localize_script( 'kiotviet-js', 'global', $php_array );
+ 
+}
+
+add_action( 'wp_enqueue_scripts', 'theme_enqueue_scripts', 10, 1 );
+function theme_enqueue_scripts() {
+    wp_enqueue_style('kiotviet-css', WC_PLUGIN_URL . 'assets/css/kiotviet.css' );
+    wp_enqueue_script( 'kiotviet-js' );
 }
 
 function ja_ajax_get_productquantity() {
@@ -64,7 +86,7 @@ function ja_ajax_get_productquantity() {
         $log_text = "SKU: {$_POST['id']} not exists on KiotViet or You haven't updated the database.";
         write_logs($log_file, $log_text);
         // Let clients apply their cart
-        $result = 9999;
+        $result = MAX_QUANTITY;
     } else {
         $result = $kiotviet_api->get_product_quantity_byKiotvietProductID($product[0]['product_id']);
     }

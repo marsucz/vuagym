@@ -34,7 +34,7 @@ class KiotViet_API {
             $log_text = "SKU: {$product_sku} not exists on KiotViet or You haven't updated the database.";
             write_logs($log_file, $log_text);
             // Let clients apply their cart
-            $result = 9999;
+            $result = MAX_QUANTITY;
         } else {
             $result = $this->get_product_quantity_byKiotvietProductID($product[0]['product_id']);
         }
@@ -55,7 +55,7 @@ class KiotViet_API {
                 }
             }
         } else {
-            $quality = 99999;
+            $quality = MAX_QUANTITY;
         }
 
         return $quality;

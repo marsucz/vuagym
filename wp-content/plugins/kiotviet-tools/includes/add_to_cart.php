@@ -85,6 +85,16 @@ function ja_ajax_check_quantity_cart(){
                 $return['status'] = 1;
             }
             
+//            if ($return['status'] == 0) {
+//                if ($max_quantity == 0) {
+//                    $message = '<span style="font-weight:bold;">Sản phẩm bạn đặt đã hết hàng. Mong bạn vui lòng quay lại sau.</span>';
+//                } else {
+//                    $message = '<span>Số lượng bạn đặt đã quá giới hạn kho hàng. Tối đa: </span><span style="font-weight: bold;">' . $new_quantity . '/' . $max_quantity . '</span>';
+//                }
+//                $return['alert'] = kiotviet_addToCart_alert_modal($message);
+//                $return['popup'] = kiotviet_addToCart_alert_modal($message);
+//            }
+            
             wp_send_json_success( $return );
             
         } catch ( Exception $e ) {
