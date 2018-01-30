@@ -101,3 +101,64 @@ add_action( 'wp_ajax_nopriv_check_quantity_cart', 'ja_ajax_check_quantity_cart' 
 
 
 
+function ja_ajax_check_quantity_checkout(){
+
+        try {
+            $form_submit = true;
+            $result_string = '
+                <div class="alert alert-danger">
+                    Đơn hàng của bạn vượt quá số lượng kho hàng của chúng tôi. Bạn vui lòng cập nhật số lượng tại <a href="' . wc_get_cart_url() . '" class="alert-link">Giỏ Hàng</a>.
+                </div>
+                <div class="table-responsive">          
+                                <table class="table">
+                                <thead class="thead-default">
+                                    <tr>
+                                      <th>Tên Sản Phẩm</th>
+                                      <th>Mã Sản Phẩm</th>
+                                      <th>Số Lượng</th>
+                                      <th>Tối Đa</th>
+                                </tr>
+                                </thead>
+                                <tbody>';
+            // Find the cart item key in the existing cart.
+            $cart_items  = WC()->cart->get_cart();
+            foreach ($cart_items as $item => $product) {
+                $wc_product = $product['data'];
+                $product_sku = $wc_product->get_sku();
+                $product_name = $wc_product->get_name();
+                $product_quantity = $product['quantity'];
+                
+                $kiotviet_api = new KiotViet_API();
+                $max_quantity = $kiotviet_api->get_product_quantity_by_ProductSKU($product_sku);
+                
+                $result_string .= "<tr><td>{$product_name}</td>";
+                $result_string .= "<td>{$product_sku}</td>";
+                    
+                if ($product_quantity > $max_quantity) {
+                    $form_submit = false;
+                    $result_string .= "<td><span style='color:red; font-weight: bold'>{$product_quantity}</span></td>";
+                } else {
+                    $result_string .= "<td><span style='color:green; font-weight: bold'>{$product_quantity}</span></td>";
+                }
+                
+                $result_string .= "<td>{$max_quantity}</td></tr>";
+            }
+            
+            $result_string .= '</tbody></table></div>';
+            
+            $return['status'] = $form_submit;
+            $return['message'] = kiotviet_checkout_alert_modal($result_string);
+            
+            wp_send_json_success( $return );
+            
+        } catch ( Exception $e ) {
+                if ( $e->getMessage() ) {
+                        wc_add_notice( $e->getMessage(), 'error' );
+                }
+                wp_send_json_error($e);
+                return false;
+        }
+    }
+
+add_action( 'wp_ajax_check_quantity_checkout', 'ja_ajax_check_quantity_checkout' );
+add_action( 'wp_ajax_nopriv_check_quantity_checkout', 'ja_ajax_check_quantity_checkout' );

@@ -6,6 +6,65 @@
 
 jQuery(document).ready(function($) {
     
+    $('input[name=woocommerce_checkout_place_order]').click(function(e) {
+       e.preventDefault();
+       
+       if ($('#checkoutModal').length) {
+           $('#checkoutModal').modal('show');
+       } else {
+           
+           var $form = $('form[name=checkout]');
+           
+            var form_data = $form.data();
+            
+            if ( $form.is( '.processing' ) ) {
+                return false;
+            }
+            
+            $form.addClass( 'processing' );
+            
+            if ( 1 !== form_data['blockUI.isBlocked'] ) {
+                    $form.block({
+                            message: null,
+                            overlayCSS: {
+                                    background: '#fff',
+                                    opacity: 0.6
+                            }
+                    });
+            }
+           
+            $.ajax({
+            url: global.ajax,
+            type: 'POST',
+            data: {
+                    action: 'check_quantity_checkout',
+            },
+            success: function(response){
+               console.log(response.data.message);
+               
+               $form.removeClass( 'processing' ).unblock();
+               
+               if (response.data.status === false) {
+                   $('#main-content').append(response.data.message);
+                   $('#checkoutModal').modal('show');
+               } else {
+                   $form.submit();
+               }
+            }
+        });
+       }
+       
+    });
+
+//    $('#place_order').click(function(e) {
+//       e.preventDefault();
+//       console.log("TEST ORDER");
+//       
+//       //$(this).parents('form').submit();
+//       
+//    });
+    
+    
     $('#hide-alert').click(function() {
         $('#alert-box').fadeOut();
     });
@@ -167,6 +226,25 @@ jQuery(document).ready(function($) {
         var screen = $(window).height();
         $('.xoo-wsc-body').outerHeight(screen-(header+footer));
     };
+    
+    
+//    var validator = $('form.checkout').validate({
+//        rules: {
+//            _wpnonce: {
+//                required: true,
+//                max: 9999,
+//                checkQuantityonCheckout: true,
+//            },
+//        }
+////        ,
+////        onkeyup: false,
+////        onclick: false,
+////        onfocusout: false
+//    });
+//    
+//    jQuery.validator.addMethod("checkQuantityonCheckout", function(value, element) {
+//        return false;
+//    }, "Thanh toan khong thanh cong!");
     
 });
 

@@ -21,7 +21,12 @@ class KiotViet_API {
     
     public function get_product_quantity_by_ProductSKU($product_sku) {
         $dbModel = new DbModel();
-        $product = $dbModel->get_productInfo_byProductCode($product_sku);
+        
+        if (!empty($product_sku)) {
+            $product = $dbModel->get_productInfo_byProductCode($product_sku);
+        } else {
+            $product = array();
+        }
         
         if (count($product) == 0) {
             $t = date('Ymd');
@@ -50,11 +55,7 @@ class KiotViet_API {
                 }
             }
         } else {
-            $t = date('Ymd');
-            $log_file = "KiotVietAPI_Errors_{$t}.txt";
-            $log_text = "KiotViet API response error format: " . json_encode($product);
-            write_logs($log_file, $log_text);
-            $quality = 9999;
+            $quality = 99999;
         }
 
         return $quality;
@@ -66,9 +67,18 @@ class KiotViet_API {
 
         $result = $this->api_call($url);
 
-        if ($result) {
+        if ($result !== false && isset($result['id'])) {
+//        if ($result) {
             return $result;
         } else {
+            
+            $t = date('Ymd');
+            $log_file = "KiotVietAPI_Errors_{$t}.txt";
+            $log_text = "URL Get: " . $url;
+            $log_text .= "\n KiotViet API response error format: " . $result;
+
+            write_logs($log_file, $log_text);
+            
             return false;
         }
 
@@ -139,7 +149,8 @@ class KiotViet_API {
         } else {
             $t = date('Ymd');
             $log_file = "KiotVietAPI_Errors_{$t}.txt";
-            $log_text = "KiotViet API not response: " . $result;
+            $log_text = "URL Get: " . $url;
+            $log_text .= "\n KiotViet not response: " . $result;
             write_logs($log_file, $log_text);
             return false;
         }

@@ -49,3 +49,31 @@ if(!function_exists('kiotviet_addToCart_alert_modal')){
         
     }
 }
+
+if(!function_exists('kiotviet_checkout_alert_modal')){
+    function kiotviet_checkout_alert_modal($message = ''){
+
+        $modal_id = 'checkoutModal';
+        
+        return '        
+        <!-- Kiotviet Plugin Modal Start -->
+        <div class="modal fade" id="' . $modal_id . '" tabindex="-1" role="dialog" aria-labelledby="' . $modal_id . 'Label" aria-hidden="true" style="padding-top: 5%;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="' . $modal_id . 'Label">Thông báo</h4>
+                    </div>
+                    <div class="modal-body"> ' . $message . '
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Thoát</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Kiotviet Plugin Modal End-->
+        ';
+        
+    }
+}
