@@ -64,6 +64,7 @@ function ja_ajax_check_quantity_cart(){
             $max_quantity = $kiotviet_api->get_product_quantity_by_ProductSKU($product_sku);
             
             $return['status'] = 0;
+            $return['sku'] = $product_sku;
             $return['max_quantity'] = $max_quantity;
             $return['request_quantity'] = $quantity;
             $return['current_quantity'] = 0;
