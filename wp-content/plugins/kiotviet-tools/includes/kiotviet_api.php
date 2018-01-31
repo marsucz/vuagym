@@ -41,7 +41,6 @@ class KiotViet_API {
             
             if ($item_id != 0) {
                 $preOder_status = kiotViet_get_preOrder_status($item_id);
-                echo $preOder_status;
                 if ($preOder_status == 1) { // Sap co hang
                     $result = MAX_QUANTITY + 50;
                 } else {
