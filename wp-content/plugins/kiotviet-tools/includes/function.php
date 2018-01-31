@@ -25,6 +25,15 @@ if(!function_exists('kiotviet_addToCart_alert_message')){
     }
 }
 
+if(!function_exists('kiotviet_addToCart_success_message')){
+    function kiotviet_addToCart_success_message($message = '') {
+    return '  <div id="alert-box" class="alert alert-success" style="display:none;">
+                <button id="hide-alert" type="button" class="close">×</button>
+                ' . $message . '
+            </div>';
+    }
+}
+
 if(!function_exists('kiotviet_addToCart_alert_modal')){
     function kiotviet_addToCart_alert_modal($message = '', $carts_table = ''){
         return '        

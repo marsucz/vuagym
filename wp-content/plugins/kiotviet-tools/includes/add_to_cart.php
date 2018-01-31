@@ -128,7 +128,7 @@ function ja_ajax_check_quantity_cart(){
                 $mark_red = false;
             }
             
-            if ($return['status'] == 0) {
+            if ($return['status'] == 0) {   // check quantity false
                 if ($max_quantity == 0) {
                     $message = '<span class="alert-message">Sản phẩm bạn đặt đã hết hàng. Mong bạn vui lòng quay lại sau.</span>';
                 } else {
@@ -138,6 +138,31 @@ function ja_ajax_check_quantity_cart(){
                 
                 $carts_table = build_html_table_carts($product_sku, $mark_red, 'red');
                 $return['popup'] = kiotviet_addToCart_alert_modal($message, $carts_table);
+            } else { // $return['status'] = 1 check quantity successful
+                //Check quantity is available
+                if($product_type == 'product_variation'){
+                    $cart_success = WC()->cart->add_to_cart($product_id,$quantity,$variation_id,$attribute_values );
+                } else {
+                    $cart_success = WC()->cart->add_to_cart($product_id,$quantity);
+                }
+                
+                if ($cart_success) {
+                    
+//                    $product_data = wc_get_product( $variation_id ? $variation_id : $product_id );
+//                    $product_sku = $product_data->get_sku();
+                    $return['status'] = 2; // Add sucessful
+                    $message = '<span class="alert-success-message">Bạn đã thêm thành công <b>' . $quantity . ' sản phẩm</b> ' . $product_name . '.</span>';
+                    $return['alert'] = kiotviet_addToCart_success_message($message);
+                    
+                    $carts_table = build_html_table_carts($product_sku, 1, 'green');
+                    $return['popup'] = kiotviet_addToCart_alert_modal($message, $carts_table);
+                } else {
+                    $return['status'] = 1; // Add sucessful
+                    $message = '<span>Có lỗi trong quá trình thêm sản phẩm. Mong bạn refresh (F5) trình duyệt và thử lại.</span>';
+                    $return['alert'] = kiotviet_addToCart_alert_message($message);
+                    $return['popup'] = kiotviet_addToCart_alert_modal($message);
+                }
+                    
             }
             
             wp_send_json_success( $return );
@@ -217,3 +242,46 @@ add_action( 'wp_ajax_check_quantity_checkout', 'ja_ajax_check_quantity_checkout'
 add_action( 'wp_ajax_nopriv_check_quantity_checkout', 'ja_ajax_check_quantity_checkout' );
 
 
+function ja_ajax_mypos_add_to_cart(){
+		
+        //Form Input Values
+        $item_id 		= intval($_POST['item_id']);
+        $quantity 		= intval($_POST['quantity']);
+
+        //If empty return error
+        if(!$item_id){
+                wp_send_json(array('error' => __('Something went wrong','xoo-wsc')));
+        }
+
+        //Check product type
+        $product_type = get_post_type($item_id);
+
+        if($product_type == 'product_variation'){
+                $product_id = wp_get_post_parent_id($item_id);
+                $variation_id = $item_id;
+                $attribute_values = wc_get_product_variation_attributes($variation_id);
+                $cart_success = WC()->cart->add_to_cart($product_id,$quantity,$variation_id,$attribute_values );
+        }
+        else{
+                $product_id = $item_id;
+                $cart_success = WC()->cart->add_to_cart($product_id,$quantity);
+        }
+        
+        
+        $cart_item_key = $cart_success;
+        //Successfully added to cart.
+        if($cart_success){  // is $cart_item_key
+            $product_data = wc_get_product( $variation_id ? $variation_id : $product_id );
+            $product_sku = $product_data->get_sku();
+            
+        }
+        else{
+                if(wc_notice_count('error') > 0){
+                echo wc_print_notices();
+                }
+        }
+        die();
+}
+
+add_action( 'wp_ajax_mypos_add_to_cart', 'ja_ajax_mypos_add_to_cart' );
+add_action( 'wp_ajax_nopriv_mypos_add_to_cart', 'ja_ajax_mypos_add_to_cart' );

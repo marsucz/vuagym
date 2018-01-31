@@ -13,6 +13,11 @@
     color: red;
 }
 
+.alert-success-message {
+    /*font-weight: bold;*/
+    color: red;
+}
+
 .modal-header {
     background-color: #337AB7;
     padding:16px 16px;
