@@ -68,6 +68,7 @@ if(!function_exists('kiotviet_checkout_alert_modal')){
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Thoát</button>
+                        <button type="button" class="btn btn-primary" onclick="window.location.href=\'' . wc_get_cart_url() . '\';">Xem Giỏ Hàng</button>
                     </div>
                 </div>
             </div>

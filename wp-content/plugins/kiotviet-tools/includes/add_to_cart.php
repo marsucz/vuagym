@@ -141,17 +141,15 @@ function ja_ajax_check_quantity_checkout(){
                 $kiotviet_api = new KiotViet_API();
                 $max_quantity = $kiotviet_api->get_product_quantity_by_ProductSKU($product_sku);
                 
-                $result_string .= "<tr><td>{$product_name}</td>";
-                $result_string .= "<td>{$product_sku}</td>";
-                    
                 if ($product_quantity > $max_quantity) {
                     $form_submit = false;
+                    $result_string .= "<tr><td>{$product_name}</td>";
+                    $result_string .= "<td>{$product_sku}</td>";
                     $result_string .= "<td><span style='color:red; font-weight: bold'>{$product_quantity}</span></td>";
+                    $result_string .= "<td>{$max_quantity}</td></tr>";
                 } else {
-                    $result_string .= "<td><span style='color:green; font-weight: bold'>{$product_quantity}</span></td>";
+//                    $result_string .= "<td><span style='color:green; font-weight: bold'>{$product_quantity}</span></td>";
                 }
-                
-                $result_string .= "<td>{$max_quantity}</td></tr>";
             }
             
             $result_string .= '</tbody></table></div>';

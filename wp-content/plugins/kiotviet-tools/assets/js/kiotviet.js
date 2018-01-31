@@ -79,6 +79,7 @@ jQuery(document).ready(function($) {
             },
             success: function(response){
                 console.log(response);
+                $('.modal-body').html('');
                 if (response.data.status == 1) {
                     $('#alert-message').html('');
                     $('#alert-max-quantity').html('');
