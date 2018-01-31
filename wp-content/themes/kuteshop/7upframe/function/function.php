@@ -1539,7 +1539,9 @@ if(!function_exists('s7upf_product_main_detai')){
 							<div class="mobileHide">
 								<div class="row product-header">';
                         // KiotViet Start
-                        kiotviet_addToCart_alert_message();
+                        if(function_exists('kiotviet_addToCart_alert_message')) {
+                            kiotviet_addToCart_alert_message();
+                        }
                         // KiotViet End
                         
                         echo					'<div class="col-md-5 col-sm-12 col-xs-12">
@@ -1612,7 +1614,9 @@ if(!function_exists('s7upf_product_main_detai')){
                     </div>';
                     
                     // KiotViet Start
-                    kiotviet_addToCart_alert_modal();
+                    if(function_exists('kiotviet_addToCart_alert_modal')) {
+                        kiotviet_addToCart_alert_modal();
+                    }
                     // KiotViet End
     }
 }
