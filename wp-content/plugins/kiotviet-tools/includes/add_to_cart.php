@@ -3,6 +3,42 @@
 require_once 'kiotviet_api.php';
 require_once 'function.php';
 
+function build_html_table_carts($sku = '', $mark = false, $color = '') {
+    $result_string = '
+                <div class="table-responsive top-buffer">        
+                                <table class="table">
+                                <thead class="thead-default">
+                                    <tr>
+                                      <th style="text-align: center">Tên Sản Phẩm</th>
+                                      <th style="text-align: center">Số Lượng Đặt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>';
+                            //<th>Mã Sản Phẩm</th>
+    $cart_items  = WC()->cart->get_cart();
+    foreach ($cart_items as $item => $product) {
+        $wc_product = $product['data'];
+        $product_sku = $wc_product->get_sku();
+        $product_name = $wc_product->get_name();
+        $product_quantity = $product['quantity'];
+        
+        if (!empty($sku) && $mark === true && $product_sku == $sku) {
+            $result_string .= "<tr><td><span style='color: {$color}; font-weight: bold;'>{$product_name}</span></td>";
+            $result_string .= "<td style='text-align: center'><span style='color: {$color}; font-weight: bold'>{$product_quantity}</span></td>";
+        } else {
+            $result_string .= "<tr><td><span style='font-weight: bold;'>{$product_name}</span></td>";
+            $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>{$product_quantity}</span></td>";
+        }
+        
+//        $result_string .= "<td>{$product_sku}</td>";
+        
+        $result_string .= "</tr>";
+    }
+    $result_string .= '</tbody></table></div>';
+            
+    return $result_string;
+}
+
 function ja_ajax_check_quantity_cart(){
 
         try {
@@ -59,6 +95,7 @@ function ja_ajax_check_quantity_cart(){
             
             
             $product_sku = $product_data->get_sku();
+            $product_name = $product_data->get_name();
             
             $kiotviet_api = new KiotViet_API();
             $max_quantity = $kiotviet_api->get_product_quantity_by_ProductSKU($product_sku);
@@ -85,15 +122,23 @@ function ja_ajax_check_quantity_cart(){
                 $return['status'] = 1;
             }
             
-//            if ($return['status'] == 0) {
-//                if ($max_quantity == 0) {
-//                    $message = '<span style="font-weight:bold;">Sản phẩm bạn đặt đã hết hàng. Mong bạn vui lòng quay lại sau.</span>';
-//                } else {
-//                    $message = '<span>Số lượng bạn đặt đã quá giới hạn kho hàng. Tối đa: </span><span style="font-weight: bold;">' . $new_quantity . '/' . $max_quantity . '</span>';
-//                }
-//                $return['alert'] = kiotviet_addToCart_alert_modal($message);
-//                $return['popup'] = kiotviet_addToCart_alert_modal($message);
-//            }
+            if ($return['current_quantity'] !== 0 && $return['current_quantity'] > $max_quantity) {
+                $mark_red = true;
+            } else {
+                $mark_red = false;
+            }
+            
+            if ($return['status'] == 0) {
+                if ($max_quantity == 0) {
+                    $message = '<span class="alert-message">Sản phẩm bạn đặt đã hết hàng. Mong bạn vui lòng quay lại sau.</span>';
+                } else {
+                    $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $return['current_quantity'] . ' sản phẩm</b> này trong giỏ hàng.</span>';
+                }
+                $return['alert'] = kiotviet_addToCart_alert_message($message);
+                
+                $carts_table = build_html_table_carts($product_sku, $mark_red, 'red');
+                $return['popup'] = kiotviet_addToCart_alert_modal($message, $carts_table);
+            }
             
             wp_send_json_success( $return );
             
@@ -119,22 +164,22 @@ function ja_ajax_check_quantity_checkout(){
                 <div class="alert alert-danger">
                     Đơn hàng của bạn vượt quá số lượng kho hàng của chúng tôi. Bạn vui lòng cập nhật số lượng tại <a href="' . wc_get_cart_url() . '" class="alert-link">Giỏ Hàng</a>.
                 </div>
-                <div class="table-responsive">          
+                <div class="table-responsive top-buffer">          
                                 <table class="table">
                                 <thead class="thead-default">
                                     <tr>
                                       <th>Tên Sản Phẩm</th>
-                                      <th>Mã Sản Phẩm</th>
                                       <th>Số Lượng</th>
                                       <th>Tối Đa</th>
                                 </tr>
                                 </thead>
                                 <tbody>';
+                                //<th>Mã Sản Phẩm</th>
             // Find the cart item key in the existing cart.
             $cart_items  = WC()->cart->get_cart();
             foreach ($cart_items as $item => $product) {
                 $wc_product = $product['data'];
-                $product_sku = $wc_product->get_sku();
+//                $product_sku = $wc_product->get_sku();
                 $product_name = $wc_product->get_name();
                 $product_quantity = $product['quantity'];
                 
@@ -144,7 +189,7 @@ function ja_ajax_check_quantity_checkout(){
                 if ($product_quantity > $max_quantity) {
                     $form_submit = false;
                     $result_string .= "<tr><td>{$product_name}</td>";
-                    $result_string .= "<td>{$product_sku}</td>";
+//                    $result_string .= "<td>{$product_sku}</td>";
                     $result_string .= "<td><span style='color:red; font-weight: bold'>{$product_quantity}</span></td>";
                     $result_string .= "<td>{$max_quantity}</td></tr>";
                 } else {
@@ -170,3 +215,5 @@ function ja_ajax_check_quantity_checkout(){
 
 add_action( 'wp_ajax_check_quantity_checkout', 'ja_ajax_check_quantity_checkout' );
 add_action( 'wp_ajax_nopriv_check_quantity_checkout', 'ja_ajax_check_quantity_checkout' );
+
+

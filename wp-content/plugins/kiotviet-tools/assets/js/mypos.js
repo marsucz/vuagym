@@ -59,15 +59,26 @@ jQuery(document).ready(function($) {
        
     });
     
-    $('#hide-alert').click(function() {
-        $('#alert-box').fadeOut();
+    $('.product-detail-content').on('click', '#alert-box', function() {
+        $('#alert-box').fadeOut(500, function() { $('#alert-box').remove(); });
     });
+    
+    
+    function remove_add_to_cart_items() {
+        if ($('#alert-box').length) {
+            $('#alert-box').fadeOut(500, function() { $('#alert-box').remove(); });
+        }
+        if ($('#addToCartModal').length) {
+            $('#addToCartModal').remove();
+            $('.modal-backdrop').remove();
+        }
+    }
     
     function check_quantity_on_kiotviet(item_id, quantity) {
         
         var result = false;
 
-        $('.modal-body').html('');
+        remove_add_to_cart_items();
         
         $.ajax({
             url: global.ajax,
@@ -78,31 +89,23 @@ jQuery(document).ready(function($) {
                     quantity: quantity
             },
             success: function(response){
+                
+                remove_add_to_cart_items();
+                
                 console.log(response);
-                $('.modal-body').html('');
+                
                 if (response.data.status == 1) {
-                    $('#alert-message').html('');
-                    $('#alert-max-quantity').html('');
                     result = true;
                 } else {
-                    if (response.data.max_quantity == 0) {
-                        var error_string = "Sản phẩm bạn đặt hiện đang hết hàng. Mong bạn quay lại sau.";
-                        $('#alert-message').html(error_string);
-                        $('#alert-max-quantity').html('');
-                        $('.modal-body').append("<span class='alert-message'>" + error_string + "</span>");
-                    } else {
-                        var error_string = "Số lượng bạn đặt vượt quá giới hạn kho hàng. Tối đa: ";
-                        $('#alert-message').html(error_string);
-                        $('#alert-max-quantity').html(response.data.new_quantity + "/" + response.data.max_quantity);
-                        $('.modal-body').append("<span class='alert-message'>" + error_string + " " + response.data.new_quantity + "/" + response.data.max_quantity + "</span>");
-                    }
+                    $('.mobileHide .row.product-header').prepend(response.data.alert);
+                    $('#main-content').append(response.data.popup);
                     result = false;
                 }
                 
                 var atc_btn  = $('.single_add_to_cart_button');
                 if (result === true) {
                     add_to_cart(atc_btn,item_id,quantity);//Ajax add to cart
-                    $('#alert-box').fadeOut();
+//                    $('#alert-box').fadeOut();
                 } else {
                     atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-cross xoo-wsc-icon-atc');
                     $('#alert-box').fadeIn();
@@ -110,12 +113,12 @@ jQuery(document).ready(function($) {
                 }
             },
             error: function(response) {
-                var error_string = "<span class='alert-message'>Có lỗi phát sinh trong quá trình thêm sản phẩm. Bạn vui lòng thử lại.</span>";
-                $('#alert-message').html(error_string);
-                $('#alert-max-quantity').html('');
-                $('#alert-box').fadeIn();
-                $('.modal-body').append(error_string);
-                $('#addToCartModal').modal('show');
+//                var error_string = "<span class='alert-message'>Có lỗi phát sinh trong quá trình thêm sản phẩm. Bạn vui lòng thử lại.</span>";
+//                $('#alert-message').html(error_string);
+//                $('#alert-max-quantity').html('');
+//                $('#alert-box').fadeIn();
+//                $('.modal-body').append(error_string);
+//                $('#addToCartModal').modal('show');
                 console.log(response);
                 result = false;
             }
@@ -132,6 +135,9 @@ jQuery(document).ready(function($) {
                        item_id: item_id,
                        quantity: quantity},
             success: function(response,status,jqXHR){
+                
+                    console.log(response);
+                
                     atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-checkmark xoo-wsc-icon-atc');
                     toggle_sidecart();
                     on_cart_success(response);
@@ -144,6 +150,12 @@ jQuery(document).ready(function($) {
         
         // Effect
         var atc_btn  = $('.single_add_to_cart_button');
+        
+        if(atc_btn.find('.xoo-wsc-icon-spinner').length !== 0){
+            console.log("Processing. Please Wait...");
+            return;
+        }
+        
         if(atc_btn.find('.xoo-wsc-icon-atc').length !== 0){
             atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-spinner xoo-wsc-icon-atc xoo-wsc-active');
         }

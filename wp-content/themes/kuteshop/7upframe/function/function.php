@@ -1537,14 +1537,8 @@ if(!function_exists('s7upf_product_main_detai')){
 			echo		'</div>
 						<div class="col-md-8 col-sm-7 col-xs-12 col-md-pull-4 col-sm-pull-5">
 							<div class="mobileHide">
-								<div class="row product-header">';
-                        // KiotViet Start
-                        if(function_exists('kiotviet_addToCart_alert_message')) {
-                            kiotviet_addToCart_alert_message();
-                        }
-                        // KiotViet End
-                        
-                        echo					'<div class="col-md-5 col-sm-12 col-xs-12">
+								<div class="row product-header">
+                                                                <div class="col-md-5 col-sm-12 col-xs-12">
 									'.$thumb_html.'
 									</div>
 									<div class="col-md-7 col-sm-12 col-xs-12">
@@ -1613,11 +1607,6 @@ if(!function_exists('s7upf_product_main_detai')){
 							</div>
                     </div>';
                     
-                    // KiotViet Start
-                    if(function_exists('kiotviet_addToCart_alert_modal')) {
-                        kiotviet_addToCart_alert_modal();
-                    }
-                    // KiotViet End
     }
 }
 if(!function_exists('s7upf_check_sidebar')){

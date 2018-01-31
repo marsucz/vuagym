@@ -55,19 +55,19 @@ require_once 'function.php';
 add_action( 'wp_enqueue_scripts', 'theme_register_scripts', 10 );
 function theme_register_scripts() {
 
-    wp_register_script( 'kiotviet-js', WC_PLUGIN_URL . 'assets/js/kiotviet.js', array( 'jquery' ), '1.0', true );
+    wp_register_script( 'mypos-js', WC_PLUGIN_URL . 'assets/js/mypos.js', array( 'jquery' ), '1.0', true );
  
     $php_array = array( 
         'ajax' => admin_url( 'admin-ajax.php' ) 
     );
-    wp_localize_script( 'kiotviet-js', 'global', $php_array );
+    wp_localize_script( 'mypos-js', 'global', $php_array );
  
 }
 
 add_action( 'wp_enqueue_scripts', 'theme_enqueue_scripts', 10, 1 );
 function theme_enqueue_scripts() {
-    wp_enqueue_style('kiotviet-css', WC_PLUGIN_URL . 'assets/css/kiotviet.css' );
-    wp_enqueue_script( 'kiotviet-js' );
+    wp_enqueue_style('mypos-css', WC_PLUGIN_URL . 'assets/css/mypos.css' );
+    wp_enqueue_script( 'mypos-js' );
 }
 
 function ja_ajax_get_productquantity() {
