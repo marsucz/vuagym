@@ -3,7 +3,7 @@
 require_once 'kiotviet_api.php';
 require_once 'function.php';
 
-function build_html_table_carts($sku = '', $mark = false, $color = '') {
+function build_html_table_carts($item_id = '', $mark = false, $color = '') {
     $result_string = '
                 <div class="table-responsive top-buffer">        
                                 <table class="table">
@@ -18,16 +18,19 @@ function build_html_table_carts($sku = '', $mark = false, $color = '') {
     $cart_items  = WC()->cart->get_cart();
     foreach ($cart_items as $item => $product) {
         $wc_product = $product['data'];
-        $product_sku = $wc_product->get_sku();
+        $product_id = $wc_product->get_id();
+//        $product_sku = $wc_product->get_sku();
         $product_name = $wc_product->get_name();
         $product_quantity = $product['quantity'];
         
-        if (!empty($sku) && $mark === true && $product_sku == $sku) {
-            $result_string .= "<tr><td><span style='color: {$color}; font-weight: bold;'>{$product_name}</span></td>";
-            $result_string .= "<td style='text-align: center'><span style='color: {$color}; font-weight: bold'>{$product_quantity}</span></td>";
+//        echo $product_id . ':' . $item_id . '-';
+        
+        if (!empty($item_id) && $mark && $item_id == $product_id) {
+            $result_string .= "<tr><td><span style='color: " . $color . "; font-weight: bold;'>" . $product_name . "</span></td>";
+            $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold'>" . $product_quantity . "</span></td>";
         } else {
-            $result_string .= "<tr><td><span style='font-weight: bold;'>{$product_name}</span></td>";
-            $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>{$product_quantity}</span></td>";
+            $result_string .= "<tr><td><span style='font-weight: bold;'>" . $product_name . "</span></td>";
+            $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>" . $product_quantity . "</span></td>";
         }
         
 //        $result_string .= "<td>{$product_sku}</td>";
@@ -93,7 +96,7 @@ function ja_ajax_check_quantity_cart(){
             // Find the cart item key in the existing cart.
             $cart_item_key  = WC()->cart->find_product_in_cart( $cart_id );
             
-            
+            $item_id = $product_data->get_id();
             $product_sku = $product_data->get_sku();
             $product_name = $product_data->get_name();
             
@@ -132,11 +135,16 @@ function ja_ajax_check_quantity_cart(){
                 if ($max_quantity == 0) {
                     $message = '<span class="alert-message">Sản phẩm bạn đặt đã hết hàng. Mong bạn vui lòng quay lại sau.</span>';
                 } else {
-                    $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $return['current_quantity'] . ' sản phẩm</b> này trong giỏ hàng.</span>';
+                    if ($mark_red) {
+                        $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $return['current_quantity'] . ' sản phẩm</b> này trong giỏ hàng. Bạn vui lòng cập nhật số lượng tại <a href="' . wc_get_cart_url() . '" class="mypos-alert-link">Giỏ Hàng</a>.</span>';
+                    } else {
+                        $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $return['current_quantity'] . ' sản phẩm</b> này trong giỏ hàng.</span>';
+                    }
+                    
                 }
                 $return['alert'] = kiotviet_addToCart_alert_message($message);
                 
-                $carts_table = build_html_table_carts($product_sku, $mark_red, 'red');
+                $carts_table = build_html_table_carts($item_id, $mark_red, 'red');
                 $return['popup'] = kiotviet_addToCart_alert_modal($message, $carts_table);
             } else { // $return['status'] = 1 check quantity successful
                 //Check quantity is available
@@ -154,7 +162,7 @@ function ja_ajax_check_quantity_cart(){
                     $message = '<span class="alert-success-message">Bạn đã thêm thành công <b>' . $quantity . ' sản phẩm</b> ' . $product_name . '.</span>';
                     $return['alert'] = kiotviet_addToCart_success_message($message);
                     
-                    $carts_table = build_html_table_carts($product_sku, 1, 'green');
+                    $carts_table = build_html_table_carts($item_id, 1, 'green');
                     $return['popup'] = kiotviet_addToCart_alert_modal($message, $carts_table);
                 } else {
                     $return['status'] = 1; // Add sucessful

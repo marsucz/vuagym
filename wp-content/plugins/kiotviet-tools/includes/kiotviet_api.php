@@ -29,11 +29,12 @@ class KiotViet_API {
         }
         
         if (count($product) == 0) {
-            $t = date('Ymd');
-            $log_file = "KiotViet-{$t}.txt";
-            $log_text = "SKU: {$product_sku} not exists on KiotViet or You haven't updated the database.";
-            write_logs($log_file, $log_text);
-            // Let clients apply their cart
+            if (!empty($product_sku)) {
+                $t = date('Ymd');
+                $log_file = "KiotViet-{$t}.txt";
+                $log_text = "SKU: {$product_sku} not exists on KiotViet or You haven't updated the database.";
+                write_logs($log_file, $log_text);
+            }
             $result = MAX_QUANTITY;
         } else {
             $result = $this->get_product_quantity_byKiotvietProductID($product[0]['product_id']);

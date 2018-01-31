@@ -15,7 +15,12 @@
 
 .alert-success-message {
     /*font-weight: bold;*/
-    color: red;
+    color: green;
+}
+
+.mypos-alert-link {
+    color: #843534;
+    font-weight: 700;
 }
 
 .modal-header {
