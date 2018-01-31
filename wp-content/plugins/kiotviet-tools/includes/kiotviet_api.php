@@ -72,6 +72,10 @@ class KiotViet_API {
             return $result;
         } else {
             
+            if (is_array($result)) {
+                $result = json_encode($result);
+            }
+            
             $t = date('Ymd');
             $log_file = "KiotVietAPI_Errors_{$t}.txt";
             $log_text = "URL Get: " . $url;
