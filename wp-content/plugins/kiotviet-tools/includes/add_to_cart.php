@@ -1,7 +1,7 @@
 <?php
 
 require_once 'kiotviet_api.php';
-require_once 'function.php';
+require_once 'function_template.php';
 
 function build_html_table_carts($item_id = '', $mark = false, $color = '') {
     $result_string = '
@@ -101,7 +101,7 @@ function ja_ajax_check_quantity_cart(){
             $product_name = $product_data->get_name();
             
             $kiotviet_api = new KiotViet_API();
-            $max_quantity = $kiotviet_api->get_product_quantity_by_ProductSKU($product_sku);
+            $max_quantity = $kiotviet_api->get_product_quantity_by_ProductSKU($product_sku, $item_id);
             
             $return['status'] = 0;
             $return['sku'] = $product_sku;
@@ -134,6 +134,9 @@ function ja_ajax_check_quantity_cart(){
             if ($return['status'] == 0) {   // check quantity false
                 if ($max_quantity == 0) {
                     $message = '<span class="alert-message">Sản phẩm bạn đặt đã hết hàng. Mong bạn vui lòng quay lại sau.</span>';
+                    // Set Product Item is out of stock
+                    $product_data->set_stock_status('outofstock');
+                    $product_data->save();
                 } else {
                     if ($mark_red) {
                         $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $return['current_quantity'] . ' sản phẩm</b> này trong giỏ hàng. Bạn vui lòng cập nhật số lượng tại <a href="' . wc_get_cart_url() . '" class="mypos-alert-link">Giỏ Hàng</a>.</span>';

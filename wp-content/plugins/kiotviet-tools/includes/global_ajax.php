@@ -7,7 +7,7 @@
  */
 
 require_once 'kiotviet_api.php';
-require_once 'function.php';
+require_once 'function_template.php';
 
 //add_action( 'wp_enqueue_scripts', 'global_admin_ajax' );
 //

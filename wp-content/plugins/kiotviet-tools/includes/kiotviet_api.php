@@ -14,12 +14,13 @@ if (!defined('KV_CLIENT_SECRET')) {
 
 include_once 'DbModel.php';
 include_once 'function.php';
+include_once 'function_template.php';
 
 class KiotViet_API {
     
     private $access_token = '';
     
-    public function get_product_quantity_by_ProductSKU($product_sku) {
+    public function get_product_quantity_by_ProductSKU($product_sku, $item_id = 0) {
         $dbModel = new DbModel();
         
         if (!empty($product_sku)) {
@@ -37,7 +38,18 @@ class KiotViet_API {
             }
             $result = MAX_QUANTITY;
         } else {
-            $result = $this->get_product_quantity_byKiotvietProductID($product[0]['product_id']);
+            
+            if ($item_id != 0) {
+                $preOder_status = kiotViet_get_preOrder_status($item_id);
+                echo $preOder_status;
+                if ($preOder_status == 1) { // Sap co hang
+                    $result = MAX_QUANTITY + 50;
+                } else {
+                    $result = $this->get_product_quantity_byKiotvietProductID($product[0]['product_id']);
+                }
+            } else {
+                $result = $this->get_product_quantity_byKiotvietProductID($product[0]['product_id']);
+            }
         }
         
         return $result;

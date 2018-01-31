@@ -102,6 +102,7 @@ jQuery(document).ready(function($) {
                 }
                 
                 $('.mobileHide .row.product-header').prepend(response.data.alert);
+                $('.mobileShow .row.product-header').prepend(response.data.alert);
                 $('#main-content').append(response.data.popup);
                 
 //                atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-cross xoo-wsc-icon-atc');

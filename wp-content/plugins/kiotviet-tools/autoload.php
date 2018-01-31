@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-require_once('includes/function.php');
+require_once('includes/function_template.php');
 require_once('includes/DbModel.php');
 require_once 'includes/helper.php';
 require_once('includes/plugin_init.php');
