@@ -40,6 +40,7 @@
 
 .top-buffer { 
     margin-top: 10px; 
+    margin-bottom: 0px !important;
 }
 
 .thead-default{
@@ -52,7 +53,7 @@
 
 .modal-content img {
     max-width: 50% !important;
-    padding: 4px;
+    padding: 2px;
 }
 
 .modal-content .table-responsive {
@@ -338,6 +339,10 @@ only screen and (max-width: 767px) {
     
     .table-responsive>.table>tbody>tr>td:not(.mypos-product-title)>span {
         margin-left: 10% !important;
+    }
+    
+    .modal-body {
+        padding: 5px !important;
     }
     
 }
