@@ -55,7 +55,7 @@
 }
 
 .modal-content .table-responsive {
-    font-size: 12px;
+    font-size: 12px !important;
 }
 
 .modal {
