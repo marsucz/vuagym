@@ -827,7 +827,7 @@ if ( ! function_exists( 's7upf_thumb_product_khoa' ) ) {
             $label_html .=  '</div>';
         }
 
-        $html .=    '<div class="product-thumb">
+        $html =    '<div class="product-thumb">
                                 '.$label_html.'
                                 <a href="'.esc_url(get_the_permalink()).'" class="product-thumb-link-khoa product-thumb-link '.esc_attr($animation).'">
                                     '.get_the_post_thumbnail(get_the_ID(),$size).'

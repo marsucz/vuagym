@@ -45,3 +45,11 @@
 .thead-default{
     background: #ececec;
 }
+
+.modal-content td, .modal-content td {
+    vertical-align: inherit !important;
+}
+
+.modal-content img {
+    max-width: 65% !important;
+}

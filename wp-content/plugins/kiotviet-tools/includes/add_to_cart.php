@@ -9,8 +9,11 @@ function build_html_table_carts($item_id = '', $mark = false, $color = '') {
                                 <table class="table">
                                 <thead class="thead-default">
                                     <tr>
+                                      <th style="text-align: center"></th>
                                       <th style="text-align: center">Tên Sản Phẩm</th>
+                                      <th style="text-align: center">Giá</th>
                                       <th style="text-align: center">Số Lượng Đặt</th>
+                                      <th style="text-align: center">Tổng Cộng</th>
                                     </tr>
                                 </thead>
                                 <tbody>';
@@ -20,18 +23,33 @@ function build_html_table_carts($item_id = '', $mark = false, $color = '') {
         $wc_product = $product['data'];
         $product_id = $wc_product->get_id();
 //        $product_sku = $wc_product->get_sku();
-        $product_name = $wc_product->get_name();
-        $product_quantity = $product['quantity'];
+        $product_name           = $wc_product->get_name();
+        $product_quantity       = $product['quantity'];
+        $product_link           = $wc_product->get_permalink();
+        $product_price_raw      = $wc_product->get_price();
+        $product_price          = kiotViet_formatted_price($product_price_raw);
+        $product_image  	= $wc_product->get_image('shop_thumbnail');
+
+        $product_total          = kiotViet_formatted_price($product_quantity*$product_price_raw);
         
-//        echo $product_id . ':' . $item_id . '-';
+        $result_string .= "<tr>";
+        
+        $result_string .= "<td align='center'>{$product_image}</td>";
+        
         
         if (!empty($item_id) && $mark && $item_id == $product_id) {
-            $result_string .= "<tr><td><span style='color: " . $color . "; font-weight: bold;'>" . $product_name . "</span></td>";
+            $result_string .= "<td><span style='color: " . $color . "; font-weight: bold;'>" . $product_name . "</span></td>";
+            $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold'>" . $product_price . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold'>" . $product_quantity . "</span></td>";
+            $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold'>" . $product_total . "</span></td>";
         } else {
-            $result_string .= "<tr><td><span style='font-weight: bold;'>" . $product_name . "</span></td>";
+            $result_string .= "<td><span style='font-weight: bold;'>" . $product_name . "</span></td>";
+            $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>" . $product_price . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>" . $product_quantity . "</span></td>";
+            $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>" . $product_total . "</span></td>";
         }
+        
+        
         
 //        $result_string .= "<td>{$product_sku}</td>";
         

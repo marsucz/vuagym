@@ -26,7 +26,7 @@ define('DB_NAME', 'db_vuagym');
 define('DB_USER', 'root');
 
 /** MySQL database password */
-define('DB_PASSWORD', '');
+define('DB_PASSWORD', '12345678');
 
 /** MySQL hostname */
 define('DB_HOST', 'localhost');
