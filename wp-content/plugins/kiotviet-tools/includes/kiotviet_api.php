@@ -42,7 +42,7 @@ class KiotViet_API {
             if ($item_id != 0) {
                 $preOder_status = kiotViet_get_preOrder_status($item_id);
                 if ($preOder_status == 1) { // Sap co hang
-                    $result = MAX_QUANTITY + 50;
+                    $result = CUSTOM_QUANTITY_PREORDER;
                 } else {
                     $result = $this->get_product_quantity_byKiotvietProductID($product[0]['product_id']);
                 }
@@ -75,14 +75,35 @@ class KiotViet_API {
 
     public function get_product_info($product_id) {
 
-        $url = 'https://public.kiotapi.com/products/' . $product_id;
+        $url = 'https://public.kiotapi.com/products/' . trim($product_id);
 
         $result = $this->api_call($url);
 
         if ($result !== false && isset($result['id'])) {
 //        if ($result) {
             return $result;
-        } else {
+        } elseif ($result) {    // Double check if the response is still bad
+            
+            $result = $this->api_call($url);
+            if ($result !== false && isset($result['id'])) {
+                return $result;
+            } else {
+                
+                if (is_array($result)) {
+                    $result = json_encode($result);
+                }
+                
+                $t = date('Ymd');
+                $log_file = "KiotVietAPI_DoubleCall_{$t}.txt";
+                $log_text = "URL Get: " . $url;
+                $log_text .= "\n Double Call to API but bad response: " . $result;
+
+                write_logs($log_file, $log_text);
+
+                return false;
+            }
+            
+        } else {    // API response error
             
             if (is_array($result)) {
                 $result = json_encode($result);
@@ -146,8 +167,8 @@ class KiotViet_API {
          CURLOPT_URL => $url,
          CURLOPT_RETURNTRANSFER => true,
          CURLOPT_ENCODING => "",
-         CURLOPT_MAXREDIRS => 10,
-         CURLOPT_TIMEOUT => 30,
+         CURLOPT_MAXREDIRS => 5,
+         CURLOPT_TIMEOUT => 5,
          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
          CURLOPT_CUSTOMREQUEST => "GET",
          CURLOPT_HTTPHEADER => array(
@@ -210,6 +231,11 @@ class KiotViet_API {
         curl_close($curl);
 
         $access_token = json_decode($response, true);
+        
+//        echo '<pre>';
+//        print_r($access_token);
+//        echo '</pre>';
+//        exit;
 
         if ($access_token) {
             $this->access_token = $access_token['access_token'];

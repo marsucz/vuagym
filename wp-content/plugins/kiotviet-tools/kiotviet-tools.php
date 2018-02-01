@@ -26,6 +26,11 @@ if (!defined('MAX_QUANTITY')) {
     define('MAX_QUANTITY', 250);
 }
 
+// Define WC_PLUGIN_FILE.
+if (!defined('CUSTOM_QUANTITY_PREORDER')) {
+    define('CUSTOM_QUANTITY_PREORDER', 150);
+}
+
 require_once('autoload.php');
 require_once('includes/add_to_cart.php');
 
@@ -60,8 +65,9 @@ function function_kiotviet_tools_page() {
 }
 
 function function_testing_page() {
-//    get_all_products();
-    echo "TEST";
+    $api = new KiotViet_API();
+    
+    $api->get_access_token();
 }
 
 
