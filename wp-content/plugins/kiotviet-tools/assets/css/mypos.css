@@ -39,7 +39,7 @@
 }
 
 .top-buffer { 
-    margin-top:20px; 
+    margin-top: 10px; 
 }
 
 .thead-default{
@@ -52,6 +52,7 @@
 
 .modal-content img {
     max-width: 50% !important;
+    padding: 4px;
 }
 
 .modal-content .table-responsive {

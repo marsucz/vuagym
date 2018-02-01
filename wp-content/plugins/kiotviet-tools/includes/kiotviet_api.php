@@ -80,44 +80,36 @@ class KiotViet_API {
         $result = $this->api_call($url);
 
         if ($result !== false && isset($result['id'])) {
-//        if ($result) {
             return $result;
-        } elseif ($result) {    // Double check if the response is still bad
+        } else {    // Double check if the response is still bad
             
             $result = $this->api_call($url);
             if ($result !== false && isset($result['id'])) {
                 return $result;
             } else {
                 
-                if (is_array($result)) {
-                    $result = json_encode($result);
-                }
-                
                 $t = date('Ymd');
                 $log_file = "KiotVietAPI_DoubleCall_{$t}.txt";
                 $log_text = "URL Get: " . $url;
-                $log_text .= "\n Double Call to API but bad response: " . $result;
+                $log_text .= "\n Double Call to API but bad response: " . json_encode($result);
 
                 write_logs($log_file, $log_text);
 
                 return false;
             }
             
-        } else {    // API response error
-            
-            if (is_array($result)) {
-                $result = json_encode($result);
-            }
-            
-            $t = date('Ymd');
-            $log_file = "KiotVietAPI_Errors_{$t}.txt";
-            $log_text = "URL Get: " . $url;
-            $log_text .= "\n KiotViet API response error format: " . $result;
-
-            write_logs($log_file, $log_text);
-            
-            return false;
-        }
+        } 
+//        else {    // API response error
+//            
+//            $t = date('Ymd');
+//            $log_file = "KiotVietAPI_Errors_{$t}.txt";
+//            $log_text = "URL Get: " . $url;
+//            $log_text .= "\n KiotViet API response error format: " . json_encode($result);
+//
+//            write_logs($log_file, $log_text);
+//            
+//            return false;
+//        }
 
     }
 
@@ -187,7 +179,7 @@ class KiotViet_API {
             $t = date('Ymd');
             $log_file = "KiotVietAPI_Errors_{$t}.txt";
             $log_text = "URL Get: " . $url;
-            $log_text .= "\n KiotViet not response: " . $result;
+            $log_text .= "\n KiotViet not response: " . json_encode($response);
             write_logs($log_file, $log_text);
             return false;
         }

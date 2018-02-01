@@ -67,7 +67,13 @@ function function_kiotviet_tools_page() {
 function function_testing_page() {
     $api = new KiotViet_API();
     
-    $api->get_access_token();
+    $url = 'https://public.kiotapi.com/products/1234';
+    $test = $api->api_call($url);
+    
+    echo '<pre>';
+    echo print_r($test);
+    echo '<pre>';
+    exit;
 }
 
 

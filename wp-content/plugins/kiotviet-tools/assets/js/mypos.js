@@ -139,12 +139,6 @@ jQuery(document).ready(function($) {
                 
                 atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-checkmark xoo-wsc-icon-atc');
                 
-//                var error_string = "<span class='alert-message'>Có lỗi phát sinh trong quá trình thêm sản phẩm. Bạn vui lòng thử lại.</span>";
-//                $('#alert-message').html(error_string);
-//                $('#alert-max-quantity').html('');
-//                $('#alert-box').fadeIn();
-//                $('.modal-body').append(error_string);
-//                $('#addToCartModal').modal('show');
                 console.log(response);
                 result = false;
             }

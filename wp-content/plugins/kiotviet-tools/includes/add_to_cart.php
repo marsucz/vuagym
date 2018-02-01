@@ -5,7 +5,7 @@ require_once 'function_template.php';
 
 function build_html_table_carts($item_id = '', $mark = false, $color = '') {
     $result_string = '
-                <div class="table-responsive top-buffer">        
+                <div class="table-responsive top-buffer" style="border: 0px !important;">        
                                 <table class="table">
                                 <thead class="thead-default">
                                     <tr style="white-space: nowrap;">
