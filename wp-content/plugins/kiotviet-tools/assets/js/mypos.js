@@ -80,6 +80,8 @@ jQuery(document).ready(function($) {
 
         remove_add_to_cart_items();
         
+        var atc_btn  = $('.single_add_to_cart_button');
+        
         $.ajax({
             url: global.ajax,
             type: 'POST',
@@ -94,11 +96,13 @@ jQuery(document).ready(function($) {
                 
                 console.log(response);
                 
-                var atc_btn  = $('.single_add_to_cart_button');
+                console.log(response.data.status);
+                console.log(response.data.status == 2);
+                
                 if (response.data.status == 2) {
-                    atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-cross xoo-wsc-icon-atc');
-                } else {
                     atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-checkmark xoo-wsc-icon-atc');
+                } else {
+                    atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-cross xoo-wsc-icon-atc');
                 }
                 
                 $('.mobileHide .row.product-header').prepend(response.data.alert);
@@ -132,6 +136,9 @@ jQuery(document).ready(function($) {
 //                }
             },
             error: function(response) {
+                
+                atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-checkmark xoo-wsc-icon-atc');
+                
 //                var error_string = "<span class='alert-message'>Có lỗi phát sinh trong quá trình thêm sản phẩm. Bạn vui lòng thử lại.</span>";
 //                $('#alert-message').html(error_string);
 //                $('#alert-max-quantity').html('');

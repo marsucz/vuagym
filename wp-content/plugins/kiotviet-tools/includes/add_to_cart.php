@@ -8,7 +8,7 @@ function build_html_table_carts($item_id = '', $mark = false, $color = '') {
                 <div class="table-responsive top-buffer">        
                                 <table class="table">
                                 <thead class="thead-default">
-                                    <tr>
+                                    <tr style="white-space: nowrap;">
                                       <th style="text-align: center"></th>
                                       <th style="text-align: center">Tên Sản Phẩm</th>
                                       <th style="text-align: center">Giá</th>
@@ -221,7 +221,7 @@ function ja_ajax_check_quantity_checkout(){
                 <div class="table-responsive top-buffer">          
                                 <table class="table">
                                 <thead class="thead-default">
-                                    <tr>
+                                    <tr style="white-space: nowrap;">
                                       <th>Tên Sản Phẩm</th>
                                       <th>Số Lượng</th>
                                       <th>Tối Đa</th>
