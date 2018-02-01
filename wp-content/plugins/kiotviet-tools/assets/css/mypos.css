@@ -51,7 +51,11 @@
 }
 
 .modal-content img {
-    max-width: 80% !important;
+    max-width: 65% !important;
+}
+
+.modal-content .table-responsive {
+    font-size: 12px;
 }
 
 .modal {
@@ -269,6 +273,10 @@ only screen and (max-width: 767px),
 /* Smartphones (portrait and landscape) ----------- */
 @media
 only screen and (max-width: 767px) {
+    
+    .online-support {
+        display: none;
+    }
     
     .table-responsive>.table>tbody>tr>td:not(.mypos-product-title)>span {
         margin-left: 10% !important;

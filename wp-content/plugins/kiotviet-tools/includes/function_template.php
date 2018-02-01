@@ -37,7 +37,7 @@ if(!function_exists('kiotviet_addToCart_success_message')){
 if(!function_exists('kiotviet_addToCart_alert_modal')){
     function kiotviet_addToCart_alert_modal($message = '', $carts_table = ''){
         return '        
-        <div class="modal fade" id="addToCartModal" tabindex="-1" role="dialog" aria-labelledby="addToCartModalLabel" aria-hidden="true" style="padding-top: 10%;">
+        <div class="modal fade" id="addToCartModal" tabindex="-1" role="dialog" aria-labelledby="addToCartModalLabel" aria-hidden="true" style="padding-top: 2%;">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -65,7 +65,7 @@ if(!function_exists('kiotviet_checkout_alert_modal')){
         $modal_id = 'checkoutModal';
         
         return '        
-        <div class="modal fade" id="' . $modal_id . '" tabindex="-1" role="dialog" aria-labelledby="' . $modal_id . 'Label" aria-hidden="true" style="padding-top: 5%;">
+        <div class="modal fade" id="' . $modal_id . '" tabindex="-1" role="dialog" aria-labelledby="' . $modal_id . 'Label" aria-hidden="true" style="padding-top: 2%;">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
