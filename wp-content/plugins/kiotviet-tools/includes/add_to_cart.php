@@ -12,7 +12,7 @@ function build_html_table_carts($item_id = '', $mark = false, $color = '') {
                                       <th style="text-align: center"></th>
                                       <th style="text-align: center">Tên Sản Phẩm</th>
                                       <th style="text-align: center">Giá</th>
-                                      <th style="text-align: center">Số Lượng Đặt</th>
+                                      <th style="text-align: center">Số Lượng</th>
                                       <th style="text-align: center">Tổng Cộng</th>
                                     </tr>
                                 </thead>
@@ -38,12 +38,12 @@ function build_html_table_carts($item_id = '', $mark = false, $color = '') {
         
         
         if (!empty($item_id) && $mark && $item_id == $product_id) {
-            $result_string .= "<td><span style='color: " . $color . "; font-weight: bold;'>" . $product_name . "</span></td>";
+            $result_string .= "<td class='mypos-product-title'><span style='color: " . $color . "; font-weight: bold;'>" . $product_name . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold'>" . $product_price . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold'>" . $product_quantity . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold'>" . $product_total . "</span></td>";
         } else {
-            $result_string .= "<td><span style='font-weight: bold;'>" . $product_name . "</span></td>";
+            $result_string .= "<td class='mypos-product-title'><span style='font-weight: bold;'>" . $product_name . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>" . $product_price . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>" . $product_quantity . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>" . $product_total . "</span></td>";

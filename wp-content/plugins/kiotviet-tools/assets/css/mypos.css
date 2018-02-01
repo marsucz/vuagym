@@ -46,10 +46,106 @@
     background: #ececec;
 }
 
-.modal-content td, .modal-content td {
+.modal-content td, .modal-content th {
     vertical-align: inherit !important;
 }
 
 .modal-content img {
-    max-width: 65% !important;
+    max-width: 80% !important;
+}
+
+.modal {
+    z-index: 9999 !important;
+}
+
+@media
+only screen and (max-width: 767px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+        /* Force table to not be like tables anymore */
+        .modal-content table, .modal-content thead,.modal-content tbody,.modal-content th,.modal-content td,.modal-content tr {
+                display: block;
+        }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        .modal-content thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+        }
+
+        .modal-content tr {
+            border: 1px solid #ccc; 
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .modal-content td {
+                border: none !important;
+                border-bottom: 1px solid #eee !important;
+                position: relative !important;
+                padding-left: 50% !important;
+        }
+
+        .modal-content td:before {
+                position: absolute;
+                top: 6px;
+                left: 6%;
+/*                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;*/
+        }
+        
+        .modal-content .mypos-product-title {
+            text-align: center;
+            white-space: pre-wrap !important;
+        }
+        
+        .table-responsive>.table>tbody>tr>td:not(.mypos-product-title)>span {
+            margin-left: 10%;
+        }
+        
+        /*
+        Label the data
+        */
+        .modal-content td:nth-of-type(1):before { content: ""; }
+        .modal-content td:nth-of-type(2):before { content: ""; }
+        .modal-content td:nth-of-type(3):before { content: "Giá"; }
+        .modal-content td:nth-of-type(4):before { content: "Số Lượng"; }
+        .modal-content td:nth-of-type(5):before { content: "Tổng Cộng"; }
+}
+
+/* Smartphones (portrait and landscape) ----------- */
+@media
+only screen and (max-width: 767px) {
+    
+    .table-responsive>.table>tbody>tr>td:not(.mypos-product-title)>span {
+        margin-left: 10% !important;
+    }
+    
+}
+
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 480px) {
+    
+    .table-responsive>.table>tbody>tr>td:not(.mypos-product-title)>span {
+        margin-left: 30% !important;
+    }
+    
+}
+
+@media
+only screen and (max-width: 319px) {
+    
+    .table-responsive>.table>tbody>tr>td:not(.mypos-product-title)>span {
+        margin-left: 40% !important;
+    }
+    
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
 }
