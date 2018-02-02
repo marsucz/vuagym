@@ -83,37 +83,5 @@ if(!function_exists('kiotviet_checkout_alert_modal')){
             </div>
         </div>
         ';
-        
-    }
-}
-
-if(!function_exists('kiotviet_online_support')){
-    function kiotviet_online_support() {
-        $result = '<div class="online-support">
-                    <div class="dropup force-open">
-                        <a class="btn btn--support" data-toggle="dropdown-2">
-                            Hỗ trợ trực tuyến
-                        </a>
-                        <ul class="dropdown-2-menu dropdown-2-menu-right dropdown-2--support">
-                            <li>
-                                <a href="tel:18006122">
-                                    <i class="icon-icon-phone"></i> GỌI HOTLINE
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://m.me/orchardvn" target="_blank" rel="noopener">
-                                    <i class="icon-icon-chat"></i>
-                                    CHAT FB</a>
-                            </li>
-                            <li>
-                                <a href="http://zalo.me/3580274298351782783" target="_blank" rel="noopener">
-                                    <i class="icon-icon-zalo"></i> CHAT ZALO
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>';
-
-        return $result;
     }
 }

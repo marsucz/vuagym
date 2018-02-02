@@ -1,11 +1,5 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 if (!defined('DB_KIOTVIET_PRODUCTS')) {
     define('DB_KIOTVIET_PRODUCTS', 'vgd_kiotviet_products');
 }
@@ -15,7 +9,6 @@ function kiotviet_product_create_db() {
     $db_name = DB_KIOTVIET_PRODUCTS;
     $charset_collate = $wpdb->get_charset_collate();
     
-    // create the ECPT metabox database table
     if($wpdb->get_var("show tables like '$db_name'") != $db_name) 
     {
             $sql = 'CREATE TABLE ' . $db_name . ' (

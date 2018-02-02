@@ -3812,3 +3812,112 @@ body .vc_gitem-animate-goTop20 .vc_gitem-zone-b p{
 	margin-left: 5px;
 }
 /* End */
+
+/* Khoa Anh Contact Widget */
+.radius.scroll-top.active {
+    right: 4px !important;
+}
+.radius.scroll-top {
+    bottom: 100px !important;
+}
+.online-support {
+    display: block;
+    position: fixed;
+    right: 2px;
+    bottom: 0px;
+    z-index: 999;
+}
+.online-support .dropup>.dropdown-2-menu.dropdown-2-menu-right {
+    left: auto !important;
+    right: 0 !important;
+}
+.online-support .dropup.force-open>.dropdown-2-menu {
+    display: block !important;
+}
+.dropup .dropdown-2-menu, .navbar-fixed-bottom .dropdown-2 .dropdown-2-menu {
+    top: auto;
+    bottom: 100%;
+    margin-bottom: 0px;
+}
+.dropdown-2-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 140px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    list-style: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,.2);
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+}
+.online-support .dropdown-2-menu li a {
+    padding: 3px 10px 3px 10px;
+    text-align: left;
+    min-height: 18px;
+    line-height: 18px;
+    font-size: 13px;
+}
+.dropdown-2-menu li>a {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 20px;
+    color: #333;
+    white-space: nowrap;
+}
+.online-support .dropdown-2-menu li a i {
+    vertical-align: middle;
+    margin-right: 8px;
+}
+i[class^=icon-] {
+    display: inline-block;
+    text-align: center;
+}
+.online-support .dropdown-2-menu li>a:hover, .online-support .dropdown-2-menu li>a:focus, .online-support .dropdown-2-submenu:hover>a {
+    color: #fff;
+    text-decoration: none;
+    background-color: #0081c2;
+    background-image: -moz-linear-gradient(top,#08c,#0077b3);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#08c),to(#0077b3));
+    background-image: -webkit-linear-gradient(top,#08c,#0077b3);
+    background-image: -o-linear-gradient(top,#08c,#0077b3);
+    background-image: linear-gradient(to bottom,#08c,#0077b3);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc',endColorstr='#ff0077b3',GradientType=0);
+}
+.icon-icon-phone {
+    background-image: url(images/call-phone.png);
+    background-size: 100%;
+    width: 24px;
+    height: 24px;
+    margin-left: -4px;
+}
+.icon-icon-chat {
+    background-image: url(images/chat.png);
+    background-size: 100%;
+    width: 20px;
+    height: 20px;
+}
+
+.icon-icon-zalo {
+    background-image: url(images/zalo.png);
+    background-size: 100%;
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+}
+/* End */
