@@ -1,9 +1,7 @@
 jQuery(document).ready(function($){
 
     wacChange = function(el_qty) {
-        
-        console.log('wasChange');
-        
+
         // ask user if they really want to remove this product
         if ( !wacZeroQuantityCheck(el_qty) ) {
             return false;
@@ -32,9 +30,6 @@ jQuery(document).ready(function($){
     };
 
     wacPostCallback = function(resp) {
-        
-        console.log('Post back');
-        
         // ajax response
         $('.cart-collaterals').html(resp.html);
 
@@ -71,15 +66,22 @@ jQuery(document).ready(function($){
         $( document.body ).trigger( 'wc_fragment_refresh' );
     };
 
+    // overrided by wac-js-calls.php
     wacZeroQuantityCheck = function(el_qty) {
-                return true;
+        if ( el_qty.val() == 0 ) {
+
+            if ( !confirm(wooajaxcart_localization.warn_remove_text) ) {
+                el_qty.val(1);
+                return false;
+            }
+        }
+
+        return true;
     };
 
     wacListenChange = function() {
         $(".qty").unbind('change').change(function(e) {
-            
-            console.log('Changed');
-            
+
             // prevent to set invalid quantity on select
             if ( $(this).is('select') && ( $(this).attr('max') > 0 ) && ( $(this).val() > $(this).attr('max') ) ) {
                 $(this).val( $(this).attr('max') );
@@ -93,16 +95,14 @@ jQuery(document).ready(function($){
     };
 
     wacQtyButtons = function() {
-        $(document).on('click','.qty-up',function(e){
-            console.log('Up');
+        $(document).on('click','.wac-btn-inc', {} ,function(e){
             inputQty = $(this).parent().parent().parent().find('.qty');
             inputQty.val( function(i, oldval) { return ++oldval; });
             inputQty.change();
             return false;
         });
 
-        $(document).on('click','.qty-down', function(e){
-            console.log('Down');
+        $(document).on('click','.wac-btn-sub', {} ,function(e){
             inputQty = $(this).parent().parent().parent().find('.qty');
             inputQty.val( function(i, oldval) { return oldval > 0 ? --oldval : 0; });
             inputQty.change();
@@ -115,13 +115,9 @@ jQuery(document).ready(function($){
     //
     wacListenChange();
     wacQtyButtons();
-    console.log('Called Js');
-    
+
     // listen when ajax cart has updated
     $(document).on('updated_wc_div', function(){
-        
-        console.log(updated_wc_div);
-        
         wacListenChange();
     });
 });

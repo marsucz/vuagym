@@ -230,5 +230,23 @@ jQuery(document).ready(function($) {
         $('.xoo-wsc-body').outerHeight(screen-(header+footer));
     };
     
+    
+    $('.product-quantity').on('click','.qty-up', function(e){
+        e.preventDefault();
+        console.log($(this));
+        return false;
+        
+//        inputQty = $(this).parent().parent().parent().find('.qty');
+//        inputQty.val( function(i, oldval) { return ++oldval; });
+//        inputQty.change();
+//        return false;
+    });
+
+    $('.product-quantity').on('click','.qty-down', function(e){
+        e.preventDefault();
+        console.log($(this));
+        return false;
+    });
+    
 });
 
