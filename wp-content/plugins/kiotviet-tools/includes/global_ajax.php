@@ -56,6 +56,7 @@ add_action( 'wp_enqueue_scripts', 'theme_register_scripts', 10 );
 function theme_register_scripts() {
 
     wp_register_script( 'mypos-js', WC_PLUGIN_URL . 'assets/js/mypos.js', array( 'jquery' ), '1.0', true );
+    wp_register_script( 'mypos-ajaxcart', WC_PLUGIN_URL . 'assets/js/mypos_jaxcart.js', array( 'jquery' ), '1.0', true );
  
     $php_array = array( 
         'ajax' => admin_url( 'admin-ajax.php' ) 
@@ -68,6 +69,7 @@ add_action( 'wp_enqueue_scripts', 'theme_enqueue_scripts', 10, 1 );
 function theme_enqueue_scripts() {
     wp_enqueue_style('mypos-css', WC_PLUGIN_URL . 'assets/css/mypos.css' );
     wp_enqueue_script( 'mypos-js' );
+    wp_enqueue_script( 'mypos-ajaxcart' );
 }
 
 //function ja_ajax_get_productquantity() {
