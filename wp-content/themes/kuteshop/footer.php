@@ -37,24 +37,27 @@
             <div class="online-support">
                 <div class="dropup force-open">
                     <ul class="dropdown-2-menu dropdown-2-menu-right dropdown-2--support">
+                        <!--
                         <li>
                             <a href="tel:12345678">
                                 <i class="icon-icon-phone"></i> GỌI HOTLINE
                             </a>
                         </li>
+                        -->
                         <li>
-                            <a href="https://m.me/orchardvn" target="_blank" rel="noopener">
+                            <a href="https://m.me/vuagym" target="_blank" rel="noopener">
                                 <i class="icon-icon-chat"></i>
                                 CHAT FB</a>
                         </li>
                         <li>
-                            <a href="http://zalo.me/3580274298351782783" target="_blank" rel="noopener">
+                            <a href="http://zalo.me/2275406627518748561" target="_blank" rel="noopener">
                                 <i class="icon-icon-zalo"></i> CHAT ZALO
                             </a>
                         </li>
                     </ul>
                 </div>
             </div>
+
 	</div>
 	<div id="boxes"></div>
 	<?php wp_footer(); ?>
