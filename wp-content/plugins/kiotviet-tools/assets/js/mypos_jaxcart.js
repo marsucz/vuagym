@@ -1,127 +1,41 @@
 jQuery(document).ready(function($){
 
-    wacChange = function(el_qty) {
+    $('.qty').on('change', function(){
         
-        console.log('wasChange');
+        console.log('TSET');
         
-        // ask user if they really want to remove this product
-        if ( !wacZeroQuantityCheck(el_qty) ) {
-            return false;
-        }
-
-        // when qty is set to zero, then fires default woocommerce remove link
-        if ( el_qty.val() == 0 ) {
-            removeLink = el_qty.closest('.cart_item').find('.product-remove a');
-            removeLink.click();
-
-            return false;
-        }
-
-        // deal with update cart button
-        updateButton = $("input[name='update_cart']");
-        updateButton.removeAttr('disabled')
-                    .click()
-                    .val( wooajaxcart_localization.updating_text )
-                    .prop('disabled', true);
+        var form = $(this).closest('form');
         
-        // change the Update cart button
-        $("a.checkout-button.wc-forward").addClass('disabled')
-                                         .html( wooajaxcart_localization.updating_text );
-
-        return true;
-    };
-
-    wacPostCallback = function(resp) {
+        // emulates button Update cart click
+        $("<input type='hidden' name='update_cart' id='update_cart' value='1'>").appendTo(form);
         
-        console.log('Post back');
+        // plugin flag
+        $("<input type='hidden' name='is_wac_ajax' id='is_wac_ajax' value='1'>").appendTo(form);
+
+        var el_qty = $(this);
+        var matches = $(this).attr('name').match(/cart\[(\w+)\]/);
+        var cart_item_key = matches[1];
+        form.append( $("<input type='hidden' name='cart_item_key' id='cart_item_key'>").val(cart_item_key) );
+
+        // get the form data before disable button...
+        var formData = form.serialize();
         
-        // ajax response
-        $('.cart-collaterals').html(resp.html);
+        $("input[name='update_cart']").val('Updating...').prop('disabled', true);
 
-        el_qty.closest('.cart_item').find('.product-subtotal').html(resp.price);
-
-        $('#update_cart').remove();
-        $('#is_wac_ajax').remove();
-        $('#cart_item_key').remove();
-
-        $("input[name='update_cart']").val(resp.update_label).prop('disabled', false);
-
-        $("a.checkout-button.wc-forward").removeClass('disabled').html(resp.checkout_label);
-
-        // when changes to 0, remove the product from cart
-        if ( el_qty.val() == 0 ) {
-            el_qty.closest('tr.cart_item').remove();
-        }
-
-        // hide or show the "+" button based on max stock limit (snippet based on @evtihii idea)
-        maxStock = el_qty.attr('max');
-        if ( maxStock > 0 ) {
-            incrementButton = el_qty.parent().find('.wac-btn-inc').parent().parent();
-
-            exceded = ( parseInt( el_qty.val() ) >= parseInt( maxStock ) );
-            exceded ? incrementButton.hide() : incrementButton.show();
-        }
-
-        // fix to update "Your order" totals when cart is inside Checkout page (thanks @vritzka)
-        if ( $( '.woocommerce-checkout' ).length ) {
-            $( document.body ).trigger( 'update_checkout' );
-        }
-
-        $( document.body ).trigger( 'updated_cart_totals' );
-        $( document.body ).trigger( 'wc_fragment_refresh' );
-    };
-
-    wacZeroQuantityCheck = function(el_qty) {
-                return true;
-    };
-
-    wacListenChange = function() {
-        $(".qty").unbind('change').change(function(e) {
-            
-            console.log('Changed');
-            
-            // prevent to set invalid quantity on select
-            if ( $(this).is('select') && ( $(this).attr('max') > 0 ) && ( $(this).val() > $(this).attr('max') ) ) {
-                $(this).val( $(this).attr('max') );
-
-                e.preventDefault();
-                return false;
-            }
-
-            return wacChange( $(this) );
-        });
-    };
-
-    wacQtyButtons = function() {
-        $(document).on('click','.qty-up',function(e){
-            console.log('Up');
-            inputQty = $(this).parent().parent().parent().find('.qty');
-            inputQty.val( function(i, oldval) { return ++oldval; });
-            inputQty.change();
-            return false;
-        });
-
-        $(document).on('click','.qty-down', function(e){
-            console.log('Down');
-            inputQty = $(this).parent().parent().parent().find('.qty');
-            inputQty.val( function(i, oldval) { return oldval > 0 ? --oldval : 0; });
-            inputQty.change();
-            return false;
-        });
-    };
-
-    //
-    // onload calls
-    //
-    wacListenChange();
-    wacQtyButtons();
-    console.log('Called Js');
-    
-    // listen when ajax cart has updated
-    $(document).on('updated_wc_div', function(){
-        
-        console.log(updated_wc_div);
-        
-        wacListenChange();
+        $.post( form.attr('action'), formData, function(resp) {
+                // ajax response
+                $('.cart-collaterals').html(resp.html);
+                
+                el_qty.closest('.cart_item').find('.product-subtotal').html(resp.price);
+                
+                $('#update_cart').remove();
+                $('#is_wac_ajax').remove();
+                $('#cart_item_key').remove();
+                
+                $("input[name='update_cart']").val(resp.update_label).prop('disabled', false);
+            },
+            'json'
+        );
     });
+    
 });

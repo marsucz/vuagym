@@ -61,7 +61,7 @@ function theme_register_scripts() {
     $php_array = array( 
         'ajax' => admin_url( 'admin-ajax.php' ) 
     );
-    wp_localize_script( 'mypos-js', 'global', $php_array );
+    wp_localize_script( 'global', 'global', $php_array );
  
 }
 
