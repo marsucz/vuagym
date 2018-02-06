@@ -271,46 +271,92 @@ add_action( 'wp_ajax_check_quantity_checkout', 'ja_ajax_check_quantity_checkout'
 add_action( 'wp_ajax_nopriv_check_quantity_checkout', 'ja_ajax_check_quantity_checkout' );
 
 
-function ja_ajax_mypos_add_to_cart(){
+//function ja_ajax_mypos_add_to_cart(){
+//		
+//        //Form Input Values
+//        $item_id 		= intval($_POST['item_id']);
+//        $quantity 		= intval($_POST['quantity']);
+//
+//        //If empty return error
+//        if(!$item_id){
+//                wp_send_json(array('error' => __('Something went wrong','xoo-wsc')));
+//        }
+//
+//        //Check product type
+//        $product_type = get_post_type($item_id);
+//
+//        if($product_type == 'product_variation'){
+//                $product_id = wp_get_post_parent_id($item_id);
+//                $variation_id = $item_id;
+//                $attribute_values = wc_get_product_variation_attributes($variation_id);
+//                $cart_success = WC()->cart->add_to_cart($product_id,$quantity,$variation_id,$attribute_values );
+//        }
+//        else{
+//                $product_id = $item_id;
+//                $cart_success = WC()->cart->add_to_cart($product_id,$quantity);
+//        }
+//        
+//        
+//        $cart_item_key = $cart_success;
+//        //Successfully added to cart.
+//        if($cart_success){  // is $cart_item_key
+//            $product_data = wc_get_product( $variation_id ? $variation_id : $product_id );
+//            $product_sku = $product_data->get_sku();
+//            
+//        }
+//        else{
+//                if(wc_notice_count('error') > 0){
+//                echo wc_print_notices();
+//                }
+//        }
+//        die();
+//}
+//
+//add_action( 'wp_ajax_mypos_add_to_cart', 'ja_ajax_mypos_add_to_cart' );
+//add_action( 'wp_ajax_nopriv_mypos_add_to_cart', 'ja_ajax_mypos_add_to_cart' );
+
+function ja_ajax_mypos_update_cart() {
+    //Form Input Values
+    $cart_key 		= sanitize_text_field($_POST['cart_item_key']);
+    $cart_quantity      = intval($_POST['quantity']);
+    
+    //If empty return error
+    if(!$cart_key){
+            wp_send_json(array('error' => __('Missing Cart Key!')));
+    }
 		
-        //Form Input Values
-        $item_id 		= intval($_POST['item_id']);
-        $quantity 		= intval($_POST['quantity']);
-
-        //If empty return error
-        if(!$item_id){
-                wp_send_json(array('error' => __('Something went wrong','xoo-wsc')));
+    $cart_detail = WC()->cart->get_cart_item($cart_key);
+    $product_data = $cart_detail['data'];
+    
+    $item_id = $product_data->get_id();
+    $product_sku = $product_data->get_sku();
+    $product_name = $product_data->get_name();
+    
+    $kiotviet_api = new KiotViet_API();
+    $max_quantity = $kiotviet_api->get_product_quantity_by_ProductSKU($product_sku, $item_id);
+    
+    $return['status'] = true;
+    $return['max_quantity'] = $max_quantity;
+    $return['current_quantity'] = $cart_detail['quantity'];
+    
+    if ($cart_quantity > $max_quantity) {
+        $return['status'] = false;
+        $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $cart_detail['quantity'] . ' sản phẩm</b> này trong giỏ hàng.</span>';
+        $return['alert'] = kiotviet_UpdateCart_alert_modal($message);
+    } else {
+        $cart_success = WC()->cart->set_quantity($cart_key,$cart_quantity);
+        if (!$cart_success) {
+            $return['status'] = false;
+            $message = '<span class="alert-message"><b>Có lỗi trong quá trình cập nhật số lượng sản phẩm. Bạn vui lòng thử lại.</b></span>';
+            $return['alert'] = kiotviet_UpdateCart_alert_modal($message);
+        } else {
+            $return['new_quantity'] = $cart_quantity;
         }
-
-        //Check product type
-        $product_type = get_post_type($item_id);
-
-        if($product_type == 'product_variation'){
-                $product_id = wp_get_post_parent_id($item_id);
-                $variation_id = $item_id;
-                $attribute_values = wc_get_product_variation_attributes($variation_id);
-                $cart_success = WC()->cart->add_to_cart($product_id,$quantity,$variation_id,$attribute_values );
-        }
-        else{
-                $product_id = $item_id;
-                $cart_success = WC()->cart->add_to_cart($product_id,$quantity);
-        }
-        
-        
-        $cart_item_key = $cart_success;
-        //Successfully added to cart.
-        if($cart_success){  // is $cart_item_key
-            $product_data = wc_get_product( $variation_id ? $variation_id : $product_id );
-            $product_sku = $product_data->get_sku();
-            
-        }
-        else{
-                if(wc_notice_count('error') > 0){
-                echo wc_print_notices();
-                }
-        }
-        die();
+    }
+    
+    wp_send_json_success( $return );
+    
 }
 
-add_action( 'wp_ajax_mypos_add_to_cart', 'ja_ajax_mypos_add_to_cart' );
-add_action( 'wp_ajax_nopriv_mypos_add_to_cart', 'ja_ajax_mypos_add_to_cart' );
+add_action( 'wp_ajax_mypos_update_cart', 'ja_ajax_mypos_update_cart' );
+add_action( 'wp_ajax_nopriv_mypos_update_cart', 'ja_ajax_mypos_update_cart' );

@@ -85,3 +85,28 @@ if(!function_exists('kiotviet_checkout_alert_modal')){
         ';
     }
 }
+
+if(!function_exists('kiotviet_UpdateCart_alert_modal')){
+    function kiotviet_UpdateCart_alert_modal($message = ''){
+        return '        
+        <div class="modal fade" id="updateCartModal" tabindex="-1" role="dialog" aria-labelledby="updateCartModal" aria-hidden="true" style="padding-top: 10%;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="updateCartModal">Thông báo</h4>
+                    </div>
+                    <div class="modal-body">
+                    ' . $message . '
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-primary" onclick="window.location.href=\'' . wc_get_cart_url() . '\';">Đặt Tối Đa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        ';
+        
+    }
+}

@@ -52,25 +52,31 @@ require_once 'function_template.php';
 //
 //}
 
-add_action( 'wp_enqueue_scripts', 'theme_register_scripts', 10 );
-function theme_register_scripts() {
+add_action( 'wp_enqueue_scripts', 'global_admin_ajax' );
+function global_admin_ajax() {
 
-    wp_register_script( 'mypos-js', WC_PLUGIN_URL . 'assets/js/mypos.js', array( 'jquery' ), '1.0', true );
-    wp_register_script( 'mypos-ajaxcart', WC_PLUGIN_URL . 'assets/js/mypos_jaxcart.js', array( 'jquery' ), '1.0', true );
- 
-    $php_array = array( 
-        'ajax' => admin_url( 'admin-ajax.php' ) 
-    );
-    wp_localize_script( 'global', 'global', $php_array );
- 
-}
 
-add_action( 'wp_enqueue_scripts', 'theme_enqueue_scripts', 10, 1 );
-function theme_enqueue_scripts() {
+    
     wp_enqueue_style('mypos-css', WC_PLUGIN_URL . 'assets/css/mypos.css' );
+    
+    wp_register_script( 'mypos-js', WC_PLUGIN_URL . 'assets/js/mypos.js', array( 'jquery' ), '1.0', true );
     wp_enqueue_script( 'mypos-js' );
+    wp_register_script( 'mypos-ajaxcart', WC_PLUGIN_URL . 'assets/js/mypos_jaxcart.js', array( 'jquery' ), '1.0', true );
     wp_enqueue_script( 'mypos-ajaxcart' );
+    wp_localize_script(
+        'mypos-js',
+        'global',
+        array(
+                'ajax' => admin_url( 'admin-ajax.php' ),
+            )
+    );
 }
+
+//add_action( 'wp_enqueue_scripts', 'theme_enqueue_scripts', 10, 1 );
+//function theme_enqueue_scripts() {
+//    
+//    
+//}
 
 //function ja_ajax_get_productquantity() {
 //    

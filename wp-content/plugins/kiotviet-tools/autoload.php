@@ -6,9 +6,9 @@
  * and open the template in the editor.
  */
 
+require_once('includes/global_ajax.php');
 require_once('includes/function_template.php');
 require_once('includes/DbModel.php');
 require_once 'includes/helper.php';
 require_once('includes/plugin_init.php');
 require_once('includes/kiotviet_api.php');
-require_once('includes/global_ajax.php');
