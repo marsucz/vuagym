@@ -355,7 +355,9 @@ function ja_ajax_mypos_update_cart() {
             $message = '<span class="alert-message"><b>Có lỗi trong quá trình cập nhật số lượng sản phẩm. Bạn vui lòng thử lại.</b></span>';
             $return['alert'] = kiotviet_UpdateCart_alert_modal($message);
         } else {
+            $cart_detail = WC()->cart->get_cart_item($cart_key);
             $return['new_quantity'] = $cart_quantity;
+            $return['new_quantity_sess'] = $cart_detail['quantity'];
         }
     }
     

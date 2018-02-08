@@ -6,9 +6,11 @@ jQuery(document).ready(function($){
     
     $('.qty').on('change', function(){
         
-        $('input[name=update_cart]').prop('disabled', true);
-        $('.checkout-button').prop('disabled', true);
-        
+        var $form = $( '.woocommerce-cart-form' );
+
+        block( $form );
+        block( $( 'div.cart_totals' ) );
+
         console.log('Qty changed');
         
         var input_element = $(this);
@@ -16,12 +18,12 @@ jQuery(document).ready(function($){
         var matches = $(this).attr('name').match(/cart\[(\w+)\]/);
         var cart_item_key = matches[1];
         
-        updateButton = $("input[name='update_cart']");
-        updateButton.addClass('disabled')
-                    .val( 'Đang cập nhật...' );
-        
-        $("a.checkout-button.wc-forward").addClass('disabled')
-                                         .html( 'Đang cập nhật...' );
+//        updateButton = $("input[name='update_cart']");
+//        updateButton.addClass('disabled')
+//                    .val( 'Đang cập nhật...' );
+////        
+//        $("a.checkout-button.wc-forward").addClass('disabled')
+//                                         .html( 'Đang cập nhật...' );
 
         var max_qty = input_element.attr('max_quantity');
         var current_qty = input_element.attr('current_quantity');
@@ -63,22 +65,19 @@ jQuery(document).ready(function($){
                            max_quantity: max_qty
                        },
                 success: function(response,status,jqXHR){
+                    
+                    unblock( $form );
+                    unblock( $( 'div.cart_totals' ) );
 
-    //                $('input[name=update_cart]').val(update_button_text);
-    //                $('.checkout-button').html(checkout_button_text);
-                    $("a.checkout-button.wc-forward").removeClass('disabled')
-                                             .html(checkout_button_text);
-
-    //                $('input[name=update_cart]').prop('disabled', false);
-                    $("input[name='update_cart']").removeClass('disabled')
-                                                    .val(update_button_text);
-    //                $('.checkout-button').prop('disabled', false);
+//                    $("a.checkout-button.wc-forward").removeClass('disabled')
+//                                             .html(checkout_button_text);
+//                    $("input[name='update_cart']").removeClass('disabled')
+//                                                    .val(update_button_text);
 
                     console.log(response);
 
                     input_element.attr('max_quantity', response.data.max_quantity);
                     
-
                     if (response.data.status === false) {
                         $('#main-content').append(response.data.alert);
                         $('#updateCartModal').modal('show');
@@ -149,5 +148,41 @@ jQuery(document).ready(function($){
         }
         return false;
     });
+    
+    /**
+     * Check if a node is blocked for processing.
+     *
+     * @param {JQuery Object} $node
+     * @return {bool} True if the DOM Element is UI Blocked, false if not.
+     */
+    var is_blocked = function( $node ) {
+            return $node.is( '.processing' ) || $node.parents( '.processing' ).length;
+    };
+
+    /**
+     * Block a node visually for processing.
+     *
+     * @param {JQuery Object} $node
+     */
+    var block = function( $node ) {
+            if ( ! is_blocked( $node ) ) {
+                    $node.addClass( 'processing' ).block( {
+                            message: null,
+                            overlayCSS: {
+                                    background: '#fff',
+                                    opacity: 0.6
+                            }
+                    } );
+            }
+    };
+
+    /**
+     * Unblock a node after processing is complete.
+     *
+     * @param {JQuery Object} $node
+     */
+    var unblock = function( $node ) {
+            $node.removeClass( 'processing' ).unblock();
+    };
     
 });
