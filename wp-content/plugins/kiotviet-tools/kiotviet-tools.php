@@ -21,16 +21,6 @@ if (!defined('WC_PLUGIN_URL')) {
     define('WC_PLUGIN_URL', plugin_dir_url(__FILE__));
 }
 
-// Define WC_PLUGIN_FILE.
-if (!defined('MAX_QUANTITY')) {
-    define('MAX_QUANTITY', 250);
-}
-
-// Define WC_PLUGIN_FILE.
-if (!defined('CUSTOM_QUANTITY_PREORDER')) {
-    define('CUSTOM_QUANTITY_PREORDER', 150);
-}
-
 require_once('autoload.php');
 require_once('includes/add_to_cart.php');
 
@@ -42,6 +32,10 @@ function kiotviet_tools_plugin_init() {
     add_action('admin_menu', 'kiotviet_tools_admin_menu');
     add_action('login_init', 'send_frame_options_header', 10, 0);
     add_action('admin_init', 'send_frame_options_header', 10, 0);
+    
+    add_option('mypos_enabled', 1);
+    add_option('mypos_max_quantity', 250);
+    add_option('preorder_max_quantity', 150);
 }
 
 function kiotviet_tools_admin_menu() {
@@ -79,6 +73,12 @@ function function_testing_page() {
 
 function function_mypos_options_page() {
     
+    if (!empty($_POST['mypos-enabled'])) {
+        update_option('mypos_enabled', $_POST['mypos-enabled']);
+        update_option('mypos_max_quantity', $_POST['mypos-max-quantity']);
+        update_option('preorder_max_quantity', $_POST['preorder-max-quantity']);
+    }
+    
     load_assets_page_options();
     
     echo '<div class="wrap"><div class="row">
@@ -90,22 +90,28 @@ function function_mypos_options_page() {
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <form role="form">
+                                    <form role="form" method="POST">
                                         <div class="form-group">
                                             <label>Bật/Tắt Plugin</label>
                                             <p class="help-block">Bật tắt các chức năng: add-to-cart/cart-modify/checkout</p>
-                                            <select class="form-control" required>
-                                                <option value="1">Bật</option>
-                                                <option value="0">Tắt</option>
-                                            </select>
+                                            <select class="form-control" id="mypos-enabled" name="mypos-enabled" required>';
+                                            if (get_option('mypos_enabled')) {
+                                                echo '<option value="1" selected>Bật</option>
+                                                <option value="0">Tắt</option>';
+                                            } else {
+                                                echo '<option value="1">Bật</option>
+                                                <option value="0" selected>Tắt</option>';
+                                            }
+                                                
+                                            echo '</select>
                                         </div>
                                         <div class="form-group">
                                             <label>Số lượng SP Tối đa khi Pre-Order</label>
-                                            <input class="form-control" type="number" required>
+                                            <input class="form-control" type="number" id="preorder-max-quantity" name="preorder-max-quantity" value="' . get_option('preorder_max_quantity') . '" required>
                                         </div>
                                         <div class="form-group">
                                             <label>Số lượng SP Tối đa khi không tồn tại Mã SP</label>
-                                            <input class="form-control" type="number" required>
+                                            <input class="form-control" type="number" id="mypos-max-quantity" name="mypos-max-quantity" value="' . get_option('mypos_max_quantity') . '" required>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Lưu Cài Đặt</button>
                                         <button type="reset" class="btn btn-default">Nhập Lại</button>

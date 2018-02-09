@@ -36,13 +36,13 @@ class KiotViet_API {
                 $log_text = "SKU: {$product_sku} not exists on KiotViet or You haven't updated the database.";
                 write_logs($log_file, $log_text);
             }
-            $result = MAX_QUANTITY;
+            $result = get_option('mypos_max_quantity');
         } else {
             
             if ($item_id != 0) {
                 $preOder_status = kiotViet_get_preOrder_status($item_id);
                 if ($preOder_status == 1) { // Sap co hang
-                    $result = CUSTOM_QUANTITY_PREORDER;
+                    $result = get_option('preorder_max_quantity');
                 } else {
                     $result = $this->get_product_quantity_byKiotvietProductID($product[0]['product_id']);
                 }
@@ -67,7 +67,7 @@ class KiotViet_API {
                 }
             }
         } else {
-            $quality = MAX_QUANTITY;
+            $quality = get_option('mypos_max_quantity');
         }
 
         return $quality;
