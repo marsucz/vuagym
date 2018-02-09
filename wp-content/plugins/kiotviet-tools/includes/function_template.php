@@ -87,8 +87,8 @@ if(!function_exists('kiotviet_checkout_alert_modal')){
 }
 
 if(!function_exists('kiotviet_UpdateCart_alert_modal')){
-    function kiotviet_UpdateCart_alert_modal($message = ''){
-        return '        
+    function kiotviet_UpdateCart_alert_modal($message = '', $cart_item_key = ''){
+        $result = '        
         <div class="modal fade" id="updateCartModal" tabindex="-1" role="dialog" aria-labelledby="updateCartModal" aria-hidden="true" style="padding-top: 10%;">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -100,13 +100,15 @@ if(!function_exists('kiotviet_UpdateCart_alert_modal')){
                     ' . $message . '
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                        <button type="button" class="btn btn-primary" onclick="window.location.href=\'' . wc_get_cart_url() . '\';">Đặt Tối Đa</button>
-                    </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>';
+        if (!empty($cart_item_key)) {
+            $result .=  '<button type="button" class="btn btn-primary" id="setMaxQuantity">Đặt Tối Đa</button>';
+        }
+        $result .= '</div>
                 </div>
             </div>
         </div>
         ';
-        
+        return $result;
     }
 }

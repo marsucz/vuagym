@@ -357,9 +357,14 @@ function ja_ajax_mypos_update_cart() {
         } else {
             $cart_detail = WC()->cart->get_cart_item($cart_key);
             $return['new_quantity'] = $cart_quantity;
-            $return['new_quantity_sess'] = $cart_detail['quantity'];
+            $return['item_totalprice'] = WC()->cart->get_product_subtotal($product_data, $cart_quantity);
+            
+            $return['cart_subtotal'] = WC()->cart->get_cart_subtotal();
+            $return['cart_total'] = WC()->cart->get_cart_total();
         }
     }
+    
+    
     
     wp_send_json_success( $return );
     
