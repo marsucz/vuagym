@@ -143,7 +143,8 @@ function ja_ajax_check_quantity_cart(){
                 $return['status'] = 1;
             }
             
-            if ($return['current_quantity'] !== 0 && $return['current_quantity'] > $max_quantity) {
+//            if ($return['current_quantity'] !== 0 && $return['current_quantity'] > $max_quantity) {
+        if ($return['current_quantity'] !== 0){
                 $mark_red = true;
             } else {
                 $mark_red = false;

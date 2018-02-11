@@ -18,7 +18,7 @@ function write_logs($file_name, $text) {
 
 if(!function_exists('kiotviet_addToCart_alert_message')){
     function kiotviet_addToCart_alert_message($message = '') {
-    return '  <div id="alert-box" class="alert alert-danger" style="display:none;">
+    return '  <div id="alert-box" class="alert alert-danger alert-box" style="display:none;">
                 <button id="hide-alert" type="button" class="close">×</button>
                 ' . $message . '
             </div>';
@@ -27,7 +27,7 @@ if(!function_exists('kiotviet_addToCart_alert_message')){
 
 if(!function_exists('kiotviet_addToCart_success_message')){
     function kiotviet_addToCart_success_message($message = '') {
-    return '  <div id="alert-box" class="alert alert-success" style="display:none;">
+    return '  <div id="alert-box" class="alert alert-success alert-box" style="display:none;">
                 <button id="hide-alert" type="button" class="close">×</button>
                 ' . $message . '
             </div>';

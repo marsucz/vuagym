@@ -59,14 +59,14 @@ jQuery(document).ready(function($) {
        
     });
     
-    $('.product-detail-content').on('click', '#alert-box', function() {
-        $('#alert-box').fadeOut(500, function() { $('#alert-box').remove(); });
+    $('.product-detail-content').on('click', '.alert-box', function() {
+        $('.alert-box').fadeOut(500, function() { $('.alert-box').remove(); });
     });
     
     
     function remove_add_to_cart_items() {
-        if ($('#alert-box').length) {
-            $('#alert-box').fadeOut(500, function() { $('#alert-box').remove(); });
+        if ($('.alert-box').length) {
+            $('.alert-box').fadeOut(500, function() { $('.alert-box').remove(); });
         }
         if ($('#addToCartModal').length) {
             $('#addToCartModal').remove();
@@ -110,7 +110,7 @@ jQuery(document).ready(function($) {
                 $('#main-content').append(response.data.popup);
                 
 //                atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-cross xoo-wsc-icon-atc');
-                $('#alert-box').fadeIn();
+                $('.alert-box').fadeIn();
                 $('#addToCartModal').modal('show');
                 
                 
@@ -128,10 +128,10 @@ jQuery(document).ready(function($) {
 //                var atc_btn  = $('.single_add_to_cart_button');
 //                if (result === true) {
 //                    add_to_cart(atc_btn,item_id,quantity);//Ajax add to cart
-////                    $('#alert-box').fadeOut();
+////                    $('.alert-box').fadeOut();
 //                } else {
 //                    atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-cross xoo-wsc-icon-atc');
-//                    $('#alert-box').fadeIn();
+//                    $('.alert-box').fadeIn();
 //                    $('#addToCartModal').modal('show');
 //                }
             },
