@@ -1,17 +1,5 @@
 <?php
 
-if (!defined('KV_RETAILER')) {
-    define('KV_RETAILER', 'vuagymtest');
-}
-
-if (!defined('KV_CLIENT_ID')) {
-    define('KV_CLIENT_ID', '619e8b7f-3b68-4635-8760-bdb90c1d8a66');
-}
-
-if (!defined('KV_CLIENT_SECRET')) {
-    define('KV_CLIENT_SECRET', 'D0AFE74F413FB339B8F8F81C71AEE7B460E20A0F');
-}
-
 include_once 'DbModel.php';
 include_once 'function.php';
 include_once 'function_template.php';
@@ -113,7 +101,7 @@ class KiotViet_API {
 
     }
 
-    public function get_all_products() {
+    public function get_count_all_products() {
 
         set_time_limit(0);
 
@@ -144,6 +132,56 @@ class KiotViet_API {
 
         return $count;
     }
+    
+    public function get_all_products() {
+
+        set_time_limit(0);
+
+        $dbModel = new DbModel();
+
+        $url = 'https://public.kiotapi.com/products';
+
+        // Get example data to get number of products
+        $data['pageSize'] = 1;
+        $data['currentItem'] = 0;
+        $data['includeInventory'] = true;
+        $data['includePricebook'] = true;
+        $result = $this->api_call($url, $data);
+
+        $data['pageSize'] = 20;
+        $number_products = $result['total'];
+        $number_pages = (int) ($number_products / $data['pageSize']) + 1;
+
+        $count = 0;
+        
+        $all_products = array();
+        
+        for ($i=0; $i<=$number_pages; $i++) {
+            $data['currentItem'] = $data['pageSize'] * $i;
+            $result = $this->api_call($url, $data);
+            
+            
+            foreach ($result['data'] as $product) {
+                $single_product = array();
+                $single_product['id'] = $product['id'];
+                $single_product['sku'] = $product['code'];
+                $single_product['name'] = $product['name'];
+                $single_product['price'] = $product['basePrice'];
+                
+                $quantity = 0;
+                if (isset($product['inventories']) && count($product['inventories']) > 0) {
+                    foreach ($product['inventories'] as $inventory) {
+                        $quantity += (int)$inventory['onHand'];
+                    }
+                }
+                $single_product['quantity'] = $quantity;
+                $all_products[] = $single_product;
+            }
+            
+        }
+
+        return $all_products;
+    }
 
     public function api_call($url, $data = []) {
 
@@ -164,7 +202,7 @@ class KiotViet_API {
          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
          CURLOPT_CUSTOMREQUEST => "GET",
          CURLOPT_HTTPHEADER => array(
-           "Retailer: " . KV_RETAILER,
+           "Retailer: " . get_option('kiotviet_retailer'),
            "Authorization: Bearer " . $access_token
          ),
         ));
@@ -194,8 +232,8 @@ class KiotViet_API {
         $data = array(
             'scopes' => 'PublicApi.Access',
             'grant_type' => 'client_credentials',
-            'client_id' => KV_CLIENT_ID,
-            'client_secret' => KV_CLIENT_SECRET
+            'client_id' => get_option('kiotviet_client_id'),
+            'client_secret' => get_option('kiotviet_client_secret')
         );
 
         $post_string = http_build_query($data, '', '&');

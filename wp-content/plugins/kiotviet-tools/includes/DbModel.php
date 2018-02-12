@@ -32,7 +32,7 @@ class DbModel {
         
     }
     
-    public function kiotviet_get_all_products() {
+    public function kiotviet_get_count_all_products() {
         
         $query = '  SELECT * FROM ' . DB_KIOTVIET_PRODUCTS;
         

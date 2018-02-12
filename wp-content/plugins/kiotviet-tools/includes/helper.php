@@ -6,6 +6,29 @@
  * and open the template in the editor.
  */
 
+function load_assets_compare_manual() {
+    
+    load_assets_common_admin();
+    load_assets_dataTable();
+    
+    wp_enqueue_script(
+		'global',
+		WC_PLUGIN_URL . 'assets/admin/js/compare_manual.js',
+		array( 'jquery' ),
+		'1.0.0',
+		true
+    );
+    
+    wp_localize_script(
+		'global',
+		'global',
+		array(
+			'ajax' => admin_url( 'admin-ajax.php' ),
+		)
+	);
+    
+}
+
 function load_assets_match_sku() {
     
     load_assets_common_admin();
