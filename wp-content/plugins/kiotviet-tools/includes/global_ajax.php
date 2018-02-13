@@ -55,8 +55,6 @@ require_once 'function_template.php';
 add_action( 'wp_enqueue_scripts', 'global_admin_ajax' );
 function global_admin_ajax() {
 
-
-    
     wp_enqueue_style('mypos-css', WC_PLUGIN_URL . 'assets/css/mypos.css' );
     
     wp_register_script( 'mypos-js', WC_PLUGIN_URL . 'assets/js/mypos.js', array( 'jquery' ), '1.0', true );

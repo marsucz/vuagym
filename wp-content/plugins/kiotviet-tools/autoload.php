@@ -7,6 +7,7 @@
  */
 
 require_once('includes/global_ajax.php');
+require_once('includes/ajax_function.php');
 require_once('includes/function_template.php');
 require_once('includes/DbModel.php');
 require_once 'includes/helper.php';

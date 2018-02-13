@@ -175,6 +175,11 @@ class KiotViet_API {
                     }
                 }
                 $single_product['quantity'] = $quantity;
+                if ($quantity > 0) {
+                    $single_product['stock'] = true;
+                } else {
+                    $single_product['stock'] = false;
+                }
                 $all_products[] = $single_product;
             }
             
