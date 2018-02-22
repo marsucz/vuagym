@@ -55,19 +55,38 @@ require_once 'function_template.php';
 add_action( 'wp_enqueue_scripts', 'global_admin_ajax' );
 function global_admin_ajax() {
 
-    wp_enqueue_style('mypos-css', WC_PLUGIN_URL . 'assets/css/mypos.css' );
-    
-    wp_register_script( 'mypos-js', WC_PLUGIN_URL . 'assets/js/mypos.js', array( 'jquery' ), '1.0', true );
-    wp_enqueue_script( 'mypos-js' );
-    wp_register_script( 'mypos-ajaxcart', WC_PLUGIN_URL . 'assets/js/mypos_jaxcart.js', array( 'jquery' ), '1.0', true );
-    wp_enqueue_script( 'mypos-ajaxcart' );
-    wp_localize_script(
-        'mypos-js',
-        'global',
-        array(
-                'ajax' => admin_url( 'admin-ajax.php' ),
-            )
-    );
+    //first check that woo exists to prevent fatal errors
+    if ( function_exists( 'is_woocommerce' ) ) {
+        
+        wp_enqueue_style('mypos-css', WC_PLUGIN_URL . 'assets/css/mypos.css' );
+        wp_register_script( 'mypos-singleproduct', WC_PLUGIN_URL . 'assets/js/mypos_singleproduct.js', array( 'jquery' ), '1.0', true );
+        wp_enqueue_script( 'mypos-singleproduct' );
+        wp_register_script( 'mypos-ajaxcart', WC_PLUGIN_URL . 'assets/js/mypos_ajaxcart.js', array( 'jquery' ), '1.0', true );
+        wp_enqueue_script( 'mypos-ajaxcart' );
+        wp_register_script( 'mypos-checkout', WC_PLUGIN_URL . 'assets/js/mypos_checkout.js', array( 'jquery' ), '1.0', true );
+        wp_enqueue_script( 'mypos-checkout' );
+
+        wp_localize_script(
+            'mypos-singleproduct',
+            'global',
+            array(
+                    'ajax' => admin_url( 'admin-ajax.php' ),
+                )
+        );
+
+        if (!is_product()) {
+            wp_dequeue_script( 'mypos-singleproduct' );
+        }
+        
+        if (!is_cart()) {
+            wp_dequeue_script( 'mypos-ajaxcart' );
+        }
+
+        if (!is_checkout()) {
+            wp_dequeue_script( 'mypos-checkout' );
+        }
+        
+    }
 }
 
 //add_action( 'wp_enqueue_scripts', 'theme_enqueue_scripts', 10, 1 );

@@ -11,3 +11,8 @@ and open the template in the editor.
 #wpwrap {
       background: lightgray;  
 }
+
+.btn-mypos {
+    display: block;
+    margin-top: 5px;
+}

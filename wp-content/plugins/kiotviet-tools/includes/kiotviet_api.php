@@ -228,6 +228,47 @@ class KiotViet_API {
         }
     }
 
+        public function api_call_put($url, $data = []) {
+
+//        if (!empty($data) && is_array($data)) {
+//            $url = $url . '?' . http_build_query($data, '', '&');
+//        } 
+        
+        $access_token = $this->get_access_token();
+        
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+         CURLOPT_URL => $url,
+         CURLOPT_RETURNTRANSFER => true,
+         CURLOPT_ENCODING => "",
+         CURLOPT_MAXREDIRS => 5,
+         CURLOPT_TIMEOUT => 5,
+         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+         CURLOPT_CUSTOMREQUEST => "PUT",
+         CURLOPT_HTTPHEADER => array(
+           "Retailer: " . get_option('kiotviet_retailer'),
+           "Authorization: Bearer " . $access_token
+         ),
+         CURLOPT_POSTFIELDS => http_build_query($data),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        
+        $result = json_decode($response, true);
+        if ($result) {
+            return $result;
+        } else {
+            $t = date('Ymd');
+            $log_file = "KiotVietAPI_Errors_{$t}.txt";
+            $log_text = "URL Get: " . $url;
+            $log_text .= "\n KiotViet not response: " . json_encode($response);
+            write_logs($log_file, $log_text);
+            return false;
+        }
+    }
+    
     public function get_access_token() {
         
         if (!empty($this->access_token)) {
@@ -279,5 +320,29 @@ class KiotViet_API {
         }
         
         return $this->access_token;
+    }
+    
+    public function set_product_price($product_id, $price) {
+
+        $url = 'https://public.kiotapi.com/products/' . trim($product_id);
+
+        $data['basePrice'] = $price;
+        
+        $result = $this->api_call_put($url, $data);
+        
+        if ($result) {
+            return $result;
+        } else {    // Double check if the response is still bad
+            
+            $t = date('Ymd');
+            $log_file = "KiotVietAPI_SetPrice_{$t}.txt";
+            $log_text = "URL Put: " . $url;
+            $log_text .= "\n Set Price Error: " . json_encode($result);
+
+            write_logs($log_file, $log_text);
+
+            return false;
+            
+        } 
     }
 }

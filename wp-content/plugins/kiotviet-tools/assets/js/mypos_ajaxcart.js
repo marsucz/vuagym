@@ -265,8 +265,3 @@ jQuery(document).ready(function($){
     
     
 });
-
-function updateMaxQuantity($test) {
-    alert($test);
-    console.log($test);
-}

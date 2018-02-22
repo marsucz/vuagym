@@ -77,14 +77,20 @@ function function_kiotviet_tools_page() {
 }
 
 function function_testing_page() {
+    $product_id = '2079945';
+    
     $api = new KiotViet_API();
     
-    $url = 'https://public.kiotapi.com/products/1234';
-    $test = $api->api_call($url);
+    $result = $api->set_product_price($product_id, 333333);
+    
+    $result = $api->get_product_info($product_id);
     
     echo '<pre>';
-    echo print_r($test);
+    echo print_r($result);
     echo '<pre>';
+    exit;
+    
+    echo $result;
     exit;
 }
 
@@ -253,6 +259,8 @@ function function_match_sku() {
 
 function function_compare_manual() {
     
+    set_time_limit(0);
+    
     load_assets_compare_manual();
     
     $dbModel = new DbModel();
@@ -293,7 +301,7 @@ function function_compare_manual() {
         echo '<div class="panel panel-default">
                         <div class="panel-heading">
                         <i class="fa fa-bar-chart-o fa-fw"></i>
-                            Danh sách Mã Sản Phẩm trên KiotViet
+                            Danh sách Sản Phẩm
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -364,10 +372,25 @@ function function_compare_manual() {
             } else {
                 $woo_stock_status = "Hết hàng";
             }
-                
-            echo "<td>{$product['woo']['name']}-Mã:<b>{$product['woo']['sku']}</b>-TT:{$woo_stock_status}-SL:{$product['woo']['quantity']}-Giá:{$product['woo']['price']}</td>";
+            
+            $edit_link = get_permalink($product['woo']['id']);
+            echo "<td><a href='{$edit_link}'>{$product['woo']['name']}-Mã:<b>{$product['woo']['sku']}</b>-TT:{$woo_stock_status}-SL:{$product['woo']['quantity']}-Giá:{$product['woo']['price']}</a></td>";
             echo '<td>';
-            echo '  <button id="updateInStock_' . $product['woo']['id'] . '" type="button" class="btn btn-success" title="Cập nhật có hàng trên Web cho sản phẩm này" onclick="updateInStock('. $product['woo']['id'] .');"><i class="fa fa-tasks"></i>  Cập nhật có hàng</button>';
+            
+            if ($product['kv']['stock'] && !$product['woo']['stock']) {
+                echo '  <button id="updateInStock_' . $product['woo']['id'] . '" type="button" class="btn btn-mypos btn-success" title="Cập nhật có hàng trên Web cho sản phẩm này" onclick="updateInStock('. $product['woo']['id'] .');"><i class="fa fa-tasks"></i>  Cập nhật có hàng</button>';
+            }
+            
+            if (!$product['kv']['stock'] && $product['woo']['stock']) {
+                echo '  <button id="updateOutOfStock_' . $product['woo']['id'] . '" type="button" class="btn btn-mypos btn-danger" title="Cập nhật hết hàng trên Web cho sản phẩm này" onclick="updateOutOfStock('. $product['woo']['id'] .');"><i class="fa fa-tasks"></i>  Cập nhật hết hàng</button>';
+            }
+            
+            if ($product['kv']['price'] != $product['woo']['price']) {
+                echo '  <button id="updateWebPrice_' . $product['woo']['id'] . '" type="button" class="btn btn-mypos btn-info" title="Cập nhật giá trên Web cho sản phẩm này theo giá trên KiotViet" onclick="updateWebPrice_byKVPrice('. $product['woo']['id'] .',' . $product['kv']['price'] . ');"><i class="fa fa-anchor"></i>  Cập nhật giá Web theo KiotViet</button>';
+                echo '  <button id="updateKVPrice_' . $product['kv']['id'] . '" type="button" class="btn btn-mypos btn-warning" title="Cập nhật giá trên KiotViet cho sản phẩm này theo giá trên Web" onclick="updateKVPrice_byWebPrice('. $product['kv']['id'] .',' . $product['woo']['price'] . ');"><i class="fa fa-anchor"></i>  Cập nhật giá KiotViet theo Web</button>';
+            }
+            
+            
             echo '</td>';
             echo '</tr>';
     }
@@ -383,12 +406,12 @@ function function_compare_manual() {
                 $kv_stock_status = "Hết hàng";
             }
             
-            echo "<td>{$product['name']}-Mã:<b>{$product['sku']}</b>-TT:{$kv_stock_status}-SL:{$product['quantity']}-Giá:{$product['price']}</td>";
+            echo "<td>ID:{$product['id']}-{$product['name']}-Mã:<b>{$product['sku']}</b>-TT:{$kv_stock_status}-SL:{$product['quantity']}-Giá:{$product['price']}</td>";
             echo "<td>Không có sản phẩm</td>";
             if (empty($product['sku'])) {
                 echo '<td>Không có Mã SP</td>';
             } else {
-                echo '<td>None</td>';
+                echo '<td>Không tồn tại SP trên Web</td>';
             }
             echo '</tr>';
     }
@@ -409,7 +432,7 @@ function function_compare_manual() {
             if (empty($product['sku'])) {
                 echo '<td>Không có Mã SP</td>';
             } else {
-                echo '<td>None</td>';
+                echo '<td>Không tồn tại SP trên KiotViet</td>';
             }
             echo '</tr>';
     }
@@ -450,8 +473,8 @@ function get_woocommerce_product_list() {
                         $new_product['title'] = $product->get_title();
                         $new_product['name'] = $product->get_name();
                         $new_product['price'] = $product->get_price();
-                        $new_product['quantity'] = ($product->get_stock_quantity() == 'instock') ? true : false;
-                        $new_product['stock'] = $product->get_stock_status();
+                        $new_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
+                        $new_product['quantity'] = $product->get_stock_quantity();
                         
                 // its a simple product
                 } else {
@@ -464,8 +487,8 @@ function get_woocommerce_product_list() {
                         $new_product['title'] = $product->get_title();
                         $new_product['name'] = $product->get_name();
                         $new_product['price'] = $product->get_price();
-                        $new_product['quantity'] = ($product->get_stock_quantity() == 'instock') ? true : false;
-                        $new_product['stock'] = $product->get_stock_status();
+                        $new_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
+                        $new_product['quantity'] = $product->get_stock_quantity();
                     }
                     
                 }
