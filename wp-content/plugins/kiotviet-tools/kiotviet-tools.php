@@ -63,22 +63,31 @@ function kiotviet_tools_admin_menu() {
     //Maketing Tools
     add_menu_page('KiotViet Tools', 'KiotViet Tools', 'manage_options', 'kiotviet-tools', 'function_kiotviet_tools_page', 'dashicons-admin-multisite', 4);
     add_submenu_page('kiotviet-tools', __('KiotViet'), __('KiotViet'), 'manage_options', 'kiotviet-tools');
-    add_submenu_page('kiotviet-tools', __('Testing'), __('Testing'), 'manage_options', 'kiotviet-testing', 'function_testing_page');
+//    add_submenu_page('kiotviet-tools', __('Testing'), __('Testing'), 'manage_options', 'kiotviet-testing', 'function_testing_page');
     add_submenu_page('kiotviet-tools', __('Lấy Mã SP KiotViet'), __('Lấy Mã SP KiotViet'), 'manage_options', 'get-kiotviet-products', 'function_match_sku');
     add_submenu_page('kiotviet-tools', __('Sync KiotViet'), __('Sync KiotViet'), 'manage_options', 'kiotviet-sync', 'function_kiotviet_sync_page');
     add_submenu_page('kiotviet-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'kiotviet-options', 'function_mypos_options_page');
 }
 
 function function_kiotviet_tools_page() {
-    $product_id = '2063479';
     
-    $api = new KiotViet_API();
+    load_assets_common_admin();
     
-    $result = $api->get_product_quantity_byKiotvietProductID($product_id);
-    
-    echo $result;
-    exit;
-    
+    echo '<div class="wrap">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-plus-circle fa-fw"></i>
+                            <strong><font color="blue">KiotViet Tools</font></strong>
+                        </div>
+                        <div class="panel-body">
+                            <div class="alert alert-success">
+                                    <b>KiotViet Tools for Woocommerce:</b> Công cụ để quản lý KiotViet từ Wordpress
+                            </div>
+                        ';
+                        
+    echo '</div></div></div></div></div>';
 }
 
 function function_testing_page() {
@@ -230,10 +239,37 @@ function function_match_sku() {
             </div>';
         
     }
+    
+    if (isset($_POST['process_deleteAllProducts'])) {
+        
+        $dbModel = new DbModel();
+        
+        $result = $dbModel->kiotviet_delete_all_products_sku();
+        
+        if ($result) {
+            $count = $api->get_count_all_products();
+            
+            if ($count > 0) {
+                echo '<div class="alert alert-success">
+                        <strong> Đã xóa các mã sản phẩm không tồn tại thành công.
+                        </strong>
+                </div>';
+            } else {
+                echo '<div class="alert alert-danger">
+                        <strong> Có lỗi trong quá trình cập nhật. Vui lòng thực hiện lại.
+                        </strong>
+                </div>';
+            }
+        }
+    }
         
     echo '          <form role="form" method="post" align="center">
                                 <input type="hidden" id="process_updateAllProducts" name="process_updateAllProducts">
-                                <button type="submit" class="btn btn-success">Kết Nối Mã Sản Phẩm</button>
+                                <button type="submit" class="btn btn-success btn-mypos-width">Kết Nối Mã Sản Phẩm</button>
+                    </form>
+                    <form role="form" method="post" align="center">
+                                <input type="hidden" id="process_deleteAllProducts" name="process_deleteAllProducts">
+                                <button type="submit" class="btn btn-danger btn-mypos-width">Xóa các Mã SP không tồn tại</button>
                     </form>
                     <div class="alert alert-warning" style="margin-top: 15px; margin-bottom: 0!important">
                         Chú ý: Chỉ cần "Kết Nối Mã Sản Phẩm" khi có Mã Sản Phẩm MỚI trên KiotViet.

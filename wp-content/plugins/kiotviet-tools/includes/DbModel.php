@@ -48,6 +48,20 @@ class DbModel {
         
     }
     
+    public function kiotviet_delete_all_products_sku() {
+        
+        $query = '  TRUNCATE TABLE ' . DB_KIOTVIET_PRODUCTS;
+        
+        $result = mysqli_query($this->link, $query);
+
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+    
     public function get_productInfo_byProductCode($product_code) {
         
         $query = '  SELECT * FROM ' . DB_KIOTVIET_PRODUCTS . ' WHERE product_code = "' . $product_code . '"';
