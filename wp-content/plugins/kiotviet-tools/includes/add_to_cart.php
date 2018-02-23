@@ -234,7 +234,7 @@ function ja_ajax_check_quantity_checkout(){
             $cart_items  = WC()->cart->get_cart();
             foreach ($cart_items as $item => $product) {
                 $wc_product = $product['data'];
-//                $product_sku = $wc_product->get_sku();
+                $product_sku = $wc_product->get_sku();
                 $product_name = $wc_product->get_name();
                 $product_quantity = $product['quantity'];
                 

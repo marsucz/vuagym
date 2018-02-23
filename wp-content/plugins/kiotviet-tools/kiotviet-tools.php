@@ -393,8 +393,6 @@ function function_match_sku() {
 
 function function_kiotviet_sync_page() {
     
-    set_time_limit(0);
-    
     load_assets_sync_page();
     
     echo '<div class="wrap">';
@@ -430,6 +428,7 @@ function function_kiotviet_sync_page() {
 
 function auto_sync_kiotviet() {
     
+    ini_set('memory_limit', '-1');
     set_time_limit(3600);
     
     $file_name = 'KiotViet_autosync_' . date("d-m-Y_H-i-s") . '.csv';
@@ -648,6 +647,7 @@ function auto_sync_kiotviet() {
 
 function manual_sync_kiotviet() {
     
+    ini_set('memory_limit', '-1');
     set_time_limit(3600);
     
     $dbModel = new DbModel();
