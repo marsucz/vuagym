@@ -13,8 +13,6 @@ function ja_ajax_mypos_update_product_instock() {
 		
     $product = wc_get_product($product_id);
     
-    $product->set_date_modified();
-    
     $product->set_stock_status('instock');
     $product->save();
     

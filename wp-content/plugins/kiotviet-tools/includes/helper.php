@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-function load_assets_compare_manual() {
+function load_assets_sync_page() {
     
     load_assets_common_admin();
     load_assets_dataTable();

@@ -22,15 +22,15 @@ if (!defined('WC_PLUGIN_URL')) {
 }
 
 if (!defined('KV_RETAILER')) {
-    define('KV_RETAILER', 'vuagymtest');
+    define('KV_RETAILER', 'vuagymtest2');
 }
 
 if (!defined('KV_CLIENT_ID')) {
-    define('KV_CLIENT_ID', '619e8b7f-3b68-4635-8760-bdb90c1d8a66');
+    define('KV_CLIENT_ID', '713f68d1-ecbb-4a27-8a2a-342f94bc16c1');
 }
 
 if (!defined('KV_CLIENT_SECRET')) {
-    define('KV_CLIENT_SECRET', 'D0AFE74F413FB339B8F8F81C71AEE7B460E20A0F');
+    define('KV_CLIENT_SECRET', '76137D87B075C1417B744E71FA636FF6C91A3E94');
 }
 
 require_once('autoload.php');
@@ -45,7 +45,12 @@ function kiotviet_tools_plugin_init() {
     add_action('login_init', 'send_frame_options_header', 10, 0);
     add_action('admin_init', 'send_frame_options_header', 10, 0);
     
-    add_option('mypos_enabled', 1);
+//    add_option('mypos_enabled', 1);
+    
+    add_option('mypos_add_to_cart', 1);
+    add_option('mypos_ajax_cart', 1);
+    add_option('mypos_checkout', 1);
+    
     add_option('mypos_max_quantity', 250);
     add_option('preorder_max_quantity', 150);
     
@@ -59,8 +64,8 @@ function kiotviet_tools_admin_menu() {
     add_menu_page('KiotViet Tools', 'KiotViet Tools', 'manage_options', 'kiotviet-tools', 'function_kiotviet_tools_page', 'dashicons-admin-multisite', 4);
     add_submenu_page('kiotviet-tools', __('KiotViet'), __('KiotViet'), 'manage_options', 'kiotviet-tools');
     add_submenu_page('kiotviet-tools', __('Testing'), __('Testing'), 'manage_options', 'kiotviet-testing', 'function_testing_page');
-    add_submenu_page('kiotviet-tools', __('Kết Nối Mã Sản Phẩm KiotViet'), __('Kết Nối Mã SP KiotViet'), 'manage_options', 'get-kiotviet-products', 'function_match_sku');
-    add_submenu_page('kiotviet-tools', __('Sync KiotViet'), __('Sync KiotViet'), 'manage_options', 'kiotviet-sync', 'function_compare_manual');
+    add_submenu_page('kiotviet-tools', __('Lấy Mã SP KiotViet'), __('Lấy Mã SP KiotViet'), 'manage_options', 'get-kiotviet-products', 'function_match_sku');
+    add_submenu_page('kiotviet-tools', __('Sync KiotViet'), __('Sync KiotViet'), 'manage_options', 'kiotviet-sync', 'function_kiotviet_sync_page');
     add_submenu_page('kiotviet-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'kiotviet-options', 'function_mypos_options_page');
 }
 
@@ -96,13 +101,19 @@ function function_testing_page() {
 
 function function_mypos_options_page() {
     
-    if (!empty($_POST['mypos-enabled'])) {
-        update_option('mypos_enabled', $_POST['mypos-enabled']);
+    if (isset($_POST['mypos-add-to-cart'])) {
+//        update_option('mypos_enabled', $_POST['mypos-enabled']);
+        
+        update_option('mypos_add_to_cart', intval($_POST['mypos-add-to-cart']));
+        update_option('mypos_ajax_cart', intval($_POST['mypos-ajax-cart']));
+        update_option('mypos_checkout', intval($_POST['mypos-checkout']));
+        
         update_option('mypos_max_quantity', $_POST['mypos-max-quantity']);
         update_option('preorder_max_quantity', $_POST['preorder-max-quantity']);
         update_option('kiotviet_retailer', $_POST['kiotviet-retailer']);
         update_option('kiotviet_client_id', $_POST['kiotviet-client-id']);
         update_option('kiotviet_client_secret', $_POST['kiotviet-client-secret']);
+       
     }
     
     load_assets_page_options();
@@ -120,18 +131,40 @@ function function_mypos_options_page() {
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label>Bật/Tắt Plugin</label>
-                                                <p class="help-block">Bật tắt các chức năng: add-to-cart/cart-modify/checkout</p>
-                                                <select class="form-control" id="mypos-enabled" name="mypos-enabled" required>';
-                                                if (get_option('mypos_enabled')) {
+                                                <p class="help-block">Bật tắt chức năng: Thêm Sản Phẩm trên trang sản phẩm</p>
+                                                <select class="form-control" id="mypos-add-to-cart" name="mypos-add-to-cart" required>';
+                                                if (get_option('mypos_add_to_cart')) {
                                                     echo '<option value="1" selected>Bật</option>
                                                     <option value="0">Tắt</option>';
                                                 } else {
                                                     echo '<option value="1">Bật</option>
                                                     <option value="0" selected>Tắt</option>';
                                                 }
+                                                echo '</select>
+                                                    
+                                                <p class="help-block">Bật tắt chức năng: Tự động kiểm tra và cập nhật trên trang giỏ hàng</p>
+                                                <select class="form-control" id="mypos-ajax-cart" name="mypos-ajax-cart" required>';
+                                                if (get_option('mypos_ajax_cart')) {
+                                                    echo '<option value="1" selected>Bật</option>
+                                                    <option value="0">Tắt</option>';
+                                                } else {
+                                                    echo '<option value="1">Bật</option>
+                                                    <option value="0" selected>Tắt</option>';
+                                                }
+                                                echo '</select>
 
+                                                <p class="help-block">Bật tắt chức năng: Kiểm tra trên trang thanh toán</p>
+                                                <select class="form-control" id="mypos-checkout" name="mypos-checkout" required>';
+                                                if (get_option('mypos_checkout')) {
+                                                    echo '<option value="1" selected>Bật</option>
+                                                    <option value="0">Tắt</option>';
+                                                } else {
+                                                    echo '<option value="1">Bật</option>
+                                                    <option value="0" selected>Tắt</option>';
+                                                }
                                                 echo '</select>
                                             </div>
+                                            
                                             <div class="form-group">
                                                 <label>Số lượng SP Tối đa khi Pre-Order</label>
                                                 <input class="form-control" type="number" id="preorder-max-quantity" name="preorder-max-quantity" value="' . get_option('preorder_max_quantity') . '" required>
@@ -196,7 +229,7 @@ function function_match_sku() {
                         </strong>
             </div>';
         
-        }
+    }
         
     echo '          <form role="form" method="post" align="center">
                                 <input type="hidden" id="process_updateAllProducts" name="process_updateAllProducts">
@@ -257,14 +290,11 @@ function function_match_sku() {
     echo '</div></div></div>';
 }
 
-function function_compare_manual() {
+function function_kiotviet_sync_page() {
     
     set_time_limit(0);
     
-    load_assets_compare_manual();
-    
-    $dbModel = new DbModel();
-    $api = new KiotViet_API();
+    load_assets_sync_page();
     
     echo '<div class="wrap">';
     echo '<div class="row">
@@ -272,36 +302,262 @@ function function_compare_manual() {
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-plus-circle fa-fw"></i>
-                            <strong><font color="blue">Kết Nối Website với Mã Sản Phẩm trên KiotViet</font></strong>
+                            <strong><font color="blue">Sync KiotViet</font></strong>
                         </div>
-                        <div class="panel-body">';
-                        
-//    if (isset($_POST['process_updateAllProducts'])) {
-//        
-//        $count = $api->get_count_all_products();
-//        
-//        echo '<div class="alert alert-success">
-//                        <strong> Đã lấy mới ' . $count . ' Mã sản phẩm.
-//                        </strong>
-//            </div>';
-//        
-//        }
-        
-    echo '          <form role="form" method="post" align="center">
-                                <input type="hidden" id="process_updateAllProducts" name="process_updateAllProducts">
-                                <button type="submit" class="btn btn-success">Kết Nối Mã Sản Phẩm</button>
+                        <div class="panel-body">
+                    <form role="form" method="post" align="center">
+                                <input type="hidden" id="process_manual_sync" name="process_manual_sync">
+                                <button type="submit" class="btn btn-success btn-mypos-width">Manual Sync</button>
                     </form>
-                    <div class="alert alert-warning" style="margin-top: 15px; margin-bottom: 0!important">
-                        Chú ý: Chỉ cần "Kết Nối Mã Sản Phẩm" khi có Mã Sản Phẩm MỚI trên KiotViet.
-                    </div>';
+                    <form role="form" method="post" align="center">
+                                <input type="hidden" id="process_auto_sync" name="process_auto_sync">
+                                <button type="submit" class="btn btn-success btn-mypos-width">Auto Sync</button>
+                    </form>
+                    ';
     
     echo '</div></div></div></div>';
+    
+    if (isset($_POST['process_manual_sync'])) {
+        manual_sync_kiotviet();
+    }
+    
+    if (isset($_POST['process_auto_sync'])) {
+        auto_sync_kiotviet();
+    }
+    
+}
+
+function auto_sync_kiotviet() {
+    
+    set_time_limit(3600);
+    
+    $file_name = 'KiotViet_autosync_' . date("d-m-Y_H-i-s") . '.csv';
+    
+    
+    $file_path = WC_PLUGIN_DIR . 'logs/' . $file_name;
+    $file_url = plugin_dir_url(__FILE__) . 'logs/' . $file_name;
+    
+    $file = fopen($file_path, "w");
+    
+    $title[0] = 'STT';
+    $title[1] = 'KiotViet';
+    $title[2] = 'Web';
+    $title[3] = 'KiotViet còn hàng nhưng Web hết hàng';
+    $title[4] = 'KiotViet hết hàng nhưng Web còn hàng';
+    $title[5] = 'KiotViet có SP này nhưng Web không có';
+    $title[6] = 'Web có SP này nhưng KiotViet không có';
+    $title[7] = 'Exception';
+    
+    $title = array_map("utf8_decode", $title);
+    fputcsv($file, $title);
+    
+    $dbModel = new DbModel();
+    $api = new KiotViet_API();
+    
+    $count = 0;
+    
+    $woo_all_products = get_woocommerce_product_list();
+    $kiotviet_all_products = $api->get_all_products();
+    
+    $matched_products = array();
+    
+    foreach ($woo_all_products as $woo_key => $woo_single) {
+        $match = false;
+        $temp_prd = array();
+        foreach ($kiotviet_all_products as $kv_key => $kv_single) {
+            if ($kv_single['sku'] == $woo_single['sku']) {
+                $match = true;
+                $temp_prd['kv'] = $kiotviet_all_products[$kv_key];
+                unset($kiotviet_all_products[$kv_key]);
+                break;
+            }
+        }
+        
+        if ($match) {
+            $temp_prd['woo'] = $woo_all_products[$woo_key];
+            unset($woo_all_products[$woo_key]);
+            $matched_products[] = $temp_prd;
+        }
+    }
+    
+    foreach($matched_products as $product) {
+        
+//             Skip if have nothing to change / everything is ok
+            if ($product['kv']['stock'] == $product['woo']['stock']) {
+                continue;
+            }
+            
+            $line_product = array();
+            
+            
+            $count++;
+            $line_product[0] = $count;
+//            echo '<tr role="row" row_id="'. $count .'">';
+//            echo '<td class="sorting_1">' . $count . '</td>';
+            
+            if ($product['kv']['stock']) {
+                $kv_stock_status = "Còn hàng";
+            } else {
+                $kv_stock_status = "Hết hàng";
+            }
+            
+            $line_product[1] = "{$product['kv']['name']}-Mã:{$product['kv']['sku']}-TT:{$kv_stock_status}-SL:{$product['kv']['quantity']}-Giá:{$product['kv']['price']}";
+            
+            if ($product['woo']['stock']) {
+                $woo_stock_status = "Còn hàng";
+            } else {
+                $woo_stock_status = "Hết hàng";
+            }
+            
+            $edit_link = get_permalink($product['woo']['id']);
+            $line_product[2] = "{$product['woo']['name']}-Mã:{$product['woo']['sku']}-TT:{$woo_stock_status}-SL:{$product['woo']['quantity']}-Giá:{$product['woo']['price']}";
+//            echo '<td>';
+            
+            if ($product['kv']['stock'] && !$product['woo']['stock']) {
+                
+                $product_id = $product['woo']['id'];
+                $product_temp = wc_get_product($product_id);
+                $product_temp->set_stock_status('instock');
+                $product_temp->save();
+
+                $pre_order = new YITH_Pre_Order_Product( $product_id );
+
+                if ( 'yes' == $pre_order->get_pre_order_status() ) {
+                    $pre_order->set_pre_order_status('no');
+                }
+                
+                $line_product[3] = 'Done';
+//                echo '  <button id="updateInStock_' . $product['woo']['id'] . '" type="button" class="btn btn-mypos btn-success" title="Cập nhật có hàng trên Web cho sản phẩm này" onclick="updateInStock('. $product['woo']['id'] .');"><i class="fa fa-tasks"></i>  Cập nhật có hàng</button>';
+            } else {
+                $line_product[3] = '';
+            }
+            
+            if (!$product['kv']['stock'] && $product['woo']['stock']) {
+                $product_id = $product['woo']['id'];
+                $product_temp = wc_get_product($product_id);
+                $product_temp->set_stock_status('outofstock');
+                $product_temp->save();
+                $line_product[4] = 'Done';
+//                echo '  <button id="updateOutOfStock_' . $product['woo']['id'] . '" type="button" class="btn btn-mypos btn-danger" title="Cập nhật hết hàng trên Web cho sản phẩm này" onclick="updateOutOfStock('. $product['woo']['id'] .');"><i class="fa fa-tasks"></i>  Cập nhật hết hàng</button>';
+            } else {
+                $line_product[4] = '';
+            }
+            
+//            if ($product['kv']['price'] != $product['woo']['price']) {
+//                echo '  <button id="updateWebPrice_' . $product['woo']['id'] . '" type="button" class="btn btn-mypos btn-info" title="Cập nhật giá trên Web cho sản phẩm này theo giá trên KiotViet" onclick="updateWebPrice_byKVPrice('. $product['woo']['id'] .',' . $product['kv']['price'] . ');"><i class="fa fa-anchor"></i>  Cập nhật giá Web theo KiotViet</button>';
+//                echo '  <button id="updateKVPrice_' . $product['kv']['id'] . '" type="button" class="btn btn-mypos btn-warning" title="Cập nhật giá trên KiotViet cho sản phẩm này theo giá trên Web" onclick="updateKVPrice_byWebPrice('. $product['kv']['id'] .',' . $product['woo']['price'] . ');"><i class="fa fa-anchor"></i>  Cập nhật giá KiotViet theo Web</button>';
+//            }
+            
+            
+//            echo '</td>';
+//            echo '</tr>';
+            $line_product[5] = '';
+            $line_product[6] = '';
+            $line_product[7] = '';
+            
+            $line_product = array_map("utf8_decode", $line_product);
+            fputcsv($file, $line_product);
+            
+    }
+    
+    foreach($kiotviet_all_products as $product) {
+        
+            $line_product = array();
+        
+            $count++;
+            $line_product[0] = $count;
+//            echo '<tr role="row" row_id="'. $count .'">';
+//            echo '<td class="sorting_1">' . $count . '</td>';
+            
+            if ($product['stock']) {
+                $kv_stock_status = "Còn hàng";
+            } else {
+                $kv_stock_status = "Hết hàng";
+            }
+            
+            $line_product[1] = "ID:{$product['id']}-{$product['name']}-Mã:{$product['sku']}-TT:{$kv_stock_status}-SL:{$product['quantity']}-Giá:{$product['price']}";
+            $line_product[2] = 'X';
+            
+            $line_product[3] = '';
+            $line_product[4] = '';
+            $line_product[5] = 'Miss';
+            $line_product[6] = '';
+//            echo "<td>Không có sản phẩm</td>";
+            if (empty($product['sku'])) {
+                $line_product[7] = 'Không có Mã SP';
+            } else {
+                $line_product[7] = 'Không tồn tại SP trên Web';
+            }
+//            echo '</tr>';
+            
+            $line_product = array_map("utf8_decode", $line_product);
+            fputcsv($file, $line_product);
+    }
+    
+    
+    
+    foreach($woo_all_products as $product) {
+            $count++;
+            $line_product[0] = $count;
+            
+            if ($product['stock']) {
+                $woo_stock_status = "Còn hàng";
+            } else {
+                $woo_stock_status = "Hết hàng";
+            }
+
+            $line_product[1] = 'X';
+            
+            $line_product[2] = "{$product['name']}-Mã:{$product['sku']}-TT:{$woo_stock_status}-SL:{$product['quantity']}-Giá:{$product['price']}";
+            
+            $line_product[3] = '';
+            $line_product[4] = '';
+            $line_product[5] = '';
+            $line_product[6] = 'Miss';
+            
+            if (empty($product['sku'])) {
+                $line_product[7] = 'Không có Mã SP';
+            } else {
+                $line_product[7] = 'Không tồn tại SP trên KiotViet';
+            }
+            
+            $line_product = array_map("utf8_decode", $line_product);
+            fputcsv($file, $line_product);
+    }
+    
+    fclose($file);
+    
+    
+    echo '<div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-plus-circle fa-fw"></i>
+                            <strong><font color="blue">Sync Hoàn Tất!</font></strong>
+                        </div>
+                        <div class="panel-body">
+                            <div class="alert alert-success">
+                                    Quá trình Sync hoàn tất, bạn có thể tải về báo cáo <a href="'. $file_url .'" class="alert-link">tại đây</a>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>';
+}
+
+function manual_sync_kiotviet() {
+    
+    set_time_limit(3600);
+    
+    $dbModel = new DbModel();
+    $api = new KiotViet_API();
+    
         echo '<div class="row"> 
             <div class="col-lg-12">';
         echo '<div class="panel panel-default">
                         <div class="panel-heading">
                         <i class="fa fa-bar-chart-o fa-fw"></i>
-                            Danh sách Sản Phẩm
+                            Manual Sync: Danh sách Sản Phẩm Lỗi
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -348,13 +604,14 @@ function function_compare_manual() {
         }
     }
     
-//    echo '<pre>';
-//    print_r($matched_products);
-//    echo '</pre>';
-//    exit;
-    
-    
     foreach($matched_products as $product) {
+        
+//             Skip if have nothing to change / everything is ok
+            if (($product['kv']['stock'] == $product['woo']['stock']) 
+                && ($product['kv']['price'] == $product['woo']['price'])) {
+                continue;
+            }   
+        
             $count++;
             echo '<tr role="row" row_id="'. $count .'">';
             echo '<td class="sorting_1">' . $count . '</td>';

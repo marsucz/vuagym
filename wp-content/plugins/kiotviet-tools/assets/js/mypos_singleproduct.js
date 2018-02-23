@@ -43,9 +43,6 @@ jQuery(document).ready(function($) {
                 
                 console.log(response);
                 
-                console.log(response.data.status);
-                console.log(response.data.status == 2);
-                
                 if (response.data.status == 2) {
                     atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-checkmark xoo-wsc-icon-atc');
                 } else {
@@ -59,10 +56,6 @@ jQuery(document).ready(function($) {
 //                atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-cross xoo-wsc-icon-atc');
                 $('.alert-box').fadeIn();
                 $('#addToCartModal').modal('show');
-                
-                
-                
-                
                 
 //                if (response.data.status == 1) {
 //                    result = true;
@@ -83,34 +76,31 @@ jQuery(document).ready(function($) {
 //                }
             },
             error: function(response) {
-                
                 atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-checkmark xoo-wsc-icon-atc');
-                
                 console.log(response);
-                result = false;
             }
         });
         
     }
     
     //Add to cart function
-    function add_to_cart(atc_btn,item_id,quantity){
-        $.ajax({
-            url: global.ajax,
-            type: 'POST',
-            data: {action: 'mypos_add_to_cart',
-                       item_id: item_id,
-                       quantity: quantity},
-            success: function(response,status,jqXHR){
-                
-                    console.log(response);
-                
-                    atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-checkmark xoo-wsc-icon-atc');
-                    toggle_sidecart();
-                    on_cart_success(response);
-            }
-        })
-    }
+//    function add_to_cart(atc_btn,item_id,quantity){
+//        $.ajax({
+//            url: global.ajax,
+//            type: 'POST',
+//            data: {action: 'mypos_add_to_cart',
+//                       item_id: item_id,
+//                       quantity: quantity},
+//            success: function(response,status,jqXHR){
+//                
+//                    console.log(response);
+//                
+//                    atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-checkmark xoo-wsc-icon-atc');
+//                    toggle_sidecart();
+//                    on_cart_success(response);
+//            }
+//        })
+//    }
 
     $('.single_add_to_cart_button').click(function(e) {
         e.preventDefault();
@@ -145,55 +135,6 @@ jQuery(document).ready(function($) {
         check_quantity_on_kiotviet(item_id, quantity);
         
     });
-    
-        //Toggle Side Cart
-    function toggle_sidecart(){
-        $('.xoo-wsc-modal , body').toggleClass('xoo-wsc-active');
-    }
-    
-    function on_cart_success(response){
-        $('.xoo-wsc-content').html(response.cart_markup);
-        $('.xoo-wsc-items-count').html(response.items_count);
-        content_height();
-        refresh_ajax_fragm(response.ajax_fragm);
-    }
-    
-    //Refresh ajax fragments
-    function refresh_ajax_fragm(ajax_fragm){
-            var fragments = ajax_fragm.fragments;
-            var cart_hash = ajax_fragm.cart_hash;
-            var cart_html = ajax_fragm.fragments["div.widget_shopping_cart_content"];
-            $('.woofc-trigger').css('transform','scale(1)');
-            $('.shopping-cart-inner').html(cart_html);
-            var cart_count = $('.cart_list:first').find('li').length;
-            $('.shopping-cart span.counter , ul.woofc-count li').html(cart_count);
-    }
-    
-    //Set Cart content height
-    function content_height(){
-        var header = $('.xoo-wsc-header').outerHeight(); 
-        var footer = $('.xoo-wsc-footer').outerHeight();
-        var screen = $(window).height();
-        $('.xoo-wsc-body').outerHeight(screen-(header+footer));
-    };
-    
-    
-//    $('.product-quantity').on('click','.qty-up', function(e){
-//        e.preventDefault();
-//        console.log($(this));
-//        return false;
-//        
-////        inputQty = $(this).parent().parent().parent().find('.qty');
-////        inputQty.val( function(i, oldval) { return ++oldval; });
-////        inputQty.change();
-////        return false;
-//    });
-//
-//    $('.product-quantity').on('click','.qty-down', function(e){
-//        e.preventDefault();
-//        console.log($(this));
-//        return false;
-//    });
     
 });
 

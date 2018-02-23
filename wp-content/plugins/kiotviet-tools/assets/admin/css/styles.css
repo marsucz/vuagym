@@ -16,3 +16,8 @@ and open the template in the editor.
     display: block;
     margin-top: 5px;
 }
+
+.btn-mypos-width {
+    width: 80%;
+    margin-top: 5px;
+}
