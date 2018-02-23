@@ -35,7 +35,9 @@ if (!defined('KV_CLIENT_SECRET')) {
 
 require_once('autoload.php');
 require_once('includes/add_to_cart.php');
-
+require 'vendor/autoload.php';
+use Plivo\RestClient;
+    
 add_action('plugins_loaded', 'kiotviet_tools_plugin_init');
 
 register_activation_hook(__FILE__, 'kiotviet_product_create_db');
@@ -64,6 +66,7 @@ function kiotviet_tools_admin_menu() {
     add_menu_page('KiotViet Tools', 'KiotViet Tools', 'manage_options', 'kiotviet-tools', 'function_kiotviet_tools_page', 'dashicons-admin-multisite', 4);
     add_submenu_page('kiotviet-tools', __('KiotViet'), __('KiotViet'), 'manage_options', 'kiotviet-tools');
 //    add_submenu_page('kiotviet-tools', __('Testing'), __('Testing'), 'manage_options', 'kiotviet-testing', 'function_testing_page');
+    add_submenu_page('kiotviet-tools', __('Send SMS'), __('Send SMS'), 'manage_options', 'mypos-single-sms', 'send_single_sms_page');
     add_submenu_page('kiotviet-tools', __('Lấy Mã SP KiotViet'), __('Lấy Mã SP KiotViet'), 'manage_options', 'get-kiotviet-products', 'function_match_sku');
     add_submenu_page('kiotviet-tools', __('Sync KiotViet'), __('Sync KiotViet'), 'manage_options', 'kiotviet-sync', 'function_kiotviet_sync_page');
     add_submenu_page('kiotviet-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'kiotviet-options', 'function_mypos_options_page');
@@ -88,6 +91,69 @@ function function_kiotviet_tools_page() {
                         ';
                         
     echo '</div></div></div></div></div>';
+}
+
+function send_single_sms_page() {
+    
+    load_assets_page_options();
+    
+    echo '<div class="wrap"><div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Gửi SMS tới SĐT bất kỳ
+                        </div>
+                        <div class="panel-body">';
+    
+    if (isset($_POST['sms-content'])) {
+        
+        try {
+            
+            $client = new RestClient("MAMDDLZJM4MZQ1N2IZMJ", "ODExNWNhMTU1MDYzNTdmMGQwYjk5OTEwODUwMDk0");
+
+            $message_created = $client->messages->create(
+                '+84965359181',
+                array($_POST['phone-number']),
+                $_POST['sms-content']
+            );
+
+        } catch (Exception $ex) {
+            echo '<div class="alert alert-danger">
+                            <strong> Có lỗi xảy ra: ' . $ex->getMessage() . '
+                            </strong>
+                </div>';
+        } finally {
+            echo '<div class="alert alert-success">
+                            <strong> Đã gửi tin nhắn thành công!
+                            </strong>
+                </div>';
+        }
+        
+    }
+
+                            echo '<div class="row">
+                                <div class="col-lg-12">
+                                    <form role="form" method="POST">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <label>Nhập SĐT kèm mã quốc gia (+84)</label>
+                                                <input class="form-control" type="number" id="phone-number" name="phone-number" value="84978126486" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Nội dung tin nhắn:</label>
+                                                <input class="form-control" type="text" id="sms-content" name="sms-content" value="" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Gửi SMS</button>
+                                            <button type="reset" class="btn btn-default">Nhập Lại</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>';
 }
 
 function function_testing_page() {
@@ -209,7 +275,6 @@ function function_mypos_options_page() {
                 </div>
             </div>
             </div>';
-    echo '';
 }
 
 function function_match_sku() {

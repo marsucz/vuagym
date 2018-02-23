@@ -52,6 +52,30 @@ function load_assets_match_sku() {
     
 }
 
+function load_assets_single_send_sms() {
+    
+    load_assets_common_admin();
+    load_assets_dataTable();
+    
+    wp_enqueue_script(
+		'global',
+		WC_PLUGIN_URL . 'assets/admin/js/page_options.js',
+		array( 'jquery' ),
+		'1.0.0',
+		true
+    );
+    
+    wp_localize_script(
+		'global',
+		'global',
+		array(
+			'ajax' => admin_url( 'admin-ajax.php' ),
+		)
+	);
+    
+}
+
+
 function load_assets_page_options() {
     
     load_assets_common_admin();
