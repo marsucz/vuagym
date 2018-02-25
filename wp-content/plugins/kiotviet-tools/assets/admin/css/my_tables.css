@@ -8,16 +8,6 @@ and open the template in the editor.
     Author     : dmtuan
 */
 
-#wpwrap {
-      background: lightgray;  
-}
+.wp-list-table .column-id { width: 5%; }
 
-.btn-mypos {
-    display: block;
-    margin-top: 5px;
-}
-
-.btn-mypos-width {
-    width: 80%;
-    margin-top: 10px;
-}
+.wp-list-table .column-edit { width: 3%; }

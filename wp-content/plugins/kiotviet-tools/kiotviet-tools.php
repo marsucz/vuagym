@@ -65,7 +65,7 @@ function kiotviet_tools_admin_menu() {
     //Maketing Tools
     add_menu_page('KiotViet Tools', 'KiotViet Tools', 'manage_options', 'kiotviet-tools', 'function_kiotviet_tools_page', 'dashicons-admin-multisite', 4);
     add_submenu_page('kiotviet-tools', __('KiotViet'), __('KiotViet'), 'manage_options', 'kiotviet-tools');
-//    add_submenu_page('kiotviet-tools', __('Testing'), __('Testing'), 'manage_options', 'kiotviet-testing', 'function_testing_page');
+    add_submenu_page('kiotviet-tools', __('Testing'), __('Testing'), 'manage_options', 'kiotviet-testing', 'function_testing_page');
     add_submenu_page('kiotviet-tools', __('Send SMS'), __('Send SMS'), 'manage_options', 'mypos-single-sms', 'send_single_sms_page');
     add_submenu_page('kiotviet-tools', __('Lấy Mã SP KiotViet'), __('Lấy Mã SP KiotViet'), 'manage_options', 'get-kiotviet-products', 'function_match_sku');
     add_submenu_page('kiotviet-tools', __('Sync KiotViet'), __('Sync KiotViet'), 'manage_options', 'kiotviet-sync', 'function_kiotviet_sync_page');
@@ -156,23 +156,7 @@ function send_single_sms_page() {
             </div>';
 }
 
-function function_testing_page() {
-    $product_id = '2079945';
-    
-    $api = new KiotViet_API();
-    
-    $result = $api->set_product_price($product_id, 333333);
-    
-    $result = $api->get_product_info($product_id);
-    
-    echo '<pre>';
-    echo print_r($result);
-    echo '<pre>';
-    exit;
-    
-    echo $result;
-    exit;
-}
+
 
 function function_mypos_options_page() {
     
@@ -405,8 +389,12 @@ function function_kiotviet_sync_page() {
                         </div>
                         <div class="panel-body">
                     <form role="form" method="post" align="center">
-                                <input type="hidden" id="process_manual_sync" name="process_manual_sync">
-                                <button type="submit" class="btn btn-success btn-mypos-width">Manual Sync</button>
+                                <input type="hidden" id="process_manual_sync_web" name="process_manual_sync_web">
+                                <button type="submit" class="btn btn-success btn-mypos-width">Manual Sync: WEB</button>
+                    </form>
+                    <form role="form" method="post" align="center">
+                                <input type="hidden" id="process_manual_sync_kiotviet" name="process_manual_sync_kiotviet">
+                                <button type="submit" class="btn btn-success btn-mypos-width">Manual Sync: KIOTVIET</button>
                     </form>
                     <form role="form" method="post" align="center">
                                 <input type="hidden" id="process_auto_sync" name="process_auto_sync">
@@ -416,7 +404,11 @@ function function_kiotviet_sync_page() {
     
     echo '</div></div></div></div>';
     
-    if (isset($_POST['process_manual_sync'])) {
+    if (isset($_POST['process_manual_sync_web'])) {
+//        manual_sync_kiotviet();
+    }
+    
+    if (isset($_POST['process_manual_sync_kiotviet'])) {
         manual_sync_kiotviet();
     }
     
@@ -428,7 +420,7 @@ function function_kiotviet_sync_page() {
 
 function auto_sync_kiotviet() {
     
-    ini_set('memory_limit', '-1');
+    //ini_set('memory_limit', '-1');
     set_time_limit(3600);
     
     $file_name = 'KiotViet_autosync_' . date("d-m-Y_H-i-s") . '.csv';
@@ -647,7 +639,7 @@ function auto_sync_kiotviet() {
 
 function manual_sync_kiotviet() {
     
-    ini_set('memory_limit', '-1');
+    //ini_set('memory_limit', '-1');
     set_time_limit(3600);
     
     $dbModel = new DbModel();
@@ -808,58 +800,469 @@ function manual_sync_kiotviet() {
     echo '</div></div></div>';
 }
 
+function manual_sync_web() {
+    
+    //ini_set('memory_limit', '-1');
+    set_time_limit(3600);
+    
+    $dbModel = new DbModel();
+    $api = new KiotViet_API();
+    
+        echo '<div class="row"> 
+            <div class="col-lg-12">';
+        echo '<div class="panel panel-default">
+                        <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i>
+                            Manual Sync: Danh sách Sản Phẩm Lỗi
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                                <div class="row">
+                            
+                            </div></div>
+                            <div class="row">
+                            <div class="col-sm-12">
+                            <table width="100%" class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline" id="dataTables-example" role="grid" aria-describedby="dataTables-example_info" style="width: 100%;">
+                               <thead>
+                                <tr role="row">
+                                   <th class="sorting_desc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" style="width: 5px;" aria-sort="descending" >STT</th>
+                                   <th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" style="width: 5px;">Cửa hàng (KiotViet)</th>
+                                   <th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" style="width: 5px;">Web (Wordpress)</th>
+                                   <th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" style="width: 5px;">Tùy Chọn</th>
+                                </tr>
+                             </thead>
+                                <tbody>';
+    
+    $count = 0;
+    
+    
+    
+    
+//    $woo_all_products = get_woocommerce_product_list();
+//    $kiotviet_all_products = $api->get_all_products();
+//    
+//    $matched_products = array();
+//    
+//    foreach ($woo_all_products as $woo_key => $woo_single) {
+//        $match = false;
+//        $temp_prd = array();
+//        foreach ($kiotviet_all_products as $kv_key => $kv_single) {
+//            if ($kv_single['sku'] == $woo_single['sku']) {
+//                $match = true;
+//                $temp_prd['kv'] = $kiotviet_all_products[$kv_key];
+//                unset($kiotviet_all_products[$kv_key]);
+//                break;
+//            }
+//        }
+//        
+//        if ($match) {
+//            $temp_prd['woo'] = $woo_all_products[$woo_key];
+//            unset($woo_all_products[$woo_key]);
+//            $matched_products[] = $temp_prd;
+//        }
+//    }
+    
+    $loop = new WP_Query( array( 'post_type' => array('product', 'product_variation'), 'posts_per_page' => -1 ) );
+    
+    // start query
+    while ( $loop->have_posts() ) : $loop->the_post();
 
-function get_woocommerce_product_list() {
-	$full_product_list = array();
-	$loop = new WP_Query( array( 'post_type' => array('product', 'product_variation'), 'posts_per_page' => -1 ) );
- 
-	while ( $loop->have_posts() ) : $loop->the_post();
-                
-                $new_product = array();
-		$theid = get_the_ID();
-                
-//		$product = new WC_Product($theid);
-                $product = wc_get_product($theid);
+            $new_product = array();
+            $theid = get_the_ID();
 
-                // its a variable product
-		if( get_post_type() == 'product_variation' ){
-//			$parent_id = wp_get_post_parent_id($theid );
-//			$product_sku = get_post_meta($theid, '_sku', true );
-//			$product_name = get_the_title( $parent_id);
-                        $new_product['id'] = $theid;
-                        $new_product['sku'] = $product->get_sku();
-                        $new_product['title'] = $product->get_title();
-                        $new_product['name'] = $product->get_name();
-                        $new_product['price'] = $product->get_price();
-                        $new_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
-                        $new_product['quantity'] = $product->get_stock_quantity();
-                        
-                // its a simple product
-                } else {
-                    //Product is a main of variations
-                    if ($product->has_child()) {
-                        
-                    } else {
-                        $new_product['id'] = $theid;
-                        $new_product['sku'] = $product->get_sku();
-                        $new_product['title'] = $product->get_title();
-                        $new_product['name'] = $product->get_name();
-                        $new_product['price'] = $product->get_price();
-                        $new_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
-                        $new_product['quantity'] = $product->get_stock_quantity();
-                    }
-                    
+            $product = get_product_info($theid);
+
+            // add product to array but don't add the parent of product variations
+            if (!empty($product)) {
+                // process
+            }
+    
+    // end query
+    endwhile; 
+    wp_reset_query();
+    
+    
+    
+    foreach($matched_products as $product) {
+        
+//             Skip if have nothing to change / everything is ok
+            if (($product['kv']['stock'] == $product['woo']['stock']) 
+                && ($product['kv']['price'] == $product['woo']['price'])) {
+                continue;
+            }   
+        
+            $count++;
+            echo '<tr role="row" row_id="'. $count .'">';
+            echo '<td class="sorting_1">' . $count . '</td>';
+            
+            if ($product['kv']['stock']) {
+                $kv_stock_status = "Còn hàng";
+            } else {
+                $kv_stock_status = "Hết hàng";
+            }
+            
+            echo "<td>{$product['kv']['name']}-Mã:<b>{$product['kv']['sku']}</b>-TT:{$kv_stock_status}-SL:{$product['kv']['quantity']}-Giá:{$product['kv']['price']}</td>";
+            
+            if ($product['woo']['stock']) {
+                $woo_stock_status = "Còn hàng";
+            } else {
+                $woo_stock_status = "Hết hàng";
+            }
+            
+            $edit_link = get_permalink($product['woo']['id']);
+            echo "<td><a href='{$edit_link}'>{$product['woo']['name']}-Mã:<b>{$product['woo']['sku']}</b>-TT:{$woo_stock_status}-SL:{$product['woo']['quantity']}-Giá:{$product['woo']['price']}</a></td>";
+            echo '<td>';
+            
+            if ($product['kv']['stock'] && !$product['woo']['stock']) {
+                echo '  <button id="updateInStock_' . $product['woo']['id'] . '" type="button" class="btn btn-mypos btn-success" title="Cập nhật có hàng trên Web cho sản phẩm này" onclick="updateInStock('. $product['woo']['id'] .');"><i class="fa fa-tasks"></i>  Cập nhật có hàng</button>';
+            }
+            
+            if (!$product['kv']['stock'] && $product['woo']['stock']) {
+                echo '  <button id="updateOutOfStock_' . $product['woo']['id'] . '" type="button" class="btn btn-mypos btn-danger" title="Cập nhật hết hàng trên Web cho sản phẩm này" onclick="updateOutOfStock('. $product['woo']['id'] .');"><i class="fa fa-tasks"></i>  Cập nhật hết hàng</button>';
+            }
+            
+            if ($product['kv']['price'] != $product['woo']['price']) {
+                echo '  <button id="updateWebPrice_' . $product['woo']['id'] . '" type="button" class="btn btn-mypos btn-info" title="Cập nhật giá trên Web cho sản phẩm này theo giá trên KiotViet" onclick="updateWebPrice_byKVPrice('. $product['woo']['id'] .',' . $product['kv']['price'] . ');"><i class="fa fa-anchor"></i>  Cập nhật giá Web theo KiotViet</button>';
+                echo '  <button id="updateKVPrice_' . $product['kv']['id'] . '" type="button" class="btn btn-mypos btn-warning" title="Cập nhật giá trên KiotViet cho sản phẩm này theo giá trên Web" onclick="updateKVPrice_byWebPrice('. $product['kv']['id'] .',' . $product['woo']['price'] . ');"><i class="fa fa-anchor"></i>  Cập nhật giá KiotViet theo Web</button>';
+            }
+            
+            
+            echo '</td>';
+            echo '</tr>';
+    }
+    
+    foreach($kiotviet_all_products as $product) {
+            $count++;
+            echo '<tr role="row" row_id="'. $count .'">';
+            echo '<td class="sorting_1">' . $count . '</td>';
+            
+            if ($product['stock']) {
+                $kv_stock_status = "Còn hàng";
+            } else {
+                $kv_stock_status = "Hết hàng";
+            }
+            
+            echo "<td>ID:{$product['id']}-{$product['name']}-Mã:<b>{$product['sku']}</b>-TT:{$kv_stock_status}-SL:{$product['quantity']}-Giá:{$product['price']}</td>";
+            echo "<td>Không có sản phẩm</td>";
+            if (empty($product['sku'])) {
+                echo '<td>Không có Mã SP</td>';
+            } else {
+                echo '<td>Không tồn tại SP trên Web</td>';
+            }
+            echo '</tr>';
+    }
+    
+    foreach($woo_all_products as $product) {
+            $count++;
+            echo '<tr role="row" row_id="'. $count .'">';
+            echo '<td class="sorting_1">' . $count . '</td>';
+            echo "<td>Không có sản phẩm</td>";
+            
+            if ($product['stock']) {
+                $woo_stock_status = "Còn hàng";
+            } else {
+                $woo_stock_status = "Hết hàng";
+            }
+
+            echo "<td>{$product['name']}-Mã:<b>{$product['sku']}</b>-TT:{$woo_stock_status}-SL:{$product['quantity']}-Giá:{$product['price']}</td>";
+            if (empty($product['sku'])) {
+                echo '<td>Không có Mã SP</td>';
+            } else {
+                echo '<td>Không tồn tại SP trên KiotViet</td>';
+            }
+            echo '</tr>';
+    }
+    
+    
+                    echo '</tbody>
+                            </table></div></div>
+                            <!-- <div class="row"><div class="col-sm-6"><div class="dataTables_info" id="dataTables-example_info" role="status" aria-live="polite">Showing 1 to 10 of 57 entries</div></div><div class="col-sm-6"><div class="dataTables_paginate paging_simple_numbers" id="dataTables-example_paginate"><ul class="pagination"><li class="paginate_button previous disabled" aria-controls="dataTables-example" tabindex="0" id="dataTables-example_previous"><a href="#">Previous</a></li><li class="paginate_button active" aria-controls="dataTables-example" tabindex="0"><a href="#">1</a></li><li class="paginate_button " aria-controls="dataTables-example" tabindex="0"><a href="#">2</a></li><li class="paginate_button " aria-controls="dataTables-example" tabindex="0"><a href="#">3</a></li><li class="paginate_button " aria-controls="dataTables-example" tabindex="0"><a href="#">4</a></li><li class="paginate_button " aria-controls="dataTables-example" tabindex="0"><a href="#">5</a></li><li class="paginate_button " aria-controls="dataTables-example" tabindex="0"><a href="#">6</a></li><li class="paginate_button next" aria-controls="dataTables-example" tabindex="0" id="dataTables-example_next"><a href="#">Next</a></li></ul></div></div></div></div> --> 
+                            <!-- /.table-responsive -->
+                            
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>';
+    
+    echo '</div></div></div>';
+}
+
+//function get_woocommerce_product_list() {
+//	$full_product_list = array();
+//	$loop = new WP_Query( array( 'post_type' => array('product', 'product_variation'), 'posts_per_page' => -1 ) );
+// 
+//	while ( $loop->have_posts() ) : $loop->the_post();
+//                
+//                $new_product = array();
+//		$theid = get_the_ID();
+//                
+//                $product = get_product_info($theid);
+//
+//        // add product to array but don't add the parent of product variations
+//        if (!empty($product)) {
+//            $full_product_list[] = $new_product;
+//        }
+//        
+//    endwhile; 
+//    wp_reset_query();
+//
+//    return $full_product_list;
+//}
+
+function get_product_info($theid) {
+    
+    $product = wc_get_product($theid);
+    $new_product = array();
+    // its a variable product
+    if( get_post_type() == 'product_variation' ){
+            $new_product['id'] = $theid;
+            $new_product['sku'] = $product->get_sku();
+            $new_product['title'] = $product->get_title();
+            $new_product['name'] = $product->get_name();
+            $new_product['price'] = $product->get_price();
+            $new_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
+            $new_product['quantity'] = $product->get_stock_quantity();
+
+    // its a simple product
+    } else {
+        //Product is a main of variations
+        if ($product->has_child()) {
+            // skip this
+        } else {
+            $new_product['id'] = $theid;
+            $new_product['sku'] = $product->get_sku();
+            $new_product['title'] = $product->get_title();
+            $new_product['name'] = $product->get_name();
+            $new_product['price'] = $product->get_price();
+            $new_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
+            $new_product['quantity'] = $product->get_stock_quantity();
+        }
+
+    }
+    
+    return $new_product;
+}
+
+function function_testing_page() {
+    
+//    $kv = new KiotViet_API();
+//    $test = $kv->get_product_info_by_productSKU('SP001176');
+//    
+//    echo '<pre>';
+//    echo print_r($test);
+//    echo '<pre>';
+//    exit;
+    
+    load_assets_manual_sync_table();
+    
+    $myListTable = new KiotViet_SyncList_Table();
+    $myListTable->prepare_items();
+    $myListTable->display();
+    
+}
+
+if( ! class_exists( 'WP_List_Table' ) ) {
+    require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+}
+
+class KiotViet_SyncList_Table extends WP_List_Table {
+    
+//    private $kv_api;
+    private $dbModel;
+    private $kv_api;    
+    
+    function __construct($args = array()) { 
+        parent::__construct($args);
+        $this->kv_api = new KiotViet_API();
+        $this->dbModel = new DbModel();
+    }
+    
+    public function prepare_items()
+    {
+        $columns = $this->get_columns();
+        $hidden = $this->get_hidden_columns();
+        $sortable = $this->get_sortable_columns();
+        
+        $perPage = 10;
+        $currentPage = $this->get_pagenum();
+        
+        $totalItems = $this->dbModel->get_count_woo_product();
+        
+        $list_product = array();
+        $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => 10, 'paged' => $currentPage ) );
+        
+        $list_product = $loop->posts;
+        
+        $this->set_pagination_args( array(
+            'total_items' => $totalItems,
+            'per_page'    => $perPage
+        ) );
+
+        $this->_column_headers = array($columns, $hidden, $sortable);
+        $this->items = $list_product;
+        
+    }
+    
+    public function single_row( $item ) {
+        
+        $prod = wc_get_product( $item->ID );
+        
+        if ( $prod && $prod->is_type( 'variable' ) && $prod->has_child() ) {
+          
+            $args = array(
+                'post_type'     => 'product_variation',
+                'post_status'   => array( 'private', 'publish' ),
+                'post_parent'   => $item->ID // 
+            );
+            
+            $variations = get_posts( $args );
+            
+            foreach ($variations as $child) {
+                if ( $child ) {
+                    echo '<tr>';
+                    $this->single_row_columns( $child );
+                    echo '</tr>';
                 }
-                
-        // add product to array but don't add the parent of product variations
-        if (!empty($new_product)) {
-            $full_product_list[] = $new_product;
+            }
+            //            $children = $prod->get_children();
+//            foreach ( $children as $child ) {
+//                $child_post = get_post( $child );
+//                if ( $child_post ) {
+//                    echo '<tr>';
+//                    $this->single_row_columns( $child_post );
+//                    echo '</tr>';
+//                }
+//            }
+        } elseif ($prod && $prod->is_type( 'simple' )) {
+            echo '<tr>';
+            $this->single_row_columns( $item );
+            echo '</tr>';
         }
         
-    endwhile; wp_reset_query();
-    // sort into alphabetical order, by title
-//    sort($full_product_list);
-    return $full_product_list;
+    }
+    
+    public function get_columns()
+    {
+        $columns = array(
+//            'no'        => 'STT',
+            'id'            => 'ID',
+            'edit'               => '<span class="dashicons dashicons-admin-generic"></span>',
+            'woo'           => 'Web (WordPress)',
+            'kv'            => 'Cửa hàng (KiotViet)',
+            'options'        => 'Tùy Chọn',
+        );
+        return $columns;
+        
+    }
+    
+    public function get_hidden_columns()
+    {
+        return array();
+    }
+    
+    public function get_sortable_columns()
+    {
+        return array();
+    }
+    
+    public function column_default( $item, $column_name )
+    {
+        $r = '';
+        
+        $product_id      = $item->ID;
+        $product         = wc_get_product( $product_id );
+        $product_type = '';
+        
+        if ($product->is_type( 'variation' )) {
+            $base_product_id = $product->get_parent_id();
+            $product_type = 'Biến thể';
+        } elseif ($product->is_type( 'simple' )) {
+            $base_product_id = $product_id;
+            $product_type = 'SP Đơn';
+        } else {
+            $base_product_id = $product_id;
+            $product_type = 'SP Cha';
+        }
+        $edit_link       = get_edit_post_link( $base_product_id );
+        
+        $new_product['sku'] = $product->get_sku();
+        $new_product['name'] = $product->get_name();
+        $new_product['price'] = $product->get_price();
+        $new_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
+        $new_product['quantity'] = $product->get_stock_quantity();
+        if ($new_product['stock']) {
+            $new_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng</span>';
+        } else {
+            $new_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng</span>';
+        }
+        
+        // KiotViet Process
+        $kv_product = array();
+        if ($new_product['sku']) {
+            
+            $kv_product = $this->kv_api->get_product_info_by_productSKU($new_product['sku']);
+            
+            if (!empty($kv_product)) {
+                if ($kv_product['stock']) {
+                    $kv_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng</span>';
+                } else {
+                    $kv_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng</span>';
+                }
+               $kv_text = "{$kv_product['name']}<br/>-Mã:<b>{$kv_product['sku']}</b>-TT:{$kv_product['stock_status']}-SL:{$kv_product['quantity']}-Giá:{$kv_product['price']}";
+            } else {
+                $kv_text = 'SP không tồn tại trên KiotViet';
+            }
+                    
+        } else {
+            $kv_text = 'Không có mã SP';
+        }
+        
+        
+        switch( $column_name ) {
+//            case 'no':
+            case 'id':
+                $r = $product_id;
+                break;
+            case 'edit':
+                $r = '<a href="' . $edit_link . '" target="_blank"><span class="dashicons dashicons-admin-generic"></span></a>';
+                break;
+            case 'woo':
+                $r = "{$product_type}: {$new_product['name']}<br/>-Mã:<b>{$new_product['sku']}</b>-TT:{$new_product['stock_status']}-SL:{$new_product['quantity']}-Giá:{$new_product['price']}";
+                break;
+            case 'kv':
+                $r = $kv_text;
+                break;
+            case 'options':
+                return $product_id;
+            default:
+                return print_r( $item, true ) ;
+        }
+        
+        return $r;
+    }
+        
+//    private function sort_data( $a, $b )
+//    {
+//        // Set defaults
+//        $orderby = 'title';
+//        $order = 'asc';
+//        // If orderby is set, use this as the sort column
+//        if(!empty($_GET['orderby']))
+//        {
+//            $orderby = $_GET['orderby'];
+//        }
+//        // If order is set use this as the order
+//        if(!empty($_GET['order']))
+//        {
+//            $order = $_GET['order'];
+//        }
+//        $result = strcmp( $a[$orderby], $b[$orderby] );
+//        if($order === 'asc')
+//        {
+//            return $result;
+//        }
+//        return -$result;
+//    }
 }
 
 ?>

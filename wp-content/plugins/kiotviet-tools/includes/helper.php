@@ -110,6 +110,26 @@ function load_assets_page_options() {
 //    wp_enqueue_style('prefix_datetime', '//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css' );
 //}
 
+function load_assets_manual_sync_table() {
+    wp_enqueue_style('my-styles', WC_PLUGIN_URL . 'assets/admin/css/my_tables.css' );
+    
+    wp_enqueue_script(
+		'global',
+		WC_PLUGIN_URL . 'assets/admin/js/manual_sync_web.js',
+		array( 'jquery' ),
+		'1.0.0',
+		true
+    );
+    
+    wp_localize_script(
+		'global',
+		'global',
+		array(
+			'ajax' => admin_url( 'admin-ajax.php' ),
+		)
+    );
+}
+
 function load_assets_common_admin() {
     
     // JS

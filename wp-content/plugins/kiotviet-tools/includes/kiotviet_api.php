@@ -8,6 +8,44 @@ class KiotViet_API {
     
     private $access_token = '';
     
+    public function get_product_info_by_productSKU($product_sku = '') {
+        $dbModel = new DbModel();
+        $single_product = array();
+        
+        if (!empty($product_sku)) {
+            $product = $dbModel->get_productInfo_byProductCode($product_sku);
+        } else {
+            return $single_product;
+        }
+        
+        if (count($product) > 0) {
+            $product_info = $this->get_product_info($product[0]['product_id']);
+            
+            if ($product_info) {
+                
+                $single_product['id'] = $product_info['id'];
+                $single_product['sku'] = $product_info['code'];
+                $single_product['name'] = isset($product_info['fullName']) ? $product_info['fullName'] : $product_info['name'];
+                $single_product['price'] = $product_info['basePrice'];
+                
+                $quantity = 0;
+                if (isset($product_info['inventories']) && count($product_info['inventories']) > 0) {
+                    foreach ($product_info['inventories'] as $inventory) {
+                        $quantity += (int)$inventory['onHand'];
+                    }
+                }
+                $single_product['quantity'] = $quantity;
+                if ($quantity > 0) {
+                    $single_product['stock'] = true;
+                } else {
+                    $single_product['stock'] = false;
+                }
+                
+            } 
+        }
+        return $single_product;
+    }
+    
     public function get_product_quantity_by_ProductSKU($product_sku, $item_id = 0) {
         $dbModel = new DbModel();
         
