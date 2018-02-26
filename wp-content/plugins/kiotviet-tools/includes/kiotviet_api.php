@@ -9,6 +9,12 @@ class KiotViet_API {
     private $access_token = '';
     
     public function get_product_info_by_productSKU($product_sku = '') {
+        
+//        $t = date('Ymd');
+//        $log_file = "CountRequest-{$t}.txt";
+//        $log_text = $product_sku;
+//        write_logs($log_file, $log_text);
+        
         $dbModel = new DbModel();
         $single_product = array();
         
@@ -43,6 +49,7 @@ class KiotViet_API {
                 
             } 
         }
+        
         return $single_product;
     }
     

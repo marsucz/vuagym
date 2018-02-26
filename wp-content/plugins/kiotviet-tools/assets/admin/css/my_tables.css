@@ -8,6 +8,56 @@ and open the template in the editor.
     Author     : dmtuan
 */
 
+.btn-mypos {
+    display: block;
+    margin-top: 5px;
+}
+
+.btn-mypos-width {
+    width: 80%;
+    margin-top: 10px;
+}
+
 .wp-list-table .column-id { width: 5%; }
 
 .wp-list-table .column-edit { width: 3%; }
+
+.btn-success {
+  color: #fff;
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+.btn-default {
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.btn-info {
+  color: #fff;
+  background-color: #5bc0de;
+  border-color: #46b8da;
+}
+
+.btn-warning {
+  color: #fff;
+  background-color: #f0ad4e;
+  border-color: #eea236;
+}
+
+.btn-danger {
+  color: #fff;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+
+.striped > tbody > :nth-child(odd) {
+    background-color: #d4d4d4;
+}

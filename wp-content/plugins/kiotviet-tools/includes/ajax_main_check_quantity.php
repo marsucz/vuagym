@@ -3,6 +3,7 @@
 require_once 'kiotviet_api.php';
 require_once 'function_template.php';
 
+
 function build_html_table_carts($item_id = '', $mark = false, $color = '') {
     $result_string = '
                 <div class="table-responsive top-buffer" style="border: 0px !important;">        
@@ -209,8 +210,6 @@ function ja_ajax_check_quantity_cart(){
 add_action( 'wp_ajax_check_quantity_cart', 'ja_ajax_check_quantity_cart' );
 add_action( 'wp_ajax_nopriv_check_quantity_cart', 'ja_ajax_check_quantity_cart' );
 
-
-
 function ja_ajax_check_quantity_checkout(){
 
         try {
@@ -271,51 +270,6 @@ function ja_ajax_check_quantity_checkout(){
 add_action( 'wp_ajax_check_quantity_checkout', 'ja_ajax_check_quantity_checkout' );
 add_action( 'wp_ajax_nopriv_check_quantity_checkout', 'ja_ajax_check_quantity_checkout' );
 
-
-//function ja_ajax_mypos_add_to_cart(){
-//		
-//        //Form Input Values
-//        $item_id 		= intval($_POST['item_id']);
-//        $quantity 		= intval($_POST['quantity']);
-//
-//        //If empty return error
-//        if(!$item_id){
-//                wp_send_json(array('error' => __('Something went wrong','xoo-wsc')));
-//        }
-//
-//        //Check product type
-//        $product_type = get_post_type($item_id);
-//
-//        if($product_type == 'product_variation'){
-//                $product_id = wp_get_post_parent_id($item_id);
-//                $variation_id = $item_id;
-//                $attribute_values = wc_get_product_variation_attributes($variation_id);
-//                $cart_success = WC()->cart->add_to_cart($product_id,$quantity,$variation_id,$attribute_values );
-//        }
-//        else{
-//                $product_id = $item_id;
-//                $cart_success = WC()->cart->add_to_cart($product_id,$quantity);
-//        }
-//        
-//        
-//        $cart_item_key = $cart_success;
-//        //Successfully added to cart.
-//        if($cart_success){  // is $cart_item_key
-//            $product_data = wc_get_product( $variation_id ? $variation_id : $product_id );
-//            $product_sku = $product_data->get_sku();
-//            
-//        }
-//        else{
-//                if(wc_notice_count('error') > 0){
-//                echo wc_print_notices();
-//                }
-//        }
-//        die();
-//}
-//
-//add_action( 'wp_ajax_mypos_add_to_cart', 'ja_ajax_mypos_add_to_cart' );
-//add_action( 'wp_ajax_nopriv_mypos_add_to_cart', 'ja_ajax_mypos_add_to_cart' );
-
 function ja_ajax_mypos_update_cart() {
     //Form Input Values
     $cart_key 		= sanitize_text_field($_POST['cart_item_key']);
@@ -373,3 +327,53 @@ function ja_ajax_mypos_update_cart() {
 
 add_action( 'wp_ajax_mypos_update_cart', 'ja_ajax_mypos_update_cart' );
 add_action( 'wp_ajax_nopriv_mypos_update_cart', 'ja_ajax_mypos_update_cart' );
+
+// Load main js 
+add_action( 'wp_enqueue_scripts', 'global_admin_ajax' );
+function global_admin_ajax() {
+    
+    $pluginLoaded = false;
+    //first check that woo exists to prevent fatal errors
+    if ( function_exists( 'is_woocommerce' ) ) {
+        
+        // Style
+        wp_register_style('mypos-css', WC_PLUGIN_URL . 'assets/css/mypos.css');
+        wp_enqueue_style('mypos-css');
+        
+        // Scripts
+        wp_register_script( 'mypos-singleproduct', WC_PLUGIN_URL . 'assets/js/mypos_singleproduct.js', array( 'jquery' ), '1.0', true );
+        wp_enqueue_script( 'mypos-singleproduct' );
+        wp_register_script( 'mypos-ajaxcart', WC_PLUGIN_URL . 'assets/js/mypos_ajaxcart.js', array( 'jquery' ), '1.0', true );
+        wp_enqueue_script( 'mypos-ajaxcart' );
+        wp_register_script( 'mypos-checkout', WC_PLUGIN_URL . 'assets/js/mypos_checkout.js', array( 'jquery' ), '1.0', true );
+        wp_enqueue_script( 'mypos-checkout' );
+
+        if (!is_product() || !get_option('mypos_add_to_cart')) {
+            $pluginLoaded = true;
+            wp_dequeue_script( 'mypos-singleproduct' );
+        }
+        
+        if (!is_cart() || !get_option('mypos_ajax_cart')) {
+            $pluginLoaded = true;
+            wp_dequeue_script( 'mypos-ajaxcart' );
+        }
+
+        if (!is_checkout() || !get_option('mypos_checkout')) {
+            $pluginLoaded = true;
+            wp_dequeue_script( 'mypos-checkout' );
+        }
+        
+        if ($pluginLoaded == false) {
+            wp_dequeue_style( 'mypos-css' );
+        }
+        
+    }
+}
+
+function my_js_variables(){
+      echo '<script type="text/javascript">';
+        echo 'var global = ' . json_encode( array("ajax" => admin_url("admin-ajax.php")) );
+      echo '</script>';
+}
+
+add_action ( 'wp_head', 'my_js_variables' );
