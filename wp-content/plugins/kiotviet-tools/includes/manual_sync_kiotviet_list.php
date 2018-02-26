@@ -67,19 +67,19 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                 $product         = wc_get_product( $product_id );
                 $product_type = '';
 
-//                if ($product->is_type( 'variation' )) {
-//                    $base_product_id = $product->get_parent_id();
-//                    $product_type = 'Biến thể';
-//                } elseif ($product->is_type( 'simple' )) {
-//                    $base_product_id = $product_id;
-//                    $product_type = 'SP Đơn';
-//                } else {
-//                    $base_product_id = $product_id;
-//                    $product_type = 'SP Cha';
-//                }
-//                $edit_link       = get_edit_post_link( $base_product_id );
-//                
-//                $new_item['woo']['edit_link'] = $edit_link;
+                if ($product->is_type( 'variation' )) {
+                    $base_product_id = $product->get_parent_id();
+                    $product_type = 'Biến thể';
+                } elseif ($product->is_type( 'simple' )) {
+                    $base_product_id = $product_id;
+                    $product_type = 'SP Đơn';
+                } else {
+                    $base_product_id = $product_id;
+                    $product_type = 'SP Cha';
+                }
+                $edit_link       = get_edit_post_link( $base_product_id );
+                
+                $new_item['woo']['edit_link'] = $edit_link;
 
                 $woo_product['id'] = $product->get_id();
                 $woo_product['sku'] = $product->get_sku();
@@ -94,7 +94,7 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                     $woo_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng</span>';
                 }
 
-                $woo_product['woo_text'] = "{$product_type}: {$woo_product['name']}<br/>-Mã:<b>{$woo_product['sku']}</b>-TT:{$woo_product['stock_status']}-SL:{$woo_product['quantity']}-Giá:{$woo_product['price']}";
+                $woo_product['woo_text'] = "[{$product_type}] {$woo_product['name']}<br/>-Mã: <b>{$woo_product['sku']}</b> -TT:{$woo_product['stock_status']}-SL:{$woo_product['quantity']}-Giá:{$woo_product['price']}";
 
             } else {
                 $woo_product['option_text'] = 'SP không tồn tại trên Web';
@@ -105,6 +105,14 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
         }
         
         $new_item['woo'] = $woo_product;
+        
+        if ($woo_product['id']) {
+            if (($new_item['kv']['stock'] == $new_item['woo']['stock']) 
+            && ($new_item['kv']['price'] == $new_item['woo']['price'])) {
+            // nothing to show options
+                return;
+            }
+        }
         
         echo '<tr>';
         $this->single_row_columns( $new_item );
@@ -150,7 +158,7 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
         } else {
             $kv_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng</span>';
         }
-        $kv_text = "{$kv_product['id']}-{$kv_product['name']}<br/>-Mã:<b>{$kv_product['sku']}</b>-TT:{$kv_product['stock_status']}-SL:{$kv_product['quantity']}-Giá:{$kv_product['price']}";
+        $kv_text = "{$kv_product['id']}-{$kv_product['name']}<br/>-Mã: <b>{$kv_product['sku']}</b> -TT:{$kv_product['stock_status']}-SL:{$kv_product['quantity']}-Giá:{$kv_product['price']}";
         
         if (empty($kv_product['sku']) || is_null($kv_product['sku'])) {
             $option_text = 'Thiếu mã SP trên KiotViet';
@@ -184,7 +192,7 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
             case 'edit':
                 if ($woo_product['id']) {
                     if (isset($woo_product['edit_link'])) {
-                        $r = '<a href="' . $edit_link . '" target="_blank"><span class="dashicons dashicons-admin-generic"></span></a>';
+                        $r = '<a href="' . $woo_product['edit_link'] . '" target="_blank"><span class="dashicons dashicons-admin-generic"></span></a>';
                     } else {
                         $r = '';
                     }

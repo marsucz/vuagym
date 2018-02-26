@@ -14,6 +14,11 @@ function ja_ajax_mypos_update_product_instock() {
     $product = wc_get_product($product_id);
     
     $product->set_stock_status('instock');
+    
+    if ('publish' !== $product->get_status()) {
+        $product->set_status('publish');
+    }
+    
     $product->save();
     
     $pre_order = new YITH_Pre_Order_Product( $product_id );
@@ -71,15 +76,15 @@ function ja_ajax_mypos_update_webprice_by_kvprice() {
     $product = wc_get_product($product_id);
     
     $sale_price = $product->get_sale_price();
-    if (empty($sale_price) || is_null($sale_price)) {
-        $product->set_price($price);
+    if ( !$sale_price || empty($sale_price) || is_null($sale_price)) {
+//        $product->set_price($price);
         $product->set_regular_price($price);
-        $product->save();
     } else {
         $product->set_sale_price($price);
-        $product->save();
     }
-
+    
+    $product->save();
+    
     $return['status'] = true;
     
     wp_send_json_success( $return );

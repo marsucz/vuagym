@@ -96,9 +96,30 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                     
                     $temp_item['kv'] = $kv_product;
                     
-                    echo '<tr>';
-                    $this->single_row_columns( $temp_item );
-                    echo '</tr>';
+                    $nothing_sync = false;
+                    
+                    if (!empty($kv_product)) {
+                        
+                        $product = wc_get_product($child->ID);
+                        
+                        $woo_product['price'] = $product->get_price();
+                        $woo_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
+                        
+                        if (($kv_product['stock'] == $woo_product['stock']) 
+                            && ($kv_product['price'] == $woo_product['price'])) {
+                            // nothing to show options
+                                $nothing_sync = true;
+                            }
+                    }
+                    
+                    if ($nothing_sync) {
+                        // nothing to sync => hide this row
+                    } else {
+                        echo '<tr>';
+                        $this->single_row_columns( $temp_item );
+                        echo '</tr>';
+                    }
+                    
                 }
             }
             
@@ -118,11 +139,30 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 
             $temp_item['kv'] = $kv_product;
             
-            echo '<tr>';
-            $this->single_row_columns( $temp_item );
-            echo '</tr>';
+            $nothing_sync = false;
+                    
+            if (!empty($kv_product)) {
+
+                $product = wc_get_product($product_id);
+
+                $woo_product['price'] = $product->get_price();
+                $woo_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
+
+                if (($kv_product['stock'] == $woo_product['stock']) 
+                    && ($kv_product['price'] == $woo_product['price'])) {
+                    // nothing to show options
+                        $nothing_sync = true;
+                    }
+            }
+
+            if ($nothing_sync) {
+                // nothing to sync => hide this row
+            } else {
+                echo '<tr>';
+                $this->single_row_columns( $temp_item );
+                echo '</tr>';
+            }
         }
-        
     }
     
     public function get_columns()
@@ -196,7 +236,7 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                 } else {
                     $kv_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng</span>';
                 }
-               $kv_text = "{$kv_product['name']}<br/>-Mã:<b>{$kv_product['sku']}</b>-TT:{$kv_product['stock_status']}-SL:{$kv_product['quantity']}-Giá:{$kv_product['price']}";
+               $kv_text = "{$kv_product['name']}<br/>-Mã: <b>{$kv_product['sku']}</b> -TT:{$kv_product['stock_status']}-SL:{$kv_product['quantity']}-Giá:{$kv_product['price']}";
             } else {
                 $option_text = 'SP không tồn tại trên KiotViet';
             }
@@ -214,7 +254,7 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                 $r = '<a href="' . $edit_link . '" target="_blank"><span class="dashicons dashicons-admin-generic"></span></a>';
                 break;
             case 'woo':
-                $r = "{$product_type}: {$woo_product['name']}<br/>-Mã:<b>{$woo_product['sku']}</b>-TT:{$woo_product['stock_status']}-SL:{$woo_product['quantity']}-Giá:{$woo_product['price']}";
+                $r = "[{$product_type}] {$woo_product['name']}<br/>-Mã: <b>{$woo_product['sku']}</b> -TT:{$woo_product['stock_status']}-SL:{$woo_product['quantity']}-Giá:{$woo_product['price']}";
                 break;
             case 'kv':
                 $r = $kv_text;

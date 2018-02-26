@@ -61,7 +61,7 @@ function kiotviet_tools_admin_menu() {
     add_menu_page('KiotViet Tools', 'KiotViet Tools', 'manage_options', 'kiotviet-tools', 'function_kiotviet_tools_page', 'dashicons-admin-multisite', 4);
     add_submenu_page('kiotviet-tools', __('KiotViet'), __('KiotViet'), 'manage_options', 'kiotviet-tools');
     
-    add_submenu_page('kiotviet-tools', __('Testing'), __('Testing'), 'manage_options', 'kiotviet-testing', 'function_testing_page');
+//    add_submenu_page('kiotviet-tools', __('Testing'), __('Testing'), 'manage_options', 'kiotviet-testing', 'function_testing_page');
     
     $manual_sync_web_page = add_submenu_page('kiotviet-tools', __('Manual Sync: Web'), __('Manual Sync: Web'), 'manage_options', 'mypos-manual-sync-web', 'function_manual_sync_web');
     add_action("load-$manual_sync_web_page", "manual_sync_page_options");
@@ -69,7 +69,7 @@ function kiotviet_tools_admin_menu() {
     $manual_sync_web_page = add_submenu_page('kiotviet-tools', __('Manual Sync: KiotViet'), __('Manual Sync: KiotViet'), 'manage_options', 'mypos-manual-sync-kiotviet', 'function_manual_sync_kiotviet');
     add_action("load-$manual_sync_web_page", "manual_sync_page_options");
             
-    add_submenu_page('kiotviet-tools', __('Sync KiotViet'), __('Sync KiotViet'), 'manage_options', 'kiotviet-sync', 'function_kiotviet_sync_page');
+//    add_submenu_page('kiotviet-tools', __('Sync KiotViet'), __('Sync KiotViet'), 'manage_options', 'kiotviet-sync', 'function_kiotviet_sync_page');
     add_submenu_page('kiotviet-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'kiotviet-options', 'function_mypos_options_page');
     add_submenu_page('kiotviet-tools', __('Lấy Mã SP KiotViet'), __('Lấy Mã SP KiotViet'), 'manage_options', 'get-kiotviet-products', 'function_get_sku_kiotviet');
     add_submenu_page('kiotviet-tools', __('Send SMS'), __('Send SMS'), 'manage_options', 'mypos-single-sms', 'send_single_sms_page');
@@ -608,16 +608,16 @@ function function_manual_sync_web() {
     
 }
 
-function function_testing_page() {
+function function_testing_page() {  
     
-    $kv = new KiotViet_API();
-    
-    $products = $kv->get_product_paged(20, 0);
-    
-    echo '<pre>';
-    print_r($products['all_products']);
-    echo '</pre>';
-    exit;
+//    $kv = new KiotViet_API();
+//    
+//    $products = $kv->get_product_paged(20, 0);
+//    
+//    echo '<pre>';
+//    print_r($products['all_products']);
+//    echo '</pre>';
+//    exit;
     
 //    $prod = wc_get_product_id_by_sku('SP000655');
 //    
@@ -625,6 +625,10 @@ function function_testing_page() {
 //    print_r($prod);
 //    echo '</pre>';
 //    exit;
+    
+    $product = wc_get_product(6547);
+    
+    echo $product->get_sale_price();
     
 }
 
