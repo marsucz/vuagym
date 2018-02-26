@@ -183,6 +183,9 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
         
         // KiotViet Process
         $kv_product = array();
+        $kv_text = '';
+        $option_text = '';
+        
         if ($woo_product['sku']) {
             
             $kv_product = $item['kv'];
@@ -195,11 +198,11 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                 }
                $kv_text = "{$kv_product['name']}<br/>-Mã:<b>{$kv_product['sku']}</b>-TT:{$kv_product['stock_status']}-SL:{$kv_product['quantity']}-Giá:{$kv_product['price']}";
             } else {
-                $kv_text = 'SP không tồn tại trên KiotViet';
+                $option_text = 'SP không tồn tại trên KiotViet';
             }
                     
         } else {
-            $kv_text = 'Không có mã SP';
+            $option_text = 'Không có mã SP';
         }
         
         
@@ -233,6 +236,8 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                         $r .= '  <button id="updateKVPrice_' . $kv_product['id'] . '" type="button" class="btn btn-mypos btn-warning" title="Cập nhật giá trên KiotViet cho sản phẩm này theo giá trên Web" onclick="updateKVPrice_byWebPrice('. $kv_product['id'] .',' . $woo_product['price'] . ');"><i class="fa fa-anchor"></i>  Cập nhật giá KiotViet theo Web</button>';
                     }
                     
+                } else {
+                    $r = $option_text;
                 }
                 
                 break;

@@ -146,7 +146,7 @@ class KiotViet_API {
 
     }
 
-    public function get_count_all_products() {
+    public function get_all_product_sku() {
 
         set_time_limit(0);
 
@@ -176,6 +176,27 @@ class KiotViet_API {
         }
 
         return $count;
+    }
+    
+    public function get_count_all_products() {
+
+        set_time_limit(0);
+
+        $dbModel = new DbModel();
+
+        $url = 'https://public.kiotapi.com/products';
+
+        // Get example data to get number of products
+        $data['pageSize'] = 1;
+        $data['currentItem'] = 0;
+        $result = $this->api_call($url, $data);
+        
+        if ($result && isset($result['total'])) {
+            return $result['total'];
+        } else {
+            return 0;
+        }
+        
     }
     
     public function get_all_products() {
@@ -210,7 +231,7 @@ class KiotViet_API {
                 $single_product = array();
                 $single_product['id'] = $product['id'];
                 $single_product['sku'] = $product['code'];
-                $single_product['name'] = $product['name'];
+                $single_product['name'] = isset($product['fullName']) ? $product['fullName'] : $product['name'];
                 $single_product['price'] = $product['basePrice'];
                 
                 $quantity = 0;
@@ -232,6 +253,93 @@ class KiotViet_API {
 
         return $all_products;
     }
+    
+    public function get_product_paged($per_page = 10, $paged = 0) {
+
+        set_time_limit(0);
+        
+        $start_time = microtime(true);
+        
+        if ($paged != 0) {
+            $paged = $paged - 1;
+        }
+        
+        $dbModel = new DbModel();
+
+        $url = 'https://public.kiotapi.com/products';
+
+        // Get example data to get number of products
+//        $data['pageSize'] = 1;
+        $data['currentItem'] = 0;
+        $data['includeInventory'] = true;
+        $data['includePricebook'] = true;
+//        $result = $this->api_call($url, $data);
+
+        $data['pageSize'] = $per_page;
+//        $number_products = $result['total'];
+//        $number_pages = (int) ($number_products / $data['pageSize']) + 1;
+
+        $count = 0;
+        
+        $all_products = array();
+        
+//        for ($i=0; $i<=$number_pages; $i++) {
+            $data['currentItem'] = $data['pageSize'] * $paged;
+            $result = $this->api_call($url, $data);
+            
+//             Try 1 more time if the request isn't response
+            if (!$result || !isset($result['data'])) {
+                $result = $this->api_call($url, $data);
+            }
+            
+//            if (!$result || !isset($result['data'])) {
+//                return $all_products;
+//            }
+            if (isset($result['data'])) {
+                
+                foreach ($result['data'] as $product) {
+                    $single_product = array();
+                    $single_product['id'] = $product['id'];
+                    $single_product['sku'] = $product['code'];
+                    $single_product['name'] = isset($product['fullName']) ? $product['fullName'] : $product['name'];
+                    $single_product['price'] = $product['basePrice'];
+
+                    $quantity = 0;
+                    if (isset($product['inventories']) && count($product['inventories']) > 0) {
+                        foreach ($product['inventories'] as $inventory) {
+                            $quantity += (int)$inventory['onHand'];
+                        }
+                    }
+                    $single_product['quantity'] = $quantity;
+                    if ($quantity > 0) {
+                        $single_product['stock'] = true;
+                    } else {
+                        $single_product['stock'] = false;
+                    }
+                    $all_products[] = $single_product;
+                }
+            
+            }
+    
+        // logs
+        $end_time = microtime(true);    
+        $time = $end_time - $start_time;
+        
+        $t = date('Ymd');
+        $log_file = "LogPaged-{$t}.txt";
+        $log_text = "{$url} During: {$time}";
+        write_logs($log_file, $log_text);
+        
+        $return['all_products'] = $all_products;
+        
+        if (isset($result['total'])) {
+            $return['total'] = $result['total'];
+        } else {
+            $return['total'] = 0;
+        }
+        
+        return $return;
+    }
 
     public function api_call($url, $data = []) {
 
@@ -246,10 +354,10 @@ class KiotViet_API {
         curl_setopt_array($curl, array(
          CURLOPT_URL => $url,
          CURLOPT_RETURNTRANSFER => true,
-         CURLOPT_ENCODING => "",
+//         CURLOPT_ENCODING => "",
          CURLOPT_MAXREDIRS => 5,
          CURLOPT_TIMEOUT => 5,
-         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
          CURLOPT_CUSTOMREQUEST => "GET",
          CURLOPT_HTTPHEADER => array(
            "Retailer: " . get_option('kiotviet_retailer'),

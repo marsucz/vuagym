@@ -13,5 +13,6 @@ require_once 'includes/helper.php';
 require_once('includes/plugin_db_init.php');
 require_once('includes/kiotviet_api.php');
 require_once('includes/manual_sync_web_list.php');
+require_once('includes/manual_sync_kiotviet_list.php');
 require_once('includes/send_sms.php');
 require_once('includes/ajax_main_check_quantity.php');

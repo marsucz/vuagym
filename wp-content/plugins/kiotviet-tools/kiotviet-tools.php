@@ -63,8 +63,11 @@ function kiotviet_tools_admin_menu() {
     
     add_submenu_page('kiotviet-tools', __('Testing'), __('Testing'), 'manage_options', 'kiotviet-testing', 'function_testing_page');
     
-    $manual_sync_page = add_submenu_page('kiotviet-tools', __('Manual Sync: Web'), __('Manual Sync: Web'), 'manage_options', 'kiotviet-manual-sync-web', 'function_manual_sync_web');
-    add_action("load-$manual_sync_page", "manual_sync_page_options");
+    $manual_sync_web_page = add_submenu_page('kiotviet-tools', __('Manual Sync: Web'), __('Manual Sync: Web'), 'manage_options', 'mypos-manual-sync-web', 'function_manual_sync_web');
+    add_action("load-$manual_sync_web_page", "manual_sync_page_options");
+    
+    $manual_sync_web_page = add_submenu_page('kiotviet-tools', __('Manual Sync: KiotViet'), __('Manual Sync: KiotViet'), 'manage_options', 'mypos-manual-sync-kiotviet', 'function_manual_sync_kiotviet');
+    add_action("load-$manual_sync_web_page", "manual_sync_page_options");
             
     add_submenu_page('kiotviet-tools', __('Sync KiotViet'), __('Sync KiotViet'), 'manage_options', 'kiotviet-sync', 'function_kiotviet_sync_page');
     add_submenu_page('kiotviet-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'kiotviet-options', 'function_mypos_options_page');
@@ -215,7 +218,7 @@ function function_get_sku_kiotviet() {
                         
 //    if (isset($_POST['process_updateAllProducts'])) {
 //        
-//        $count = $api->get_count_all_products();
+//        $count = $api->get_all_product_sku();
 //        
 //        echo '<div class="alert alert-success">
 //                        <strong> Đã lấy mới ' . $count . ' Mã sản phẩm.
@@ -231,7 +234,7 @@ function function_get_sku_kiotviet() {
         $result = $dbModel->kiotviet_delete_all_products_sku();
         
         if ($result) {
-            $count = $api->get_count_all_products();
+            $count = $api->get_all_product_sku();
             
             if ($count > 0) {
                 echo '<div class="alert alert-success">
@@ -607,12 +610,33 @@ function function_manual_sync_web() {
 
 function function_testing_page() {
     
+    $kv = new KiotViet_API();
+    
+    $products = $kv->get_product_paged(20, 0);
+    
+    echo '<pre>';
+    print_r($products['all_products']);
+    echo '</pre>';
+    exit;
+    
+//    $prod = wc_get_product_id_by_sku('SP000655');
+//    
+//    echo '<pre>';
+//    print_r($prod);
+//    echo '</pre>';
+//    exit;
+    
+}
+
+function function_manual_sync_kiotviet() {
+    
     load_assets_manual_sync_table();
     
-    echo '<div class="wrap">    
+    echo '<div class="wrap">
+        <h2>KiotViet Manual Sync: theo sản phẩm trên KiotViet</h2>
         <form method="post">';
     
-    $myListTable = new KiotViet_ManualSyncWeb_List();
+    $myListTable = new KiotViet_ManualSyncKiotViet_List();
     $myListTable->prepare_items();
     $myListTable->display();
     
