@@ -32,7 +32,7 @@ class KiotViet_API {
                 $single_product['id'] = $product_info['id'];
                 $single_product['sku'] = $product_info['code'];
                 $single_product['name'] = isset($product_info['fullName']) ? $product_info['fullName'] : $product_info['name'];
-                $single_product['price'] = $product_info['basePrice'];
+                $single_product['price'] = (int)$product_info['basePrice'];
                 
                 $quantity = 0;
                 if (isset($product_info['inventories']) && count($product_info['inventories']) > 0) {
@@ -74,7 +74,7 @@ class KiotViet_API {
             
             if ($item_id != 0) {
                 $preOder_status = kiotViet_get_preOrder_status($item_id);
-                if ($preOder_status == 1) { // Sap co hang
+                if ($preOder_status) { // Sap co hang
                     $result = get_option('preorder_max_quantity');
                 } else {
                     $result = $this->get_product_quantity_byKiotvietProductID($product[0]['product_id']);
@@ -100,7 +100,8 @@ class KiotViet_API {
                 }
             }
         } else {
-            $quality = get_option('mypos_max_quantity');
+            // manual set by user
+            $quality = get_option('mypos_error_max_quantity');
         }
 
         return $quality;

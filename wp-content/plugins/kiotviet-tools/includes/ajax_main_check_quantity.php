@@ -81,8 +81,7 @@ function ja_ajax_check_quantity_cart(){
                     $variation_id = $item_id;
                     $attribute_values = wc_get_product_variation_attributes($variation_id);
 //                    $cart_success = WC()->cart->add_to_cart($product_id,$quantity,$variation_id,$attribute_values );
-            }
-            else{
+            } else {
                     $attribute_values = array();
                     $product_id = $item_id;
 //                    $cart_success = WC()->cart->add_to_cart($product_id,$quantity);
@@ -158,11 +157,11 @@ function ja_ajax_check_quantity_cart(){
                     $product_data->set_stock_status('outofstock');
                     $product_data->save();
                 } else {
-                    if ($mark_red) {
-                        $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $return['current_quantity'] . ' sản phẩm</b> này trong giỏ hàng. Bạn vui lòng cập nhật số lượng tại <a href="' . wc_get_cart_url() . '" class="mypos-alert-link">Giỏ Hàng</a>.</span>';
-                    } else {
+//                    if ($mark_red) {
+//                        $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $return['current_quantity'] . ' sản phẩm</b> này trong giỏ hàng. Bạn vui lòng cập nhật số lượng tại <a href="' . wc_get_cart_url() . '" class="mypos-alert-link">Giỏ Hàng</a>.</span>';
+//                    } else {
                         $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $return['current_quantity'] . ' sản phẩm</b> này trong giỏ hàng.</span>';
-                    }
+//                    }
                     
                 }
                 $return['alert'] = kiotviet_addToCart_alert_message($message);
@@ -178,7 +177,6 @@ function ja_ajax_check_quantity_cart(){
                 }
                 
                 if ($cart_success) {
-                    
 //                    $product_data = wc_get_product( $variation_id ? $variation_id : $product_id );
 //                    $product_sku = $product_data->get_sku();
                     $return['status'] = 2; // Add sucessful
@@ -188,10 +186,10 @@ function ja_ajax_check_quantity_cart(){
                     $carts_table = build_html_table_carts($item_id, 1, 'green');
                     $return['popup'] = kiotviet_addToCart_alert_modal($message, $carts_table);
                 } else {
-                    $return['status'] = 1; // Add sucessful
+                    $return['status'] = 1; // Add failed
                     $message = '<span>Có lỗi trong quá trình thêm sản phẩm. Mong bạn refresh (F5) trình duyệt và thử lại.</span>';
                     $return['alert'] = kiotviet_addToCart_alert_message($message);
-                    $return['popup'] = kiotviet_addToCart_alert_modal($message);
+                    $return['popup'] = kiotviet_addToCart_alert_modal($message, '', true);
                 }
                     
             }

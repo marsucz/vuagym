@@ -9,22 +9,37 @@
 
 function kiotViet_get_preOrder_status($item_id) {
     
-    $product = wc_get_product( $item_id );
+//    $product = wc_get_product( $item_id );
     
-    $pre_order_status = -1;
+    $pre_order_status = false;
     $pre_order = new YITH_Pre_Order_Product( $item_id );
     
     if ( 'yes' == $pre_order->get_pre_order_status() ) {
-            $pre_order_status = 1;  // Sắp có hàng
-    } elseif ($product->is_in_stock()) {
-            $pre_order_status = 2;  // Còn hàng
-    } else {
-            $pre_order_status = 0;  // Hết hàng
-    }
+        $pre_order_status = true;  // Sắp có hàng
+    } 
     
     return $pre_order_status;
     
 }
+
+//function kiotViet_get_preOrder_status($item_id) {
+//    
+//    $product = wc_get_product( $item_id );
+//    
+//    $pre_order_status = -1;
+//    $pre_order = new YITH_Pre_Order_Product( $item_id );
+//    
+//    if ( 'yes' == $pre_order->get_pre_order_status() ) {
+//            $pre_order_status = 1;  // Sắp có hàng
+//    } elseif ($product->is_in_stock()) {
+//            $pre_order_status = 2;  // Còn hàng
+//    } else {
+//            $pre_order_status = 0;  // Hết hàng
+//    }
+//    
+//    return $pre_order_status;
+//    
+//}
 
 /**
  * Formats the RAW woocommerce price
@@ -36,7 +51,7 @@ function kiotViet_get_preOrder_status($item_id) {
 
 function kiotViet_formatted_price($price){
         if(!$price)
-                return;
+                return $price;
         $options 	= get_option('xoo-wsc-gl-options');
         $default_wc = isset( $options['sc-price-format']) ? $options['sc-price-format'] : 0;
 
@@ -48,7 +63,7 @@ function kiotViet_formatted_price($price){
         $dec_sep   = wc_get_price_decimal_separator();
         $decimals  = wc_get_price_decimals();
         $price 	   = number_format( $price, $decimals, $dec_sep, $thous_sep );
-
+        
         $format   = get_option( 'woocommerce_currency_pos' );
         $csymbol  = get_woocommerce_currency_symbol();
 

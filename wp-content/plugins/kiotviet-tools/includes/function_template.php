@@ -35,28 +35,33 @@ if(!function_exists('kiotviet_addToCart_success_message')){
 }
 
 if(!function_exists('kiotviet_addToCart_alert_modal')){
-    function kiotviet_addToCart_alert_modal($message = '', $carts_table = ''){
-        return '        
-        <div class="modal fade" id="addToCartModal" tabindex="-1" role="dialog" aria-labelledby="addToCartModalLabel" aria-hidden="true" style="padding-top: 2%;">
-            <div class="modal-dialog modal-lg">
+    function kiotviet_addToCart_alert_modal($message = '', $carts_table = '', $refresh_button = false){
+        $return = '        
+        <div class="modal fade" id="addToCartModal" tabindex="-1" role="dialog" aria-labelledby="addToCartModalLabel" aria-hidden="true" style="padding-top: 5%;">
+            <div class="modal-dialog modal-lg" id="mypos-modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title" id="addToCartModalLabel">Thông báo</h4>
+                        <div class="mypos-modal-header">
+                            ' . $message . '
+                        </div>
                     </div>
                     <div class="modal-body">
-                    ' . $message . $carts_table . '
+                    ' . $carts_table . '
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default mypos-btn-close" data-dismiss="modal">X</button>
-                        <button type="button" class="btn btn-primary" onclick="window.location.href=\'' . wc_get_cart_url() . '\';">Chỉnh Sửa Giỏ Hàng</button>
-                        <button type="button" class="btn btn-success" onclick="window.location.href=\'' . wc_get_checkout_url() . '\';">Đặt Hàng</button>
+                    <div class="modal-footer">';
+                    if ($refresh_button) {
+                        $return .= '<button type="button" class="btn btn-primary mypos-btn-editcart" onclick="window.location.reload()">Refresh lại trang</button>';
+                    } else {
+                        $return .= '<button type="button" class="btn btn-primary mypos-btn-close" data-dismiss="modal">Tiếp tục mua hàng</button>';
+                    }
+                   $return .= '<button type="button" class="btn btn-primary mypos-btn-editcart" onclick="window.location.href=\'' . wc_get_cart_url() . '\';">Giỏ hàng của bạn</button>
+                        <button type="button" class="btn btn-success mypos-btn-dathang" onclick="window.location.href=\'' . wc_get_checkout_url() . '\';">Đặt Hàng</button>
                     </div>
                 </div>
             </div>
         </div>
         ';
-        
+        return $return;
     }
 }
 

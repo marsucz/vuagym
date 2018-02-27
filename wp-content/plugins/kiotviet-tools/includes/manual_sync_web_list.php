@@ -171,8 +171,8 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 //            'no'        => 'STT',
             'id'            => 'ID',
             'edit'               => '<span class="dashicons dashicons-admin-generic"></span>',
-            'woo'           => 'Web (WordPress)',
             'kv'            => 'Cửa hàng (KiotViet)',
+            'woo'           => 'Web (WordPress)',
             'options'        => 'Tùy Chọn',
         );
         return $columns;
@@ -195,30 +195,41 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
         
         $product_id      = $item['woo'];
         $product         = wc_get_product( $product_id );
-        $product_type = '';
+//        $product_type = '';
         
         if ($product->is_type( 'variation' )) {
             $base_product_id = $product->get_parent_id();
-            $product_type = 'Biến thể';
+//            $product_type = 'Biến thể';
         } elseif ($product->is_type( 'simple' )) {
             $base_product_id = $product_id;
-            $product_type = 'SP Đơn';
+//            $product_type = 'SP Đơn';
         } else {
             $base_product_id = $product_id;
-            $product_type = 'SP Cha';
+//            $product_type = 'SP Cha';
         }
         $edit_link       = get_edit_post_link( $base_product_id );
+        $product_link   = get_permalink($base_product_id);
         
         $woo_product['id'] = $product->get_id();
         $woo_product['sku'] = $product->get_sku();
         $woo_product['name'] = $product->get_name();
         $woo_product['price'] = $product->get_price();
         $woo_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
-        $woo_product['quantity'] = $product->get_stock_quantity();
-        if ($woo_product['stock']) {
-            $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng</span>';
+//        $woo_product['quantity'] = $product->get_stock_quantity();
+        $woo_product['preorder'] = kiotViet_get_preOrder_status($woo_product['id']);
+                
+        if ($woo_product['preorder']) {
+            if ($woo_product['stock']) {
+                $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng-Pre Order</span>';
+            } else {
+                $woo_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng-Pre Order</span>';
+            }
         } else {
-            $woo_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng</span>';
+            if ($woo_product['stock']) {
+                $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng</span>';
+            } else {
+                $woo_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng</span>';
+            }
         }
         
         // KiotViet Process
@@ -236,7 +247,9 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                 } else {
                     $kv_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng</span>';
                 }
-               $kv_text = "{$kv_product['name']}<br/>-Mã: <b>{$kv_product['sku']}</b> -TT:{$kv_product['stock_status']}-SL:{$kv_product['quantity']}-Giá:{$kv_product['price']}";
+                
+               $formated_price = kiotViet_formatted_price($kv_product['price']);
+               $kv_text = "{$kv_product['name']}<br/>-Mã: <b>{$kv_product['sku']}</b> -{$kv_product['stock_status']} ({$kv_product['quantity']}) -Giá: {$formated_price}";
             } else {
                 $option_text = 'SP không tồn tại trên KiotViet';
             }
@@ -251,10 +264,12 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                 $r = $product_id;
                 break;
             case 'edit':
-                $r = '<a href="' . $edit_link . '" target="_blank"><span class="dashicons dashicons-admin-generic"></span></a>';
+                $r .= '<a href="' . $edit_link . '" target="_blank"><span class="dashicons dashicons-admin-generic"></span></a>';
+                $r .= '<a href="' . $product_link . '" target="_blank"><span class="dashicons dashicons-admin-site"></span></a>';
                 break;
             case 'woo':
-                $r = "[{$product_type}] {$woo_product['name']}<br/>-Mã: <b>{$woo_product['sku']}</b> -TT:{$woo_product['stock_status']}-SL:{$woo_product['quantity']}-Giá:{$woo_product['price']}";
+                $formated_price = kiotViet_formatted_price($woo_product['price']);
+                $r = "{$woo_product['name']}<br/>-Mã: <b>{$woo_product['sku']}</b> -{$woo_product['stock_status']} -Giá: {$formated_price}";
                 break;
             case 'kv':
                 $r = $kv_text;
@@ -263,17 +278,37 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                 
                 if (!empty($kv_product)) {
                     
-                    if ($kv_product['stock'] && !$woo_product['stock']) {
+                    $show_updateInStock = false;
+                    
+                    if (($kv_product['stock'] && !$woo_product['stock'])
+                            || ($kv_product['stock'] && $woo_product['preorder'])
+                            ){
+                        $show_updateInStock = true;
+                    }
+                    
+                    if ($show_updateInStock) {
                         $r .= '  <button id="updateInStock_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-success" title="Cập nhật có hàng trên Web cho sản phẩm này" onclick="updateInStock('. $woo_product['id'] .');"><i class="fa fa-tasks"></i>  Cập nhật có hàng</button>';
                     }
-
+                    
+                    //==================
+                    $show_updateOutOfStock = false;
+                    
                     if (!$kv_product['stock'] && $woo_product['stock']) {
+                        $show_updateOutOfStock = true;
+                    }
+                    
+                    if ($show_updateOutOfStock) {
                         $r.= '  <button id="updateOutOfStock_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-danger" title="Cập nhật hết hàng trên Web cho sản phẩm này" onclick="updateOutOfStock('. $woo_product['id'] .');"><i class="fa fa-tasks"></i>  Cập nhật hết hàng</button>';
                     }
-
+                    
                     if ($kv_product['price'] != $woo_product['price']) {
-                        $r .= '  <button id="updateWebPrice_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-info" title="Cập nhật giá trên Web cho sản phẩm này theo giá trên KiotViet" onclick="updateWebPrice_byKVPrice('. $woo_product['id'] .',' . $kv_product['price'] . ');"><i class="fa fa-anchor"></i>  Cập nhật giá Web theo KiotViet</button>';
-                        $r .= '  <button id="updateKVPrice_' . $kv_product['id'] . '" type="button" class="btn btn-mypos btn-warning" title="Cập nhật giá trên KiotViet cho sản phẩm này theo giá trên Web" onclick="updateKVPrice_byWebPrice('. $kv_product['id'] .',' . $woo_product['price'] . ');"><i class="fa fa-anchor"></i>  Cập nhật giá KiotViet theo Web</button>';
+                        
+                        $formated_price = kiotViet_formatted_price($kv_product['price']);
+                        
+                        $confirm_text = "Xác nhận sửa giá " . $woo_product['name'] . " thành " . number_format($kv_product['price'], 0, ',', '.') . " đ (theo kiotviet)?";
+                        $r .= '  <button id="updateWebPrice_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-info" title="Cập nhật giá trên Web cho sản phẩm này theo giá trên KiotViet" onclick="updateWebPrice_byKVPrice('. $woo_product['id'] .',' . $kv_product['price'] . ',\'' . $confirm_text .  '\');"><i class="fa fa-anchor"></i>  Update giá web = ' . $formated_price . ' (theo Kiotviet)</button>';
+                        // an de dung sau
+//                        $r .= '  <button id="updateKVPrice_' . $kv_product['id'] . '" type="button" class="btn btn-mypos btn-warning" title="Cập nhật giá trên KiotViet cho sản phẩm này theo giá trên Web" onclick="updateKVPrice_byWebPrice('. $kv_product['id'] .',' . $woo_product['price'] . ');"><i class="fa fa-anchor"></i>  Cập nhật giá KiotViet theo Web</button>';
                     }
                     
                 } else {

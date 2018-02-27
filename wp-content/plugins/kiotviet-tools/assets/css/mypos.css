@@ -24,10 +24,16 @@
 }
 
 .modal-header {
-    background-color: #337AB7;
+    /*background-color: #337AB7;*/
     padding:16px 16px;
     color:#FFF;
     border-bottom:2px dashed #337AB7;
+ }
+ 
+ .mypos-modal-header {
+     text-align: center;
+     margin-top: 10px;
+     margin-bottom: 10px;
  }
 
 .modal-title {
@@ -65,7 +71,16 @@
 }
 
 .mypos-btn-close {
-    display: none !important;
+    /*display: none !important;*/
+    background: #059 !important;
+}
+
+.mypos-btn-editcart {
+    background: #059 !important;
+}
+
+.mypos-btn-dathang {
+    background: #079c3a !important;
 }
 
 /* Icon */
@@ -205,6 +220,14 @@ only screen and (max-width: 767px) {
     
     .modal-body {
         padding: 5px !important;
+    }
+    
+    .modal-footer {
+        padding: 10px !important;
+    }
+    
+    .modal-footer .btn {
+        margin-top: 5px !important;
     }
     
 }
