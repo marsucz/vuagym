@@ -74,7 +74,7 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
             
             case 1: // Chi hien thi cac san pham chua dong bo
                 
-                $perPage = 20;
+                $perPage = 50;
                 $currentPage = 0;
                 
                 // show product one times
@@ -87,7 +87,7 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                     
                     $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage ) );
                     
-                    if (!$loop->post_count) {
+                    if (!$loop->post_count || $loop->post_count == 0) {
                         break;
                     }
                     

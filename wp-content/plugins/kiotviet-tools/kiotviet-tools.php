@@ -40,7 +40,6 @@ if (!defined('MYPOS_PER_PAGE')) {
 require_once('autoload.php');
 
 add_action('plugins_loaded', 'kiotviet_tools_plugin_init');
-add_action('admin_enqueue_scripts', 'load_remove_notice_js');
 
 register_activation_hook(__FILE__, 'kiotviet_product_create_db');
 
@@ -59,7 +58,6 @@ function kiotviet_tools_plugin_init() {
     add_option('mypos_add_to_cart', 1);
     add_option('mypos_ajax_cart', 1);
     add_option('mypos_checkout', 1);
-    add_option('mypos_remove_notice', 1);
     
     // So luong san pham toi da mac dinh khi loi / Pre-order
     add_option('mypos_max_quantity', 50);
@@ -111,7 +109,6 @@ function function_mypos_options_page() {
         update_option('mypos_add_to_cart', intval($_POST['mypos-add-to-cart']));
         update_option('mypos_ajax_cart', intval($_POST['mypos-ajax-cart']));
         update_option('mypos_checkout', intval($_POST['mypos-checkout']));
-        update_option('mypos_remove_notice', intval($_POST['mypos-remove-notice']));
         
         update_option('mypos_max_quantity', $_POST['mypos-max-quantity']);
         update_option('preorder_max_quantity', $_POST['preorder-max-quantity']);
@@ -163,17 +160,6 @@ function function_mypos_options_page() {
                                                 <p class="help-block">Bật/tắt chức năng: Kiểm tra trên trang thanh toán</p>
                                                 <select class="form-control" id="mypos-checkout" name="mypos-checkout" required>';
                                                 if (get_option('mypos_checkout')) {
-                                                    echo '<option value="1" selected>Bật</option>
-                                                    <option value="0">Tắt</option>';
-                                                } else {
-                                                    echo '<option value="1">Bật</option>
-                                                    <option value="0" selected>Tắt</option>';
-                                                }
-                                                echo '</select>
-                                                    
-                                                <p class="help-block">Bật/tắt chức năng: Ẩn thông báo trên trang Admin</p>
-                                                <select class="form-control" id="mypos-remove-notice" name="mypos-remove-notice" required>';
-                                                if (get_option('mypos_remove_notice')) {
                                                     echo '<option value="1" selected>Bật</option>
                                                     <option value="0">Tắt</option>';
                                                 } else {
@@ -372,7 +358,7 @@ function update_default_manual_sync_options() {
 
 function function_mypos_sync_page() {
     
-    set_time_limit(0);
+    set_time_limit(600);
     
     load_assets_manual_sync_table();
     
