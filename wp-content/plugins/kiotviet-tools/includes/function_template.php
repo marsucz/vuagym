@@ -6,7 +6,8 @@ function write_logs($file_name, $text) {
     
     $file = fopen($file_path, "a");
     
-    $date = date('Y-m-d H:i:s');
+    date_default_timezone_set('Asia/Ho_Chi_Minh');
+    $date = date('Y-m-d H:i:s', time());
     
     $body = "\n" . $date . ' ';
     $body .= $text;

@@ -4,9 +4,26 @@ include_once 'DbModel.php';
 include_once 'function.php';
 include_once 'function_template.php';
 
+if (!defined('KV_API_MAX_ERROR')) {
+    define('KV_API_MAX_ERROR', 20);
+}
+
 class KiotViet_API {
     
     private $access_token = '';
+    private $count_error = 0;
+    private $stop = false;
+    
+    function __construct() {
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+    }
+    
+    public function check_process_stop() {
+        if ($this->stop) {
+            echo "Xuất hiện lỗi khi kết nối tới API. Dừng quá trình!";
+            exit;
+        }
+    }
     
     public function get_product_info_by_productSKU($product_sku = '') {
         
@@ -392,14 +409,31 @@ class KiotViet_API {
         
         $result = json_decode($response, true);
         if ($result) {
-            return $result;
+            if (isset($result['responseStatus'])) {
+                $this->count_error = $this->count_error + 1;
+                if ($this->count_error > KV_API_MAX_ERROR) {
+                    $this->stop = true;
+                    $this->check_process_stop();
+                }
+            } else {
+                return $result;
+            }
+            
         } else {
+            
+            $this->count_error = $this->count_error + 1;
+            if ($this->count_error > KV_API_MAX_ERROR) {
+                $this->stop = true;
+                $this->check_process_stop();
+            }
+            
             $t = date('Ymd');
             $log_file = "KiotVietAPI_Errors_{$t}.txt";
             $log_text = "URL Get: " . $url;
             $log_text .= "\n KiotViet not response: " . json_encode($response);
             write_logs($log_file, $log_text);
             return false;
+            
         }
     }
 
