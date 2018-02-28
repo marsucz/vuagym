@@ -8,6 +8,15 @@
   padding-top: 10%;
 }*/
 
+.cart-title {
+    margin-top: 0px;
+    text-align: center;
+}
+    
+.cart-title-body {
+    margin-top: 0px !important;
+}
+
 .alert-message {
     /*font-weight: bold;*/
     color: red;
@@ -30,8 +39,12 @@
     border-bottom:2px dashed #337AB7;
  }
  
+ .cart-title-body del .woocommerce-Price-amount {
+     font-size: 11px;
+ }
+ 
  .mypos-modal-header {
-     text-align: center;
+     text-align: center;            
      margin-top: 10px;
      margin-bottom: 10px;
  }

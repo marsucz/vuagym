@@ -363,9 +363,9 @@ function function_testing_page() {
 //    echo '</pre>';
 //    exit;
         
-//    $product = wc_get_product(6547);
-//    
-//    echo $product->get_sale_price();
+    $product = wc_get_product(6547);
+    
+    echo $product->get_sale_price();
     
     $dbModel = new DbModel();
     

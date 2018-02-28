@@ -46,7 +46,7 @@ if(!function_exists('kiotviet_addToCart_alert_modal')){
                             ' . $message . '
                         </div>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body cart-title-body">
                     ' . $carts_table . '
                     </div>
                     <div class="modal-footer">';

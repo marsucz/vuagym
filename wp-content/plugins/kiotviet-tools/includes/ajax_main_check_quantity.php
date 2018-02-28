@@ -6,7 +6,7 @@ require_once 'function_template.php';
 
 function build_html_table_carts($item_id = '', $mark = false, $color = '') {
     $result_string = '
-                <h2>Giỏ hàng của bạn<h2>
+                <h3 class="cart-title">Giỏ hàng của bạn</h3>
                 <div class="table-responsive top-buffer" style="border: 0px !important;">        
                                 <table class="table" style="border: 0px !important;">
                                 <thead class="thead-default">
@@ -29,7 +29,20 @@ function build_html_table_carts($item_id = '', $mark = false, $color = '') {
         $product_quantity       = $product['quantity'];
         $product_link           = $wc_product->get_permalink();
         $product_price_raw      = $wc_product->get_price();
-        $product_price          = kiotViet_formatted_price($product_price_raw);
+        
+        $price_regular = $wc_product->get_regular_price();
+        $formated_price_regular = kiotViet_formatted_price($price_regular);
+        $old_price = '<del>' . $formated_price_regular . '</del><br/>';
+        
+        $price_sale = $wc_product->get_sale_price();
+        
+        if ($price_sale && $price_sale != $product_price_raw) {
+            $formated_price_sale = kiotViet_formatted_price($price_sale);
+            $old_price .= '<del>' . $formated_price_sale . '</del><br/>';
+        }
+        
+        $formated_product_price          = kiotViet_formatted_price($product_price_raw);
+        
         $product_image  	= $wc_product->get_image('shop_thumbnail');
 
         $product_total          = kiotViet_formatted_price($product_quantity*$product_price_raw);
@@ -41,12 +54,12 @@ function build_html_table_carts($item_id = '', $mark = false, $color = '') {
         
         if (!empty($item_id) && $mark && $item_id == $product_id) {
             $result_string .= "<td class='mypos-product-title'><span style='color: " . $color . "; font-weight: bold;'>" . $product_name . "</span></td>";
-            $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold'>" . $product_price . "</span></td>";
+            $result_string .= "<td style='text-align: center'>{$old_price}<span style='color: " . $color . "; font-weight: bold'>" . $formated_product_price . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold'>" . $product_quantity . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold'>" . $product_total . "</span></td>";
         } else {
             $result_string .= "<td class='mypos-product-title'><span style='font-weight: bold;'>" . $product_name . "</span></td>";
-            $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>" . $product_price . "</span></td>";
+            $result_string .= "<td style='text-align: center'>{$old_price}<span style='font-weight: bold'>" . $formated_product_price . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>" . $product_quantity . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>" . $product_total . "</span></td>";
         }
