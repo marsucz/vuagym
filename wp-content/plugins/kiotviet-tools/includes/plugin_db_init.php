@@ -15,7 +15,9 @@ function kiotviet_product_create_db() {
                     `product_id` INT NOT NULL,
                     `product_code` VARCHAR(25) NOT NULL,
                     `product_updated` DATETIME NULL,
-                    PRIMARY KEY (`product_id`, `product_code`)
+                    PRIMARY KEY (`product_id`, `product_code`),
+                    UNIQUE KEY `product_id_UNIQUE` (`product_id`),
+                    UNIQUE KEY `product_code_UNIQUE` (`product_code`)
             )' . $charset_collate . ';';
                 
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');

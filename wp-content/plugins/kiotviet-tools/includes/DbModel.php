@@ -47,6 +47,20 @@ class DbModel {
         
     }
     
+    public function kiotviet_update_productcode_by_productid($product_id, $product_code) {
+        
+        $query = '  UPDATE ' . DB_KIOTVIET_PRODUCTS . ' 
+                    SET product_code = "' . $product_code . '",
+                         product_updated = Now()
+                    WHERE 
+                        product_id = ' . $product_id . ';';
+        
+        $result = mysqli_query($this->link, $query);
+
+        return $result;
+        
+    }
+    
     public function kiotviet_get_count_all_products() {
         
         $query = '  SELECT * FROM ' . DB_KIOTVIET_PRODUCTS;
@@ -80,6 +94,22 @@ class DbModel {
     public function get_productInfo_byProductCode($product_code) {
         
         $query = '  SELECT * FROM ' . DB_KIOTVIET_PRODUCTS . ' WHERE product_code = "' . $product_code . '"';
+        
+        $result = mysqli_query($this->link, $query);
+
+        if ($result) {
+            $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        } else {
+            $return = [];
+        }
+
+        return $return;
+        
+    }
+    
+    public function get_productInfo_byProductID($product_id) {
+        
+        $query = '  SELECT * FROM ' . DB_KIOTVIET_PRODUCTS . ' WHERE product_id = "' . $product_id . '"';
         
         $result = mysqli_query($this->link, $query);
 

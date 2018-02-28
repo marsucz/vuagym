@@ -221,6 +221,8 @@ function function_mypos_options_page() {
 
 function function_get_sku_kiotviet() {
     
+    set_time_limit(1800);
+    
     load_assets_match_sku();
     
     $dbModel = new DbModel();
@@ -236,16 +238,29 @@ function function_get_sku_kiotviet() {
                         </div>
                         <div class="panel-body">';
                         
-//    if (isset($_POST['process_updateAllProducts'])) {
-//        
-//        $count = $api->get_all_product_sku();
-//        
-//        echo '<div class="alert alert-success">
-//                        <strong> Đã lấy mới ' . $count . ' Mã sản phẩm.
-//                        </strong>
-//            </div>';
-//        
-//    }
+    if (isset($_POST['process_updateAllProducts'])) {
+        
+        $count = $api->get_all_product_sku();
+        
+        if ($count['count_insert']) {
+            echo '<div class="alert alert-success">
+                            <strong> Đã <b>thêm mới</b> ' . $count['count_insert'] . ' mã sản phẩm.</strong>
+                </div>';
+        } 
+        
+        if ($count['count_update']) {
+            echo '<div class="alert alert-success">
+                            <strong> Đã <b>cập nhật</b> ' . $count['count_update'] . ' mã sản phẩm.</strong>
+                </div>';
+        }
+        
+        if (!$count['count_insert'] && !$count['count_update']) {
+            echo '<div class="alert alert-success">
+                            <strong>Quá trình hoàn tất. Các mã sản phẩm không có cập nhật mới.</strong>
+                </div>';
+        } 
+        
+    }
     
     if (isset($_POST['process_deleteAllProducts'])) {
         
@@ -254,32 +269,29 @@ function function_get_sku_kiotviet() {
         $result = $dbModel->kiotviet_delete_all_products_sku();
         
         if ($result) {
-            $count = $api->get_all_product_sku();
-            
-            if ($count > 0) {
-                echo '<div class="alert alert-success">
-                        <strong> Đã cập nhật MÃ SẢN PHẨM từ KiotViet thành công!
-                        </strong>
-                </div>';
-            } else {
-                echo '<div class="alert alert-danger">
-                        <strong> Có lỗi trong quá trình cập nhật. Vui lòng thực hiện lại.
-                        </strong>
-                </div>';
-            }
+            echo '<div class="alert alert-success">
+                    <strong> Đã xóa tất cả các mã sản phẩm dùng để kết nối với KiotViet.
+                    </strong>
+            </div>';
+        } else {
+            echo '<div class="alert alert-danger">
+                    <strong> Có lỗi trong quá trình xóa mã sản phẩm. Vui lòng thực hiện lại!
+                    </strong>
+            </div>';
         }
     }
         
-//    echo '          <form role="form" method="post" align="center">
-//                                <input type="hidden" id="process_updateAllProducts" name="process_updateAllProducts">
-//                                <button type="submit" class="btn btn-success btn-mypos-width">Kết Nối Mã Sản Phẩm</button>
-//                    </form>';
+    echo '          <form role="form" method="post" align="center">
+                                <input type="hidden" id="process_updateAllProducts" name="process_updateAllProducts">
+                                <button type="submit" class="btn btn-success btn-mypos-width">Cập nhật MÃ SẢN PHẨM</button>
+                    </form>';
     echo '          <form role="form" method="post" align="center">
                                 <input type="hidden" id="process_deleteAllProducts" name="process_deleteAllProducts">
-                                <button type="submit" class="btn btn-success btn-mypos-width">Cập nhật MÃ SẢN PHẨM</button>
+                                <button type="submit" class="btn btn-danger btn-mypos-width">Xóa hết MÃ SẢN PHẨM</button>
                     </form>
                     <div class="alert alert-warning" style="margin-top: 15px; margin-bottom: 0!important">
-                        Chú ý: Chỉ cần "Cập nhật MÃ SẢN PHẨM" khi có mã sản phẩm <b>MỚI</b> trên KiotViet.
+                        - "<b>Cập nhật MÃ SẢN PHẨM</b>": Thêm mới và cập nhật khi có mã SP mới hoặc mã SP bị thay đổi trên KiotViet. <br/>
+                        - "<b>Xóa hết  MÃ SẢN PHẨM</b>": Xóa dữ liệu dùng để kết nối với Kiotviet để làm sạch dữ liệu. Vui lòng <b>Cập nhật</b> lại dữ liệu sau khi xóa.
                     </div>';
     
     echo '</div></div></div></div>';
@@ -354,6 +366,19 @@ function function_testing_page() {
 //    $product = wc_get_product(6547);
 //    
 //    echo $product->get_sale_price();
+    
+    $dbModel = new DbModel();
+    
+    $product = $dbModel->kiotviet_update_productcode_by_productid(123123123123, 'MTMTMT');
+    
+    
+    $product = $dbModel->get_productInfo_byProductID(123123123123);
+    
+    echo '<pre>';
+    echo print_r($product);
+    echo '<pre>';
+    
+    
     
 }
 

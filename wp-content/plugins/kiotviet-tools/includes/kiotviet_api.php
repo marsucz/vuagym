@@ -159,24 +159,45 @@ class KiotViet_API {
         $data['pageSize'] = 1;
         $data['currentItem'] = 0;
         $result = $this->api_call($url, $data);
-
-        $data['pageSize'] = 20;
-        $number_products = $result['total'];
-        $number_pages = (int) ($number_products / $data['pageSize']) + 1;
-
-        $count = 0;
-        for ($i=0; $i<=$number_pages; $i++) {
-            $data['currentItem'] = $data['pageSize'] * $i;
+        
+        if (!$result) {
             $result = $this->api_call($url, $data);
-            foreach ($result['data'] as $product) {
-                $result = $dbModel->kiotviet_insert_product($product['id'], $product['code']);
-                if ($result) {
-                    $count++;
+        }
+        
+        $count_insert = 0;
+        $count_update = 0;
+        
+        if ($result) {
+            $data['pageSize'] = 20;
+            $number_products = $result['total'];
+            $number_pages = (int) ($number_products / $data['pageSize']) + 1;
+
+            for ($i=0; $i<=$number_pages; $i++) {
+                $data['currentItem'] = $data['pageSize'] * $i;
+                $result = $this->api_call($url, $data);
+                foreach ($result['data'] as $product) {
+                    $result = $dbModel->kiotviet_insert_product($product['id'], $product['code']);
+                    if ($result) {
+                        $count_insert++;
+                    } else {
+                        $product_temp = $dbModel->get_productInfo_byProductID($product['id']);
+                        if (!empty($product_temp)) {
+                            if ($product_temp[0]['product_code'] != $product['code']) {
+                                $update_result = $dbModel->kiotviet_update_productcode_by_productid($product['id'], $product['code']);
+                                if ($update_result) {
+                                    $count_update++;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-
-        return $count;
+        
+        $return['count_insert'] = $count_insert;
+        $return['count_update'] = $count_update;
+        
+        return $return;
     }
     
     public function get_count_all_products() {
@@ -356,8 +377,8 @@ class KiotViet_API {
          CURLOPT_URL => $url,
          CURLOPT_RETURNTRANSFER => true,
 //         CURLOPT_ENCODING => "",
-         CURLOPT_MAXREDIRS => 5,
-         CURLOPT_TIMEOUT => 5,
+         CURLOPT_MAXREDIRS => 3,
+         CURLOPT_TIMEOUT => 15,
 //         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
          CURLOPT_CUSTOMREQUEST => "GET",
          CURLOPT_HTTPHEADER => array(
@@ -397,7 +418,7 @@ class KiotViet_API {
          CURLOPT_RETURNTRANSFER => true,
          CURLOPT_ENCODING => "",
          CURLOPT_MAXREDIRS => 5,
-         CURLOPT_TIMEOUT => 5,
+         CURLOPT_TIMEOUT => 15,
          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
          CURLOPT_CUSTOMREQUEST => "PUT",
          CURLOPT_HTTPHEADER => array(
@@ -445,8 +466,8 @@ class KiotViet_API {
          CURLOPT_URL => $post_url,
          CURLOPT_RETURNTRANSFER => true,
          CURLOPT_ENCODING => "",
-         CURLOPT_MAXREDIRS => 10,
-         CURLOPT_TIMEOUT => 30,
+         CURLOPT_MAXREDIRS => 3,
+         CURLOPT_TIMEOUT => 15,
          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
          CURLOPT_CUSTOMREQUEST => "POST",
          CURLOPT_POSTFIELDS => $post_string,
