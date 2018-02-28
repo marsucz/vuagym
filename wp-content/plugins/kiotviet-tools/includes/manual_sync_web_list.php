@@ -17,12 +17,17 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
     
 //    private $kv_api;
     private $dbModel;
-    private $kv_api;    
+    private $kv_api;
+    private $show_type = 1;
+    private $show_products_per_page = 10;
     
-    function __construct($args = array()) { 
+    function __construct($show_type, $show_products) {
+        $args = array();
         parent::__construct($args);
         $this->kv_api = new KiotViet_API();
         $this->dbModel = new DbModel();
+        $this->show_type = $show_type;
+        $this->show_products_per_page = $show_products;
     }
     
     public function prepare_items()
@@ -31,41 +36,147 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
         $hidden = $this->get_hidden_columns();
         $sortable = $this->get_sortable_columns();
         
-        $perPage = $this->get_items_per_page('products_per_page', 10);
+//        $perPage = $this->get_items_per_page('sync_by_web_products', 10);
+        $perPage = $this->show_products_per_page;
         
         $currentPage = $this->get_pagenum();
         
         $totalItems = $this->dbModel->get_count_woo_product();
         
         $list_product = array();
-        $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage ) );
         
-        $list_product = array();
-        
-        while ( $loop->have_posts() ) : $loop->the_post();
+        switch ($this->show_type) {
+            case 0: // Hien thi tat ca cac san pham
                 
-            $theid = get_the_ID();
+                $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage ) );
+        
+                while ( $loop->have_posts() ) : $loop->the_post();
 
-            // add product to array but don't add the parent of product variations
-            if ($theid) {
-                $list_product[] = $theid;
-            }
-        
-        endwhile; 
-        wp_reset_query();
-        
-        
-        $this->set_pagination_args( array(
-            'total_items' => $totalItems,
-            'per_page'    => $perPage
-        ) );
+                    $theid = get_the_ID();
 
+                    // add product to array but don't add the parent of product variations
+                    if ($theid) {
+                        $temp_products = $this->get_product_show_type_all($theid);
+                        if (!empty($temp_products)) {
+                            $list_product = array_merge($list_product, $temp_products);
+                        }
+                    }
+
+                endwhile; 
+                wp_reset_query();
+
+                $this->set_pagination_args( array(
+                    'total_items' => $totalItems,
+                    'per_page'    => $perPage
+                ) );
+
+                break;
+            
+            case 1: // Chi hien thi cac san pham chua dong bo
+                
+                $perPage = 20;
+                $currentPage = 0;
+                
+                // show product one times
+                $show_products = $this->show_products_per_page;
+                $count_product = 0;
+                
+                while ($count_product < $show_products) {
+                    
+                    $currentPage++;
+                    
+                    $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage ) );
+                    
+                    if (!$loop->post_count) {
+                        break;
+                    }
+                    
+                    while ( $loop->have_posts() ) : $loop->the_post();
+                        
+                        $theid = get_the_ID();
+
+                        // add product to array but don't add the parent of product variations
+                        if ($theid) {
+                            $temp_products = $this->get_product_show_type_only_not_sync($theid);
+                            
+                            if (!empty($temp_products)) {
+                                $list_product = array_merge($list_product, $temp_products);
+                                $count_product++;
+                            }
+                        }
+                        
+                        if ($count_product >= $show_products) {
+                            break;
+                        }
+                        
+                    endwhile; 
+                    wp_reset_query();
+                    
+                }
+
+                break;
+            
+            case 2: // Chi hien thi san pham Pre-Order
+                
+                $perPage = 20;
+                $currentPage = 0;
+                
+                // show product one times
+                $show_products = $this->show_products_per_page;
+                $count_product = 0;
+                
+                while ($count_product < $show_products) {
+                    
+                    $currentPage++;
+                    
+                    $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage ) );
+                    
+                    if (!$loop->post_count) {
+                        break;
+                    }
+                    
+                    while ( $loop->have_posts() ) : $loop->the_post();
+                        
+                        $theid = get_the_ID();
+
+                        // add product to array but don't add the parent of product variations
+                        if ($theid) {
+                            $temp_products = $this->get_product_show_type_pre_order($theid);
+                            
+                            if (!empty($temp_products)) {
+                                $list_product = array_merge($list_product, $temp_products);
+                                $count_product++;
+                            }
+                        }
+                        
+                        if ($count_product >= $show_products) {
+                            break;
+                        }
+                        
+                    endwhile; 
+                    wp_reset_query();
+                    
+                }
+
+                break;
+            default:
+                break;
+        }
+        
         $this->_column_headers = array($columns, $hidden, $sortable);
         $this->items = $list_product;
         
     }
     
-    public function single_row( $product_id ) {
+    public function single_row( $item ) {
+        echo '<tr>';
+        $this->single_row_columns( $item );
+        echo '</tr>';
+    }
+    
+    public function get_product_show_type_all($product_id) {
+        
+        $return_products = array();
         
         $prod = wc_get_product( $product_id );
         
@@ -96,29 +207,7 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                     
                     $temp_item['kv'] = $kv_product;
                     
-                    $nothing_sync = false;
-                    
-                    if (!empty($kv_product)) {
-                        
-                        $product = wc_get_product($child->ID);
-                        
-                        $woo_product['price'] = $product->get_price();
-                        $woo_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
-                        
-                        if (($kv_product['stock'] == $woo_product['stock']) 
-                            && ($kv_product['price'] == $woo_product['price'])) {
-                            // nothing to show options
-                                $nothing_sync = true;
-                            }
-                    }
-                    
-                    if ($nothing_sync) {
-                        // nothing to sync => hide this row
-                    } else {
-                        echo '<tr>';
-                        $this->single_row_columns( $temp_item );
-                        echo '</tr>';
-                    }
+                    $return_products[] = $temp_item;
                     
                 }
             }
@@ -139,7 +228,87 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 
             $temp_item['kv'] = $kv_product;
             
-            $nothing_sync = false;
+            $return_products[] = $temp_item;
+            
+        }
+        
+        return $return_products;
+    }
+    
+    public function get_product_show_type_only_not_sync($product_id) {
+        
+        $return_products = array();
+        
+        $prod = wc_get_product( $product_id );
+        
+        if ( $prod && $prod->is_type( 'variable' ) && $prod->has_child() ) {
+          
+            $args = array(
+                'post_type'     => 'product_variation',
+                'post_status'   => array( 'private', 'publish' ),
+                'post_parent'   => $product_id // 
+            );
+            
+            $variations = get_posts( $args );
+            
+            foreach ($variations as $child) {
+                if ( $child ) {
+                    
+                    $temp_item = array();
+                    $temp_item['woo'] = $child->ID;
+                    
+                    $sku = get_post_meta($child->ID, '_sku', true);
+                    
+                    // KiotViet Process
+                    if ($sku) {
+                        $kv_product = $this->kv_api->get_product_info_by_productSKU($sku);
+                    } else {
+                        $kv_product = array();
+                    }
+                    
+                    $temp_item['kv'] = $kv_product;
+                    
+                    $need_sync = false;
+                    
+                    if (!empty($kv_product)) {
+                        
+                        $product = wc_get_product($child->ID);
+                        
+                        $woo_product['price'] = $product->get_price();
+                        $woo_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
+                        $woo_product['preorder'] = kiotViet_get_preOrder_status($child->ID);
+                        
+                        if (($kv_product['stock'] != $woo_product['stock'])
+                            || ($kv_product['stock'] && $woo_product['preorder'])
+                            || ($kv_product['price'] != $woo_product['price'])) {
+                            // nothing to show options
+                                $need_sync = true;
+                            }
+                    }
+                    
+                    if ($need_sync) {
+                        $return_products[] = $temp_item;
+                    }
+                }
+            }
+            
+        } elseif ($prod && $prod->is_type( 'simple' )) {
+            
+            $temp_item = array();
+            $temp_item['woo'] = $product_id;
+            
+            $sku = get_post_meta($product_id, '_sku', true);
+                    
+            // KiotViet Process
+            if ($sku) {
+                $kv_product = $this->kv_api->get_product_info_by_productSKU($sku);
+            } else {
+                $kv_product = array();
+            }
+
+            $temp_item['kv'] = $kv_product;
+            
+            $need_sync = false;
                     
             if (!empty($kv_product)) {
 
@@ -147,22 +316,89 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 
                 $woo_product['price'] = $product->get_price();
                 $woo_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
-
-                if (($kv_product['stock'] == $woo_product['stock']) 
-                    && ($kv_product['price'] == $woo_product['price'])) {
+                $woo_product['preorder'] = kiotViet_get_preOrder_status($child->ID);
+                        
+                if (($kv_product['stock'] != $woo_product['stock'])
+                    || ($kv_product['stock'] && $woo_product['preorder'])
+                    || ($kv_product['price'] != $woo_product['price'])) {
                     // nothing to show options
-                        $nothing_sync = true;
+                        $need_sync = true;
                     }
             }
 
-            if ($nothing_sync) {
-                // nothing to sync => hide this row
-            } else {
-                echo '<tr>';
-                $this->single_row_columns( $temp_item );
-                echo '</tr>';
+            if ($need_sync) {
+                $return_products[] = $temp_item;
+            } 
+        }
+        
+        return $return_products;
+    }
+    
+    public function get_product_show_type_pre_order($product_id) {
+        
+        $return_products = array();
+        
+        $prod = wc_get_product( $product_id );
+        
+        if ( $prod && $prod->is_type( 'variable' ) && $prod->has_child() ) {
+          
+            $args = array(
+                'post_type'     => 'product_variation',
+                'post_status'   => array( 'private', 'publish' ),
+                'post_parent'   => $product_id // 
+            );
+            
+            $variations = get_posts( $args );
+            
+            foreach ($variations as $child) {
+                if ( $child ) {
+                    
+                    $temp_item = array();
+                    $temp_item['woo'] = $child->ID;
+                    
+                    $preOrder_status = kiotViet_get_preOrder_status($child->ID);
+                    
+                    // Chi hien thi cac san pham Pre-Order
+                    if ($preOrder_status) {
+                        $sku = get_post_meta($child->ID, '_sku', true);
+                    
+                        // KiotViet Process
+                        if ($sku) {
+                            $kv_product = $this->kv_api->get_product_info_by_productSKU($sku);
+                        } else {
+                            $kv_product = array();
+                        }
+
+                        $temp_item['kv'] = $kv_product;
+                        $return_products[] = $temp_item;
+                    }
+                }
+            }
+        } elseif ($prod && $prod->is_type( 'simple' )) {
+            
+            $temp_item = array();
+            $temp_item['woo'] = $product_id;
+            
+            $preOrder_status = kiotViet_get_preOrder_status($product_id);
+                    
+            // Chi hien thi cac san pham Pre-Order
+            if ($preOrder_status) {
+            
+                $sku = get_post_meta($product_id, '_sku', true);
+
+                // KiotViet Process
+                if ($sku) {
+                    $kv_product = $this->kv_api->get_product_info_by_productSKU($sku);
+                } else {
+                    $kv_product = array();
+                }
+
+                $temp_item['kv'] = $kv_product;
+                $return_products[] = $temp_item;
             }
         }
+        
+        return $return_products;
     }
     
     public function get_columns()
@@ -195,17 +431,13 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
         
         $product_id      = $item['woo'];
         $product         = wc_get_product( $product_id );
-//        $product_type = '';
         
         if ($product->is_type( 'variation' )) {
             $base_product_id = $product->get_parent_id();
-//            $product_type = 'Biến thể';
         } elseif ($product->is_type( 'simple' )) {
             $base_product_id = $product_id;
-//            $product_type = 'SP Đơn';
         } else {
             $base_product_id = $product_id;
-//            $product_type = 'SP Cha';
         }
         $edit_link       = get_edit_post_link( $base_product_id );
         $product_link   = get_permalink($base_product_id);
@@ -215,7 +447,6 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
         $woo_product['name'] = $product->get_name();
         $woo_product['price'] = $product->get_price();
         $woo_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
-//        $woo_product['quantity'] = $product->get_stock_quantity();
         $woo_product['preorder'] = kiotViet_get_preOrder_status($woo_product['id']);
                 
         if ($woo_product['preorder']) {
@@ -313,6 +544,10 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                     
                 } else {
                     $r = $option_text;
+                }
+                
+                if (empty($r)) {
+                    $r = '<span style="color:green; font-weight: bold;">SP ĐÃ ĐỒNG BỘ</span>';
                 }
                 
                 break;

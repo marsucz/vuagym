@@ -95,12 +95,29 @@ function updateKVPrice_byWebPrice(product_id, price, confirm_text) {
 
 jQuery(document).ready(function($) {
     
+    
+    
 //    $(window).keydown(function(event){
 //    if(event.keyCode == 13) {
 //          event.preventDefault();
 //          return false;
 //        }
 //    });
+
+//    show_type_change();
+//    $('#sync_by_web_show_type').on('change', function () {
+//        show_type_change();
+//    });
+//    
+//    function show_type_change() {
+//        if ($('#sync_by_web_show_type').val() == 0) {
+//            $('#sync_by_web_products').hide();
+//            $('#sync_by_web_products_label').hide();
+//        } else {
+//            $('#sync_by_web_products').show();
+//            $('#sync_by_web_products_label').show();
+//        }
+//    }
     
 });
 

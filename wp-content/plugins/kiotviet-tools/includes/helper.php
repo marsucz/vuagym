@@ -6,6 +6,14 @@
  * and open the template in the editor.
  */
 
+function load_remove_notice_js() {
+    wp_enqueue_script('remove_notice_js', WC_PLUGIN_URL . 'assets/admin/js/remove_notice.js');
+    
+    if (!get_option('mypos_remove_notice')) {
+        wp_dequeue_script( 'remove_notice_js' );
+    }
+}
+
 function load_assets_sync_page() {
     
     load_assets_common_admin();
