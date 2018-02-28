@@ -438,11 +438,15 @@ function function_mypos_sync_page() {
                     </form>
                     </div>';
             
-            echo '<form method="POST" id="sync-by-web-list">';
-            $myListTable = new KiotViet_ManualSyncWeb_List($show_type, $show_products);
-            $myListTable->prepare_items();
-            $myListTable->display();
-            echo '</form>';
+            if (empty($_POST) && !isset($_GET['paged'])) {
+                
+            } else {
+                echo '<form method="POST" id="sync-by-web-list">';
+                $myListTable = new KiotViet_ManualSyncWeb_List($show_type, $show_products);
+                $myListTable->prepare_items();
+                $myListTable->display();
+                echo '</form>';
+            }
             break;
             
         case 'sync_by_kiotviet':
@@ -463,11 +467,15 @@ function function_mypos_sync_page() {
                     </form>
                     </div>';
             
-            echo '<form method="POST" id="sync-by-kv-list">';
-            $myListTable = new KiotViet_ManualSyncKiotViet_List($show_type, $show_products);
-            $myListTable->prepare_items();
-            $myListTable->display();
-            echo '</form>';
+            if (empty($_POST) && !isset($_GET['paged'])) {
+                
+            } else {
+                echo '<form method="POST" id="sync-by-kv-list">';
+                $myListTable = new KiotViet_ManualSyncKiotViet_List($show_type, $show_products);
+                $myListTable->prepare_items();
+                $myListTable->display();
+                echo '</form>';
+            }
             break;
             
         default:

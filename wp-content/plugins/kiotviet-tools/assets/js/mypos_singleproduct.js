@@ -6,7 +6,7 @@
 
 jQuery(document).ready(function($) {
     
-    $('.product-detail-content').on('click', '.alert-box', function() {
+    $('.product-detail-content').on('click', '.close', function() {
         $('.alert-box').fadeOut(500, function() { $('.alert-box').remove(); });
     });
     

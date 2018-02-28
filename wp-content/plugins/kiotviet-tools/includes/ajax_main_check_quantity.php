@@ -6,6 +6,7 @@ require_once 'function_template.php';
 
 function build_html_table_carts($item_id = '', $mark = false, $color = '') {
     $result_string = '
+                <h2>Giỏ hàng của bạn<h2>
                 <div class="table-responsive top-buffer" style="border: 0px !important;">        
                                 <table class="table" style="border: 0px !important;">
                                 <thead class="thead-default">

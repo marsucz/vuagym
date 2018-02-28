@@ -54,7 +54,7 @@ if(!function_exists('kiotviet_addToCart_alert_modal')){
                     } else {
                         $return .= '<button type="button" class="btn btn-primary mypos-btn-close" data-dismiss="modal">Tiếp tục mua hàng</button>';
                     }
-                   $return .= '<button type="button" class="btn btn-primary mypos-btn-editcart" onclick="window.location.href=\'' . wc_get_cart_url() . '\';">Giỏ hàng của bạn</button>
+                   $return .= '<button type="button" class="btn btn-primary mypos-btn-editcart" onclick="window.location.href=\'' . wc_get_cart_url() . '\';">Chỉnh sửa giỏ hàng</button>
                         <button type="button" class="btn btn-success mypos-btn-dathang" onclick="window.location.href=\'' . wc_get_checkout_url() . '\';">Đặt Hàng</button>
                     </div>
                 </div>
