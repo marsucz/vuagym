@@ -34,7 +34,7 @@ if (!defined('KV_CLIENT_SECRET')) {
 }
 
 if (!defined('MYPOS_PER_PAGE')) {
-    define('MYPOS_PER_PAGE', 2);
+    define('MYPOS_PER_PAGE', 5);
 }
 
 require_once('autoload.php');
@@ -135,18 +135,21 @@ function function_mypos_options_page() {
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <h3>Bật/Tắt các chức năng</h3>
-                                                <p class="help-block">Bật/tắt chức năng: Thêm Sản Phẩm trên trang sản phẩm</p>
-                                                <select class="form-control" id="mypos-add-to-cart" name="mypos-add-to-cart" required>';
-                                                if (get_option('mypos_add_to_cart')) {
-                                                    echo '<option value="1" selected>Bật</option>
-                                                    <option value="0">Tắt</option>';
-                                                } else {
-                                                    echo '<option value="1">Bật</option>
-                                                    <option value="0" selected>Tắt</option>';
-                                                }
-                                                echo '</select>
-                                                    
-                                                <p class="help-block">Bật/tắt chức năng: Tự động kiểm tra và cập nhật trên trang giỏ hàng</p>
+                                                <div class="form-group">
+                                                    <label>Bật/Tắt chức năng: Thêm Sản Phẩm trên trang sản phẩm</label>
+                                                    <select class="form-control" id="mypos-add-to-cart" name="mypos-add-to-cart" required>';
+                                                    if (get_option('mypos_add_to_cart')) {
+                                                        echo '<option value="1" selected>Bật</option>
+                                                        <option value="0">Tắt</option>';
+                                                    } else {
+                                                        echo '<option value="1">Bật</option>
+                                                        <option value="0" selected>Tắt</option>';
+                                                    }
+                                                    echo '</select>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                <label>Bật/Tắt chức năng: Tự động kiểm tra và cập nhật trên trang giỏ hàng</label>
                                                 <select class="form-control" id="mypos-ajax-cart" name="mypos-ajax-cart" required>';
                                                 if (get_option('mypos_ajax_cart')) {
                                                     echo '<option value="1" selected>Bật</option>
@@ -156,17 +159,20 @@ function function_mypos_options_page() {
                                                     <option value="0" selected>Tắt</option>';
                                                 }
                                                 echo '</select>
-
-                                                <p class="help-block">Bật/tắt chức năng: Kiểm tra trên trang thanh toán</p>
-                                                <select class="form-control" id="mypos-checkout" name="mypos-checkout" required>';
-                                                if (get_option('mypos_checkout')) {
-                                                    echo '<option value="1" selected>Bật</option>
-                                                    <option value="0">Tắt</option>';
-                                                } else {
-                                                    echo '<option value="1">Bật</option>
-                                                    <option value="0" selected>Tắt</option>';
-                                                }
-                                                echo '</select>
+                                                </div>
+                                                    
+                                                <div class="form-group">
+                                                    <label>Bật/Tắt chức năng: Kiểm tra trên trang thanh toán</label>
+                                                    <select class="form-control" id="mypos-checkout" name="mypos-checkout" required>';
+                                                    if (get_option('mypos_checkout')) {
+                                                        echo '<option value="1" selected>Bật</option>
+                                                        <option value="0">Tắt</option>';
+                                                    } else {
+                                                        echo '<option value="1">Bật</option>
+                                                        <option value="0" selected>Tắt</option>';
+                                                    }
+                                                    echo '</select>
+                                                </div>
                                             </div>
                                             
                                                                                         
