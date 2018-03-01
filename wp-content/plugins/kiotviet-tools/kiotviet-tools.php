@@ -345,12 +345,59 @@ function function_get_sku_kiotviet() {
     echo '</div></div></div>';
 }
 
+function getVariableSize ( $foo ) 
+{
+    $file_name = "temp-" . microtime(true) . ".txt";
+    $file_path = WC_PLUGIN_DIR . '/logs/' . $file_name;
+    
+    $file = fopen($file_path, "w");
+    fwrite($file, json_encode($foo));
+    fclose($file);
+    
+    $size = filesize_formatted($file_path);
+//    unlink($tmpfile);
+    return $size;
+}
+
+function filesize_formatted($file)
+{
+    $bytes = filesize($file);
+
+    if ($bytes >= 1073741824) {
+        return number_format($bytes / 1073741824, 2) . ' GB';
+    } elseif ($bytes >= 1048576) {
+        return number_format($bytes / 1048576, 2) . ' MB';
+    } elseif ($bytes >= 1024) {
+        return number_format($bytes / 1024, 2) . ' KB';
+    } elseif ($bytes > 1) {
+        return $bytes . ' bytes';
+    } elseif ($bytes == 1) {
+        return '1 byte';
+    } else {
+        return '0 bytes';
+    }
+}
+
 function function_testing_page() {
     
-//    $kv = new KiotViet_API();
-//    
-//    $products = $kv->get_product_paged(20, 100000);
-//    
+    $time = microtime(TRUE);
+    $mem = memory_get_usage();
+    
+    $kv = new KiotViet_API();
+    
+    $products = $kv->get_all_products();
+    echo '<pre>';
+    print_r($products);
+    echo '</pre>';
+    
+    echo 'Used RAM: ' . getVariableSize($products) . '<br/>';
+    
+    print_r(array(
+        'memory' => (memory_get_usage() - $mem) / (1024 * 1024),
+        'seconds' => microtime(TRUE) - $time
+    ));
+    exit;
+    
 //    echo '<pre>';
 //    print_r($products['all_products']);
 //    echo '</pre>';
@@ -363,22 +410,9 @@ function function_testing_page() {
 //    echo '</pre>';
 //    exit;
         
-    $product = wc_get_product(6547);
-    
-    echo $product->get_sale_price();
-    
-    $dbModel = new DbModel();
-    
-    $product = $dbModel->kiotviet_update_productcode_by_productid(123123123123, 'MTMTMT');
-    
-    
-    $product = $dbModel->get_productInfo_byProductID(123123123123);
-    
-    echo '<pre>';
-    echo print_r($product);
-    echo '<pre>';
-    
-    
+//    $product = wc_get_product(6547);
+//    
+//    echo $product->get_sale_price();
     
 }
 
@@ -388,6 +422,10 @@ function update_default_manual_sync_options() {
 }
 
 function function_mypos_sync_page() {
+    
+    
+    $time = microtime(TRUE);
+    $mem = memory_get_usage();
     
     set_time_limit(600);
     
@@ -489,6 +527,11 @@ function function_mypos_sync_page() {
     }
     
     echo '</div>';
+    
+    print_r(array(
+        'memory' => (memory_get_usage() - $mem) / (1024 * 1024),
+        'seconds' => microtime(TRUE) - $time
+    ));
 }
 
 ?>

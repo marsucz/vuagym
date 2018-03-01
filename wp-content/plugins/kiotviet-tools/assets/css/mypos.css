@@ -33,11 +33,15 @@
 }
 
 .modal-header {
-    /*background-color: #337AB7;*/
+    background-color: #337AB7;
     padding:16px 16px;
     color:#FFF;
     border-bottom:2px dashed #337AB7;
- }
+}
+
+.modal-header.white {
+    background-color: white !important;
+}
  
  .cart-title-body del .woocommerce-Price-amount {
      font-size: 11px;

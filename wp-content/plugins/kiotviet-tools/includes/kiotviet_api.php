@@ -18,9 +18,14 @@ class KiotViet_API {
         date_default_timezone_set('Asia/Ho_Chi_Minh');
     }
     
-    public function check_process_stop() {
+    public function check_process_stop($error_details = '') {
         if ($this->stop) {
-            echo "Xuất hiện lỗi khi kết nối tới API. Dừng quá trình!";
+            
+            echo "<br/><span style='font-weight: bold; color: red;'>Xuất hiện lỗi khi kết nối tới API. Dừng quá trình! <br/>";
+            if (!empty($error_details)){
+                echo "Chi tiết: " . json_encode($error_details);
+            }
+            echo "</span>";
             exit;
         }
     }
@@ -240,7 +245,7 @@ class KiotViet_API {
     
     public function get_all_products() {
 
-        set_time_limit(0);
+        set_time_limit(300);
 
         $dbModel = new DbModel();
 
@@ -249,11 +254,13 @@ class KiotViet_API {
         // Get example data to get number of products
         $data['pageSize'] = 1;
         $data['currentItem'] = 0;
+        
+        $result = $this->api_call($url, $data);
+        
         $data['includeInventory'] = true;
         $data['includePricebook'] = true;
-        $result = $this->api_call($url, $data);
-
-        $data['pageSize'] = 20;
+        $data['pageSize'] = 100;
+        
         $number_products = $result['total'];
         $number_pages = (int) ($number_products / $data['pageSize']) + 1;
 
@@ -264,7 +271,6 @@ class KiotViet_API {
         for ($i=0; $i<=$number_pages; $i++) {
             $data['currentItem'] = $data['pageSize'] * $i;
             $result = $this->api_call($url, $data);
-            
             
             foreach ($result['data'] as $product) {
                 $single_product = array();
@@ -287,13 +293,12 @@ class KiotViet_API {
                 }
                 $all_products[] = $single_product;
             }
-            
         }
 
         return $all_products;
     }
     
-    public function get_product_paged($per_page = 10, $paged = 0) {
+    public function get_product_paged($per_page = 50, $paged = 0) {
 
         set_time_limit(0);
         
@@ -410,10 +415,10 @@ class KiotViet_API {
         $result = json_decode($response, true);
         if ($result) {
             if (isset($result['responseStatus'])) {
-                $this->count_error = $this->count_error + 1;
-                if ($this->count_error > KV_API_MAX_ERROR) {
+                $this->count_error++;
+                if ($this->count_error > KV_API_MAX_ERROR || $result['responseStatus']['errorCode'] == 'RateLimited') {
                     $this->stop = true;
-                    $this->check_process_stop();
+                    $this->check_process_stop($result['responseStatus']);
                 }
             } else {
                 return $result;

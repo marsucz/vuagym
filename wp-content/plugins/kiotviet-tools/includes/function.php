@@ -1,5 +1,22 @@
 <?php
 
+function write_logs($file_name, $text) {
+    
+    $file_path = WC_PLUGIN_DIR . '/logs/' . $file_name;
+    
+    $file = fopen($file_path, "a");
+    
+    date_default_timezone_set('Asia/Ho_Chi_Minh');
+    $date = date('Y-m-d H:i:s', time());
+    
+    $body = "\n" . $date . ' ';
+    $body .= $text;
+    
+    fwrite($file, $body);
+    fclose($file);
+    
+}
+
 function kiotViet_get_preOrder_status($item_id) {
     
     $pre_order_status = false;

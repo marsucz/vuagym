@@ -6,7 +6,7 @@ jQuery(document).ready(function($){
     
 //    var LastQtyChanged = null;
     
-    $('.qty').on('change', function(){
+    $(document).on('change', '.qty', function(){
         
         if ($('#updateCartModal').length) {
             $('#updateCartModal').remove();
@@ -125,15 +125,19 @@ jQuery(document).ready(function($){
     var CurrentInput = null;
     var updateButton = $("input[name='update_cart']");
     
-    $('.qty').on('focus', function(){
+    $(document).on('focus', '.qty', function(){
+        console.log('qty focused');
         if (CurrentInput !== null) {
+            console.log('qty focused changed');
             CurrentInput.change();
             CurrentInput = null;
         }
     });
     
-    $('.product-quantity').on('click','.qty-up',function(e){
+    $(document).on('click','.qty-up',function(e){
         e.preventDefault();
+        
+        console.log('up clicked');
 
         if (updateButton.prop('disabled')) {
             updateButton.prop('disabled', false);
@@ -143,7 +147,7 @@ jQuery(document).ready(function($){
 //            return false;
 //        } else 
         {
-            inputQty = $(this).parent().parent().parent().find('.qty');
+            inputQty = $(this).parent().find('.qty');
             
             if (CurrentInput === null) {
                 CurrentInput = inputQty;
@@ -171,7 +175,10 @@ jQuery(document).ready(function($){
         return false;
     });
 
-    $('.product-quantity').on('click','.qty-down', function(e){
+    $(document).on('click','.qty-down', function(e){
+        
+        console.log('down clicked');
+        
         e.preventDefault();
         
         if (updateButton.prop('disabled')) {
@@ -183,7 +190,7 @@ jQuery(document).ready(function($){
 //            return false;
 //        } else 
         {
-            inputQty = $(this).parent().parent().parent().find('.qty');
+            inputQty = $(this).parent().find('.qty');
             
             if (CurrentInput === null) {
                 CurrentInput = inputQty;
