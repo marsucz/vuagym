@@ -20,6 +20,7 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
     private $kv_api;
     private $show_type = 1;
     private $show_products_per_page = 10;
+    private $list_kv_product = array();
     
     function __construct($show_type, $show_products) {
         $args = array();
@@ -63,21 +64,24 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                 break;
             
             case 1: // Chi hien thi san pham khong dong bo
-                $perPage = 50;
-                $currentPage = 0;
+                
+                $this->list_kv_product = $this->kv_api->get_all_products_multi();
+                
+//                $perPage = 50;
+//                $currentPage = 0;
                 
                 // show product one times
                 $show_products = $this->show_products_per_page;
                 $count_product = 0;
                 
-                while ($count_product < $show_products) {
+//                while ($count_product < $show_products) {
+//                    
+//                    $currentPage++;
+//                    $result = $this->kv_api->get_product_paged($perPage, $currentPage);
+//                    
+//                    if (empty($result)) { break; }
                     
-                    $currentPage++;
-                    $result = $this->kv_api->get_product_paged($perPage, $currentPage);
-                    
-                    if (empty($result)) { break; }
-                    
-                    foreach ($result['all_products'] as $kv_product) {
+                    foreach ($this->list_kv_product as $kv_product) {
                         
                         $new_item = $this->get_product_show_type_no_sync($kv_product);
                         if (!empty($new_item)) {
@@ -88,7 +92,7 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                             break;
                         }
                     }
-                }
+//                }
                 break;
             
             default:
@@ -219,18 +223,22 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                         $woo_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng</span>';
                     }
                 }
-
+                
                 $formated_price = kiotViet_formatted_price($woo_product['price']);
                 $woo_product['woo_text'] = "{$woo_product['name']}<br/>-Mã: <b>{$woo_product['sku']}</b> -{$woo_product['stock_status']} -Giá: {$formated_price}";
+                
+                if ((trim($product->get_name()) == 'Header') || (trim($product->get_title()) == 'Header')) {
+                    $woo_product['woo_text'] = '<span style="font-weight: bold; color: red;">SẢN PHẨM TRÊN WEB BỊ LỖI</span><br/>' . $woo_product['woo_text'];
+                }
 
             } else {
-                return $new_item;
-//                $woo_product['option_text'] = 'SP không tồn tại trên Web';
+//                return $new_item;
+                $woo_product['id'] = 0;
             }
             
         } else {
-            return $new_item;
-//            $woo_product['id'] = 0;
+//            return $new_item;
+            $woo_product['id'] = 0;
         }
         
         $new_item['kv'] = $kv_product;
@@ -342,11 +350,26 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                 
                 if ($woo_product['id']) {
                     
-                    if ($kv_product['stock'] && !$woo_product['stock']) {
+                    $show_updateInStock = false;
+                    
+                    if (($kv_product['stock'] && !$woo_product['stock'])
+                            || ($kv_product['stock'] && $woo_product['preorder'])
+                            ){
+                        $show_updateInStock = true;
+                    }
+                    
+                    if ($show_updateInStock) {
                         $r .= '  <button id="updateInStock_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-success" title="Cập nhật có hàng trên Web cho sản phẩm này" onclick="updateInStock('. $woo_product['id'] .');"><i class="fa fa-tasks"></i>  Cập nhật có hàng</button>';
                     }
-
+                    
+                    //==================
+                    $show_updateOutOfStock = false;
+                    
                     if (!$kv_product['stock'] && $woo_product['stock']) {
+                        $show_updateOutOfStock = true;
+                    }
+                    
+                    if ($show_updateOutOfStock) {
                         $r.= '  <button id="updateOutOfStock_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-danger" title="Cập nhật hết hàng trên Web cho sản phẩm này" onclick="updateOutOfStock('. $woo_product['id'] .');"><i class="fa fa-tasks"></i>  Cập nhật hết hàng</button>';
                     }
 
@@ -354,6 +377,7 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                         
                         $confirm_text = "Xác nhận sửa giá " . $woo_product['name'] . " thành " . number_format($kv_product['price'], 0, ',', '.') . " đ (theo kiotviet)?";
                         $r .= '  <button id="updateWebPrice_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-info" title="Cập nhật giá trên Web cho sản phẩm này theo giá trên KiotViet" onclick="updateWebPrice_byKVPrice('. $woo_product['id'] .',' . $kv_product['price'] . ',\'' . $confirm_text .  '\');"><i class="fa fa-anchor"></i>  Cập nhật giá Web theo KiotViet</button>';
+                        // An de dung sau
 //                        $r .= '  <button id="updateKVPrice_' . $kv_product['id'] . '" type="button" class="btn btn-mypos btn-warning" title="Cập nhật giá trên KiotViet cho sản phẩm này theo giá trên Web" onclick="updateKVPrice_byWebPrice('. $kv_product['id'] .',' . $woo_product['price'] . ');"><i class="fa fa-anchor"></i>  Cập nhật giá KiotViet theo Web</button>';
                     }
                     

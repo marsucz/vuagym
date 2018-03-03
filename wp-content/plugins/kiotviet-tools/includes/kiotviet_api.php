@@ -13,17 +13,18 @@ class KiotViet_API {
     private $access_token = '';
     private $count_error = 0;
     private $stop = false;
+    private $kiotviet_retailer = '';
     
     function __construct() {
         date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $this->kiotviet_retailer = get_option('kiotviet_retailer');
     }
     
     public function check_process_stop($error_details = '') {
         if ($this->stop) {
-            
-            echo "<br/><span style='font-weight: bold; color: red;'>Xuất hiện lỗi khi kết nối tới API. Dừng quá trình! <br/>";
+            echo "<br/><span style='font-weight: bold; color: red;'>Xuất hiện lỗi khi kết nối tới API. Dừng quá trình!";
             if (!empty($error_details)){
-                echo "Chi tiết: " . json_encode($error_details);
+                echo "=> Chi tiết: " . json_encode($error_details);
             }
             echo "</span>";
             exit;
@@ -272,32 +273,108 @@ class KiotViet_API {
             $data['currentItem'] = $data['pageSize'] * $i;
             $result = $this->api_call($url, $data);
             
-            foreach ($result['data'] as $product) {
-                $single_product = array();
-                $single_product['id'] = $product['id'];
-                $single_product['sku'] = $product['code'];
-                $single_product['name'] = isset($product['fullName']) ? $product['fullName'] : $product['name'];
-                $single_product['price'] = $product['basePrice'];
-                
-                $quantity = 0;
-                if (isset($product['inventories']) && count($product['inventories']) > 0) {
-                    foreach ($product['inventories'] as $inventory) {
-                        $quantity += (int)$inventory['onHand'];
-                    }
-                }
-                $single_product['quantity'] = $quantity;
-                if ($quantity > 0) {
-                    $single_product['stock'] = true;
-                } else {
-                    $single_product['stock'] = false;
-                }
-                $all_products[] = $single_product;
+            $converted_products = $this->convert_products($result);
+            if (count($converted_products) > 0) {
+                $all_products = array_merge($all_products, $converted_products);
             }
+//            foreach ($result['data'] as $product) {
+//                $single_product = array();
+//                $single_product['id'] = $product['id'];
+//                $single_product['sku'] = $product['code'];
+//                $single_product['name'] = isset($product['fullName']) ? $product['fullName'] : $product['name'];
+//                $single_product['price'] = $product['basePrice'];
+//                
+//                $quantity = 0;
+//                if (isset($product['inventories']) && count($product['inventories']) > 0) {
+//                    foreach ($product['inventories'] as $inventory) {
+//                        $quantity += (int)$inventory['onHand'];
+//                    }
+//                }
+//                $single_product['quantity'] = $quantity;
+//                if ($quantity > 0) {
+//                    $single_product['stock'] = true;
+//                } else {
+//                    $single_product['stock'] = false;
+//                }
+//                $all_products[] = $single_product;
+//            }
         }
 
         return $all_products;
     }
     
+        public function get_all_products_multi() {
+
+        set_time_limit(300);
+
+        $dbModel = new DbModel();
+
+        $url = 'https://public.kiotapi.com/products';
+
+        // Get example data to get number of products
+        $data['pageSize'] = 1;
+        $data['currentItem'] = 0;
+        
+        $result = $this->api_call($url, $data);
+        
+        $data['includeInventory'] = true;
+        $data['includePricebook'] = true;
+        $data['pageSize'] = 100;
+        
+        $number_products = $result['total'];
+        $number_pages = (int) ($number_products / $data['pageSize']) + 1;
+
+        $count = 0;
+        
+        $all_products = array();
+        $url_array = array();
+        
+        for ($i=0; $i<=$number_pages; $i++) {
+            $data['currentItem'] = $data['pageSize'] * $i;
+            $url_array[] = $url . '?' . http_build_query($data, '', '&');
+        }
+        
+        if (count($url_array) > 0) {
+            $all_products = $this->runRequests($url_array);
+        }
+        
+        return $all_products;
+    }
+    
+    private function convert_products($raw_data) {
+        
+        $all_products = array();
+        
+        if (!isset($raw_data['data']) || empty($raw_data['data'])) {
+            return $all_products;
+        }
+        
+        foreach ($raw_data['data'] as $product) {
+            $single_product = array();
+            $single_product['id'] = $product['id'];
+            $single_product['sku'] = $product['code'];
+            $single_product['name'] = isset($product['fullName']) ? $product['fullName'] : $product['name'];
+            $single_product['price'] = $product['basePrice'];
+
+            $quantity = 0;
+            if (isset($product['inventories']) && count($product['inventories']) > 0) {
+                foreach ($product['inventories'] as $inventory) {
+                    $quantity += (int)$inventory['onHand'];
+                }
+            }
+            $single_product['quantity'] = $quantity;
+            if ($quantity > 0) {
+                $single_product['stock'] = true;
+            } else {
+                $single_product['stock'] = false;
+            }
+            $all_products[] = $single_product;
+        }
+        
+        return $all_products;
+    }
+
+
     public function get_product_paged($per_page = 50, $paged = 0) {
 
         set_time_limit(0);
@@ -404,7 +481,7 @@ class KiotViet_API {
 //         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
          CURLOPT_CUSTOMREQUEST => "GET",
          CURLOPT_HTTPHEADER => array(
-           "Retailer: " . get_option('kiotviet_retailer'),
+           "Retailer: " . $this->kiotviet_retailer,
            "Authorization: Bearer " . $access_token
          ),
         ));
@@ -416,7 +493,7 @@ class KiotViet_API {
         if ($result) {
             if (isset($result['responseStatus'])) {
                 $this->count_error++;
-                if ($this->count_error > KV_API_MAX_ERROR || $result['responseStatus']['errorCode'] == 'RateLimited') {
+                if ($this->count_error > KV_API_MAX_ERROR) {
                     $this->stop = true;
                     $this->check_process_stop($result['responseStatus']);
                 }
@@ -442,7 +519,7 @@ class KiotViet_API {
         }
     }
 
-        public function api_call_put($url, $data = []) {
+    public function api_call_put($url, $data = []) {
 
 //        if (!empty($data) && is_array($data)) {
 //            $url = $url . '?' . http_build_query($data, '', '&');
@@ -455,13 +532,13 @@ class KiotViet_API {
         curl_setopt_array($curl, array(
          CURLOPT_URL => $url,
          CURLOPT_RETURNTRANSFER => true,
-         CURLOPT_ENCODING => "",
+//         CURLOPT_ENCODING => "",
          CURLOPT_MAXREDIRS => 5,
          CURLOPT_TIMEOUT => 15,
-         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
          CURLOPT_CUSTOMREQUEST => "PUT",
          CURLOPT_HTTPHEADER => array(
-           "Retailer: " . get_option('kiotviet_retailer'),
+           "Retailer: " . $this->kiotviet_retailer,
            "Authorization: Bearer " . $access_token
          ),
          CURLOPT_POSTFIELDS => http_build_query($data),
@@ -475,7 +552,7 @@ class KiotViet_API {
             return $result;
         } else {
             $t = date('Ymd');
-            $log_file = "KiotVietAPI_Errors_{$t}.txt";
+            $log_file = "KiotVietAPI_SetPriceError_{$t}.txt";
             $log_text = "URL Get: " . $url;
             $log_text .= "\n KiotViet not response: " . json_encode($response);
             write_logs($log_file, $log_text);
@@ -504,10 +581,10 @@ class KiotViet_API {
         curl_setopt_array($curl, array(
          CURLOPT_URL => $post_url,
          CURLOPT_RETURNTRANSFER => true,
-         CURLOPT_ENCODING => "",
+//         CURLOPT_ENCODING => "",
          CURLOPT_MAXREDIRS => 3,
          CURLOPT_TIMEOUT => 15,
-         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
          CURLOPT_CUSTOMREQUEST => "POST",
          CURLOPT_POSTFIELDS => $post_string,
          CURLOPT_HTTPHEADER => array(
@@ -558,5 +635,84 @@ class KiotViet_API {
             return false;
             
         } 
+    }
+    
+    public function runRequests($url_array, $thread_width = 8) {
+        
+        $access_token = $this->get_access_token();
+        
+        $threads = 0;
+        $master = curl_multi_init();
+        $curl_opts = array(
+            CURLOPT_MAXREDIRS => 5,
+            CURLOPT_CONNECTTIMEOUT => 30,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTPHEADER => array(
+                "Retailer: " . $this->kiotviet_retailer,
+                "Authorization: Bearer " . $access_token
+              ),
+            CURLOPT_RETURNTRANSFER => TRUE);
+        
+        $all_products = array();
+//        $results = array();
+
+        $count = 0;
+        foreach($url_array as $url) {
+
+            $ch = curl_init();
+            $curl_opts[CURLOPT_URL] = $url;
+
+            curl_setopt_array($ch, $curl_opts);
+            curl_multi_add_handle($master, $ch); //push URL for single rec send into curl stack
+
+//            $temp_result = array("handle" => $ch);
+//            $temp_result = array_merge($temp_result, $url);
+//            $results[$count] = $temp_result;
+
+            $threads++;
+            $count++;
+            if($threads >= $thread_width) { //start running when stack is full to width
+                while($threads >= $thread_width) {
+                    usleep(100);
+                    while(($execrun = curl_multi_exec($master, $running)) === -1){}
+                    curl_multi_select($master);
+                    // a request was just completed - find out which one and remove it from stack
+                    while($done = curl_multi_info_read($master)) {
+//                        foreach($results as &$res) {
+//                            if($res['handle'] == $done['handle']) {
+                                $api_result = curl_multi_getcontent($done['handle']);
+                                $api_result = json_decode($api_result, true);
+                                $converted_product = $this->convert_products($api_result);
+                                $all_products = array_merge($all_products, $converted_product);
+//                            }
+//                        }
+                        curl_multi_remove_handle($master, $done['handle']);
+                        curl_close($done['handle']);
+                        $threads--;
+                    }
+                }
+            }
+        }
+        do { //finish sending remaining queue items when all have been added to curl
+            usleep(100);
+            while(($execrun = curl_multi_exec($master, $running)) === -1){}
+            curl_multi_select($master);
+            while($done = curl_multi_info_read($master)) {
+//                foreach($results as &$res) {
+//                    if($res['handle'] == $done['handle']) {
+                        $api_result = curl_multi_getcontent($done['handle']);
+                        $api_result = json_decode($api_result, true);
+                        $converted_product = $this->convert_products($api_result);
+                        $all_products = array_merge($all_products, $converted_product);
+//                    }
+//                }
+                curl_multi_remove_handle($master, $done['handle']);
+                curl_close($done['handle']);
+                $threads--;
+            }
+        } while($running > 0);
+        curl_multi_close($master);
+        return $all_products;
     }
 }

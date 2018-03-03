@@ -125,8 +125,8 @@ jQuery(document).ready(function($){
     var CurrentInput = null;
     var updateButton = $("input[name='update_cart']");
     
-    $(document).on('focus', '.qty', function(){
-        console.log('qty focused');
+//    $(document).on('focus', '.qty', function(){
+    $('.qty').on('focus', function(){
         if (CurrentInput !== null) {
             console.log('qty focused changed');
             CurrentInput.change();
@@ -134,9 +134,10 @@ jQuery(document).ready(function($){
         }
     });
     
-    $(document).on('click','.qty-up',function(e){
+//    $(document).on('click','.qty-up',function(e){
+    $('.product-quantity').on('click','.qty-up',function(e){
         e.preventDefault();
-        
+
         console.log('up clicked');
 
         if (updateButton.prop('disabled')) {
@@ -147,7 +148,7 @@ jQuery(document).ready(function($){
 //            return false;
 //        } else 
         {
-            inputQty = $(this).parent().find('.qty');
+            inputQty = $(this).parent().parent().parent().find('.qty');
             
             if (CurrentInput === null) {
                 CurrentInput = inputQty;
@@ -174,11 +175,9 @@ jQuery(document).ready(function($){
         }   
         return false;
     });
-
-    $(document).on('click','.qty-down', function(e){
-        
-        console.log('down clicked');
-        
+    
+//    $(document).on('click','.qty-down', function(e){
+    $('.product-quantity').on('click','.qty-down', function(e){
         e.preventDefault();
         
         if (updateButton.prop('disabled')) {
@@ -190,7 +189,7 @@ jQuery(document).ready(function($){
 //            return false;
 //        } else 
         {
-            inputQty = $(this).parent().find('.qty');
+            inputQty = $(this).parent().parent().parent().find('.qty');
             
             if (CurrentInput === null) {
                 CurrentInput = inputQty;

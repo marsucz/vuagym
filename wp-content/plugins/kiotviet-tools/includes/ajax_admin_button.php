@@ -14,12 +14,22 @@ function ja_ajax_mypos_update_product_instock() {
     $product = wc_get_product($product_id);
     
     $product->set_stock_status('instock');
+    $product->set_date_created(current_time('timestamp',7));
+    $product->set_date_modified(current_time('timestamp',7));
     
+    $categories = $product->get_category_ids();
+    foreach ($categories as $key => $ca) {
+        if ($ca == 81) { // Danh muc: Sap co hang
+            unset($categories[$key]);
+        }
+    }
+    $categories[] = 86; // Danh muc: Hang moi ve
+    $product->set_category_ids($categories);
     if ('publish' !== $product->get_status()) {
         $product->set_status('publish');
     }
     
-    $product->save();
+    $result = $product->save();
     
     $pre_order = new YITH_Pre_Order_Product( $product_id );
     
@@ -27,7 +37,11 @@ function ja_ajax_mypos_update_product_instock() {
         $pre_order->set_pre_order_status('no');
     }
     
-    $return['status'] = true;
+    if ($result) {
+        $return['status'] = true;
+    } else {
+        $return['status'] = false;
+    }
     
     wp_send_json_success( $return );
     
@@ -48,12 +62,18 @@ function ja_ajax_mypos_update_product_outofstock() {
 		
     $product = wc_get_product($product_id);
     $product->set_stock_status('outofstock');
-    $product->save();
+    $product->set_date_created(current_time('timestamp',7));
+    $product->set_date_modified(current_time('timestamp',7));
+    $result = $product->save();
     
     
 //    echo $product->get_stock_status();
     
-    $return['status'] = true;
+    if ($result) {
+        $return['status'] = true;
+    } else {
+        $return['status'] = false;
+    }
     
     wp_send_json_success( $return );
     
@@ -74,6 +94,8 @@ function ja_ajax_mypos_update_webprice_by_kvprice() {
     }
 		
     $product = wc_get_product($product_id);
+    $product->set_date_created(current_time('timestamp',7));
+    $product->set_date_modified(current_time('timestamp',7));
     
     $sale_price = $product->get_sale_price();
     if ( !$sale_price || empty($sale_price) || is_null($sale_price)) {
@@ -83,9 +105,13 @@ function ja_ajax_mypos_update_webprice_by_kvprice() {
         $product->set_sale_price($price);
     }
     
-    $product->save();
+    $result = $product->save();
     
-    $return['status'] = true;
+    if ($result) {
+        $return['status'] = true;
+    } else {
+        $return['status'] = false;
+    }
     
     wp_send_json_success( $return );
     

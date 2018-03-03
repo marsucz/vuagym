@@ -34,7 +34,7 @@ if (!defined('KV_CLIENT_SECRET')) {
 }
 
 if (!defined('MYPOS_PER_PAGE')) {
-    define('MYPOS_PER_PAGE', 5);
+    define('MYPOS_PER_PAGE', 20);
 }
 
 require_once('autoload.php');
@@ -379,41 +379,31 @@ function filesize_formatted($file)
 }
 
 function function_testing_page() {
+  
+//echo "current_time( 'mysql' ) returns local site time: " . current_time( 'mysql' ) . '<br />';
+//echo "current_time( 'mysql', 1 ) returns GMT: " . current_time( 'mysql', 1 ) . '<br />';
+//echo "current_time( 'timestamp' ) returns local site time: " . date( 'Y-m-d H:i:s', current_time( 'timestamp', 0 ) );
+//echo "current_time( 'timestamp', 1 ) returns GMT: " . date( 'Y-m-d H:i:s',  );
+    $product_id = 10537;
+    $product = wc_get_product($product_id);
     
-    $time = microtime(TRUE);
-    $mem = memory_get_usage();
+    $categories = $product->get_category_ids();
+    foreach ($categories as $key => $ca) {
+        if ($ca == 81) { // Danh muc: Sap co hang
+            unset($categories[$key]);
+        }
+    }
+    $categories[] = 86; // Danh muc: Hang moi ve
+    $product->set_category_ids($categories);
     
-    $kv = new KiotViet_API();
+    $result = $product->save();
     
-    $products = $kv->get_all_products();
+    $product = wc_get_product($product_id);
+    $test = $product->get_category_ids();
     echo '<pre>';
-    print_r($products);
-    echo '</pre>';
-    
-    echo 'Used RAM: ' . getVariableSize($products) . '<br/>';
-    
-    print_r(array(
-        'memory' => (memory_get_usage() - $mem) / (1024 * 1024),
-        'seconds' => microtime(TRUE) - $time
-    ));
+    print_r($test);
+    echo '<pre>';
     exit;
-    
-//    echo '<pre>';
-//    print_r($products['all_products']);
-//    echo '</pre>';
-//    exit;
-//    
-//    $prod = wc_get_product_id_by_sku('SP000655');
-//    
-//    echo '<pre>';
-//    print_r($prod);
-//    echo '</pre>';
-//    exit;
-        
-//    $product = wc_get_product(6547);
-//    
-//    echo $product->get_sale_price();
-    
 }
 
 function update_default_manual_sync_options() {
@@ -422,7 +412,6 @@ function update_default_manual_sync_options() {
 }
 
 function function_mypos_sync_page() {
-    
     
     $time = microtime(TRUE);
     $mem = memory_get_usage();
@@ -441,6 +430,7 @@ function function_mypos_sync_page() {
     }
     
     if (isset($_POST['sync_by_web_show_type'])) {
+        
         update_option('sync_by_web_show_type', $_POST['sync_by_web_show_type']);
         update_option('sync_by_web_products', $_POST['sync_by_web_products']);
     }
@@ -501,6 +491,8 @@ function function_mypos_sync_page() {
                             </select>
                             <label id="sync_by_web_products_label"> Số lượng SP </label>
                             <input type="number" id="sync_by_web_products" name="sync_by_web_products" value="' . $show_products . '" min="1" required>
+                            <label id="sync_show_product_error_label"> Hiển thị SP lỗi </label>
+                            <input type="checkbox" id="sync_show_product_error" name="sync_show_product_error" value="1" ' . ($show_product_error == 1 ? 'checked' : '') . '>
                         <input type="submit" class="button" value="Áp dụng">
                     </form>
                     </div>';
@@ -528,10 +520,15 @@ function function_mypos_sync_page() {
     
     echo '</div>';
     
-    print_r(array(
+    $system_used = array(
         'memory' => (memory_get_usage() - $mem) / (1024 * 1024),
         'seconds' => microtime(TRUE) - $time
-    ));
+    );
+    
+    echo '<pre>';
+    print_r($system_used);
+    echo '<pre>';
+    
 }
 
 ?>
