@@ -6,7 +6,7 @@ jQuery(document).ready(function($){
     
 //    var LastQtyChanged = null;
     
-    $(document).on('change', '.qty', function(){
+    $('.main-content').on('change', '.qty', function(){
         
         if ($('#updateCartModal').length) {
             $('#updateCartModal').remove();
@@ -72,6 +72,7 @@ jQuery(document).ready(function($){
             
             block( $form );
             block( $( 'div.cart_totals' ) );
+            $('.qty').prop('disabled', true);
             
             $.ajax({
                 url: global.ajax,
@@ -85,7 +86,8 @@ jQuery(document).ready(function($){
                     
                     unblock( $form );
                     unblock( $( 'div.cart_totals' ) );
-
+                    $('.qty').prop('disabled', false);
+                    
                     $("a.checkout-button.wc-forward")
                                             .removeClass('disabled')
                                              .html(checkout_button_text);
@@ -108,6 +110,13 @@ jQuery(document).ready(function($){
                         $('.cart-subtotal').find('td').html(response.data.cart_subtotal);
                         $('.order-total').find('strong').html(response.data.cart_total);
                     }
+                },
+                error: function(res) {
+                    unblock( $form );
+                    unblock( $( 'div.cart_totals' ) );
+                    $('.qty').prop('disabled', false);
+                    console.log('Check quantity error!');
+                    console.log(res);
                 }
             })
         } 
@@ -126,16 +135,16 @@ jQuery(document).ready(function($){
     var updateButton = $("input[name='update_cart']");
     
 //    $(document).on('focus', '.qty', function(){
-    $('.qty').on('focus', function(){
+    $('.main-content').on('click', '.qty', function(){
+        console.log('qty focused changed');
         if (CurrentInput !== null) {
-            console.log('qty focused changed');
             CurrentInput.change();
             CurrentInput = null;
         }
     });
     
 //    $(document).on('click','.qty-up',function(e){
-    $('.product-quantity').on('click','.qty-up',function(e){
+    $('.main-content').on('click','.qty-up',function(e){
         e.preventDefault();
 
         console.log('up clicked');
@@ -177,7 +186,7 @@ jQuery(document).ready(function($){
     });
     
 //    $(document).on('click','.qty-down', function(e){
-    $('.product-quantity').on('click','.qty-down', function(e){
+    $('.main-content').on('click','.qty-down', function(e){
         e.preventDefault();
         
         if (updateButton.prop('disabled')) {
