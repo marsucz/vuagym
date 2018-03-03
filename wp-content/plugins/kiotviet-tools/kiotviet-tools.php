@@ -407,7 +407,7 @@ function function_testing_page() {
     
 //    $test = get_product_title_in_path(10538);
 //    echo $test;
-//    delete_post_cache(10577);   
+    delete_post_cache(10577);
 //    $cache_product = WP_CONTENT_DIR . '/cache/all/danh-muc';
 //    $cache_cuahang = WP_CONTENT_DIR . '/cache/all/cua-hang';
 }
