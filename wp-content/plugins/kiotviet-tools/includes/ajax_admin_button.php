@@ -43,16 +43,16 @@ function ja_ajax_mypos_update_product_instock() {
         $return['status'] = false;
     }
     
-    try {
-        $del_result = delete_post_cache($product_id);
-        if ($del_result) {
-            $return['deleted'] = true;
-        } else {
-            $return['deleted'] = false;
-        }
-    } catch (Exception $ex) {
-        $return['deleted'] = $ex->getMessage();
-    }
+//    try {
+//        $del_result = delete_post_cache($product_id);
+//        if ($del_result) {
+//            $return['deleted'] = true;
+//        } else {
+//            $return['deleted'] = false;
+//        }
+//    } catch (Exception $ex) {
+//        $return['deleted'] = $ex->getMessage();
+//    }
     
     wp_send_json_success( $return );
     
@@ -83,12 +83,12 @@ function ja_ajax_mypos_update_product_outofstock() {
         $return['status'] = false;
     }
     
-    try {
-        $del_result = delete_post_cache($product_id);
-        $return = array_merge($return, $del_result);
-    } catch (Exception $ex) {
-        $return['deleted'] = $ex->getMessage();
-    }
+//    try {
+//        $del_result = delete_post_cache($product_id);
+//        $return = array_merge($return, $del_result);
+//    } catch (Exception $ex) {
+//        $return['deleted'] = $ex->getMessage();
+//    }
     
     wp_send_json_success( $return );
     
@@ -128,12 +128,12 @@ function ja_ajax_mypos_update_webprice_by_kvprice() {
         $return['status'] = false;
     }
 
-    try {
-        $del_result = delete_post_cache($product_id);
-        $return = array_merge($return, $del_result);
-    } catch (Exception $ex) {
-        $return['deleted'] = $ex->getMessage();
-    }
+//    try {
+//        $del_result = delete_post_cache($product_id);
+//        $return = array_merge($return, $del_result);
+//    } catch (Exception $ex) {
+//        $return['deleted'] = $ex->getMessage();
+//    }
     
     wp_send_json_success( $return );
     
@@ -163,12 +163,12 @@ function ja_ajax_mypos_update_kvprice_by_webprice() {
         $return['status'] = false;
     }
 
-    try {
-        $del_result = delete_post_cache($product_id);
-        $return = array_merge($return, $del_result);
-    } catch (Exception $ex) {
-        $return['deleted'] = $ex->getMessage();
-    }
+//    try {
+//        $del_result = delete_post_cache($product_id);
+//        $return = array_merge($return, $del_result);
+//    } catch (Exception $ex) {
+//        $return['deleted'] = $ex->getMessage();
+//    }
     
     wp_send_json_success( $return );
     
