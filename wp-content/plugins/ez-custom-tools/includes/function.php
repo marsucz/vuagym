@@ -117,8 +117,27 @@ if(!function_exists('tuandev_get_default_product_variation')){
 if(!function_exists('tuandev_process_get_price_html')){
     function tuandev_process_get_price_html($product) {
     
-        if ( $product && $product->is_type( 'variable' ) && !$product->has_child()) {
-            $html = tuandev_get_price_html($product);
+        if ( $product && $product->is_type( 'variable' )) {
+            if (!$product->has_child()) {
+                $html = tuandev_get_price_html($product);
+                return $html;
+            }
+            $go = true;
+            $childrens = $product->get_children();
+            foreach ($childrens as $child_id) {
+                $child = wc_get_product($child_id);
+                if ($child->get_stock_status() == 'instock') {
+                    $go = false;
+                    break;
+                }
+            }
+
+            if ($go) {
+                $html = tuandev_get_price_html($product);
+                return $html;
+            } else {
+                $html = $product->get_price_html();
+            }
         } else {
             $html = $product->get_price_html();
         }
@@ -155,7 +174,7 @@ if(!function_exists('tuandev_get_price_html')){
             );
 
             $variations = get_posts( $args );
-
+            
             foreach ($variations as $child_id) {
                 if ( $child_id ) {
                     $child = wc_get_product($child_id->ID);
@@ -182,7 +201,7 @@ if(!function_exists('tuandev_get_price_html')){
                     } 
                 }
             }
-
+            
             if ($regular_min == $max_int || $regular_max == $min_int) {
                 $html_regular = '<span class="td-price">Giá bán: ' . kiotViet_formatted_price(0) . '</span>';
                 $html = '<div class="product-price">' . $html_regular . '</div>';

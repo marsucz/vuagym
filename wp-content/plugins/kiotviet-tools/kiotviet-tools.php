@@ -346,6 +346,20 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
+    $product = wc_get_product(10575);
+    
+//    echo '<pre>';
+//    print_r($product);
+//    echo '<pre>';
+//    exit;
+//    
+    $test = $product->get_price();
+    echo '<pre>';
+    print_r($test);
+    echo '<pre>';
+    echo $product->is_type('variable');
+    echo '<br/>';
+    echo tuandev_process_get_price_html($product);
     
 }
 

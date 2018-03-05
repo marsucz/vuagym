@@ -3920,4 +3920,14 @@ i[class^=icon-] {
     height: 18px;
     border-radius: 5px;
 }
+
+.td-price {
+    display: block;
+}
+
+.td-price-del {
+    font-weight: unset !important;
+    font-size: unset !important;
+    display: block;
+}
 /* End */

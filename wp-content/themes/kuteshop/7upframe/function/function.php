@@ -1345,7 +1345,7 @@ if(!function_exists('s7upf_get_rating_html')){
 if(!function_exists('s7upf_product_main_detai')){
     function s7upf_product_main_detai($ajax = false){
         global $post, $product, $woocommerce;
-        tuandev_process_default_product_variation($product);
+//        tuandev_process_default_product_variation($product);
         s7upf_set_post_view();
         $size = 'full';
         $thumb_id = array(get_post_thumbnail_id());
