@@ -166,6 +166,9 @@ function kiotViet_formatted_price($price){
 //        $options 	= get_option('xoo-wsc-gl-options');
 //        $default_wc = isset( $options['sc-price-format']) ? $options['sc-price-format'] : 0;
 //
+//        if($default_wc == 1){
+//                return wc_price($price);
+//        }
 
         $thous_sep = wc_get_price_thousand_separator();
         $dec_sep   = wc_get_price_decimal_separator();
