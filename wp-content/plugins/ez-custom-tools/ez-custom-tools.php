@@ -28,6 +28,9 @@ function ez_custom_tools_plugin_init() {
     add_action('admin_menu', 'ez_custom_tools_admin_menu');
     add_action('login_init', 'send_frame_options_header', 10, 0);
     add_action('admin_init', 'send_frame_options_header', 10, 0);
+    
+    add_option('ezcustom_remove_notice', 1);
+    add_option('ezcustom_expand_categories_list', 2);
 }
 
 function ez_custom_tools_admin_menu() {
@@ -37,8 +40,9 @@ function ez_custom_tools_admin_menu() {
 
 function function_ez_custom_tools_page() {
     
-    if (isset($_POST['mypos-remove-notice'])) {
-        update_option('mypos_remove_notice', intval($_POST['mypos-remove-notice']));
+    if (isset($_POST['ezcustom-remove-notice'])) {
+        update_option('ezcustom_remove_notice', intval($_POST['ezcustom-remove-notice']));
+        update_option('ezcustom_expand_categories_list', floatval($_POST['ezcustom-expand-categories-list']));
     }
     
     $loader = new EZ_Custom_Loader();
@@ -57,8 +61,8 @@ function function_ez_custom_tools_page() {
                                         <div class="col-lg-12">
                                             <div class="form-group">
                                                 <label>Bật/tắt chức năng: Ẩn thông báo trên trang Admin</label>
-                                                <select class="form-control" id="mypos-remove-notice" name="mypos-remove-notice" required>';
-                                                if (get_option('mypos_remove_notice')) {
+                                                <select class="form-control" id="ezcustom-remove-notice" name="ezcustom-remove-notice" required>';
+                                                if (get_option('ezcustom_remove_notice')) {
                                                     echo '<option value="1" selected>Bật</option>
                                                     <option value="0">Tắt</option>';
                                                 } else {
@@ -66,6 +70,11 @@ function function_ez_custom_tools_page() {
                                                     <option value="0" selected>Tắt</option>';
                                                 }
                                                 echo '</select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Mở rộng khung danh mục: </label>
+                                                <input class="form-control" type="number" step=".01" id="ezcustom-expand-categories-list" name="ezcustom-expand-categories-list" value="' . get_option('ezcustom_expand_categories_list') . '" required>
+                                                    <p class="help-block">Nhập 0 để mở rộng toàn bộ khung danh sách danh mục.</p>
                                             </div>
                                             <button type="submit" class="btn btn-primary">Lưu Cài Đặt</button>
                                             <button type="reset" class="btn btn-default">Nhập Lại</button>

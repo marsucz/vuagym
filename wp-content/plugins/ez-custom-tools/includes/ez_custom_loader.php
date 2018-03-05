@@ -8,6 +8,27 @@ function ez_custom_load_remove_notice_js() {
             }
 }
 
+add_action('admin_head', 'ez_custom_expand_categories_list');
+
+function ez_custom_expand_categories_list() {
+    
+    $max_height = 200 * (float)get_option('ezcustom_expand_categories_list');
+    
+    if ($max_height) {
+        echo '<style>
+            .categorydiv div.tabs-panel {
+              max-height: ' . $max_height .  'px !important;
+            } 
+          </style>';
+    } else {
+        echo '<style>
+            .categorydiv div.tabs-panel {
+              max-height: unset !important;
+            } 
+          </style>';
+    }
+}
+
 if( ! class_exists( 'EZ_Custom_Loader' ) ) {
     
     class EZ_Custom_Loader {
