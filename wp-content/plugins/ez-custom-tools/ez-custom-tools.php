@@ -9,7 +9,7 @@
  * Author URI: http://minhtuanit.me
  * License: GPL2
  * Created On: 28-02-2018
- * Updated On: 28-02-2018
+ * Updated On: 05-03-2018
  */
 // Define CONST
 if (!defined('EZ_CUSTOM_PLUGIN_DIR')) {
