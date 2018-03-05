@@ -20,9 +20,11 @@ if (!defined('EZ_CUSTOM_PLUGIN_URL')) {
 }
 
 require_once 'includes/ez_custom_loader.php';
+require_once 'includes/function.php';
 
 add_action('plugins_loaded', 'ez_custom_tools_plugin_init');
 add_action('admin_enqueue_scripts', 'ez_custom_load_remove_notice_js');
+add_action( 'woocommerce_before_single_product', 'tuandev_process_default_product_variation', 10 );
 
 function ez_custom_tools_plugin_init() {
     add_action('admin_menu', 'ez_custom_tools_admin_menu');

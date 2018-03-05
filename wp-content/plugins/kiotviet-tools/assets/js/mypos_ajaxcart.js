@@ -4,8 +4,6 @@ jQuery(document).ready(function($){
     var update_button_text = $('input[name=update_cart]').val();
     var checkout_button_text = $('.checkout-button').html();
     
-//    var LastQtyChanged = null;
-    
     $('.main-content').on('change', '.qty', function(){
         
         if ($('#updateCartModal').length) {
@@ -13,12 +11,7 @@ jQuery(document).ready(function($){
         }
         
         var $form = $( '.woocommerce-cart-form' );
-
-        console.log('Qty changed');
-        
         var input_element = $(this);
-//        LastQtyChanged = $(this);
-        
         var matches = $(this).attr('name').match(/cart\[(\w+)\]/);
         var cart_item_key = matches[1];
         
@@ -36,34 +29,7 @@ jQuery(document).ready(function($){
         
         var do_update_quantity = true;
         
-        /*
-        if (typeof max_qty !== typeof undefined && max_qty !== false) {
-            
-            console.log(input_element.val());
-            console.log(max_qty);
-            
-            if (input_element.val() <= max_qty) {
-                do_update_quantity = true;
-            } else {
-                if ($('#updateCartModal').length) {
-                    input_element.val(current_qty);
-                    var product_name = input_element.closest('.cart_item').find('.product-name').children().html();
-                    // show pupop and don't do ajax
-                    $('.modal-body').html('');
-                    $('.modal-body').append('<span class="alert-message"><b>' + product_name + '</b> chá»‰ cho phÃ©p Ä‘áº·t tá»‘i Ä‘a <b>' + max_qty + ' sáº£n pháº©m</b>. <br/> Báº¡n Ä‘Ã£ cÃ³ <b>' + current_qty + ' sáº£n pháº©m</b> nÃ y trong giá»� hÃ ng.</span>');
-                    $('#updateCartModal').modal('show');
-                } else {
-                    do_update_quantity = true;
-                }
-            }
-        } else {
-            do_update_quantity = true;
-            max_qty = -1;
-        }
-        */
-       
        if (typeof max_qty !== typeof undefined && max_qty !== false) {
-           
        } else {
            max_qty = -1;
        }
@@ -95,8 +61,6 @@ jQuery(document).ready(function($){
                                             .removeClass('disabled')
                                                     .val(update_button_text);
 
-                    console.log(response);
-
                     input_element.attr('max_quantity', response.data.max_quantity);
                     
                     if (response.data.status === false) {
@@ -120,34 +84,20 @@ jQuery(document).ready(function($){
                 }
             })
         } 
-//        else {
-//            $("a.checkout-button.wc-forward")
-//                                            .removeClass('disabled')
-//                                             .html(checkout_button_text);
-//            $("input[name='update_cart']")
-//                                                .removeClass('disabled')
-//                                                .val(update_button_text);
-//        }
-        
     });
     
     var CurrentInput = null;
     var updateButton = $("input[name='update_cart']");
     
-//    $(document).on('focus', '.qty', function(){
     $('.main-content').on('click', '.qty', function(){
-        console.log('qty focused changed');
         if (CurrentInput !== null) {
             CurrentInput.change();
             CurrentInput = null;
         }
     });
     
-//    $(document).on('click','.qty-up',function(e){
     $('.main-content').on('click','.qty-up',function(e){
         e.preventDefault();
-
-        console.log('up clicked');
 
         if (updateButton.prop('disabled')) {
             updateButton.prop('disabled', false);
@@ -185,7 +135,6 @@ jQuery(document).ready(function($){
         return false;
     });
     
-//    $(document).on('click','.qty-down', function(e){
     $('.main-content').on('click','.qty-down', function(e){
         e.preventDefault();
         
@@ -225,22 +174,6 @@ jQuery(document).ready(function($){
         return false;
     });
     
-//    $('.btn-primary').on('click', function(e){
-//        
-//        console.log('asdasdasd');
-//        
-//        $('#updateCartModal').modal('hide');
-//        if (LastQtyChanged === null) {
-//            return;
-//        }
-//        
-//        var max_qty = LastQtyChanged.attr('max_quantity');
-//        if (typeof max_qty !== typeof undefined && max_qty !== false) {
-//            LastQtyChanged.val(max_qty);
-//            LastQtyChanged.change();
-//        }
-//        
-//    });
     /**
      * Check if a node is blocked for processing.
      *
@@ -276,7 +209,4 @@ jQuery(document).ready(function($){
     var unblock = function( $node ) {
             $node.removeClass( 'processing' ).unblock();
     };
-    
-    
-    
 });

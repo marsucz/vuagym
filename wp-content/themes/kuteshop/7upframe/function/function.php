@@ -1010,38 +1010,14 @@ if(!function_exists('s7upf_get_price_html')){
                 $html =    '<div class="price-style2">'.$product->get_price_html().'</div>';
                 break;
             
-            default:                
-                $html =    $product->get_price_html();
-                break;
-        }
-        return $html;
-    }
-}
-
-if(!function_exists('anhkhoa_get_price_html')){
-    function anhkhoa_get_price_html($style = ''){
-        global $product;
-        switch ($style) {
             default:
-                
-//                $product = wc_get_product( $product_id );
-
-                if ($product->is_type( 'variation' )) {
-                    $base_product_id = $product->get_parent_id();
-                } elseif ($product->is_type( 'simple' )) {
-                    $base_product_id = $product_id;
-                } else {
-                    $base_product_id = $product_id;
-                }
-                
                 $html =    $product->get_price_html();
-                $html .= 'TEST ' . $product->get_id();
-                $html .= 'TEST ' . $product->get_price();
                 break;
         }
         return $html;
     }
 }
+
 // product item list
 if(!function_exists('s7upf_product_item'))
 {
@@ -1369,6 +1345,7 @@ if(!function_exists('s7upf_get_rating_html')){
 if(!function_exists('s7upf_product_main_detai')){
     function s7upf_product_main_detai($ajax = false){
         global $post, $product, $woocommerce;
+        tuandev_process_default_product_variation($product);
         s7upf_set_post_view();
         $size = 'full';
         $thumb_id = array(get_post_thumbnail_id());
@@ -1511,7 +1488,7 @@ if(!function_exists('s7upf_product_main_detai')){
 							<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">THÔNG TIN MUA HÀNG</h2>
 							<div class="row product-header"> 
 								<div class="detail-info">
-									'.s7upf_get_price_html().'<br/>TEST<br/>'.kiotviet_get_price_html($product);
+									'.tuandev_process_get_price_html($product);
 									if (array_key_exists("ywtm_6579",$tabs)){
 			echo        				'<div class="alert alert-danger" style="padding: 0px;">
 											<div style="margin: 10px 5px 5px 5px;">';

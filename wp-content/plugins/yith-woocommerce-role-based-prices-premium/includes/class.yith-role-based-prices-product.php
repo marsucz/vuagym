@@ -278,11 +278,11 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 			$is_custom_price       = $this->is_custom_price( $product );
 
 
-			if ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || $return_original_price || $is_custom_price ) {
-				return $price;
-			}
+//			if ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || $return_original_price || $is_custom_price ) {
+//				return $price;
+//			}
 
-			if ( $price !== '' && ! is_null( $product ) ) {
+//			if ( $price !== '' && ! is_null( $product ) ) {
 
 				$role_price = $this->get_role_based_price( $product );
 
@@ -292,7 +292,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 
 					$price = apply_filters( 'yith_wcrbp_get_role_based_price', $price, $product );
 				}
-			}
+//			}
 
 			return $price;
 		}
@@ -367,12 +367,13 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 			if ( $is_custom_price ) {
 
 			}
-			if ( ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) ) {
-
-				if ( $product_has_some_role_price ) {
-					$price = sprintf( '%s <p class="ywcrbp_admin_product_has_rule">%s</p>', $price, __( 'There are some price rules for this product', 'yith-woocommerce-role-based-prices' ) );
-				}
-			} else {
+//			if ( ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) ) {
+//
+//				if ( $product_has_some_role_price ) {
+//					$price = sprintf( '%s <p class="ywcrbp_admin_product_has_rule">%s</p>', $price, __( 'There are some price rules for this product', 'yith-woocommerce-role-based-prices' ) );
+//				}
+//			} 
+//                        else {
 
 				$product_type = $product->get_type();
 
@@ -408,7 +409,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 					}
 				}
 
-			}
+//			}
 
 
 			return apply_filters( 'ywcrbp_get_price_html', $price, $product );

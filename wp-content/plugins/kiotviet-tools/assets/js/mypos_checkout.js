@@ -1,16 +1,7 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 jQuery(document).ready(function($) {
     
     $('.woocommerce-checkout').on('click', '#place_order', function(e) {
        e.preventDefault();
-       
-       console.log("Checking quantity on KiotViet...");
-       
        if ($('#checkoutModal').length) {
            $('#checkoutModal').modal('show');
        } else {
@@ -42,10 +33,7 @@ jQuery(document).ready(function($) {
                     action: 'check_quantity_checkout',
             },
             success: function(response){
-               console.log(response.data.message);
-               
                $form.removeClass( 'processing' ).unblock();
-               
                if (response.data.status === false) {
                    $('#main-content').append(response.data.message);
                    $('#checkoutModal').modal('show');
