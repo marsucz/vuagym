@@ -59,35 +59,6 @@ if(!function_exists('tuandev_process_default_product_variation')){
             if ($updated_default || !$change_variation) {
                 return true;
             }
-            // Neu khong co san pham nao dang BAT, dung cac san pham dang tat
-            $args = array(
-                'post_type'     => 'product_variation',
-                'post_status'   => array('private'),    // San pham dang BAT
-                'post_parent'   => $product->get_id()
-            );
-
-            $variations = get_posts( $args );
-
-            foreach ($variations as $child_id) {
-                if ( $child_id ) {
-                    $child = wc_get_product($child_id->ID);
-
-                    if ($child->get_stock_status() == 'instock') {
-                        // Get the attributes of the product has instock
-                        $new_default_attributes = $child->get_attributes();
-                        // Update the new attributes to parent product
-                        $product->set_default_attributes($new_default_attributes);
-                        $product->save();
-
-                        // Bat san pham con duoc set default
-                        $child->set_status('publish');
-                        $child->save();
-
-                        $updated_default = true;
-                        return true;
-                    }
-                }
-            }
         }
 
         return $updated_default;

@@ -85,7 +85,7 @@ if(!function_exists('s7upf_vc_header_meta'))
                     if(is_user_logged_in() && !empty($account_content_login)){
                         $html .=    '<div class="checkout-box">
                                         <a href="#" class="checkout-link"><i class="fa '.esc_attr($ac_icon_login).'" aria-hidden="true"></i></a>';
-                        if(!empty($account_content)){
+                        if(!empty($account_content_login)){
                             $html .=    '<ul class="list-checkout list-unstyled">';
                             parse_str(urldecode($account_content_login), $account_list);
                             foreach ($account_list as $value) {

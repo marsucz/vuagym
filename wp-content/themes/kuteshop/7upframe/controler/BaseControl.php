@@ -96,7 +96,7 @@ if(!class_exists('S7upf_BaseController'))
             wp_enqueue_style('s7upf-theme',$css_url.'lib/theme-v2.css');
             wp_enqueue_style('s7upf-responsive',$css_url.'lib/responsive.css');
             wp_enqueue_style('s7upf-browser',$css_url.'lib/browser.css');
-            wp_enqueue_style('s7upf-theme-style',$css_url.'custom-style-v2.1.2.css');
+            wp_enqueue_style('s7upf-theme-style',$css_url.'custom-style-v2.1.4.css');
             wp_enqueue_style('s7upf-responsive-fix',$css_url.'lib/responsive-fix-v2-1.css');
             $custom_style = S7upf_Template::load_view('custom_css');
             if(!empty($custom_style)) wp_add_inline_style('s7upf-theme-style',$custom_style);

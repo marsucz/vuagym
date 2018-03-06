@@ -200,7 +200,7 @@ if(class_exists("woocommerce")){
                         $content_hover .=       wpb_js_remove_wpautop($content, true);
                         $content_hover .=    '</div>';
                         break;
-
+                    
                     case 'featured':
                         $content_hover .=       '<div class="cat-mega-menu cat-mega-style2">
                                                     <h2 class="title-cat-mega-menu">'.esc_html__("Special products","kuteshop").'</h2>
@@ -208,9 +208,13 @@ if(class_exists("woocommerce")){
                         $args = array(
                             'post_type'         => 'product',
                             'posts_per_page'    => 3,
-                            'meta_key'          => '_featured',
-                            'meta_value'    => 'yes',
                             );
+                        $args['tax_query'][] = array(
+                            'taxonomy' => 'product_visibility',
+                            'field'    => 'name',
+                            'terms'    => 'featured',
+                            'operator' => 'IN',
+                        );
                         if(!empty($cat)){
                             $args['tax_query'][]=array(
                                 'taxonomy'  => 'product_cat',

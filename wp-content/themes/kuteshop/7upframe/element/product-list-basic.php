@@ -520,7 +520,7 @@ if(!function_exists('sv_vc_product_list_basic'))
                                                                 <h3 class="product-title"><a href="'.esc_url(get_the_permalink()).'" title="'.esc_attr(get_the_title()).'">'.get_the_title().'</a></h3>
                                                                 '.s7upf_get_price_html().'
                                                                 '.s7upf_get_rating_html().'
-                                                                <p class="desc">'.s7upf_substr(get_the_excerpt(),0,60).'</p>
+                                                                <div class="desc">'.s7upf_substr(get_the_excerpt(),0,60).'</div>
                                                                 '.s7upf_product_link('product-extra-link5-2').'
                                                             </div>
                                                         </div>

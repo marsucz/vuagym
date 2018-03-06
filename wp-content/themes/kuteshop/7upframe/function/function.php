@@ -156,12 +156,12 @@ if(!function_exists('s7upf_fill_css_background'))
     function s7upf_fill_css_background($data)
     {
         $string = '';
-        if(!empty($data['background-color'])) $string .= 'background-color:'.$data['background-color'].';'."\n";
-        if(!empty($data['background-repeat'])) $string .= 'background-repeat:'.$data['background-repeat'].';'."\n";
-        if(!empty($data['background-attachment'])) $string .= 'background-attachment:'.$data['background-attachment'].';'."\n";
-        if(!empty($data['background-position'])) $string .= 'background-position:'.$data['background-position'].';'."\n";
-        if(!empty($data['background-size'])) $string .= 'background-size:'.$data['background-size'].';'."\n";
-        if(!empty($data['background-image'])) $string .= 'background-image:url("'.$data['background-image'].'");'."\n";
+        if(!empty($data['background-color'])) $string .= 'background-color:'.$data['background-color'].';';
+        if(!empty($data['background-repeat'])) $string .= 'background-repeat:'.$data['background-repeat'].';';
+        if(!empty($data['background-attachment'])) $string .= 'background-attachment:'.$data['background-attachment'].';';
+        if(!empty($data['background-position'])) $string .= 'background-position:'.$data['background-position'].';';
+        if(!empty($data['background-size'])) $string .= 'background-size:'.$data['background-size'].';';
+        if(!empty($data['background-image'])) $string .= 'background-image:url("'.$data['background-image'].'");';
         if(!empty($string)) return S7upf_Assets::build_css($string);
         else return false;
     }
@@ -1010,14 +1010,13 @@ if(!function_exists('s7upf_get_price_html')){
                 $html =    '<div class="price-style2">'.$product->get_price_html().'</div>';
                 break;
             
-            default:
+            default:                
                 $html =    $product->get_price_html();
                 break;
         }
         return $html;
     }
 }
-
 // product item list
 if(!function_exists('s7upf_product_item'))
 {
@@ -1345,7 +1344,6 @@ if(!function_exists('s7upf_get_rating_html')){
 if(!function_exists('s7upf_product_main_detai')){
     function s7upf_product_main_detai($ajax = false){
         global $post, $product, $woocommerce;
-//        tuandev_process_default_product_variation($product);
         s7upf_set_post_view();
         $size = 'full';
         $thumb_id = array(get_post_thumbnail_id());
@@ -1403,7 +1401,7 @@ if(!function_exists('s7upf_product_main_detai')){
                         </div>';
         $thumb_html .=  s7upf_get_product_detail_link();
         $sku = get_post_meta(get_the_ID(),'_sku',true);
-            $stock = $product->get_availability();
+        $stock = $product->get_availability();
         $s_class = '';
         if(is_array($stock)){
             if(!empty($stock['class'])) $s_class = $stock['class'];
@@ -1486,9 +1484,9 @@ if(!function_exists('s7upf_product_main_detai')){
 								</div>
 							</div></div>
 							<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">THÔNG TIN MUA HÀNG</h2>
-							<div class="row product-header"> 
+							<div class="row product-header">
 								<div class="detail-info">
-									'.tuandev_process_get_price_html($product);
+									'.tuandev_process_get_price_html().'';
 									if (array_key_exists("ywtm_6579",$tabs)){
 			echo        				'<div class="alert alert-danger" style="padding: 0px;">
 											<div style="margin: 10px 5px 5px 5px;">';

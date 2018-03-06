@@ -68,3 +68,10 @@ Fixed:
 
 Updated:
 	- Visual composer plugin
+
+2.1 - 22/2/2018
+Fixed:
+	- Featured product query in product category menu
+
+Updated:
+	- Compatible with Woocommerce 3.3.x

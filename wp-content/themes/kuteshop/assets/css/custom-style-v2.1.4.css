@@ -3275,6 +3275,12 @@ body .vc_gitem-animate-goTop20 .vc_gitem-zone-b p{
     width: 50%;
 }
 
+.item-product15 .product-info .desc .desc{
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
 /* Khoa add */
 .product-header{
 	background-color: #FFF;
@@ -3823,7 +3829,7 @@ body .vc_gitem-animate-goTop20 .vc_gitem-zone-b p{
 .online-support {
     display: block;
     position: fixed;
-    right: 2px;
+    right: 8px;
     bottom: 0px;
     z-index: 999;
 }
@@ -3890,7 +3896,7 @@ i[class^=icon-] {
 .online-support .dropdown-2-menu li>a:hover, .online-support .dropdown-2-menu li>a:focus, .online-support .dropdown-2-submenu:hover>a {
     color: #fff;
     text-decoration: none;
-    background-color: #0081c2;
+    background-color: #059 !important;
     background-image: -moz-linear-gradient(top,#08c,#0077b3);
     background-image: -webkit-gradient(linear,0 0,0 100%,from(#08c),to(#0077b3));
     background-image: -webkit-linear-gradient(top,#08c,#0077b3);
