@@ -222,30 +222,58 @@
                 $('#'+id).val(attribute);
                 $('#'+id).trigger( 'change' );
                 $('#'+id).trigger( 'focusin' );
-                return false;
-            })
-            $('.attr-hover-box').hover(function(){
-                var seff = $(this);
-                var old_html = $(this).find('ul').html();
-                var current_val = $(this).find('ul li.active').attr('data-attribute');
-                $(this).next().find('select').trigger( 'focusin' );
-                var content = '';
-                $(this).next().find('select').find('option').each(function(){
-                    var val = $(this).attr('value');
-                    var title = $(this).html();
-                    var el_class = '';
-                    var in_class = '';
-                    if(current_val == val){
-                    	el_class = ' class="active"';
-                    	in_class = 'active';
+                
+                //Tuan Dev
+                $('.attr-hover-box').each(function(){
+                    var seff = $(this);
+                    if (seff.hasClass('attr-pa_trong-luong')) {
+                        return true;
                     }
-                    if(val != ''){
-                        content += '<li'+el_class+' data-attribute="'+val+'"><a href="#" class="bgcolor-'+val+' '+in_class+'"><span></span>'+title+'</a></li>';
-                    }
-                })
-                // console.log(content);
-                if(old_html != content) $(this).find('ul').html(content);
+                    var old_html = $(this).find('ul').html();
+                    var current_val = $(this).find('ul li.active').attr('data-attribute');
+                    $(this).next().find('select').trigger( 'focusin' );
+                    var content = '';
+                    $(this).next().find('select').find('option').each(function(){
+                        var val = $(this).attr('value');
+                        var title = $(this).html();
+                        var el_class = '';
+                        var in_class = '';
+                        if(current_val == val){
+                            el_class = ' class="active"';
+                            in_class = 'active';
+                        }
+                        if(val != ''){
+                            content += '<li'+el_class+' data-attribute="'+val+'"><a href="#" class="bgcolor-'+val+' '+in_class+'"><span></span>'+title+'</a></li>';
+                        }
+                    })
+                    
+                    if(old_html != content) $(this).find('ul').html(content);
+                    $(this).find('ul li').removeClass('active');
+                });
             })
+            
+//            $('.attr-hover-box').hover(function(){
+//                var seff = $(this);
+//                var old_html = $(this).find('ul').html();
+//                var current_val = $(this).find('ul li.active').attr('data-attribute');
+//                $(this).next().find('select').trigger( 'focusin' );
+//                var content = '';
+//                $(this).next().find('select').find('option').each(function(){
+//                    var val = $(this).attr('value');
+//                    var title = $(this).html();
+//                    var el_class = '';
+//                    var in_class = '';
+//                    if(current_val == val){
+//                    	el_class = ' class="active"';
+//                    	in_class = 'active';
+//                    }
+//                    if(val != ''){
+//                        content += '<li'+el_class+' data-attribute="'+val+'"><a href="#" class="bgcolor-'+val+' '+in_class+'"><span></span>'+title+'</a></li>';
+//                    }
+//                })
+//                // console.log(content);
+//                if(old_html != content) $(this).find('ul').html(content);
+//            })
             $('body .reset_variations').live('click',function(){
                 $('.attr-hover-box').each(function(){
                     var seff = $(this);
