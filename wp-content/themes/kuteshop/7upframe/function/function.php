@@ -1486,7 +1486,7 @@ if(!function_exists('s7upf_product_main_detai')){
 							<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">THÔNG TIN MUA HÀNG</h2>
 							<div class="row product-header">
 								<div class="detail-info">
-									'.tuandev_process_get_price_html().'';
+									'.tuandev_process_get_price_html($product).'';
 									if (array_key_exists("ywtm_6579",$tabs)){
 			echo        				'<div class="alert alert-danger" style="padding: 0px;">
 											<div style="margin: 10px 5px 5px 5px;">';

@@ -8,7 +8,7 @@ if(!function_exists('tuandev_process_default_product_variation')){
         global $product;
 
         $updated_default = false;
-
+        
         if ( $product && $product->is_type( 'variable' )) {
 
             $change_variation = false;
@@ -22,19 +22,11 @@ if(!function_exists('tuandev_process_default_product_variation')){
                 }
             }
 
-            // Uu tien cac san pham dang BAT
-            $args = array(
-                'post_type'     => 'product_variation',
-                'post_status'   => array('publish'),    // San pham dang BAT
-                'post_parent'   => $product->get_id()
-            );
-
-            $variations = get_posts( $args );
-
+            $variations = $product->get_children();
+            
             foreach ($variations as $child_id) {
                 if ( $child_id ) {
-                    $child = wc_get_product($child_id->ID);
-
+                    $child = wc_get_product($child_id);
                     //Fix 3: An cac bien the da het hang
                     if ($child->get_stock_status() == 'outofstock') {
                         if ($child->get_status() == 'publish') {
@@ -53,11 +45,6 @@ if(!function_exists('tuandev_process_default_product_variation')){
                         }
                     }
                 }
-            }
-
-            // Da cap nhat default cho san pham con hang THANH CONG => Stop function
-            if ($updated_default || !$change_variation) {
-                return true;
             }
         }
 
