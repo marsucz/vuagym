@@ -73,7 +73,7 @@ function kiotviet_tools_plugin_init() {
 function kiotviet_tools_admin_menu() {
     add_menu_page('KiotViet Tools', 'KiotViet Tools', 'manage_options', 'kiotviet-tools', 'function_kiotviet_tools_page', 'dashicons-admin-multisite', 4);
     add_submenu_page('kiotviet-tools', __('KiotViet'), __('KiotViet'), 'manage_options', 'kiotviet-tools');
-//    add_submenu_page('kiotviet-tools', __('Testing'), __('Testing'), 'manage_options', 'kiotviet-testing', 'function_testing_page');
+    add_submenu_page('kiotviet-tools', __('Testing'), __('Testing'), 'manage_options', 'kiotviet-testing', 'function_testing_page');
     add_submenu_page('kiotviet-tools', __('Đồng bộ sản phẩm'), __('Đồng bộ sản phẩm'), 'manage_options', 'mypos-sync', 'function_mypos_sync_page');
             //    add_submenu_page('kiotviet-tools', __('Sync KiotViet'), __('Sync KiotViet'), 'manage_options', 'kiotviet-sync', 'function_kiotviet_sync_page');
     add_submenu_page('kiotviet-tools', __('Lấy Mã SP KiotViet'), __('Lấy Mã SP KiotViet'), 'manage_options', 'get-kiotviet-products', 'function_get_sku_kiotviet');
@@ -346,6 +346,21 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
+    $kv = new KiotViet_API();
+    $token = $kv->get_access_token();
+    
+    echo $token . '<br/>';
+    
+    $product_info = $kv->get_product_info_by_productSKU('SP001088');
+    
+    echo '<pre>';
+    print_r($product_info);
+    echo '</pre>';
+    
+    $log_file = "testing.txt";
+    $log_text = "URL Get: ";
+    $log_text .= "\n KiotViet API response error format: " . $token;
+    write_logs($log_file, $log_text);
 }
 
 function update_default_manual_sync_options() {

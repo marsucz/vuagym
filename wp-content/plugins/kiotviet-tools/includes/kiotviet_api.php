@@ -12,7 +12,7 @@ class KiotViet_API {
     
     private $access_token = '';
     private $count_error = 0;
-    private $stop = false;
+    private $stop = false;       
     private $kiotviet_retailer = '';
     
     function __construct() {
@@ -134,40 +134,32 @@ class KiotViet_API {
 
         $url = 'https://public.kiotapi.com/products/' . trim($product_id);
 
-        $result = $this->api_call($url);
+        $result = $this->api_call_prod($url);
 
         if ($result !== false && isset($result['id'])) {
             return $result;
         } else {    // Double check if the response is still bad
-            
-            $result = $this->api_call($url);
-            if ($result !== false && isset($result['id'])) {
-                return $result;
-            } else {
-                
-                $t = date('Ymd');
-                $log_file = "KiotVietAPI_DoubleCall_{$t}.txt";
-                $log_text = "URL Get: " . $url;
-                $log_text .= "\n Double Call to API but bad response: " . json_encode($result);
-
-                write_logs($log_file, $log_text);
-
-                return false;
-            }
-            
-        } 
-//        else {    // API response error
-//            
-//            $t = date('Ymd');
-//            $log_file = "KiotVietAPI_Errors_{$t}.txt";
-//            $log_text = "URL Get: " . $url;
-//            $log_text .= "\n KiotViet API response error format: " . json_encode($result);
+            $t = date('Ymd');
+            $log_file = "KiotVietAPI_ProductInfo_{$t}.txt";
+            $log_text = "URL Get: " . $url;
+            $log_text .= "\n Bad response: " . json_encode($result);
+            write_logs($log_file, $log_text);
+            return false;
+//            $result = $this->api_call_prod($url, '', 2);
+//            if ($result !== false && isset($result['id'])) {
+//                return $result;
+//            } else {
+//                $t = date('Ymd');
+//                $log_file = "KiotVietAPI_DoubleCall_{$t}.txt";
+//                $log_text = "URL Get: " . $url;
+//                $log_text .= "\n Double Call to API but bad response: " . json_encode($result);
 //
-//            write_logs($log_file, $log_text);
-//            
-//            return false;
-//        }
-
+//                write_logs($log_file, $log_text);
+//                return false;
+//            }
+        }
+        
+        return false;
     }
 
     public function get_all_product_sku() {
@@ -461,7 +453,44 @@ class KiotViet_API {
         
         return $return;
     }
+    
+    // API call for production: Set limit time 3s
+    public function api_call_prod($url, $data = [], $time_limit = 3) {
 
+        if (!empty($data) && is_array($data)) {
+            $url = $url . '?' . http_build_query($data, '', '&');
+        } 
+        
+        $access_token = $this->get_access_token();
+        if (empty($access_token)) {
+            return false;
+        }
+        
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+         CURLOPT_URL => $url,
+         CURLOPT_RETURNTRANSFER => true,
+         CURLOPT_MAXREDIRS => 3,
+         CURLOPT_TIMEOUT => $time_limit,
+         CURLOPT_CUSTOMREQUEST => "GET",
+         CURLOPT_HTTPHEADER => array(
+           "Retailer: " . $this->kiotviet_retailer,
+           "Authorization: Bearer " . $access_token
+         ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        
+        $result = json_decode($response, true);
+        if ($result) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
+    
     public function api_call($url, $data = []) {
 
         if (!empty($data) && is_array($data)) {
@@ -469,6 +498,9 @@ class KiotViet_API {
         } 
         
         $access_token = $this->get_access_token();
+        if (empty($access_token)) {
+            return false;
+        }
         
         $curl = curl_init();
 
@@ -526,7 +558,10 @@ class KiotViet_API {
 //        } 
         
         $access_token = $this->get_access_token();
-        
+        if (empty($access_token)) {
+            return false;
+        }
+            
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -581,10 +616,9 @@ class KiotViet_API {
         curl_setopt_array($curl, array(
          CURLOPT_URL => $post_url,
          CURLOPT_RETURNTRANSFER => true,
-//         CURLOPT_ENCODING => "",
          CURLOPT_MAXREDIRS => 3,
-         CURLOPT_TIMEOUT => 15,
-//         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+         CURLOPT_TIMEOUT => 2,
+//         CURLOPT_TIMEOUT_MS => 1,
          CURLOPT_CUSTOMREQUEST => "POST",
          CURLOPT_POSTFIELDS => $post_string,
          CURLOPT_HTTPHEADER => array(
@@ -599,15 +633,15 @@ class KiotViet_API {
 
         $access_token = json_decode($response, true);
         
-//        echo '<pre>';
-//        print_r($access_token);
-//        echo '</pre>';
-//        exit;
-
         if ($access_token) {
             $this->access_token = $access_token['access_token'];
         } else {
             $this->access_token = '';
+            $t = date('Ymd');
+            $log_file = "KiotVietAPI_GetToken_{$t}.txt";
+            $log_text = "\n Get Token Error: " . json_encode($access_token);
+            write_logs($log_file, $log_text);
+            return false;
         }
         
         return $this->access_token;

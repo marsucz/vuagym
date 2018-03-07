@@ -2,7 +2,12 @@
 
 function write_logs($file_name, $text) {
     
-    $file_path = WC_PLUGIN_DIR . '/logs/' . $file_name;
+    $folder_path = WC_PLUGIN_DIR . '/logs';
+    $file_path = $folder_path . '/' . $file_name;
+    
+    if (!file_exists($folder_path)) {
+        mkdir($folder_path, 0755, true);
+    }
     
     $file = fopen($file_path, "a");
     
