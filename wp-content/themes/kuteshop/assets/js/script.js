@@ -172,6 +172,20 @@
 		}
     }
     
+    function isEmpty(val) {
+        //check for empty object {}, array []
+        if (val !== null && typeof val === 'object') {
+          if (Object.keys(obj).length === 0) {
+            return true;
+          }
+        }
+        //check for undefined, null and "" 
+        else if (val == null || val === "") {
+          return true;
+        }
+        return false;
+    };
+    
     function fix_variable_product(){
     	//Fix product variable thumb
 		$('body input[name="variation_id"]').on('change',function(){
@@ -222,6 +236,14 @@
                 $('#'+id).val(attribute);
                 $('#'+id).trigger( 'change' );
                 $('#'+id).trigger( 'focusin' );
+                
+                // Tuan Dev
+                var variation_id = $('body input[name="variation_id"]').val();
+                if (isEmpty(variation_id)) {
+                    console.log('Da chon san pham khong ton tai');
+                } else {
+                    console.log(variation_id);
+                }
                 
                 //Tuan Dev
                 $('.attr-hover-box').each(function(){
