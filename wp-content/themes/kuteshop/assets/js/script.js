@@ -233,6 +233,9 @@
                 $(this).addClass('active');
                 var attribute = $(this).parent().attr('data-attribute');
                 var id = $(this).parents('ul').attr('data-attribute-id');
+                
+                console.log("Clicked: " + id + attribute);
+                
                 $('#'+id).val(attribute);
                 $('#'+id).trigger( 'change' );
                 $('#'+id).trigger( 'focusin' );
@@ -255,6 +258,9 @@
                     var current_val = $(this).find('ul li.active').attr('data-attribute');
                     $(this).next().find('select').trigger( 'focusin' );
                     var content = '';
+                    
+                    console.log("Checked: " + current_val);
+                    
                     $(this).next().find('select').find('option').each(function(){
                         var val = $(this).attr('value');
                         var title = $(this).html();
