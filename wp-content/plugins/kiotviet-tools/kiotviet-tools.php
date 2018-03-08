@@ -351,12 +351,6 @@ function function_testing_page() {
     
     echo $token . '<br/>';
     
-    $product_info = $kv->get_product_info_by_productSKU('SP001088');
-    
-    echo '<pre>';
-    print_r($product_info);
-    echo '</pre>';
-    
     $log_file = "testing.txt";
     $log_text = "URL Get: ";
     $log_text .= "\n KiotViet API response error format: " . $token;
