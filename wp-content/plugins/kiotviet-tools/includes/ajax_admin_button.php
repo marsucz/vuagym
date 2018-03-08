@@ -64,8 +64,8 @@ function ja_ajax_mypos_update_product_outofstock() {
 		
     $product = wc_get_product($product_id);
     $product->set_stock_status('outofstock');
-    $product->set_date_created(current_time('timestamp',7));
-    $product->set_date_modified(current_time('timestamp',7));
+//    $product->set_date_created(current_time('timestamp',7));
+//    $product->set_date_modified(current_time('timestamp',7));
     $result = $product->save();
     
     if ($result) {

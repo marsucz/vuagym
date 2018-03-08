@@ -33,11 +33,6 @@ class KiotViet_API {
     
     public function get_product_info_by_productSKU($product_sku = '') {
         
-//        $t = date('Ymd');
-//        $log_file = "CountRequest-{$t}.txt";
-//        $log_text = $product_sku;
-//        write_logs($log_file, $log_text);
-        
         $dbModel = new DbModel();
         $single_product = array();
         
@@ -69,7 +64,6 @@ class KiotViet_API {
                 } else {
                     $single_product['stock'] = false;
                 }
-                
             } 
         }
         
@@ -269,27 +263,6 @@ class KiotViet_API {
             if (count($converted_products) > 0) {
                 $all_products = array_merge($all_products, $converted_products);
             }
-//            foreach ($result['data'] as $product) {
-//                $single_product = array();
-//                $single_product['id'] = $product['id'];
-//                $single_product['sku'] = $product['code'];
-//                $single_product['name'] = isset($product['fullName']) ? $product['fullName'] : $product['name'];
-//                $single_product['price'] = $product['basePrice'];
-//                
-//                $quantity = 0;
-//                if (isset($product['inventories']) && count($product['inventories']) > 0) {
-//                    foreach ($product['inventories'] as $inventory) {
-//                        $quantity += (int)$inventory['onHand'];
-//                    }
-//                }
-//                $single_product['quantity'] = $quantity;
-//                if ($quantity > 0) {
-//                    $single_product['stock'] = true;
-//                } else {
-//                    $single_product['stock'] = false;
-//                }
-//                $all_products[] = $single_product;
-//            }
         }
 
         return $all_products;
@@ -507,10 +480,8 @@ class KiotViet_API {
         curl_setopt_array($curl, array(
          CURLOPT_URL => $url,
          CURLOPT_RETURNTRANSFER => true,
-//         CURLOPT_ENCODING => "",
          CURLOPT_MAXREDIRS => 3,
          CURLOPT_TIMEOUT => 15,
-//         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
          CURLOPT_CUSTOMREQUEST => "GET",
          CURLOPT_HTTPHEADER => array(
            "Retailer: " . $this->kiotviet_retailer,
@@ -553,10 +524,6 @@ class KiotViet_API {
 
     public function api_call_put($url, $data = []) {
 
-//        if (!empty($data) && is_array($data)) {
-//            $url = $url . '?' . http_build_query($data, '', '&');
-//        } 
-        
         $access_token = $this->get_access_token();
         if (empty($access_token)) {
             return false;
@@ -567,10 +534,8 @@ class KiotViet_API {
         curl_setopt_array($curl, array(
          CURLOPT_URL => $url,
          CURLOPT_RETURNTRANSFER => true,
-//         CURLOPT_ENCODING => "",
          CURLOPT_MAXREDIRS => 5,
          CURLOPT_TIMEOUT => 15,
-//         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
          CURLOPT_CUSTOMREQUEST => "PUT",
          CURLOPT_HTTPHEADER => array(
            "Retailer: " . $this->kiotviet_retailer,
@@ -610,7 +575,7 @@ class KiotViet_API {
 
         $post_string = http_build_query($data, '', '&');
         $post_url = 'https://id.kiotviet.vn/connect/token';
-
+        
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -618,7 +583,6 @@ class KiotViet_API {
          CURLOPT_RETURNTRANSFER => true,
          CURLOPT_MAXREDIRS => 3,
          CURLOPT_TIMEOUT => 2,
-//         CURLOPT_TIMEOUT_MS => 1,
          CURLOPT_CUSTOMREQUEST => "POST",
          CURLOPT_POSTFIELDS => $post_string,
          CURLOPT_HTTPHEADER => array(
@@ -627,7 +591,7 @@ class KiotViet_API {
            "content-type: application/x-www-form-urlencoded"
          ),
         ));
-
+        
         $response = curl_exec($curl);
         curl_close($curl);
 
@@ -639,7 +603,7 @@ class KiotViet_API {
             $this->access_token = '';
             $t = date('Ymd');
             $log_file = "KiotVietAPI_GetToken_{$t}.txt";
-            $log_text = "\n Get Token Error: " . json_encode($access_token);
+            $log_text = "Get Token Error: " . json_encode($access_token);
             write_logs($log_file, $log_text);
             return false;
         }
@@ -689,7 +653,6 @@ class KiotViet_API {
             CURLOPT_RETURNTRANSFER => TRUE);
         
         $all_products = array();
-//        $results = array();
 
         $count = 0;
         foreach($url_array as $url) {
@@ -700,10 +663,6 @@ class KiotViet_API {
             curl_setopt_array($ch, $curl_opts);
             curl_multi_add_handle($master, $ch); //push URL for single rec send into curl stack
 
-//            $temp_result = array("handle" => $ch);
-//            $temp_result = array_merge($temp_result, $url);
-//            $results[$count] = $temp_result;
-
             $threads++;
             $count++;
             if($threads >= $thread_width) { //start running when stack is full to width
@@ -711,16 +670,11 @@ class KiotViet_API {
                     usleep(100);
                     while(($execrun = curl_multi_exec($master, $running)) === -1){}
                     curl_multi_select($master);
-                    // a request was just completed - find out which one and remove it from stack
                     while($done = curl_multi_info_read($master)) {
-//                        foreach($results as &$res) {
-//                            if($res['handle'] == $done['handle']) {
                                 $api_result = curl_multi_getcontent($done['handle']);
                                 $api_result = json_decode($api_result, true);
                                 $converted_product = $this->convert_products($api_result);
                                 $all_products = array_merge($all_products, $converted_product);
-//                            }
-//                        }
                         curl_multi_remove_handle($master, $done['handle']);
                         curl_close($done['handle']);
                         $threads--;
@@ -733,14 +687,10 @@ class KiotViet_API {
             while(($execrun = curl_multi_exec($master, $running)) === -1){}
             curl_multi_select($master);
             while($done = curl_multi_info_read($master)) {
-//                foreach($results as &$res) {
-//                    if($res['handle'] == $done['handle']) {
                         $api_result = curl_multi_getcontent($done['handle']);
                         $api_result = json_decode($api_result, true);
                         $converted_product = $this->convert_products($api_result);
                         $all_products = array_merge($all_products, $converted_product);
-//                    }
-//                }
                 curl_multi_remove_handle($master, $done['handle']);
                 curl_close($done['handle']);
                 $threads--;
