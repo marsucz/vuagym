@@ -111,7 +111,7 @@ function kiotViet_formatted_price($price){
 if ( ! function_exists( 'mypos_get_variation_title' ) ) {
     function mypos_get_variation_title($product) {
         
-        if ($product->is_type( 'simple' )) {
+        if ($product->is_type( 'simple' ) || $product->is_type( 'variable' ) ) {
             return $product->get_name();
         }
         
@@ -124,6 +124,15 @@ if ( ! function_exists( 'mypos_get_variation_title' ) ) {
         
         foreach ($attributes as $key => $attr) {
             if (empty($attr)) {
+                $tax = get_taxonomy($key);
+                if (is_object($tax)) {
+                    $tax_labels = get_taxonomy_labels($tax);
+                    if (is_object($tax_labels)) {
+                        $tax_name = $tax_labels->singular_name;
+                        $product_name .= ' - ' . $tax_name . ' bất kì';
+                        continue;
+                    } 
+                }
                 $product_name .= ' - Thuộc tính bất kì';
             } else {
                 $product_name .= ' - ' . mypos_attribute_slug_to_title($key, $attr);

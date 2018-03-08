@@ -548,8 +548,8 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                         
                         $formated_price = kiotViet_formatted_price($kv_product['price']);
                         
-                        $confirm_text = "Xác nhận sửa giá " . $woo_product['name'] . " thành " . number_format($kv_product['price'], 0, ',', '.') . " đ (theo kiotviet)?";
-                        $confirm_text = str_replace("'", "", $confirm_text);
+                        $name_string = str_replace("'", "", $woo_product['name']);
+                        $confirm_text = "Xác nhận sửa giá " . $name_string . " thành " . number_format($kv_product['price'], 0, ',', '.') . " đ (theo kiotviet)?";
                         $r .= '  <button id="updateWebPrice_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-info" title="Cập nhật giá trên Web cho sản phẩm này theo giá trên KiotViet" onclick="updateWebPrice_byKVPrice('. $woo_product['id'] .',' . $kv_product['price'] . ',\'' . $confirm_text .  '\');"><i class="fa fa-anchor"></i>  Update giá web = ' . $formated_price . ' (theo Kiotviet)</button>';
                         // an de dung sau
 //                        $r .= '  <button id="updateKVPrice_' . $kv_product['id'] . '" type="button" class="btn btn-mypos btn-warning" title="Cập nhật giá trên KiotViet cho sản phẩm này theo giá trên Web" onclick="updateKVPrice_byWebPrice('. $kv_product['id'] .',' . $woo_product['price'] . ');"><i class="fa fa-anchor"></i>  Cập nhật giá KiotViet theo Web</button>';
