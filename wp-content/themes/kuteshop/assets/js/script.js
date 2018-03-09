@@ -190,6 +190,7 @@
     	//Fix product variable thumb
 		$('body input[name="variation_id"]').on('change',function(){
         	var id = $(this).val();
+                console.log('ID: ' + id);
             var data = $('.variations_form').attr('data-product_variations');
             var curent_data = {};
             data = $.parseJSON(data);
@@ -240,20 +241,42 @@
                 $('#'+id).trigger( 'change' );
                 $('#'+id).trigger( 'focusin' );
                 
-                // Tuan Dev
-                var variation_id = $('body input[name="variation_id"]').val();
-                if (isEmpty(variation_id)) {
-                    console.log('Da chon san pham khong ton tai');
-                } else {
-                    console.log(variation_id);
-                }
+//                // Tuan Dev
+//                var variation_id = $('body input[name="variation_id"]').val();
+//                var current_clicked = $('.attr-filter ul li a');
+//                if (isEmpty(variation_id)) {
+//                    
+//                    console.log('Da chon san pham khong ton tai');
+//                    var changed_success = false;
+//                    $($('.attr-hover-box').get().reverse()).each(function(){
+//                    });
+//                    
+//                  
+////                    $(this).parents('ul').find('li a').
+////                        var new_attribute = $(this).parent().attr('data-attribute');
+////                        console.log(attribute + ':' + new_attribute);
+////                        if (new_attribute !== attribute) {
+////                            $(this).click();
+////                            return false;
+////                        }
+////                    });
+//                    
+//                    return false;
+//                } else {
+//                    console.log(variation_id);
+//                }
                 
                 //Tuan Dev
+                var count = 0;
                 $('.attr-hover-box').each(function(){
+                    count = count+1;
                     var seff = $(this);
-                    if (seff.hasClass('attr-pa_trong-luong')) {
+                    if (count === 1) {
                         return true;
                     }
+//                    if (seff.hasClass('attr-pa_trong-luong')) {
+//                        
+//                    }
                     var old_html = $(this).find('ul').html();
                     var current_val = $(this).find('ul li.active').attr('data-attribute');
                     $(this).next().find('select').trigger( 'focusin' );
