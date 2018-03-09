@@ -53,12 +53,12 @@ function build_html_table_carts($item_id = '', $mark = false, $color = '') {
             $result_string .= "<td class='mypos-product-title'><span style='color: " . $color . "; font-weight: bold;'>" . $product_name . "</span></td>";
             $result_string .= "<td style='text-align: center'>{$old_price}<span style='color: " . $color . "; font-weight: bold; white-space: nowrap;'>" . $formated_product_price . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold'>" . $product_quantity . "</span></td>";
-            $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold'>" . $product_total . "</span></td>";
+            $result_string .= "<td style='text-align: center'><span style='color: " . $color . "; font-weight: bold; white-space: nowrap;'>" . $product_total . "</span></td>";
         } else {
             $result_string .= "<td class='mypos-product-title'><span style='font-weight: bold;'>" . $product_name . "</span></td>";
             $result_string .= "<td style='text-align: center'>{$old_price}<span style='font-weight: bold; white-space: nowrap;'>" . $formated_product_price . "</span></td>";
             $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>" . $product_quantity . "</span></td>";
-            $result_string .= "<td style='text-align: center'><span style='font-weight: bold'>" . $product_total . "</span></td>";
+            $result_string .= "<td style='text-align: center'><span style='font-weight: bold; white-space: nowrap;'>" . $product_total . "</span></td>";
         }
 //        $result_string .= "<td>{$product_sku}</td>";
         
