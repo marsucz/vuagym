@@ -3,7 +3,7 @@
 function ez_custom_load_remove_notice_js() {
             wp_enqueue_script('remove_notice_js', EZ_CUSTOM_PLUGIN_URL . 'assets/admin/js/remove_notice.js');
 
-            if (!get_option('mypos_remove_notice')) {
+            if (!get_option('ezcustom_remove_notice')) {
                 wp_dequeue_script( 'remove_notice_js' );
             }
 }
