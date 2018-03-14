@@ -186,11 +186,96 @@
         return false;
     };
     
+    function tuandev_reset_variation() {
+        
+        console.log("RESET VARIATIONS");
+        
+        $('body .reset_variations').click();
+        
+//        return true;
+        
+//        var count_box = 0;
+//        $('.attr-hover-box').each(function(){
+//            count_box = count_box + 1;
+//            if (count_box === 2) {
+//                return false;
+//            }
+//            var seff = $(this);
+//            var old_html = $(this).find('ul').html();
+////            var current_val = '';
+//            var current_val = $(this).find('ul li.active').attr('data-attribute');
+//            $(this).next().find('select').trigger( 'focusin' );
+//            var content = '';
+//            $(this).next().find('select').find('option').each(function(){
+//                var val = $(this).attr('value');
+//                var title = $(this).html();
+//                var el_class = '';
+//                var in_class = '';
+//                    if(current_val == val){
+//                        el_class = ' class="active"';
+//                        in_class = 'active';
+//                    }
+//                if(val != ''){
+//                        content += '<li'+el_class+' data-attribute="'+val+'"><a href="#" class="bgcolor-'+val+' '+in_class+'"><span></span>'+title+'</a></li>';
+//                    }
+//            })
+//            if(old_html != content) $(this).find('ul').html(content);
+//            $(this).find('ul li').removeClass('active');
+//        })
+    }
+    
+    function change_to_another_variation(list_attributes) {
+        
+        console.log("Bat dau click sang san pham khac");
+        tuandev_reset_variation();
+        
+        var count = 0;
+        var changed = false;
+        $('.attr-hover-box').each(function(){
+            count++;
+            var seff = $(this);
+            
+            $(this).find('ul').find('li a').each(function() {
+                
+                var child_attribute = $(this).parent().attr('data-attribute');
+                var child_id = $(this).parents('ul').attr('data-attribute-id');
+                
+                if (count === 1) {
+                    // Thuoc tinh khoi luong / dau tien
+                    if (list_attributes[child_id] === child_attribute) {
+                        $(this).click();
+                        console.log('Da click thuoc tinh KHOI LUONG');
+//                        return false;
+                    }
+                    
+                } else {
+                    if ($(this).find('ul').find('li a').length <= 1) {
+                        return false;
+                    }
+                    if (!changed) {
+                        if (list_attributes[child_id] !== child_attribute) {
+                            changed = true;
+                            $(this).click();
+                            console.log('Da click thuoc tinh MUI VI');
+                            return false;
+                        }
+                    }
+                    
+                }
+                
+            });
+
+        });
+        
+        console.log("RESET FINAL");
+        tuandev_reset_variation();
+        console.log('Da chuyen sang san pham khac!');
+    }
+    
     function fix_variable_product(){
     	//Fix product variable thumb
 		$('body input[name="variation_id"]').on('change',function(){
         	var id = $(this).val();
-                console.log('ID: ' + id);
             var data = $('.variations_form').attr('data-product_variations');
             var curent_data = {};
             data = $.parseJSON(data);
@@ -223,6 +308,10 @@
             $(this).parents('.attr-product').find('.current-color').html(text);            
         })
         // variable product
+        
+        var changing = false;
+        var list_attributes = [];
+        
         if($('.wrap-attr-product.special').length > 0){
             $('.attr-filter ul li a').live('click',function(event){
                 event.preventDefault();
@@ -235,7 +324,10 @@
                 var attribute = $(this).parent().attr('data-attribute');
                 var id = $(this).parents('ul').attr('data-attribute-id');
                 
-                console.log("Clicked: " + id + attribute);
+                list_attributes[id] = attribute;
+                console.log("Clicked: " + id);
+                console.log("Choose: " + attribute);
+                console.log(list_attributes);
                 
                 $('#'+id).val(attribute);
                 $('#'+id).trigger( 'change' );
@@ -269,14 +361,11 @@
                 //Tuan Dev
                 var count = 0;
                 $('.attr-hover-box').each(function(){
-                    count = count+1;
+                    count++;
                     var seff = $(this);
                     if (count === 1) {
                         return true;
                     }
-//                    if (seff.hasClass('attr-pa_trong-luong')) {
-//                        
-//                    }
                     var old_html = $(this).find('ul').html();
                     var current_val = $(this).find('ul li.active').attr('data-attribute');
                     $(this).next().find('select').trigger( 'focusin' );
@@ -301,7 +390,14 @@
                     if(old_html != content) $(this).find('ul').html(content);
                     $(this).find('ul li').removeClass('active');
                 });
-            })
+                
+                var id = $('body input[name="variation_id"]').val();
+                if (!id) {
+                    changing = true;
+                    change_to_another_variation(list_attributes);
+                    changing = false;
+                }
+            });
             
 //            $('.attr-hover-box').hover(function(){
 //                var seff = $(this);
