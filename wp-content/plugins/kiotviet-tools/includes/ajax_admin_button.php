@@ -14,8 +14,17 @@ function ja_ajax_mypos_update_product_instock() {
     $product = wc_get_product($product_id);
     
     $product->set_stock_status('instock');
-    $product->set_date_created(current_time('timestamp',7));
-    $product->set_date_modified(current_time('timestamp',7));
+    
+    if ($product->is_type( 'variation' )) {
+        $base_product_id = $product->get_parent_id();
+        $parent_product = wc_get_product($base_product_id);
+        $parent_product->set_date_created(current_time('timestamp',7));
+        $parent_product->set_date_modified(current_time('timestamp',7));
+        $parent_product->save();
+    } else {
+        $product->set_date_created(current_time('timestamp',7));
+        $product->set_date_modified(current_time('timestamp',7));
+    }
     
     $categories = $product->get_category_ids();
     foreach ($categories as $key => $ca) {
@@ -95,8 +104,17 @@ function ja_ajax_mypos_update_webprice_by_kvprice() {
     }
 		
     $product = wc_get_product($product_id);
-    $product->set_date_created(current_time('timestamp',7));
-    $product->set_date_modified(current_time('timestamp',7));
+    
+    if ($product->is_type( 'variation' )) {
+        $base_product_id = $product->get_parent_id();
+        $parent_product = wc_get_product($base_product_id);
+        $parent_product->set_date_created(current_time('timestamp',7));
+        $parent_product->set_date_modified(current_time('timestamp',7));
+        $parent_product->save();
+    } else {
+        $product->set_date_created(current_time('timestamp',7));
+        $product->set_date_modified(current_time('timestamp',7));
+    }
     
     $sale_price = $product->get_sale_price();
     if ( !$sale_price || empty($sale_price) || is_null($sale_price)) {
