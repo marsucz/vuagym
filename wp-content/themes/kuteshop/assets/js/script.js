@@ -175,11 +175,14 @@
     var changing = false;
     function tuandev_change_to_another_variation(list_attributes) {
         
+        if ($('.attr-hover-box').length !== 2) {
+            return;
+        }
+        
         console.log("CHUYEN SAN PHAM...");
         
         $('body .reset_variations').click();
         
-        var first_error = false;
         var first_attr = $('.attr-hover-box').first();
         first_attr.find('ul').find('li a').each(function() {
 
@@ -188,7 +191,6 @@
 
             if (changing) {
                 if (list_attributes[child_id] === child_attribute) {
-                    first_error = true;
                     $(this).click();
                     console.log('Da click thuoc tinh ' + child_id + ' ' + child_attribute);
                     return false;
@@ -198,12 +200,6 @@
             }
 
         });
-        
-        if (first_error) {
-            console.log("Loi o thuoc tinh dau tien!");
-            $('body .reset_variations').click();
-            return true;
-        }
         
         var last_attr = $('.attr-hover-box').last();
         last_attr.find('ul').find('li a').each(function() {
@@ -358,7 +354,7 @@
                 var id = $('body input[name="variation_id"]').val();
                 if (!id) {
                     do_change++;
-                    if (do_change > 10) {
+                    if (do_change > 1) {
                         do_change = 0;
                         console.log("STOP!");
                         return;
