@@ -21,10 +21,10 @@ function ja_ajax_mypos_update_product_instock() {
         $parent_product->set_date_created(current_time('timestamp',7));
         $parent_product->set_date_modified(current_time('timestamp',7));
         $parent_product->save();
-    } else {
-        $product->set_date_created(current_time('timestamp',7));
-        $product->set_date_modified(current_time('timestamp',7));
     }
+    
+    $product->set_date_created(current_time('timestamp',7));
+    $product->set_date_modified(current_time('timestamp',7));
     
     $categories = $product->get_category_ids();
     foreach ($categories as $key => $ca) {
@@ -111,10 +111,10 @@ function ja_ajax_mypos_update_webprice_by_kvprice() {
         $parent_product->set_date_created(current_time('timestamp',7));
         $parent_product->set_date_modified(current_time('timestamp',7));
         $parent_product->save();
-    } else {
-        $product->set_date_created(current_time('timestamp',7));
-        $product->set_date_modified(current_time('timestamp',7));
     }
+    
+    $product->set_date_created(current_time('timestamp',7));
+    $product->set_date_modified(current_time('timestamp',7));
     
     $sale_price = $product->get_sale_price();
     if ( !$sale_price || empty($sale_price) || is_null($sale_price)) {
