@@ -172,104 +172,98 @@
 		}
     }
     
-    function isEmpty(val) {
-        //check for empty object {}, array []
-        if (val !== null && typeof val === 'object') {
-          if (Object.keys(obj).length === 0) {
-            return true;
-          }
-        }
-        //check for undefined, null and "" 
-        else if (val == null || val === "") {
-          return true;
-        }
-        return false;
-    };
-    
-    function tuandev_reset_variation() {
+    var changing = false;
+    function tuandev_change_to_another_variation(list_attributes) {
         
-        console.log("RESET VARIATIONS");
+        console.log("CHUYEN SAN PHAM...");
         
         $('body .reset_variations').click();
         
-//        return true;
-        
-//        var count_box = 0;
-//        $('.attr-hover-box').each(function(){
-//            count_box = count_box + 1;
-//            if (count_box === 2) {
-//                return false;
-//            }
-//            var seff = $(this);
-//            var old_html = $(this).find('ul').html();
-////            var current_val = '';
-//            var current_val = $(this).find('ul li.active').attr('data-attribute');
-//            $(this).next().find('select').trigger( 'focusin' );
-//            var content = '';
-//            $(this).next().find('select').find('option').each(function(){
-//                var val = $(this).attr('value');
-//                var title = $(this).html();
-//                var el_class = '';
-//                var in_class = '';
-//                    if(current_val == val){
-//                        el_class = ' class="active"';
-//                        in_class = 'active';
-//                    }
-//                if(val != ''){
-//                        content += '<li'+el_class+' data-attribute="'+val+'"><a href="#" class="bgcolor-'+val+' '+in_class+'"><span></span>'+title+'</a></li>';
-//                    }
-//            })
-//            if(old_html != content) $(this).find('ul').html(content);
-//            $(this).find('ul li').removeClass('active');
-//        })
-    }
-    
-    function change_to_another_variation(list_attributes) {
-        
-        console.log("Bat dau click sang san pham khac");
-        tuandev_reset_variation();
-        
-        var count = 0;
-        var changed = false;
-        $('.attr-hover-box').each(function(){
-            count++;
-            var seff = $(this);
-            
-            $(this).find('ul').find('li a').each(function() {
-                
-                var child_attribute = $(this).parent().attr('data-attribute');
-                var child_id = $(this).parents('ul').attr('data-attribute-id');
-                
-                if (count === 1) {
-                    // Thuoc tinh khoi luong / dau tien
-                    if (list_attributes[child_id] === child_attribute) {
-                        $(this).click();
-                        console.log('Da click thuoc tinh KHOI LUONG');
-//                        return false;
-                    }
-                    
-                } else {
-                    if ($(this).find('ul').find('li a').length <= 1) {
-                        return false;
-                    }
-                    if (!changed) {
-                        if (list_attributes[child_id] !== child_attribute) {
-                            changed = true;
-                            $(this).click();
-                            console.log('Da click thuoc tinh MUI VI');
-                            return false;
-                        }
-                    }
-                    
+        var first_error = false;
+        var first_attr = $('.attr-hover-box').first();
+        first_attr.find('ul').find('li a').each(function() {
+
+            var child_attribute = $(this).parent().attr('data-attribute');
+            var child_id = $(this).parents('ul').attr('data-attribute-id');
+
+            if (changing) {
+                if (list_attributes[child_id] === child_attribute) {
+                    first_error = true;
+                    $(this).click();
+                    console.log('Da click thuoc tinh ' + child_id + ' ' + child_attribute);
+                    return false;
                 }
-                
-            });
+            } else {
+                return false;
+            }
 
         });
         
-        console.log("RESET FINAL");
-        tuandev_reset_variation();
-        console.log('Da chuyen sang san pham khac!');
+        if (first_error) {
+            console.log("Loi o thuoc tinh dau tien!");
+            $('body .reset_variations').click();
+            return true;
+        }
+        
+        var last_attr = $('.attr-hover-box').last();
+        last_attr.find('ul').find('li a').each(function() {
+
+            var child_attribute = $(this).parent().attr('data-attribute');
+            var child_id = $(this).parents('ul').attr('data-attribute-id');
+
+            if (changing) {
+                if (list_attributes[child_id] !== child_attribute) {
+                    changing = false;
+                    console.log('Da click thuoc tinh ' + child_id  + ' ' + child_attribute);
+                    $(this).click();
+                    return false;
+                }
+            } else {
+                return false;
+            }
+
+        });
+        
+//        var count = 0;
+//        
+//        $('.attr-hover-box').each(function(){
+//            count++;
+//            if (count === 1) {
+//                return true;
+//            }
+//            var seff = $(this);
+//            
+//            $(this).find('ul').find('li a').each(function() {
+//
+//                var child_attribute = $(this).parent().attr('data-attribute');
+//                var child_id = $(this).parents('ul').attr('data-attribute-id');
+//                
+////                if (count === 1) {
+//                    // Thuoc tinh khoi luong / dau tien
+////                    if (list_attributes[child_id] === child_attribute) {
+////                        $(this).click();
+////                        console.log('Da click thuoc tinh ' + child_id + ' ' + child_attribute);
+////                        return false;
+////                    }
+////                    console.log("SKIPPED");
+////                } else {
+////                    if ($(this).find('ul').find('li a').length <= 1) {
+////                        return false;
+////                    }
+//                    if (changing) {
+//                        if (list_attributes[child_id] !== child_attribute) {
+//                            changing = false;
+//                            console.log('Da click thuoc tinh ' + child_id  + ' ' + child_attribute);
+//                            $(this).click();
+//                            return false;
+//                        }
+//                    } else {
+//                        return false;
+//                    }
+////                }
+//            });
+//        });
+        
     }
     
     function fix_variable_product(){
@@ -309,8 +303,8 @@
         })
         // variable product
         
-        var changing = false;
         var list_attributes = [];
+        var do_change = 0;
         
         if($('.wrap-attr-product.special').length > 0){
             $('.attr-filter ul li a').live('click',function(event){
@@ -323,42 +317,15 @@
                 $(this).addClass('active');
                 var attribute = $(this).parent().attr('data-attribute');
                 var id = $(this).parents('ul').attr('data-attribute-id');
-                
-                list_attributes[id] = attribute;
-                console.log("Clicked: " + id);
-                console.log("Choose: " + attribute);
-                console.log(list_attributes);
-                
                 $('#'+id).val(attribute);
                 $('#'+id).trigger( 'change' );
                 $('#'+id).trigger( 'focusin' );
                 
-//                // Tuan Dev
-//                var variation_id = $('body input[name="variation_id"]').val();
-//                var current_clicked = $('.attr-filter ul li a');
-//                if (isEmpty(variation_id)) {
-//                    
-//                    console.log('Da chon san pham khong ton tai');
-//                    var changed_success = false;
-//                    $($('.attr-hover-box').get().reverse()).each(function(){
-//                    });
-//                    
-//                  
-////                    $(this).parents('ul').find('li a').
-////                        var new_attribute = $(this).parent().attr('data-attribute');
-////                        console.log(attribute + ':' + new_attribute);
-////                        if (new_attribute !== attribute) {
-////                            $(this).click();
-////                            return false;
-////                        }
-////                    });
-//                    
-//                    return false;
-//                } else {
-//                    console.log(variation_id);
-//                }
-                
                 //Tuan Dev
+                list_attributes[id] = attribute;
+                console.log("Clicked: " + id);
+                console.log("Choose: " + attribute);
+                console.log(list_attributes);
                 var count = 0;
                 $('.attr-hover-box').each(function(){
                     count++;
@@ -370,9 +337,6 @@
                     var current_val = $(this).find('ul li.active').attr('data-attribute');
                     $(this).next().find('select').trigger( 'focusin' );
                     var content = '';
-                    
-                    console.log("Checked: " + current_val);
-                    
                     $(this).next().find('select').find('option').each(function(){
                         var val = $(this).attr('value');
                         var title = $(this).html();
@@ -393,11 +357,20 @@
                 
                 var id = $('body input[name="variation_id"]').val();
                 if (!id) {
+                    do_change++;
+                    if (do_change > 10) {
+                        do_change = 0;
+                        console.log("STOP!");
+                        return;
+                    }
+                    
                     changing = true;
-                    change_to_another_variation(list_attributes);
+                    if (changing) {
+                        tuandev_change_to_another_variation(list_attributes);
+                    }
                     changing = false;
                 }
-            });
+            })
             
 //            $('.attr-hover-box').hover(function(){
 //                var seff = $(this);
