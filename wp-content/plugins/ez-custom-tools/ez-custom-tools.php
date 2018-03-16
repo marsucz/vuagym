@@ -78,6 +78,13 @@ function function_ez_custom_tools_page() {
                                                 <input class="form-control" type="number" step=".01" id="ezcustom-expand-categories-list" name="ezcustom-expand-categories-list" value="' . get_option('ezcustom_expand_categories_list') . '" required>
                                                     <p class="help-block">Nhập 0 để mở rộng toàn bộ khung danh sách danh mục.</p>
                                             </div>
+                                            <div class="form-group">
+                                                <label>Các chức năng khác:</label>
+                                                <ul>
+                                                    <li> - Overwrite lại cách hiển thị giá khi sản phẩm hết hàng hoặc bị tắt.</li>
+                                                    <li> - Overwrite lại cách hiển thị biến thể.</li>
+                                                </ul>
+                                            </div>
                                             <button type="submit" class="btn btn-primary">Lưu Cài Đặt</button>
                                             <button type="reset" class="btn btn-default">Nhập Lại</button>
                                         </div>
