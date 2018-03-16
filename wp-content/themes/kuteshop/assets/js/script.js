@@ -174,92 +174,34 @@
     
     var changing = false;
     function tuandev_change_to_another_variation(list_attributes) {
-        
-        if ($('.attr-hover-box').length !== 2) {
-            return;
-        }
-        
-        console.log("CHUYEN SAN PHAM...");
-        
+//        console.log("CHUYEN SAN PHAM NHIEU THUOC TINH...");
+//        console.log("Reset san pham");
         $('body .reset_variations').click();
-        
-        var first_attr = $('.attr-hover-box').first();
-        first_attr.find('ul').find('li a').each(function() {
+        $('.attr-hover-box').each(function() {
+            var atrributes_clicked = false;
+            $(this).find('ul').find('li a').each(function() {
 
-            var child_attribute = $(this).parent().attr('data-attribute');
-            var child_id = $(this).parents('ul').attr('data-attribute-id');
+                var child_attribute = $(this).parent().attr('data-attribute');
+                var child_id = $(this).parents('ul').attr('data-attribute-id');
 
-            if (changing) {
-                if (list_attributes[child_id] === child_attribute) {
-                    $(this).click();
-                    console.log('Da click thuoc tinh ' + child_id + ' ' + child_attribute);
+                if (changing) {
+                    if (list_attributes[child_id] === child_attribute) {
+                        $(this).click();
+                        atrributes_clicked = true;
+//                        console.log('Da click thuoc tinh GIONG MAU ' + child_id + ' ' + child_attribute);
+                        return false;
+                    }
+                } else {
                     return false;
                 }
-            } else {
-                return false;
+
+            });
+            
+            if (!atrributes_clicked) {
+//                console.log("THUOC TINH TRONG LIST KHONG TON TAI, CHON THUOC TINH DAU TIEN!!!");
+                $(this).find('ul').find('li a').first().click();
             }
-
         });
-        
-        var last_attr = $('.attr-hover-box').last();
-        last_attr.find('ul').find('li a').each(function() {
-
-            var child_attribute = $(this).parent().attr('data-attribute');
-            var child_id = $(this).parents('ul').attr('data-attribute-id');
-
-            if (changing) {
-                if (list_attributes[child_id] !== child_attribute) {
-                    changing = false;
-                    console.log('Da click thuoc tinh ' + child_id  + ' ' + child_attribute);
-                    $(this).click();
-                    return false;
-                }
-            } else {
-                return false;
-            }
-
-        });
-        
-//        var count = 0;
-//        
-//        $('.attr-hover-box').each(function(){
-//            count++;
-//            if (count === 1) {
-//                return true;
-//            }
-//            var seff = $(this);
-//            
-//            $(this).find('ul').find('li a').each(function() {
-//
-//                var child_attribute = $(this).parent().attr('data-attribute');
-//                var child_id = $(this).parents('ul').attr('data-attribute-id');
-//                
-////                if (count === 1) {
-//                    // Thuoc tinh khoi luong / dau tien
-////                    if (list_attributes[child_id] === child_attribute) {
-////                        $(this).click();
-////                        console.log('Da click thuoc tinh ' + child_id + ' ' + child_attribute);
-////                        return false;
-////                    }
-////                    console.log("SKIPPED");
-////                } else {
-////                    if ($(this).find('ul').find('li a').length <= 1) {
-////                        return false;
-////                    }
-//                    if (changing) {
-//                        if (list_attributes[child_id] !== child_attribute) {
-//                            changing = false;
-//                            console.log('Da click thuoc tinh ' + child_id  + ' ' + child_attribute);
-//                            $(this).click();
-//                            return false;
-//                        }
-//                    } else {
-//                        return false;
-//                    }
-////                }
-//            });
-//        });
-        
     }
     
     function fix_variable_product(){
@@ -300,8 +242,7 @@
         // variable product
         
         var list_attributes = [];
-        var do_change = 0;
-        
+        var all_changes = 0;
         if($('.wrap-attr-product.special').length > 0){
             $('.attr-filter ul li a').live('click',function(event){
                 event.preventDefault();
@@ -351,20 +292,22 @@
                     $(this).find('ul li').removeClass('active');
                 });
                 
-                var id = $('body input[name="variation_id"]').val();
-                if (!id) {
-                    do_change++;
-                    if (do_change > 1) {
-                        do_change = 0;
-                        console.log("STOP!");
-                        return;
+                if (Object.keys(list_attributes).length === $('.attr-hover-box').length) {
+                    var id = $('body input[name="variation_id"]').val();
+                    if (!id && !changing) {
+                        all_changes++;
+                        if (all_changes > 20) {
+                            console.log("STOP!");
+                            return;
+                        }
+                        if (!changing) {
+                            changing = true;
+                            tuandev_change_to_another_variation(list_attributes);
+                        }
+                        changing = false;
+                    } else {
+                        all_changes = 0;
                     }
-                    
-                    changing = true;
-                    if (changing) {
-                        tuandev_change_to_another_variation(list_attributes);
-                    }
-                    changing = false;
                 }
             })
             
