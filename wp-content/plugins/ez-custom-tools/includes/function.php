@@ -28,7 +28,7 @@ if(!function_exists('tuandev_process_default_product_variation')){
                 if ( $child_id ) {
                     $child = wc_get_product($child_id);
                     //Fix 3: An cac bien the da het hang
-                    if ($child->get_stock_status() == 'outofstock') {
+                    if ($child->get_stock_status() == 'outofstock' || !$child->get_regular_price()) {
                         if ($child->get_status() == 'publish') {
                             $child->set_status('private');
                             $child->save();

@@ -118,8 +118,10 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                 $product_id      = $woo_id;
                 $product         = wc_get_product( $product_id );
 
+                $product_is_variation = false;
                 if ($product->is_type( 'variation' )) {
                     $base_product_id = $product->get_parent_id();
+                    $product_is_variation = true;
                 } elseif ($product->is_type( 'simple' )) {
                     $base_product_id = $product_id;
                 } else {
@@ -134,16 +136,26 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                 $woo_product['price'] = $product->get_price();
                 $woo_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
                 $woo_product['preorder'] = kiotViet_get_preOrder_status($woo_product['id']);
+                $woo_product['status'] = $product->get_status();
+                $woo_product['is_variation'] = $product_is_variation;
                 
                 if ($woo_product['preorder']) {
                     if ($woo_product['stock']) {
-                        $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng-Pre Order</span>';
+                        if ($woo_product['status'] == 'private' && $product_is_variation) {
+                            $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng-Pre Order</span>-<span style="color:red; font-weight: bold;">Đã ẩn</span>';
+                        } else {
+                            $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng-Pre Order</span>';
+                        }
                     } else {
                         $woo_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng-Pre Order</span>';
                     }
                 } else {
                     if ($woo_product['stock']) {
-                        $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng</span>';
+                        if ($woo_product['status'] == 'private' && $product_is_variation) {
+                            $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng</span>-<span style="color:red; font-weight: bold;">Đã ẩn</span>';
+                        } else {
+                            $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng</span>';
+                        }
                     } else {
                         $woo_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng</span>';
                     }
@@ -179,8 +191,10 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                 $product_id      = $woo_id;
                 $product         = wc_get_product( $product_id );
 
+                $product_is_variation = false;
                 if ($product->is_type( 'variation' )) {
                     $base_product_id = $product->get_parent_id();
+                    $product_is_variation = true;
                 } elseif ($product->is_type( 'simple' )) {
                     $base_product_id = $product_id;
                 } else {
@@ -195,10 +209,13 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                 $woo_product['price'] = $product->get_price();
                 $woo_product['stock'] = ($product->get_stock_status() == 'instock') ? true : false;
                 $woo_product['preorder'] = kiotViet_get_preOrder_status($woo_product['id']);
-                
+                $woo_product['status'] = $product->get_status();
+                $woo_product['is_variation'] = $product_is_variation;
+                        
                 $need_sync = false;
                     
                 if (($kv_product['stock'] != $woo_product['stock'])
+                    || ($kv_product['stock'] && $woo_product['stock'] && ($woo_product['status'] == 'private'))
                     || ($kv_product['stock'] && $woo_product['preorder'])
                     || ($kv_product['price'] != $woo_product['price'])) 
                 {
@@ -212,13 +229,23 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                 
                 if ($woo_product['preorder']) {
                     if ($woo_product['stock']) {
-                        $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng-Pre Order</span>';
+                        if ($woo_product['status'] == 'private' && $product_is_variation) {
+                            $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng-Pre Order</span>-<span style="color:red; font-weight: bold;">Đã ẩn</span>';
+                        } else {
+                            $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng-Pre Order</span>';
+                        }
+                        
                     } else {
                         $woo_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng-Pre Order</span>';
                     }
                 } else {
                     if ($woo_product['stock']) {
-                        $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng</span>';
+                        if ($woo_product['status'] == 'private' && $product_is_variation) {
+                            $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng</span>-<span style="color:red; font-weight: bold;">Đã ẩn</span>';
+                        } else {
+                            $woo_product['stock_status'] = '<span style="color:green; font-weight: bold;">Còn hàng</span>';
+                        }
+                        
                     } else {
                         $woo_product['stock_status'] = '<span style="color:red; font-weight: bold;">Hết hàng</span>';
                     }
@@ -371,6 +398,17 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                     
                     if ($show_updateOutOfStock) {
                         $r.= '  <button id="updateOutOfStock_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-danger" title="Cập nhật hết hàng trên Web cho sản phẩm này" onclick="updateOutOfStock('. $woo_product['id'] .');"><i class="fa fa-tasks"></i>  Cập nhật hết hàng</button>';
+                    }
+                    
+                    //==================
+                    $show_enableProduct = false;
+
+                    if ($kv_product['stock'] && $woo_product['stock'] && $woo_product['status'] == 'private') {
+                        $show_enableProduct = true;
+                    }
+
+                    if ($show_enableProduct && $woo_product['is_variation']) {
+                        $r.= '  <button id="enableProduct_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-success" title="Bật sản phẩm này trên Web" onclick="enableProduct('. $woo_product['id'] .');"><i class="fa fa-tasks"></i>  Hiện biến thể</button>';
                     }
 
                     if ($kv_product['price'] != $woo_product['price']) {

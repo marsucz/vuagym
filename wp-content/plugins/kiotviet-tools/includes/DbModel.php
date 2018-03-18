@@ -32,6 +32,28 @@ class DbModel {
         }
         
     }
+    
+    public function get_children_ids($parent_id) {
+        
+        $query = "  SELECT ID
+                    FROM vg_posts 
+                    WHERE post_parent = {$parent_id}
+                    AND post_type = 'product_variation'";
+        
+        $result = mysqli_query($this->link, $query);
+
+        if ($result) {
+            $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            if ($return) {
+                return $return;
+            } else {
+                return [];
+            }
+        } else {
+            return [];
+        }
+        
+    }
 
     public function kiotviet_insert_product($product_id, $product_code) {
         

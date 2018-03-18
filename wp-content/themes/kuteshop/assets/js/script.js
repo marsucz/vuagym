@@ -174,8 +174,6 @@
     
     var changing = false;
     function tuandev_change_to_another_variation(list_attributes) {
-//        console.log("CHUYEN SAN PHAM NHIEU THUOC TINH...");
-//        console.log("Reset san pham");
         $('body .reset_variations').click();
         $('.attr-hover-box').each(function() {
             var atrributes_clicked = false;
@@ -260,9 +258,9 @@
                 
                 //Tuan Dev
                 list_attributes[id] = attribute;
-                console.log("Clicked: " + id);
-                console.log("Choose: " + attribute);
-                console.log(list_attributes);
+//                console.log("Clicked: " + id);
+//                console.log("Choose: " + attribute);
+//                console.log(list_attributes);
                 var count = 0;
                 $('.attr-hover-box').each(function(){
                     count++;
@@ -294,10 +292,11 @@
                 
                 if (Object.keys(list_attributes).length === $('.attr-hover-box').length) {
                     var id = $('body input[name="variation_id"]').val();
-                    if (!id && !changing) {
+                    if ((!id && !changing) || $('.single_add_to_cart_button').hasClass('disabled')) {
                         all_changes++;
-                        if (all_changes > 20) {
-                            console.log("STOP!");
+                        if (all_changes > 3) {
+                            all_changes = 0;
+//                            console.log("STOP!");
                             return;
                         }
                         if (!changing) {

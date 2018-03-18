@@ -64,6 +64,10 @@ function kiotviet_tools_plugin_init() {
     add_option('preorder_max_quantity', 75);
     add_option('mypos_error_max_quantity', 100);
     
+    // ID Danh muc sap co hang va hang moi ve
+    add_option('mypos_category_sapcohang', 81);
+    add_option('mypos_category_hangmoive', 86);
+    
     // Trang dong bo san pham: Kieu dong bo va so luong san pham
     add_option('sync_by_web_show_type', 1);
     add_option('sync_by_web_products', MYPOS_PER_PAGE);
@@ -109,6 +113,9 @@ function function_mypos_options_page() {
         update_option('mypos_add_to_cart', intval($_POST['mypos-add-to-cart']));
         update_option('mypos_ajax_cart', intval($_POST['mypos-ajax-cart']));
         update_option('mypos_checkout', intval($_POST['mypos-checkout']));
+        
+        update_option('mypos_category_sapcohang', $_POST['mypos-category-sapcohang']);
+        update_option('mypos_category_hangmoive', $_POST['mypos-category-hangmoive']);
         
         update_option('mypos_max_quantity', $_POST['mypos-max-quantity']);
         update_option('preorder_max_quantity', $_POST['preorder-max-quantity']);
@@ -174,7 +181,15 @@ function function_mypos_options_page() {
                                                     echo '</select>
                                                 </div>
                                             </div>
-                                            
+                                            <h3>Các tùy chỉnh khác</h3>
+                                            <div class="form-group">
+                                                <label>ID Danh mục: Sắp có hàng</label>
+                                                <input class="form-control" type="number" id="mypos-category-sapcohang" name="mypos-category-sapcohang" value="' . get_option('mypos_category_sapcohang') . '" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>ID Danh mục: Hàng mới về</label>
+                                                <input class="form-control" type="number" id="mypos-category-hangmoive" name="mypos-category-hangmoive" value="' . get_option('mypos_category_hangmoive') . '" required>
+                                            </div>
                                                                                         
                                         </div>
                                         <div class="col-lg-6">
@@ -346,15 +361,42 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
-    $kv = new KiotViet_API();
-    $token = $kv->get_access_token();
     
-    echo $token . '<br/>';
+//    $db = new DbModel();
+//    $test = $db->get_children_ids(10591);
+//    
+//    echo '<pre>';
+//    print_r($test);
+//    echo '<pre>';
+//    exit;
+//    
+//    
+//    exit;
     
-    $log_file = "testing.txt";
-    $log_text = "URL Get: ";
-    $log_text .= "\n KiotViet API response error format: " . $token;
-    write_logs($log_file, $log_text);
+    $prod = wc_get_product( 10591 );
+    
+    $child = $prod->get_available_variations();
+    
+    echo '<pre>';
+    print_r($child);
+    echo '<pre>';
+    exit;
+        
+        if ( $prod && $prod->is_type( 'variable' ) && $prod->has_child() ) {
+          
+            $args = array(
+                'post_type'     => 'product_variation',
+                'post_status'   => array( 'private', 'publish' ),
+                'post_parent'   => 10559 // 
+            );
+            
+            $variations = get_posts( $args );
+            
+            echo '<pre>';
+            print_r($variations);
+            echo '<pre>';
+            exit;
+        }
 }
 
 function update_default_manual_sync_options() {

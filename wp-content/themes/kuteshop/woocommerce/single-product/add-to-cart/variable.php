@@ -11,12 +11,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $product;
 
-$attribute_keys = array_keys( $attributes );
-
 do_action( 'woocommerce_before_add_to_cart_form' ); 
 
-$available_variations = $product->get_available_variations();
+$product = wc_get_product($product->get_id());
+$attribute_keys = array_keys( $attributes );
 
+//echo '<pre>';
+//print_r($attributes);
+//echo '<pre>';
+
+    $available_variations = $product->get_available_variations();
 ?>
 
 <form class="variations_form cart" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->get_id() ); ?>" data-product_variations="<?php echo esc_attr( json_encode( $available_variations ) ) ?>">
@@ -44,7 +48,7 @@ $available_variations = $product->get_available_variations();
 												if ( $product && taxonomy_exists( $attribute_name ) ) {
 													// Get terms if this is a taxonomy - ordered. We need the names too.
 													$terms = wc_get_product_terms( $product->get_id(), $attribute_name, array( 'fields' => 'all' ) );
-
+                                                                                                        
 													foreach ( $terms as $term ) {
 														if ( in_array( $term->slug, $options ) ) {
 															echo '<li data-attribute="' . esc_attr( $term->slug ) . '"><a href="#" class="bgcolor-' . esc_attr( $term->slug ) . '"><span></span>'.esc_html($term->name).'</a></li>';
