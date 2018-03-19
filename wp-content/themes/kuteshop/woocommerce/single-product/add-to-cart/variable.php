@@ -14,13 +14,23 @@ global $product;
 do_action( 'woocommerce_before_add_to_cart_form' ); 
 
 $product = wc_get_product($product->get_id());
+
+$available_variations = $product->get_available_variations();
 $attribute_keys = array_keys( $attributes );
 
-//echo '<pre>';
-//print_r($attributes);
-//echo '<pre>';
+$attributes = [];
 
-    $available_variations = $product->get_available_variations();
+foreach( $available_variations as $variation ) {
+    foreach ($variation['attributes'] as $attribute_key => $attribute) {
+        $slug = str_replace('attribute_', '', $attribute_key);
+        if (isset($attributes[$slug]) && in_array($attribute, $attributes[$slug])) {
+            // Exists
+        } else {
+            $attributes[$slug][] = $attribute;
+        }
+    }
+}
+
 ?>
 
 <form class="variations_form cart" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->get_id() ); ?>" data-product_variations="<?php echo esc_attr( json_encode( $available_variations ) ) ?>">
