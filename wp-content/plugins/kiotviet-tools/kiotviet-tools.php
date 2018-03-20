@@ -361,9 +361,13 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
-    $kv = new KiotViet_API();
-    $token = $kv->get_access_token();
-    echo $token;
+    $option_tree = get_option('option_tree');
+    
+    if (array_key_exists('ez_custom_function', $option_tree)) {
+        echo $option_tree['ez_custom_function'];
+    }
+    
+    exit;
 }
 
 function update_default_manual_sync_options() {
