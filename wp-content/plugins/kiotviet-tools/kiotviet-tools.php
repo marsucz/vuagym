@@ -9,7 +9,7 @@
  * Author URI: http://minhtuanit.me
  * License: GPL2
  * Created On: 24-01-2018
- * Updated On: 05-03-2018
+ * Updated On: 20-03-2018
  */
 // Define WC_PLUGIN_DIR.
 if (!defined('WC_PLUGIN_DIR')) {
@@ -404,101 +404,9 @@ function find_valid_variations() {
 }
 
 function function_testing_page() {
-    
-//    $db = new DbModel();
-//    $test = $db->get_children_ids(10591);
-//    
-//    echo '<pre>';
-//    print_r($test);
-//    echo '<pre>';
-//    exit;
-//    
-//    
-//    exit;
-    
-    $product = wc_get_product( 10576 );
-    
-//    $variations = $prod->get_available_variations();
-//    $attributes = $prod->get_variation_attributes();
-
-$variations = $product->get_available_variations();
-//$attributes = $product->get_variation_attributes();
-
-//echo '<pre>';
-//print_r($variations);
-//    print_r($attributes);
-//echo '</pre>';
-
-$attributes = [];
-
-foreach( $variations as $variation ) {
-    foreach ($variation['attributes'] as $attribute_key => $attribute) {
-        $slug = str_replace('attribute_', '', $attribute_key);
-        if (isset($attributes[$slug]) && in_array($attribute, $attributes[$slug])) {
-            // Exists
-        } else {
-            $attributes[$slug][] = $attribute;
-        }
-    }
-}
-
-echo '<pre>';
-    print_r($attributes);
-echo '</pre>';
-exit;
-
-    // Loop through all variations
-    foreach( $variations as $variation ) {
- 
-        // Peruse the attributes.
- 
-        // 1. If both are explicitly set, this is a valid variation
-        // 2. If one is not set, that means any, and we must 'create' the rest.
- 
-        $valid = true; // so far
-        foreach( $attributes as $slug => $args ) {
-            if( array_key_exists("attribute_$slug", $variation['attributes']) && !empty($variation['attributes']["attribute_$slug"]) ) {
-                // Exists
- 
-            } else {
-                // Not exists, create
-                $valid = false; // it contains 'anys'
-                // loop through all options for the 'ANY' attribute, and add each
-                foreach( explode( '|', $attributes[$slug]['value']) as $attribute ) {
-                    $attribute = trim( $attribute );
-                    $new_variant = $variation;
-                    $new_variant['attributes']["attribute_$slug"] = $attribute;
-                    $new_variants[] = $new_variant;
-                }
- 
-            }
-        }
- 
-        // This contains ALL set attributes, and is itself a 'valid' variation.
-//        if( $valid )
-//            $new_variants[] = $variation;
- 
-    }
-    
-exit;
-
-    exit;
-        
-        if ( $prod && $prod->is_type( 'variable' ) && $prod->has_child() ) {
-          
-            $args = array(
-                'post_type'     => 'product_variation',
-                'post_status'   => array( 'private', 'publish' ),
-                'post_parent'   => 10559 // 
-            );
-            
-            $variations = get_posts( $args );
-            
-            echo '<pre>';
-            print_r($variations);
-            echo '<pre>';
-            exit;
-        }
+    $kv = new KiotViet_API();
+    $token = $kv->get_access_token();
+    echo $token;
 }
 
 function update_default_manual_sync_options() {

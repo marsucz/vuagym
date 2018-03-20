@@ -186,7 +186,6 @@
                     if (list_attributes[child_id] === child_attribute) {
                         $(this).click();
                         atrributes_clicked = true;
-//                        console.log('Da click thuoc tinh GIONG MAU ' + child_id + ' ' + child_attribute);
                         return false;
                     }
                 } else {
@@ -196,9 +195,29 @@
             });
             
             if (!atrributes_clicked) {
-//                console.log("THUOC TINH TRONG LIST KHONG TON TAI, CHON THUOC TINH DAU TIEN!!!");
                 $(this).find('ul').find('li a').first().click();
             }
+        });
+    }
+    
+    function clicked_default_attributes() {
+        var id = $('body input[name="variation_id"]').val();
+        if (!id) return;
+        $('.attr-hover-box').each(function() {
+            var attr_name = $(this).find('ul').attr('data-attribute-id');
+            var attr_default = $('#ez-attr-default-' + attr_name).val();
+            if (!attr_default) return false;
+            var atrributes_clicked = false;
+            $(this).find('ul').find('li a').each(function() {
+                var child_attribute = $(this).parent().attr('data-attribute');
+                if (attr_default === child_attribute) {
+                    $(this).click();
+                    atrributes_clicked = true;
+                    return false;
+                }
+            });
+            
+            if (!atrributes_clicked) return false;
         });
     }
     
@@ -258,9 +277,6 @@
                 
                 //Tuan Dev
                 list_attributes[id] = attribute;
-//                console.log("Clicked: " + id);
-//                console.log("Choose: " + attribute);
-//                console.log(list_attributes);
                 var count = 0;
                 $('.attr-hover-box').each(function(){
                     count++;
@@ -582,6 +598,7 @@
 		menu_responsive();
 		s7upf_qty_click();
 		fix_variable_product();
+                clicked_default_attributes();
 		//menu fix home 8
 		$('.title-cat-icon').on('click',function(){
 			if($(this).closest('.vc_row').hasClass('fixed-header')) $(this).next().slideToggle('slow');

@@ -18,17 +18,20 @@ $product = wc_get_product($product->get_id());
 $available_variations = $product->get_available_variations();
 $attribute_keys = array_keys( $attributes );
 
-$attributes = [];
-
+$new_attributes = [];
 foreach( $available_variations as $variation ) {
     foreach ($variation['attributes'] as $attribute_key => $attribute) {
         $slug = str_replace('attribute_', '', $attribute_key);
-        if (isset($attributes[$slug]) && in_array($attribute, $attributes[$slug])) {
+        if (isset($new_attributes[$slug]) && in_array($attribute, $new_attributes[$slug])) {
             // Exists
         } else {
-            $attributes[$slug][] = $attribute;
+            $new_attributes[$slug][] = $attribute;
         }
     }
+}
+
+if (!empty($new_attributes)) {
+    $attributes = $new_attributes;
 }
 
 ?>
@@ -85,8 +88,8 @@ foreach( $available_variations as $variation ) {
 								<?php
 									$selected = isset( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ? wc_clean( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) : $product->get_variation_default_attribute( $attribute_name );
 									wc_dropdown_variation_attribute_options( array( 'options' => $options, 'attribute' => $attribute_name, 'product' => $product, 'selected' => $selected ) );
-									
 								?>
+                                                                <input id="ez-attr-default-<?php echo $attribute_name; ?>" type="hidden" value="<?php echo $selected; ?>"/>
 							</div>
 						</div>
 		        <?php endforeach;?>
