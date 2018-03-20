@@ -303,7 +303,6 @@
                     })
                     
                     if(old_html != content) $(this).find('ul').html(content);
-                    $(this).find('ul li').removeClass('active');
                 });
                 
                 if (Object.keys(list_attributes).length === $('.attr-hover-box').length) {

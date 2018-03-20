@@ -71,7 +71,7 @@ if(!class_exists('S7upf_BaseController'))
             wp_enqueue_script( 'jquery-bxslider',$js_url.'lib/jquery.bxslider.min.js',array('jquery'),null,true);
             if($coupon == 'on') wp_enqueue_script( 'jquery-cookie',$js_url.'lib/jquery.cookie.js',array('jquery'),null,true);
             if(!empty($api_key)) wp_enqueue_script( 's7upf-script-map',$js_url.'map.js',array('jquery'),null,true);
-            wp_enqueue_script( 's7upf-script',$js_url.'script-v1.1.js',array('jquery'),null,true);
+            wp_enqueue_script( 's7upf-script',$js_url.'script-v1.2.js',array('jquery'),null,true);
             wp_enqueue_script( 'sv-ajax', $js_url.'ajax.js', array( 'jquery' ),null,true);
             wp_localize_script( 'sv-ajax', 'ajax_process', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
 
