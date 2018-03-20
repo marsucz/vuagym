@@ -1033,7 +1033,7 @@ if(!function_exists('s7upf_product_item'))
 					$variation_status = -1;
 					$variations = $product->get_children();
 					foreach ( $variations as $variation_id ) {
-						$product_status = "<font color=\"#079c3a\">Sắp có hàng</font>";
+						$product_status = "<font color=\"orange\">Sắp có hàng</font>";
 						$pre_order_variation = new YITH_Pre_Order_Product( $variation_id );
 						$var = wc_get_product( $variation_id );
 						if ($var->is_in_stock() && 'no' == $pre_order_variation->get_pre_order_status()) {
@@ -1046,14 +1046,14 @@ if(!function_exists('s7upf_product_item'))
 					if($variation_status == 1){
 						$product_status = "<font color=\"#079c3a\">Còn hàng</font>";
 					} else if($variation_status == 0){
-						$product_status = "<font color=\"#079c3a\">Sắp có hàng</font>";
+						$product_status = "<font color=\"orange\">Sắp có hàng</font>";
 					} else {
 						$product_status = "<font color=\"#D41313\">Hết hàng</font>";
 					}
 				} else if ( 'simple' == $product->get_type() ) {
 					$pre_order = new YITH_Pre_Order_Product( $post_id );
 					if ( 'yes' == $pre_order->get_pre_order_status() ) {
-						$product_status = "<font color=\"#079c3a\">Sắp có hàng</font>";
+						$product_status = "<font color=\"orange\">Sắp có hàng</font>";
 					} else if ($product->is_in_stock()) {
 						$product_status = "<font color=\"#079c3a\">Còn hàng</font>";
 					} else {
@@ -1111,7 +1111,7 @@ if(!function_exists('s7upf_product_item'))
 					$variation_status = -1;
 					$variations = $product->get_children();
 					foreach ( $variations as $variation_id ) {
-						$product_status = "<font color=\"#079c3a\">Sắp có hàng</font>";
+						$product_status = "<font color=\"orange\">Sắp có hàng</font>";
 						$pre_order_variation = new YITH_Pre_Order_Product( $variation_id );
 						$var = wc_get_product( $variation_id );
 						if ($var->is_in_stock() && 'no' == $pre_order_variation->get_pre_order_status()) {
@@ -1124,14 +1124,14 @@ if(!function_exists('s7upf_product_item'))
 					if($variation_status == 1){
 						$product_status = "<font color=\"#079c3a\">Còn hàng</font>";
 					} else if($variation_status == 0){
-						$product_status = "<font color=\"#079c3a\">Sắp có hàng</font>";
+						$product_status = "<font color=\"orange\">Sắp có hàng</font>";
 					} else {
 						$product_status = "<font color=\"#D41313\">Hết hàng</font>";
 					}
 				} else if ( 'simple' == $product->get_type() ) {
 					$pre_order = new YITH_Pre_Order_Product( $post_id );
 					if ( 'yes' == $pre_order->get_pre_order_status() ) {
-						$product_status = "<font color=\"#079c3a\">Sắp có hàng</font>";
+						$product_status = "<font color=\"orange\">Sắp có hàng</font>";
 					} else if ($product->is_in_stock()) {
 						$product_status = "<font color=\"#079c3a\">Còn hàng</font>";
 					} else {
@@ -1181,7 +1181,7 @@ if(!function_exists('s7upf_product_item'))
 					$variation_status = -1;
 					$variations = $product->get_children();
 					foreach ( $variations as $variation_id ) {
-						$product_status = "<font color=\"#079c3a\">Sắp có hàng</font>";
+						$product_status = "<font color=\"orange\">Sắp có hàng</font>";
 						$pre_order_variation = new YITH_Pre_Order_Product( $variation_id );
 						$var = wc_get_product( $variation_id );
 						if ($var->is_in_stock() && 'no' == $pre_order_variation->get_pre_order_status()) {
@@ -1194,14 +1194,14 @@ if(!function_exists('s7upf_product_item'))
 					if($variation_status == 1){
 						$product_status = "<font color=\"#079c3a\">Còn hàng</font>";
 					} else if($variation_status == 0){
-						$product_status = "<font color=\"#079c3a\">Sắp có hàng</font>";
+						$product_status = "<font color=\"orange\">Sắp có hàng</font>";
 					} else {
 						$product_status = "<font color=\"#D41313\">Hết hàng</font>";
 					}
 				} else if ( 'simple' == $product->get_type() ) {
 					$pre_order = new YITH_Pre_Order_Product( $post_id );
 					if ( 'yes' == $pre_order->get_pre_order_status() ) {
-						$product_status = "<font color=\"#079c3a\">Sắp có hàng</font>";
+						$product_status = "<font color=\"orange\">Sắp có hàng</font>";
 					} else if ($product->is_in_stock()) {
 						$product_status = "<font color=\"#079c3a\">Còn hàng</font>";
 					} else {
@@ -1417,6 +1417,7 @@ if(!function_exists('s7upf_product_main_detai')){
 		$product_status = "";
 		$nha_san_xuat = $product->get_attribute( 'thuong-hieu');
 		$han_su_dung = $product->get_attribute( 'han-su-dung');
+		$ma_san_pham = $product->get_sku();
 		if($nha_san_xuat != '') {$nha_san_xuat = " từ " . $nha_san_xuat;}
 		
 				
@@ -1424,7 +1425,7 @@ if(!function_exists('s7upf_product_main_detai')){
 			$variation_status = -1;
 			$variations = $product->get_children();
 			foreach ( $variations as $variation_id ) {
-				$product_status = "<font color=\"#079c3a\">Sắp có hàng</font>";
+				$product_status = "<font color=\"orange\">Sắp có hàng</font>";
 				$pre_order_variation = new YITH_Pre_Order_Product( $variation_id );
 				$var = wc_get_product( $variation_id );
 				if ($var->is_in_stock() && 'no' == $pre_order_variation->get_pre_order_status()) {
@@ -1437,14 +1438,14 @@ if(!function_exists('s7upf_product_main_detai')){
 			if($variation_status == 1){
 				$product_status = "<font color=\"#079c3a\">Còn hàng</font>";
 			} else if($variation_status == 0){
-				$product_status = "<font color=\"#079c3a\">Sắp có hàng</font>";
+				$product_status = "<font color=\"orange\">Sắp có hàng</font>";
 			} else {
 				$product_status = "<font color=\"#D41313\">Hết hàng</font>";
 			}
 		} else if ( 'simple' == $product->get_type() ) {
 			$pre_order = new YITH_Pre_Order_Product( $post_id );
 			if ( 'yes' == $pre_order->get_pre_order_status() ) {
-				$product_status = "<font color=\"#079c3a\">Sắp có hàng</font>";
+				$product_status = "<font color=\"orange\">Sắp có hàng</font>";
 			} else if ($product->is_in_stock()) {
 				$product_status = "<font color=\"#079c3a\">Còn hàng</font>";
 			} else {

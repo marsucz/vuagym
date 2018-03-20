@@ -1233,6 +1233,8 @@ li.menu-item-has-children:hover > .sub-menu {
   transform: translate3d(0, 10px, 0);
   content: "Menu";
   padding-top: 3px;
+  color: white;
+  text-transform: uppercase;
 }
 .main-nav.active .toggle-mobile-menu::before {
   -webkit-transform: rotate3d(0, 0, 1, 45deg);
@@ -5589,7 +5591,7 @@ a.protect-icon:hover {
   background: #fff;
 }
 .smart-search1 .smart-search-form > input[type="text"] {
-  border-radius: 0 4px 4px 0;
+  border-radius: 6px;
   height: 44px;
 }
 .smart-search1 .smart-search-form {
@@ -5608,7 +5610,7 @@ a.protect-icon:hover {
   content: "";
   border-top: 5px solid transparent;
   border-bottom: 5px solid transparent;
-  border-right: 5px solid #f9bc02;
+  border-right: 5px solid #08c;
   top: 50%;
   right: 50px;
   margin-top: -5px;
@@ -13759,7 +13761,6 @@ a.protect-icon:hover {
 }
 .newsletter-form17.newsletter-form input[type="submit"] {
   color: #fde428;
-  background-color: #004780!important;
   margin: 0!important;
   border: 0!important;
   height: 100%;
