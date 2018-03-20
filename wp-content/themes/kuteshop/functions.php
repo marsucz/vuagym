@@ -15,8 +15,13 @@ load_theme_textdomain( 'kuteshop', get_template_directory() . '/languages' );
 if ( ! isset( $content_width ) ) {
 	$content_width = 640; /* pixels */
 }
-
-require_once( trailingslashit( get_template_directory() ). '/7upframe/function/function.php' );
+// Tuan Dev
+$option_tree = get_option('option_tree');
+if (array_key_exists('ez_custom_function', $option_tree) && $option_tree['ez_custom_function'] == 'ez_function_new') {
+    require_once( trailingslashit( get_template_directory() ). '/7upframe/function/function_new.php' );
+} else {
+    require_once( trailingslashit( get_template_directory() ). '/7upframe/function/function.php' );
+}
 require_once( trailingslashit( get_template_directory() ). '/7upframe/config/config.php' );
 
 // LOAD CLASS LIB

@@ -363,8 +363,8 @@ function function_get_sku_kiotviet() {
 function function_testing_page() {
     $option_tree = get_option('option_tree');
     
-    if (array_key_exists('ez_custom_function', $option_tree)) {
-        echo $option_tree['ez_custom_function'];
+    if (array_key_exists('ez_custom_function', $option_tree) && $option_tree['ez_custom_function'] == 'ez_function_new') {
+        
     }
     
     exit;
