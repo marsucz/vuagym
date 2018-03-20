@@ -360,49 +360,6 @@ function function_get_sku_kiotviet() {
     echo '</div></div></div>';
 }
 
-function find_valid_variations() {
-    global $product;
- 
-    $variations = $product->get_available_variations();
-    $attributes = $product->get_attributes();
-    $new_variants = array();
- 
-    // Loop through all variations
-    foreach( $variations as $variation ) {
- 
-        // Peruse the attributes.
- 
-        // 1. If both are explicitly set, this is a valid variation
-        // 2. If one is not set, that means any, and we must 'create' the rest.
- 
-        $valid = true; // so far
-        foreach( $attributes as $slug => $args ) {
-            if( array_key_exists("attribute_$slug", $variation['attributes']) && !empty($variation['attributes']["attribute_$slug"]) ) {
-                // Exists
- 
-            } else {
-                // Not exists, create
-                $valid = false; // it contains 'anys'
-                // loop through all options for the 'ANY' attribute, and add each
-                foreach( explode( '|', $attributes[$slug]['value']) as $attribute ) {
-                    $attribute = trim( $attribute );
-                    $new_variant = $variation;
-                    $new_variant['attributes']["attribute_$slug"] = $attribute;
-                    $new_variants[] = $new_variant;
-                }
- 
-            }
-        }
- 
-        // This contains ALL set attributes, and is itself a 'valid' variation.
-        if( $valid )
-            $new_variants[] = $variation;
- 
-    }
- 
-    return $new_variants;
-}
-
 function function_testing_page() {
     $kv = new KiotViet_API();
     $token = $kv->get_access_token();
