@@ -117,6 +117,8 @@ function function_mypos_options_page() {
         update_option('mypos_category_sapcohang', $_POST['mypos-category-sapcohang']);
         update_option('mypos_category_hangmoive', $_POST['mypos-category-hangmoive']);
         
+        update_option('mypos_roles', $_POST['mypos-roles']);
+        
         update_option('mypos_max_quantity', $_POST['mypos-max-quantity']);
         update_option('preorder_max_quantity', $_POST['preorder-max-quantity']);
         update_option('mypos_error_max_quantity', $_POST['mypos-error-max-quantity']);
@@ -190,7 +192,27 @@ function function_mypos_options_page() {
                                                 <label>ID Danh mục: Hàng mới về</label>
                                                 <input class="form-control" type="number" id="mypos-category-hangmoive" name="mypos-category-hangmoive" value="' . get_option('mypos_category_hangmoive') . '" required>
                                             </div>
-                                                                                        
+                                            <div class="form-group">
+                                                <label>Các User Roles có thể dùng "Đồng bộ hóa sản phẩm"</label>';
+    global $wp_roles;
+    echo '<select multiple id="mypos-roles" name="mypos-roles[]" class="form-control">';
+    
+    $mypos_roles = get_option('mypos_roles');
+    
+    foreach ( $wp_roles->roles as $key=>$value ) {
+        if ($key == 'administrator') continue;
+        $selected = '';
+        foreach ($mypos_roles as $role) {
+            if ($role == $key) {
+                $selected = 'selected';
+                break;
+            }
+        }
+        echo '<option value="' . $key .'" ' . $selected . '>' . $value['name'] . '</option>';
+    }
+    echo '</select>';   
+                                            echo '<p class="help-block">Sử dụng Ctrl để chọn cùng lúc nhiều roles.</p>
+                                                </div>    
                                         </div>
                                         <div class="col-lg-6">
                                             <h3>Tùy chỉnh số lượng sản phẩm</h3>
@@ -361,13 +383,12 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
-    $option_tree = get_option('option_tree');
-    
-    if (array_key_exists('ez_custom_function', $option_tree) && $option_tree['ez_custom_function'] == 'ez_function_new') {
-        
-    }
-    
-    exit;
+    global $wp_roles;
+    echo '<select multiple name="role">';
+    foreach ( $wp_roles->roles as $key=>$value ):
+    echo '<option value="' . $key .'">' . $value['name'] . '</option>';
+    endforeach;
+    echo '</select>';
 }
 
 function update_default_manual_sync_options() {
