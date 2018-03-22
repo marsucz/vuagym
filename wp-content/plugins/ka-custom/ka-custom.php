@@ -55,7 +55,7 @@ function function_ez_custom_tools_page() {
                 <div class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Cài Đặt EZ Custom
+                            Cài Đặt KA Custom Tools
                         </div>
                         <div class="panel-body">
                             <div class="row">
