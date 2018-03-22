@@ -784,6 +784,26 @@ if ( ! function_exists( 's7upf_thumb_product' ) ) {
                                 </div>';
                 break;
             
+            case 'upsell':
+                $html .=    '<div class="product-thumb" style="padding: 0px 30px 5px 30px;">
+                                '.$label_html.'
+                                <a href="'.esc_url(get_the_permalink()).'" class="product-thumb-link '.esc_attr($animation).'">
+                                    '.get_the_post_thumbnail(get_the_ID(),$size).'
+                                </a>
+                                '.$hover_html.'
+                            </div>';
+                break;
+            
+            case 'catelogy':
+                $html .=    '<div class="product-thumb">
+                                '.$label_html.'
+                                <a href="'.esc_url(get_the_permalink()).'" class="product-thumb-link-khoa product-thumb-link '.esc_attr($animation).'">
+                                    '.get_the_post_thumbnail(get_the_ID(),$size).'
+                                </a>
+                                '.$hover_html.'
+                            </div>';
+                break; 
+                
             default:
                 $html .=    '<div class="product-thumb">
                                 '.$label_html.'
@@ -794,46 +814,6 @@ if ( ! function_exists( 's7upf_thumb_product' ) ) {
                             </div>';
                 break;
         }
-        return $html;
-    }
-}
-if ( ! function_exists( 's7upf_thumb_product_khoa' ) ) {
-    function s7upf_thumb_product_khoa($style='',$hover=array(),$size='full',$animation='',$hover_ef = '',$label='hidden'){
-        $hover_default = array(
-            'quickview'     => array(
-                'status'    => 'show',
-                'pos'       => 'pos-top',
-                'style'     => 'plus',
-                ),
-            'extra-link'    => array(
-                'status'    => 'show',
-                'style'     => '',
-                )
-            );
-        $hover = array_merge($hover_default,$hover);
-        $hover_html = '';
-        global $post,$product;
-        if($hover['quickview']['status'] == 'show') $hover_html .= '<a data-product-id="'.get_the_id().'" href="'.esc_url(get_the_permalink()).'" class="product-quick-view quickview-link '.esc_attr($hover['quickview']['style'].' '.$hover['quickview']['pos']).'"><span>'.esc_html__("quick view","kuteshop").'</span></a>';
-        if($hover['extra-link']['status'] == 'show') $hover_html .= s7upf_product_link($hover['extra-link']['style']);
-        $label_html = '';
-        if($label == 'show'){
-            $date_pro = strtotime($post->post_date);
-            $date_now = strtotime('now');
-            $set_timer = s7upf_get_option( 'sv_set_time_woo', 30);
-            $uppsell = ($date_now - $date_pro - $set_timer*24*60*60);
-            $label_html .=  '<div class="product-label">';
-            if($uppsell < 0) $label_html .=  '<span class="new-label">'.esc_html__("new","kuteshop").'</span>';
-            if($product->is_on_sale()) $label_html .=  '<span class="sale-label">'.esc_html__("sale","kuteshop").'</span>';
-            $label_html .=  '</div>';
-        }
-
-        $html .=    '<div class="product-thumb">
-                                '.$label_html.'
-                                <a href="'.esc_url(get_the_permalink()).'" class="product-thumb-link-khoa product-thumb-link '.esc_attr($animation).'">
-                                    '.get_the_post_thumbnail(get_the_ID(),$size).'
-                                </a>
-                                '.$hover_html.'
-                            </div>';
         return $html;
     }
 }
@@ -1020,11 +1000,10 @@ if(!function_exists('s7upf_get_price_html')){
 // product item list
 if(!function_exists('s7upf_product_item'))
 {
-    function s7upf_product_item($item_style,$item_num,$animation_class,$data,$style='',$hover=array(),$size='full',$animation='',$hover_ef = '',$label='hidden')
+    function s7upf_product_item($item_style,$item_num,$animation_class,$data,$style,$hover=array(),$size='full',$animation='',$hover_ef = '',$label='hidden')
     {
         switch ($item_style) {
             case 'item-pro-ajax':
-			// Khoa Anh
                 global $product;
 				$post_id = $product->get_id();
 				$product_status = "";
@@ -1063,7 +1042,7 @@ if(!function_exists('s7upf_product_item'))
 				
                 $html =     '<div class="list-col-item list-'.esc_attr($item_num.'-item '.$animation_class).'"'.$data.'>
                                 <div class="item-product '.esc_attr($item_style).'">
-                                    '.s7upf_thumb_product_khoa($style,$hover,$size,$animation,$hover_ef,$label).'
+                                    '.s7upf_thumb_product($style='catelogy',$hover,$size,$animation,$hover_ef,$label).'
 									<div class="product-info">
                                         <h3 class="product-title"><a href="'.esc_url(get_the_permalink()).'" title="'.esc_attr(get_the_title()).'">'.get_the_title().'</a></h3>
                                         '.s7upf_get_price_html().'
@@ -1102,7 +1081,6 @@ if(!function_exists('s7upf_product_item'))
                 break;
 
             case 'item-pro-color':
-			// Khoa Anh
                 global $product;
 				$post_id = $product->get_id();
 				$product_status = "";
@@ -1145,13 +1123,11 @@ if(!function_exists('s7upf_product_item'))
                             <div class="product-info">
                                 <h3 class="product-title"><a href="'.esc_url(get_the_permalink()).'" title="'.esc_attr(get_the_title()).'">'.get_the_title().'</a></h3>
                                 '.s7upf_get_price_html().'
-								'.$product_status.'
-                                '.s7upf_product_link().'
+				'.$product_status.'
                             </div>
                         </div>
                     </div>';
                 break;
-			// End
 
             case 'item-pro-color-stock':
                 global $product;
@@ -1172,55 +1148,54 @@ if(!function_exists('s7upf_product_item'))
                 break;
             
             default:
-			// Khoa Anh Edit
-				global $product;
-				$post_id = $product->get_id();
-				$product_status = "";
-				
-				if ( 'variable' == $product->get_type() && $product->has_child() ) {
-					$variation_status = -1;
-					$variations = $product->get_children();
-					foreach ( $variations as $variation_id ) {
-						$product_status = "<font color=\"orange\">Sắp có hàng</font>";
-						$pre_order_variation = new YITH_Pre_Order_Product( $variation_id );
-						$var = wc_get_product( $variation_id );
-						if ($var->is_in_stock() && 'no' == $pre_order_variation->get_pre_order_status()) {
-							$variation_status = 1;
-							break;
-						} else if ('yes' == $pre_order_variation->get_pre_order_status()) {
-							$variation_status = 0;
-						}
-					}
-					if($variation_status == 1){
-						$product_status = "<font color=\"#079c3a\">Còn hàng</font>";
-					} else if($variation_status == 0){
-						$product_status = "<font color=\"orange\">Sắp có hàng</font>";
-					} else {
-						$product_status = "<font color=\"#D41313\">Hết hàng</font>";
-					}
-				} else if ( 'simple' == $product->get_type() ) {
-					$pre_order = new YITH_Pre_Order_Product( $post_id );
-					if ( 'yes' == $pre_order->get_pre_order_status() ) {
-						$product_status = "<font color=\"orange\">Sắp có hàng</font>";
-					} else if ($product->is_in_stock()) {
-						$product_status = "<font color=\"#079c3a\">Còn hàng</font>";
-					} else {
-						$product_status = "<font color=\"#D41313\">Hết hàng</font>";
-					}
-				}
-				
-				$html = '<div class="list-col-item list-'.esc_attr($item_num.'-item '.$animation_class).'"'.$data.'>
-                        <div class="item-product '.esc_attr($item_style).'">
-                            '.s7upf_thumb_product($style,$hover,$size,$animation,$hover_ef,$label).'
+                global $product;
+                $post_id = $product->get_id();
+                $product_status = "";
+
+                if ('variable' == $product->get_type() && $product->has_child()) {
+                    $variation_status = -1;
+                    $variations = $product->get_children();
+                    foreach ($variations as $variation_id) {
+                        $product_status = "<font color=\"orange\">Sắp có hàng</font>";
+                        $pre_order_variation = new YITH_Pre_Order_Product($variation_id);
+                        $var = wc_get_product($variation_id);
+                        if ($var->is_in_stock() && 'no' == $pre_order_variation->get_pre_order_status()) {
+                            $variation_status = 1;
+                            break;
+                        } else if ('yes' == $pre_order_variation->get_pre_order_status()) {
+                            $variation_status = 0;
+                        }
+                    }
+                    if ($variation_status == 1) {
+                        $product_status = "<font color=\"#079c3a\">Còn hàng</font>";
+                    } else if ($variation_status == 0) {
+                        $product_status = "<font color=\"orange\">Sắp có hàng</font>";
+                    } else {
+                        $product_status = "<font color=\"#D41313\">Hết hàng</font>";
+                    }
+                } else if ('simple' == $product->get_type()) {
+                    $pre_order = new YITH_Pre_Order_Product($post_id);
+                    if ('yes' == $pre_order->get_pre_order_status()) {
+                        $product_status = "<font color=\"orange\">Sắp có hàng</font>";
+                    } else if ($product->is_in_stock()) {
+                        $product_status = "<font color=\"#079c3a\">Còn hàng</font>";
+                    } else {
+                        $product_status = "<font color=\"#D41313\">Hết hàng</font>";
+                    }
+                }
+
+                $html = '<div class="list-col-item list-' . esc_attr($item_num . '-item ' . $animation_class) . '"' . $data . '>
+                        <div class="item-product ' . esc_attr($item_style) . '">
+                            ' . s7upf_thumb_product($style, $hover, $size, $animation, $hover_ef, $label) . '
                             <div class="product-info">
-                                <h3 class="product-title"><a href="'.esc_url(get_the_permalink()).'" title="'.esc_attr(get_the_title()).'">'.get_the_title().'</a></h3>
-                                '.s7upf_get_price_html().'
-								'.$product_status.'
+                                <h3 class="product-title"><a href="' . esc_url(get_the_permalink()) . '" title="' . esc_attr(get_the_title()) . '">' . get_the_title() . '</a></h3>
+                                ' . s7upf_get_price_html() . '
+				' . $product_status . '
                             </div>
                         </div>
                     </div>';
-			// End
-            break;
+                // End
+                break;
         }
         return $html;
     }
@@ -1340,275 +1315,7 @@ if(!function_exists('s7upf_get_rating_html')){
         return $html;
     }
 }
-//product main detail
-if(!function_exists('s7upf_product_main_detai')){
-    function s7upf_product_main_detai($ajax = false){
-        global $post, $product, $woocommerce;
-        s7upf_set_post_view();
-        $size = 'full';
-        $thumb_id = array(get_post_thumbnail_id());
-        $attachment_ids = $product->get_gallery_image_ids();
-        $attachment_ids = array_merge($thumb_id,$attachment_ids);
-		$attachment_ids = array_unique($attachment_ids);
-        $ul_block = $pager_html = $ul_block2 = ''; $i = 1;
-        foreach ( $attachment_ids as $attachment_id ) {
-            $image_link = wp_get_attachment_url( $attachment_id );
-            if ( ! $image_link )
-                continue;
-            $image_title    = esc_attr( get_the_title( $attachment_id ) );
-            $image_caption  = esc_attr( get_post_field( 'post_excerpt', $attachment_id ) );
-            $image       = wp_get_attachment_image( $attachment_id, $size, 0, $attr = array(
-                'title' => $image_title,
-                'alt'   => $image_title
-                ) );
-            if($i == 1) $active = 'active';
-            else $active = '';
-            $page_index = $i-1;
-            $ul_block .= '<li data-image_id="'.esc_attr($attachment_id).'"><a href="#" class="'.esc_attr($active).'">'.$image.'</a></li>';
-            $i++;
-        }
-        $available_data = array();
-        if( $product->is_type( 'variable' ) ) $available_data = $product->get_available_variations();        
-        if(!empty($available_data)){
-            foreach ($available_data as $available) {
-                if(!empty($available['image_id']) && !in_array($available['image_id'],$attachment_ids)){
-                    $attachment_ids[] = $available['image_id'];
-                    if(!empty($available['image_id'])){
-                        $image_title2    = esc_attr( get_the_title( $available['image_id'] ) );
-                        $image2 = wp_get_attachment_image( $available['image_id'], $size, 0, $attr = array(
-                        'title' => $image_title2,
-                        'alt'   => $image_title2
-                        ) );
-                        $ul_block .= '<li data-image_id="'.esc_attr($available['image_id']).'"><a href="#">'.$image2.'</a></li>';
-                        $i++;
-                    }
-                }
-            }
-        }
-        $thumb_html =   '<div class="detail-gallery">
-                            <div class="mid">
-                                '.get_the_post_thumbnail(get_the_ID(),'full').'
-                            </div>
-                            <div class="gallery-control">
-                                <a href="#" class="prev"><i class="fa fa-angle-left"></i></a>
-                                <div class="carousel">
-                                    <ul>
-                                        '.$ul_block.'
-                                    </ul>
-                                </div>
-                                <a href="#" class="next"><i class="fa fa-angle-right"></i></a>
-                            </div>
-                        </div>';
-        $thumb_html .=  s7upf_get_product_detail_link();
-        $sku = get_post_meta(get_the_ID(),'_sku',true);
-        $stock = $product->get_availability();
-        $s_class = '';
-        if(is_array($stock)){
-            if(!empty($stock['class'])) $s_class = $stock['class'];
-            if(!empty($stock['availability'])) $stock = $stock['availability'];
-            else {
-                if($stock['class'] == 'in-stock') $stock = esc_html__("In stock","kuteshop");
-                else $stock = esc_html__("Out of stock","kuteshop");
-            }
-        }
-		$nutrition_fact = get_post_meta(get_the_ID(),'product_thumb_hover',true);
-		$tabs = apply_filters( 'woocommerce_product_tabs', array() );
-		$post_id = $product->get_id();
-		$product_status = "";
-		$nha_san_xuat = $product->get_attribute( 'thuong-hieu');
-		$han_su_dung = $product->get_attribute( 'han-su-dung');
-		$ma_san_pham = $product->get_sku();
-		if($nha_san_xuat != '') {$nha_san_xuat = " từ " . $nha_san_xuat;}
-		
-				
-		if ( 'variable' == $product->get_type() && $product->has_child() ) {
-			$variation_status = -1;
-			$variations = $product->get_children();
-			foreach ( $variations as $variation_id ) {
-				$product_status = "<font color=\"orange\">Sắp có hàng</font>";
-				$pre_order_variation = new YITH_Pre_Order_Product( $variation_id );
-				$var = wc_get_product( $variation_id );
-				if ($var->is_in_stock() && 'no' == $pre_order_variation->get_pre_order_status()) {
-					$variation_status = 1;
-					break;
-				} else if ('yes' == $pre_order_variation->get_pre_order_status()) {
-					$variation_status = 0;
-				}
-			}
-			if($variation_status == 1){
-				$product_status = "<font color=\"#079c3a\">Còn hàng</font>";
-			} else if($variation_status == 0){
-				$product_status = "<font color=\"orange\">Sắp có hàng</font>";
-			} else {
-				$product_status = "<font color=\"#D41313\">Hết hàng</font>";
-			}
-		} else if ( 'simple' == $product->get_type() ) {
-			$pre_order = new YITH_Pre_Order_Product( $post_id );
-			if ( 'yes' == $pre_order->get_pre_order_status() ) {
-				$product_status = "<font color=\"orange\">Sắp có hàng</font>";
-			} else if ($product->is_in_stock()) {
-				$product_status = "<font color=\"#079c3a\">Còn hàng</font>";
-			} else {
-				$product_status = "<font color=\"#D41313\">Hết hàng</font>";
-			}
-		}
-		
-        echo        '<div class="row">
-                        <div class="col-md-4 col-sm-5 col-xs-12 col-md-push-8 col-sm-push-7">
-							<div class="mobileShow">
-							<div class="row product-header">
-								<div class="col-md-5 col-sm-12 col-xs-12">
-								'.$thumb_html.'
-								</div>
-								<div class="col-md-7 col-sm-12 col-xs-12">
-									<div class="detail-info">
-										<h2 class="title-detail" style="color: #202020; font-size: 30px; border-left: 7px solid #059; padding: 0 0 0 .3em!important;">'.get_the_title().'</h2>
-										<a href="#reviews">'.s7upf_get_rating_html().'</a>
-										<div class="row" style="margin: 15px 0px 10px 0px;">
-											<span class="genuine">Đảm bảo chính hãng</span> '.$nha_san_xuat.'
-										</div>
-										<div class="row">
-											<div class="available" style="margin-bottom: 5px; margin-top: 5px; margin-left: 15px;">
-												Trạng thái: '.$product_status.'
-											</div>
-										</div>';
-										
-											if($han_su_dung != ''){
-		echo									'<div class="row">
-													<div class="available" style="margin-bottom: 5px; margin-top: 5px; margin-left: 15px;">
-														Hạn sử dụng: <font color=#079c3a>'.$han_su_dung.'</font>
-													</div>
-												</div>';
-											}
-		echo						'</div>
-									<p class="desc">'.get_the_excerpt().'</p>
-								</div>
-							</div></div>
-							<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">THÔNG TIN MUA HÀNG</h2>
-							<div class="row product-header">
-								<div class="detail-info">
-									'.tuandev_process_get_price_html($product).'';
-									if (array_key_exists("ywtm_6579",$tabs)){
-			echo        				'<div class="alert alert-danger" style="padding: 0px;">
-											<div style="margin: 10px 5px 5px 5px;">';
-												$tab = $tabs['ywtm_6579'];
-												call_user_func( $tab['callback'], 'ywtm_6579', $tab );
-			echo        		            '</div>
-										</div>';
-									}
-			echo					'<div class="detail-extralink">';
-										do_action('s7upf_template_single_add_to_cart');                                    
-									'</div>';
-									do_action( 'woocommerce_product_meta_start' );
-									do_action( 'woocommerce_product_meta_end' );
-									do_action( 'woocommerce_single_product_summary' );
-			echo                '</div></div>
-							</div>';
 
-							if (array_key_exists("ywtm_5779",$tabs)){
-			echo        		'<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">THÀNH PHẦN DINH DƯỠNG</h2>
-									<div class="row product-header" style="padding: 0px;">
-											<div style="margin: 10px 5px 5px 5px;">';
-												$tab = $tabs['ywtm_5779'];
-												call_user_func( $tab['callback'], 'ywtm_5779', $tab );
-			echo                    		'</div>
-									</div>';
-							}
-							
-							if (array_key_exists("ywtm_5713",$tabs)){
-			echo        		'<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">HƯỚNG DẪN SỬ DỤNG</h2>
-									<div class="row product-header" style="padding-bottom: 5px; padding-top: 10px;">
-											<div class="hoz-tab-content clearfix" style="padding-top: 0px; padding-bottom: 0px;">';
-												$tab = $tabs['ywtm_5713'];
-												call_user_func( $tab['callback'], 'ywtm_5713', $tab );
-			echo                    		'</div>
-									</div>';
-							}
-
-							if (array_key_exists("additional_information",$tabs)){
-			echo        		'<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">THÔNG SỐ SẢN PHẨM</h2>
-									<div class="row product-header" style="padding-bottom: 5px; padding-top: 10px;">
-											<div class="hoz-tab-content clearfix" style="padding-top: 0px; padding-bottom: 0px;">';								
-												$tab = $tabs['additional_information'];
-												call_user_func( $tab['callback'], 'additional_information', $tab );
-			echo                    		'</div>
-									</div>';
-							}
-							
-			echo		'</div>
-						<div class="col-md-8 col-sm-7 col-xs-12 col-md-pull-4 col-sm-pull-5">
-							<div class="mobileHide">
-								<div class="row product-header">
-									<div class="col-md-5 col-sm-12 col-xs-12">
-									'.$thumb_html.'
-									</div>
-									<div class="col-md-7 col-sm-12 col-xs-12">
-										<div class="detail-info">
-											<h2 class="title-detail" style="color: #202020; font-size: 30px; border-left: 7px solid #059; padding: 0 0 0 .3em!important;">'.get_the_title().'</h2>
-											<a href="#reviews">'.s7upf_get_rating_html().'</a>
-											<div class="row" style="margin: 15px 0px 10px 0px;">
-												<span class="genuine">Đảm bảo chính hãng</span>'.$nha_san_xuat.'
-											</div>
-											<div class="row">
-											<div class="available" style="margin-bottom: 5px; margin-top: 5px; margin-left: 15px;">
-												Trạng thái: '.$product_status.'
-											</div>
-										</div>';
-										
-											if($han_su_dung != ''){
-		echo									'<div class="row">
-													<div class="available" style="margin-bottom: 5px; margin-top: 5px; margin-left: 15px;">
-														Hạn sử dụng: <font color=#079c3a>'.$han_su_dung.'</font>
-													</div>
-												</div>';
-											}
-		echo						'</div>
-									<p class="desc">'.get_the_excerpt().'</p>
-									</div>
-								</div>
-							</div>';
-							s7upf_single_upsell_product();
-							
-							if (array_key_exists("description",$tabs)){
-			echo        		'<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">GIỚI THIỆU SẢN PHẨM</h2>
-									<div class="row product-header" style="padding-bottom: 0px";>
-											<div class="hoz-tab-content clearfix" style="padding-top: 0px; padding-bottom: 0px;">';	
-												$tab = $tabs['description'];
-												call_user_func( $tab['callback'], 'description', $tab );
-			echo                    		'</div>
-									</div>';
-							}
-												
-							if (array_key_exists("ywtm_5810",$tabs)){
-			echo        		'<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">CÂU HỎI THƯỜNG GẶP</h2>
-									<div class="row product-header" style="padding-bottom: 0px";>
-											<div class="hoz-tab-content clearfix" style="padding-top: 0px; padding-bottom: 0px;">';	
-												$tab = $tabs['ywtm_5810'];
-												call_user_func( $tab['callback'], 'ywtm_5810', $tab );
-			echo                    		'</div>
-									</div><div>';
-							}
-							
-							if (array_key_exists("reviews",$tabs)){
-			echo        		'<h2 id="reviews" class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">ĐÁNH GIÁ</h2>
-									<div class="row product-header" style="padding-bottom: 0px";>
-											<div class="hoz-tab-content clearfix" style="padding-top: 0px; padding-bottom: 0px;">';								
-												$tab = $tabs['reviews'];
-												call_user_func( $tab['callback'], 'reviews', $tab );
-			echo                    		'</div>
-									</div>';
-							}
-			echo				'<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">BÌNH LUẬN</h2>
-							<div class="row product-header" style="padding-bottom: 0px";>
-								<div class="hoz-tab-content clearfix" style="padding-top: 0px; padding-bottom: 0px;">	
-									<div class="tab-panels commentfb">
-										<div class="fb-comments" data-href="';the_permalink();echo'" data-width="100%" data-numposts="10"></div>
-									</div>
-								</div>
-							</div>
-                    </div>';
-    }
-}
 if(!function_exists('s7upf_check_sidebar')){
     function s7upf_check_sidebar(){
         $sidebar = s7upf_get_sidebar();
@@ -1706,7 +1413,7 @@ if(!function_exists('s7upf_single_upsell_product'))
             $upsells = $product->get_upsell_ids();
 			if ( sizeof($upsells) == 0 ) return;
             $item = 5;
-            $item_res = '0:1,320:2,480:3,980:4,1200:5';
+            $item_res = '0:1,320:1,480:2,980:3,1200:4';
             $animation_class = $data = $style = '';
             $item_style = s7upf_get_option('product_item_style_single');
             if(empty($item_style)) $item_style = 'item-pro-color';
@@ -1745,7 +1452,7 @@ if(!function_exists('s7upf_single_upsell_product'))
                                             1,
                                             $animation_class,
                                             $data,
-                                            $style,
+                                            $style='upsell',
                                             array(
                                                 'quickview'     => array(
                                                     'status'    => $quickview,
@@ -1865,10 +1572,8 @@ if(!function_exists('s7upf_single_relate_product'))
         if(!$number) $number = 6;
         $related = wc_get_related_products($product->get_id(),$number);
         if($check_show == 'on' || $check_show == 'yes'){
-            // edit khoa anh
             $item = 5;
-            $item_res = '0:1,320:2,480:3,980:4,1200:5';
-			// end khoa anh
+            $item_res = '0:1,320:1,480:2,980:3,1200:4';
             $animation_class = $data = $style = '';
             $item_style = s7upf_get_option('product_item_style_single');
             if(empty($item_style)) $item_style = 'item-pro-color';
@@ -1883,7 +1588,7 @@ if(!function_exists('s7upf_single_relate_product'))
             else $size = array(195,260);
             ?>  
             <div class="product-related border radius <?php echo esc_attr($style)?>">
-                <h2 class="title18"><?php esc_html_e("YOU MIGHT ALSO LIKE","kuteshop")?></h2>
+                <h2 class="title18"><?php esc_html_e("SẢN PHẨM GỢI Ý","kuteshop")?></h2>
                 <div class="product-related-slider">
                     <?php echo '<div class="wrap-item smart-slider" data-item="'.esc_attr($item).'" data-speed="" data-itemres="'.esc_attr($item_res).'" data-prev="" data-next="" data-pagination="" data-navigation="true">';?>
                         <?php
@@ -1906,7 +1611,7 @@ if(!function_exists('s7upf_single_relate_product'))
                                             1,
                                             $animation_class,
                                             $data,
-                                            $style,
+                                            $style='upsell',
                                             array(
                                                 'quickview'     => array(
                                                     'status'    => $quickview,
@@ -2163,7 +1868,6 @@ if(!function_exists('s7upf_shop_loop_after')){
                     </div>
                 <?php }
                 else{
-                    // Khoa Edit
                     if($max_page > 1 && $max_page > $paged) echo '<div class="btn-loadmore"><a class="load-more-shop" data-maxpage="'.esc_attr($max_page).'" data-page="'.esc_attr($paged).'" href="#"><i aria-hidden="true" class="fa fa-chevron-down"></i><strong> XEM THÊM</strong></a></div>';
                 }?>
             </div>

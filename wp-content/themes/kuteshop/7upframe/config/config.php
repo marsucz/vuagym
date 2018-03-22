@@ -880,19 +880,19 @@ if(!function_exists('s7upf_set_theme_config')){
                                                         'title' => '<i class="fa fa-th-large"></i>'.esc_html__(' Product Settings', 'kuteshop')
                                                     ));
             array_push($s7upf_config['theme-option']['settings'],array(
-                                                        'id'          => 'ez_custom_function',
-                                                        'label'       => esc_html__('EZ Custom Function','kuteshop'),
+                                                        'id'          => 'ka_custom_layout',
+                                                        'label'       => esc_html__('Layout','kuteshop'),
                                                         'type'        => 'select',
                                                         'section'     => 'option_product',
                                                         'std'         => 'no',
                                                         'choices'     => array(
                                                             array(
-                                                                'value'=>'ez_function_default',
-                                                                'label'=>esc_html__('Default Function','kuteshop'),
+                                                                'value'=>'layout1',
+                                                                'label'=>esc_html__('Layout 1','kuteshop'),
                                                             ),
                                                             array(
-                                                                'value'=>'ez_function_new',
-                                                                'label'=>esc_html__('New Function','kuteshop'),
+                                                                'value'=>'layout2',
+                                                                'label'=>esc_html__('Layout 2','kuteshop'),
                                                             ),
                                                         )
                                                     ));
