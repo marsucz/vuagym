@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Plugin Name: KiotViet Tools
- * Plugin URI: http://minhtuanit.me
- * Description: A small tools to help you manage your KiotViet - Wordpress
+ * Plugin Name: KA POS Tools
+ * Plugin URI: http://vuagym.com
+ * Description: Công cụ quản lý KiotViet trên Wordpress
  * Version: 1.0
- * Author: Tuan Dao
- * Author URI: http://minhtuanit.me
+ * Author: Khoa Anh
+ * Author URI: http://vuagym.com
  * License: GPL2
  * Created On: 24-01-2018
- * Updated On: 20-03-2018
+ * Updated On: 22-03-2018
  */
 // Define WC_PLUGIN_DIR.
 if (!defined('WC_PLUGIN_DIR')) {
@@ -75,14 +75,13 @@ function kiotviet_tools_plugin_init() {
 }
 
 function kiotviet_tools_admin_menu() {
-    add_menu_page('KiotViet Tools', 'KiotViet Tools', 'manage_options', 'kiotviet-tools', 'function_kiotviet_tools_page', 'dashicons-admin-multisite', 4);
-    add_submenu_page('kiotviet-tools', __('KiotViet'), __('KiotViet'), 'manage_options', 'kiotviet-tools');
-    add_submenu_page('kiotviet-tools', __('Testing'), __('Testing'), 'manage_options', 'kiotviet-testing', 'function_testing_page');
-    add_submenu_page('kiotviet-tools', __('Đồng bộ sản phẩm'), __('Đồng bộ sản phẩm'), 'manage_options', 'mypos-sync', 'function_mypos_sync_page');
-            //    add_submenu_page('kiotviet-tools', __('Sync KiotViet'), __('Sync KiotViet'), 'manage_options', 'kiotviet-sync', 'function_kiotviet_sync_page');
-    add_submenu_page('kiotviet-tools', __('Lấy Mã SP KiotViet'), __('Lấy Mã SP KiotViet'), 'manage_options', 'get-kiotviet-products', 'function_get_sku_kiotviet');
-    add_submenu_page('kiotviet-tools', __('Send SMS'), __('Send SMS'), 'manage_options', 'mypos-single-sms', 'send_single_sms_page');
-    add_submenu_page('kiotviet-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'kiotviet-options', 'function_mypos_options_page');
+    add_menu_page('KA POS', 'KA POS', 'manage_options', 'ka-pos-tools', 'function_kiotviet_tools_page', 'dashicons-admin-multisite', 4);
+    add_submenu_page('ka-pos-tools', __('KA POS'), __('KA POS'), 'manage_options', 'ka-pos-tools');
+    add_submenu_page('ka-pos-tools', __('Testing'), __('Testing'), 'manage_options', 'ka-pos-testing', 'function_testing_page');
+    add_submenu_page('ka-pos-tools', __('Đồng bộ sản phẩm'), __('Đồng bộ sản phẩm'), 'manage_options', 'mypos-sync', 'function_mypos_sync_page');
+    add_submenu_page('ka-pos-tools', __('Lấy Mã SP KiotViet'), __('Lấy Mã SP KiotViet'), 'manage_options', 'get-kiotviet-products', 'function_get_sku_kiotviet');
+    add_submenu_page('ka-pos-tools', __('Send SMS'), __('Send SMS'), 'manage_options', 'mypos-single-sms', 'send_single_sms_page');
+    add_submenu_page('ka-pos-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'ka-pos-options', 'function_mypos_options_page');
 }
 
 function function_kiotviet_tools_page() {
@@ -95,11 +94,11 @@ function function_kiotviet_tools_page() {
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-plus-circle fa-fw"></i>
-                            <strong><font color="blue">KiotViet Tools</font></strong>
+                            <strong><font color="blue">KA POS Tools</font></strong>
                         </div>
                         <div class="panel-body">
                             <div class="alert alert-success">
-                                    <b>KiotViet Tools for Woocommerce:</b> Công cụ để quản lý KiotViet từ Wordpress
+                                    <b>KA POS Tools for Woocommerce:</b> Công cụ để quản lý KiotViet từ Wordpress
                             </div>
                         ';
                         

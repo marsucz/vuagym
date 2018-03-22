@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Plugin Name: EZ Custom Tools
- * Plugin URI: http://minhtuanit.me
+ * Plugin Name: KA Custom Tools
+ * Plugin URI: http://vuagym.com
  * Description: Công cụ để tùy chỉnh các chức năng nhỏ trên Wordpress
  * Version: 1.0
- * Author: Tuan Dao
- * Author URI: http://minhtuanit.me
+ * Author: Khoa Anh
+ * Author URI: http://vuagym.com
  * License: GPL2
  * Created On: 28-02-2018
- * Updated On: 05-03-2018
+ * Updated On: 22-03-2018
  */
 // Define CONST
 if (!defined('EZ_CUSTOM_PLUGIN_DIR')) {
@@ -37,8 +37,8 @@ function ez_custom_tools_plugin_init() {
 }
 
 function ez_custom_tools_admin_menu() {
-    add_menu_page('EZ Custom', 'EZ Custom Tools', 'manage_options', 'ez-custom-tools', 'function_ez_custom_tools_page', 'dashicons-admin-tools', 4);
-    add_submenu_page('ez_custom-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'ez-custom-options');
+    add_menu_page('KA Custom', 'KA Custom', 'manage_options', 'ka-custom-tools', 'function_ez_custom_tools_page', 'dashicons-admin-tools', 4);
+    add_submenu_page('ka_custom-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'ka-custom-options');
 }
 
 function function_ez_custom_tools_page() {
