@@ -19,7 +19,11 @@ $available_variations = $product->get_available_variations();
 $attribute_keys = array_keys( $attributes );
 
 $new_attributes = [];
+$ka_show_general_price = false;
 foreach( $available_variations as $variation ) {
+    if (empty($variation['price_html'])) {
+        $ka_show_general_price = true;
+    }
     foreach ($variation['attributes'] as $attribute_key => $attribute) {
         $slug = str_replace('attribute_', '', $attribute_key);
         if (isset($new_attributes[$slug]) && in_array($attribute, $new_attributes[$slug])) {
@@ -96,7 +100,7 @@ if (!empty($new_attributes)) {
 			</div>			
 			<?php //echo balanceTags(s7upf_get_price_html());?>
 			<?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
-			<div class="single_variation_wrap" style="display:none;">
+			<div class="single_variation_wrap<?php echo (!$ka_show_general_price ? ' ka-add-line' : '') ?>" style="display:none;">
 				<?php
 					/**
 					 * woocommerce_before_single_variation Hook

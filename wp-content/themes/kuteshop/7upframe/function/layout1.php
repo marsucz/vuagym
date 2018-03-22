@@ -29,11 +29,15 @@ if(!function_exists('s7upf_product_main_detai')){
         }
         $available_data = array();
         $ka_product_sku = '';
+        $ka_show_general_price = false;
         if( $product->is_type( 'variable' ) ) $available_data = $product->get_available_variations();        
         if(!empty($available_data)){
             foreach ($available_data as $available) {
                 if (!$ka_product_sku && !empty($available['sku'])) {
                     $ka_product_sku = $available['sku'];
+                }
+                if (empty($available['price_html'])) {
+                    $ka_show_general_price = true;
                 }
                 if(!empty($available['image_id']) && !in_array($available['image_id'],$attachment_ids)){
                     $attachment_ids[] = $available['image_id'];
@@ -159,17 +163,19 @@ if(!function_exists('s7upf_product_main_detai')){
 							</div></div>
 							<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">THÔNG TIN MUA HÀNG</h2>
 							<div class="row product-header">
-								<div class="detail-info">
-									'.tuandev_process_get_price_html($product).'';
-									if (array_key_exists("ywtm_6579",$tabs)){
-			echo        				'<div class="alert alert-danger" style="padding: 0px;">
+								<div class="detail-info">';
+                                                                if ($ka_show_general_price) {
+                                                                    echo tuandev_process_get_price_html($product);
+                                                                }
+                                                            if (array_key_exists("ywtm_6579",$tabs)){
+			echo                                            '<div class="alert alert-danger" style="padding: 0px;">
 											<div style="margin: 10px 5px 5px 5px;">';
 												$tab = $tabs['ywtm_6579'];
 												call_user_func( $tab['callback'], 'ywtm_6579', $tab );
-			echo        		            '</div>
-										</div>';
-									}
-			echo					'<div class="detail-extralink">';
+			echo                                            '</div>
+                                                                </div>';
+                                                            }
+			echo					'<div class="detail-extralink' . (!$ka_show_general_price ? ' ka-remove-line' : '') . '">';
 										do_action('s7upf_template_single_add_to_cart');                                    
 									'</div>';
 									do_action( 'woocommerce_product_meta_start' );

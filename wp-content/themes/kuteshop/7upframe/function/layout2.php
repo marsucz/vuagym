@@ -28,9 +28,13 @@ if(!function_exists('s7upf_product_main_detai')){
             $i++;
         }
         $available_data = array();
+        $ka_show_general_price = false;
         if( $product->is_type( 'variable' ) ) $available_data = $product->get_available_variations();        
         if(!empty($available_data)){
             foreach ($available_data as $available) {
+                if (empty($available['price_html'])) {
+                    $ka_show_general_price = true;
+                }
                 if(!empty($available['image_id']) && !in_array($available['image_id'],$attachment_ids)){
                     $attachment_ids[] = $available['image_id'];
                     if(!empty($available['image_id'])){
@@ -146,8 +150,10 @@ if(!function_exists('s7upf_product_main_detai')){
 							</div></div>
 							<h2 class="title14 title-side" style="background-color: #ddd; text-align: center; color: #333; font-size: 14px; font-weight: 700;">THÔNG TIN MUA HÀNG</h2>
 							<div class="row product-header">
-								<div class="detail-info">
-									'.tuandev_process_get_price_html($product).'';
+								<div class="detail-info">';
+                                                                if ($ka_show_general_price) {
+                                                                    echo tuandev_process_get_price_html($product);
+                                                                }
 									if (array_key_exists("ywtm_6579",$tabs)){
 			echo        				'<div class="alert alert-danger" style="padding: 0px;">
 											<div style="margin: 10px 5px 5px 5px;">';
@@ -156,7 +162,7 @@ if(!function_exists('s7upf_product_main_detai')){
 			echo        		            '</div>
 										</div>';
 									}
-			echo					'<div class="detail-extralink">';
+			echo					'<div class="detail-extralink' . (!$ka_show_general_price ? ' ka-remove-line' : '') . '">';
 										do_action('s7upf_template_single_add_to_cart');                                    
 									'</div>';
 									do_action( 'woocommerce_product_meta_start' );

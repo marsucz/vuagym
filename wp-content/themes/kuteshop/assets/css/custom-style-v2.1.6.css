@@ -3936,4 +3936,14 @@ i[class^=icon-] {
     font-size: unset !important;
     display: block;
 }
+
+.ka-remove-line {
+    border-top: unset;
+    margin-top: unset;
+}
+
+.ka-add-line {
+    border-top: 1px solid #e5e5e5;
+    padding-top: 15px;
+}
 /* End */
