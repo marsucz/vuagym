@@ -4,7 +4,7 @@
  * Plugin Name: KA POS Tools
  * Plugin URI: http://vuagym.com
  * Description: Công cụ quản lý KiotViet trên Wordpress
- * Version: 1.0
+ * Version: 2.0
  * Author: Khoa Anh
  * Author URI: http://vuagym.com
  * License: GPL2
@@ -45,7 +45,9 @@ register_activation_hook(__FILE__, 'kiotviet_product_create_db');
 
 function kiotviet_tools_plugin_init() {
     
-    add_action('admin_menu', 'kiotviet_tools_admin_menu');
+    add_action('admin_menu', 'ka_pos_tools_admin_menu');
+    add_action('admin_menu', 'ka_pos_hide_admin_menu');
+    
     add_action('login_init', 'send_frame_options_header', 10, 0);
     add_action('admin_init', 'send_frame_options_header', 10, 0);
     
@@ -74,14 +76,34 @@ function kiotviet_tools_plugin_init() {
     
 }
 
-function kiotviet_tools_admin_menu() {
-    add_menu_page('KA POS', 'KA POS', 'manage_options', 'ka-pos-tools', 'function_kiotviet_tools_page', 'dashicons-admin-multisite', 4);
-    add_submenu_page('ka-pos-tools', __('KA POS'), __('KA POS'), 'manage_options', 'ka-pos-tools');
+function ka_pos_tools_admin_menu() {
+    add_menu_page('KA POS', 'KA POS', 'edit_posts', 'ka-pos-tools', 'function_kiotviet_tools_page', 'dashicons-admin-multisite', 4);
+    add_submenu_page('ka-pos-tools', __('KA POS'), __('KA POS'), 'edit_posts', 'ka-pos-tools');
     add_submenu_page('ka-pos-tools', __('Testing'), __('Testing'), 'manage_options', 'ka-pos-testing', 'function_testing_page');
-    add_submenu_page('ka-pos-tools', __('Đồng bộ sản phẩm'), __('Đồng bộ sản phẩm'), 'manage_options', 'mypos-sync', 'function_mypos_sync_page');
+    add_submenu_page('ka-pos-tools', __('Đồng bộ sản phẩm'), __('Đồng bộ sản phẩm'), 'edit_posts', 'mypos-sync', 'function_mypos_sync_page');
     add_submenu_page('ka-pos-tools', __('Lấy Mã SP KiotViet'), __('Lấy Mã SP KiotViet'), 'manage_options', 'get-kiotviet-products', 'function_get_sku_kiotviet');
     add_submenu_page('ka-pos-tools', __('Send SMS'), __('Send SMS'), 'manage_options', 'mypos-single-sms', 'send_single_sms_page');
     add_submenu_page('ka-pos-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'ka-pos-options', 'function_mypos_options_page');
+}
+
+function ka_pos_hide_admin_menu() {
+    
+    if (current_user_can( 'administrator' )) return;
+    
+    $remove = true;
+    $roles = get_option('mypos_roles');
+    if ($roles) {
+        foreach ($roles as $role) {
+            if (current_user_can($role)) {
+                $remove = false;
+                break;
+            }
+        }
+    }
+    
+    if ( $remove ) {
+        remove_menu_page( 'ka-pos-tools' );
+    } 
 }
 
 function function_kiotviet_tools_page() {
@@ -382,12 +404,19 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
-    global $wp_roles;
-    echo '<select multiple name="role">';
-    foreach ( $wp_roles->roles as $key=>$value ):
-    echo '<option value="' . $key .'">' . $value['name'] . '</option>';
-    endforeach;
-    echo '</select>';
+    $remove = true;
+    $roles = get_option('mypos_roles');
+    
+    if ($roles) {
+        foreach ($roles as $role) {
+            if (current_user_can($role)) {
+                $remove = false;
+                break;
+            }
+        }
+    }
+    
+    echo $remove;
 }
 
 function update_default_manual_sync_options() {

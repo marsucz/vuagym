@@ -4,7 +4,7 @@
  * Plugin Name: KA Custom Tools
  * Plugin URI: http://vuagym.com
  * Description: Công cụ để tùy chỉnh các chức năng nhỏ trên Wordpress
- * Version: 1.0
+ * Version: 2.0
  * Author: Khoa Anh
  * Author URI: http://vuagym.com
  * License: GPL2
