@@ -404,19 +404,10 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
-    $remove = true;
-    $roles = get_option('mypos_roles');
     
-    if ($roles) {
-        foreach ($roles as $role) {
-            if (current_user_can($role)) {
-                $remove = false;
-                break;
-            }
-        }
-    }
+    $kv = new KiotViet_API();
+    echo $kv->get_access_token();
     
-    echo $remove;
 }
 
 function update_default_manual_sync_options() {

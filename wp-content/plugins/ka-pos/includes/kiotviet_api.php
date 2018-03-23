@@ -434,7 +434,7 @@ class KiotViet_API {
             $url = $url . '?' . http_build_query($data, '', '&');
         } 
         
-        $access_token = $this->get_access_token();
+        $access_token = $this->get_access_token(2);
         if (empty($access_token)) {
             return false;
         }
@@ -560,7 +560,7 @@ class KiotViet_API {
         }
     }
     
-    public function get_access_token() {
+    public function get_access_token($time_out = 5) {
         
         if (!empty($this->access_token)) {
             return $this->access_token;
@@ -582,7 +582,7 @@ class KiotViet_API {
          CURLOPT_URL => $post_url,
          CURLOPT_RETURNTRANSFER => true,
          CURLOPT_MAXREDIRS => 3,
-         CURLOPT_TIMEOUT => 2,
+         CURLOPT_TIMEOUT => $time_out,
          CURLOPT_CUSTOMREQUEST => "POST",
          CURLOPT_POSTFIELDS => $post_string,
          CURLOPT_HTTPHEADER => array(
@@ -603,7 +603,7 @@ class KiotViet_API {
             $this->access_token = '';
             $t = date('Ymd');
             $log_file = "KiotVietAPI_GetToken_{$t}.txt";
-            $log_text = "Get Token Error: " . json_encode($access_token);
+            $log_text = "Get Token Error: " . json_encode($response);
             write_logs($log_file, $log_text);
             return false;
         }
