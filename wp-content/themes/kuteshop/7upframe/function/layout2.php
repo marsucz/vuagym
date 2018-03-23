@@ -107,6 +107,7 @@ if(!function_exists('s7upf_product_main_detai')){
 				$product_status = "<font color=\"#D41313\">Hết hàng</font>";
 			}
 		} else if ( 'simple' == $product->get_type() ) {
+                        $ka_show_general_price = true;
 			$pre_order = new YITH_Pre_Order_Product( $post_id );
 			if ( 'yes' == $pre_order->get_pre_order_status() ) {
 				$product_status = "<font color=\"orange\">Sắp có hàng</font>";
