@@ -3,15 +3,17 @@
  * Plugin Name: YITH WooCommerce Compare Premium
  * Plugin URI: https://yithemes.com/themes/plugins/yith-woocommerce-compare/
  * Description: YITH WooCommerce Compare allows you to compare more products with WooCommerce plugin, through product attributes.
- * Version: 2.2.0
+ * Version: 2.3.0
  * Author: YITHEMES
  * Author URI: https://yithemes.com/
  * Text Domain: yith-woocommerce-compare
  * Domain Path: /languages/
+ * WC requires at least: 2.5.0
+ * WC tested up to: 3.3.0
  *
  * @author Yithemes
  * @package YITH WooCommerce Compare Premium
- * @version 2.2.0
+ * @version 2.3.0
  */
 /*  Copyright 2015  Your Inspiration Themes  (email : plugins@yithemes.com)
 
@@ -53,7 +55,7 @@ if ( ! function_exists( 'yith_plugin_registration_hook' ) ) {
 register_activation_hook( __FILE__, 'yith_plugin_registration_hook' );
 
 if ( ! defined( 'YITH_WOOCOMPARE_VERSION' ) ){
-	define( 'YITH_WOOCOMPARE_VERSION', '2.2.0' );
+	define( 'YITH_WOOCOMPARE_VERSION', '2.3.0' );
 }
 if ( ! defined( 'YITH_WOOCOMPARE_PREMIUM' ) ) {
 	define( 'YITH_WOOCOMPARE_PREMIUM', '1' );

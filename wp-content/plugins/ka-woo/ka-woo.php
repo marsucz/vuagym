@@ -31,18 +31,13 @@ function ka_woo_tools_plugin_init() {
 
 function ka_woo_tools_admin_menu() {
     add_menu_page('KA WOO', 'KA WOO', 'manage_options', 'ka-woo-tools', 'function_ka_woo_tools_page', 'dashicons-admin-multisite', 4);
-    add_submenu_page('ka-woo-tools', __('KA WOO'), __('KA WOO'), 'manage_options', 'ka-woo-options', 'function_mypos_options_page');
-    add_submenu_page('ka-woo-tools', __('Woo Manager'), __('Woo Manager'), 'edit_posts', 'kawoo-manager', 'function_manager_tab_list_page');
+//    add_submenu_page('ka-woo-tools', __('KA WOO'), __('KA WOO'), 'manage_options', 'ka-woo-options', 'function_mypos_options_page');
 }
 
 function function_ka_woo_tools_page() {
     echo '<div class="wrap">
             <b>KA WOO Tools for Woocommerce:</b> Công cụ để tùy chỉnh các chức năng của WooCommerce
             </div>';
-}
-
-function function_manager_tab_list_page() {
-    
 }
 
 ?>

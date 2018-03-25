@@ -39,7 +39,7 @@ if ( ! class_exists( 'YWCCP' ) ) {
 		/**
 		 * Returns single instance of the class
 		 *
-		 * @return \YWCCP_Front
+		 * @return \YWCCP
 		 * @since 1.0.0
 		 */
 		public static function get_instance(){
@@ -70,6 +70,8 @@ if ( ! class_exists( 'YWCCP' ) ) {
 				require_once('class.ywccp-front.php');
 				YWCCP_Front();
 			}
+
+			add_action( 'init', array( $this, 'init_strings' ), 100, 1 );
 		}
 
 		/**
@@ -100,6 +102,46 @@ if ( ! class_exists( 'YWCCP' ) ) {
 		public function is_admin() {
 			$is_ajax = defined( 'DOING_AJAX' ) && DOING_AJAX && isset( $_REQUEST['context'] ) && $_REQUEST['context'] == 'frontend';
 			return apply_filters( 'yith_wccp_is_admin_filter', is_admin() && ! $is_ajax );
+		}
+
+		/**
+		 * Register strings for WPML translation
+		 *
+		 * @since 1.0.0
+		 * @author Francesco Licandro
+		 */
+		public function init_strings(){
+
+			if( ! defined( 'WPML_ST_VERSION' ) ) {
+				return;
+			}
+
+			$fields = ywccp_get_all_checkout_fields();
+
+			foreach( $fields as $key => $field ) {
+				// register label
+				if( isset( $field['label'] ) && $field['label'] ) {
+					do_action( 'wpml_register_single_string', 'yith-woocommerce-checkout-manager', 'plugin_ywccp_' . $key . '_label', $field['label'] );
+				}
+				// register placeholder
+				if( isset( $field['placeholder'] ) && $field['placeholder'] ) {
+					do_action( 'wpml_register_single_string', 'yith-woocommerce-checkout-manager', 'plugin_ywccp_' . $key . '_placeholder', $field['placeholder'] );
+				}
+				// register tooltip
+				if( isset( $field['custom_attributes']['data-tooltip'] ) && $field['custom_attributes']['data-tooltip'] ) {
+					do_action( 'wpml_register_single_string', 'yith-woocommerce-checkout-manager', 'plugin_ywccp_' . $key . '_tooltip', $field['custom_attributes']['data-tooltip'] );
+				}
+
+				if( ! empty( $field['options'] ) ) {
+					foreach ( $field['options'] as $option_key => $option ) {
+						if( $option === '' ) {
+							continue;
+						}
+						// register single option
+						do_action( 'wpml_register_single_string', 'yith-woocommerce-checkout-manager', 'plugin_ywccp_' . $key . '_' . $option_key, $option );
+					}
+				}
+			}
 		}
 	}
 }

@@ -490,7 +490,7 @@ if ( !class_exists( 'YITH_WCBEP_Admin_Premium' ) ) {
                             yit_save_prop( $product, '_sale_price_dates_to', strtotime( $sale_price_to ) );
                         }
 
-                        if ( $price_change ) {
+                        if ( version_compare( WC()->version, '3.0.0', '<' ) && $price_change ) {
                             $reg_price  = yit_get_prop( $product, '_regular_price', true, 'edit' );
                             $sale_price = yit_get_prop( $product, '_sale_price', true, 'edit' );
                             $date_from  = yit_get_prop( $product, '_sale_price_dates_from', true, 'edit' );
@@ -511,6 +511,7 @@ if ( !class_exists( 'YITH_WCBEP_Admin_Premium' ) ) {
 
                             if ( $date_to && $date_to < strtotime( 'NOW', current_time( 'timestamp' ) ) ) {
                                 yit_save_prop( $product, '_price', ( $reg_price === '' ) ? '' : wc_format_decimal( $reg_price ) );
+                                yit_save_prop( $product, '_sale_price', '' );
                                 yit_save_prop( $product, '_sale_price_dates_from', '' );
                                 yit_save_prop( $product, '_sale_price_dates_to', '' );
                             }
@@ -551,6 +552,9 @@ if ( !class_exists( 'YITH_WCBEP_Admin_Premium' ) ) {
 
                             if ( isset( $slug ) )
                                 $this_post[ 'post_name' ] = $slug;
+
+                            if ( isset( $menu_order ) && $not_is_variation && !$product instanceof WC_Data )
+                                $this_post[ 'menu_order' ] = $menu_order;
 
 
                             wp_update_post( $this_post );
@@ -608,7 +612,7 @@ if ( !class_exists( 'YITH_WCBEP_Admin_Premium' ) ) {
 
                         // EDIT PURCHASE NOTE
                         if ( isset( $purchase_note ) && $not_is_variation )
-                            yit_save_prop( $product, '_purchase_note', wc_clean( $purchase_note ) );
+                            yit_save_prop( $product, '_purchase_note', $purchase_note );
 
                         // EDIT PURCHASE NOTE
                         if ( isset( $download_limit ) )
@@ -619,7 +623,7 @@ if ( !class_exists( 'YITH_WCBEP_Admin_Premium' ) ) {
                             yit_save_prop( $product, '_download_expiry', wc_clean( $download_expiry ) );
 
                         // EDIT MENU ORDER
-                        if ( isset( $menu_order ) && $not_is_variation )
+                        if ( isset( $menu_order ) && $not_is_variation && $product instanceof WC_Data )
                             yit_save_prop( $product, '_menu_order', wc_clean( $menu_order ) );
 
                         // EDIT STOCK STATUS
@@ -760,7 +764,7 @@ if ( !class_exists( 'YITH_WCBEP_Admin_Premium' ) ) {
                                         // WC 3.0
                                         if ( isset( $product_attributes[ $key ] ) && $product_attributes[ $key ] instanceof WC_Product_Attribute ) {
                                             /** @var WC_Product_Attribute $current_attribute */
-                                            $current_attribute = $product_attributes[ $key ];
+                                            $current_attribute = clone( $product_attributes[ $key ] );
                                         } else {
                                             $current_attribute = new WC_Product_Attribute();
                                             $current_attribute->set_id( 1 );
@@ -776,9 +780,9 @@ if ( !class_exists( 'YITH_WCBEP_Admin_Premium' ) ) {
                                     }
                                 }
                             }
-
                             yit_save_prop( $product, '_product_attributes', $product_attributes );
                         }
+
                         if ( count( $var_attributes ) > 0 && !$not_is_variation ) {
                             if ( $product instanceof WC_Data ) {
                                 // WC 3.0
@@ -821,6 +825,7 @@ if ( !class_exists( 'YITH_WCBEP_Admin_Premium' ) ) {
                                     delete_post_meta( $id, '_thumbnail_id' );
                                 }
                             }
+                            $product instanceof WC_Data && $product->set_image_id( $image );
                         }
 
                         // IMAGE GALLERY
@@ -912,7 +917,10 @@ if ( !class_exists( 'YITH_WCBEP_Admin_Premium' ) ) {
                         $pagenow     = 'post.php';
                         $post        = get_post( yit_get_base_product_id( $product ) );
 
-                        $product instanceof WC_Data ? $product->save() : do_action( 'save_post', $prod_id, $post );
+                        if ( $product instanceof WC_Data )
+                            $product->save();
+
+                        do_action( 'save_post', $prod_id, $post );
 
                         $pagenow = $old_pagenow;
                         /* ------------------------------- */

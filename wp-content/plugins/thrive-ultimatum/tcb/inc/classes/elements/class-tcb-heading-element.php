@@ -26,12 +26,26 @@ class TCB_Heading_Element extends TCB_Text_Element {
 	}
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'text';
+	}
+
+
+	/**
 	 * Return icon class needed for display in menu
 	 *
 	 * @return string
 	 */
 	public function icon() {
 		return 'heading';
+	}
+
+	public function inherit_components_from() {
+		return 'text';
 	}
 
 	/**

@@ -1,8 +1,8 @@
 <?php
 
-if( !function_exists( 'get_html_icon' ) && class_exists( 'YWTM_Icon' ) ) {
+if( !function_exists( 'get_html_icon' )  ) {
     /**Print the html code for admin
-     * @param $tab
+     * @param int $tab
      * @author YITHEMES
      * @since 1.0.0
      * @return string
@@ -12,13 +12,20 @@ if( !function_exists( 'get_html_icon' ) && class_exists( 'YWTM_Icon' ) ) {
 
 
         $icon = get_post_meta( $tab, '_ywtm_icon_tab', true );
+
+
         $tab_icon = '';
         if( !empty( $icon ) ) {
 
 
             switch ( $icon['select'] ) {
                 case 'icon' :
-                    $tab_icon = sprintf( '<span class="ywtm_icon" %s style="padding-right:10px;"></span>', YWTM_Icon()->get_icon_data( $icon['icon'] ) );
+
+
+                	$icon = ywtm_map_old_icon_with_new( $icon['icon'] );
+
+                    $tab_icon = YIT_Icons()->get_icon( $icon, array('class'=> 'ywtm_icon', 'filter_icons' => YWTM_SLUG ) );//)sprintf( '<span class="ywtm_icon" %s style="padding-right:10px;"></span>', YIT_Icons()->get_icon_data( $icon, YWTM_SLUG ) );
+
                     break;
                 case 'custom' :
                     $tab_icon = '<span class="ywtm_custom_icon" style="padding-right:10px;" ><img src="' . $icon['custom'] . '" style="max-width :27px;max-height: 25px;"/></span>';
@@ -50,14 +57,14 @@ if( !function_exists( 'ywtm_get_default_tab' ) ) {
         }
 
         // Additional information tab - shows attributes
-        if( $product && ( $product->has_attributes() || ( $product->enable_dimensions_display() && ( $product->has_dimensions() || $product->has_weight() ) ) ) ) {
+        // Additional information tab - shows attributes
+        if ( $product && ( $product->has_attributes() || apply_filters( 'wc_product_enable_dimensions_display', $product->has_weight() || $product->has_dimensions() ) ) ) {
             $tabs['additional_information'] = array(
-                'title' => __( 'Additional Information', 'woocommerce' ),
+                'title'    => __( 'Additional information', 'woocommerce' ),
                 'priority' => 20,
-                'callback' => 'woocommerce_product_additional_information_tab'
+                'callback' => 'woocommerce_product_additional_information_tab',
             );
         }
-
         // Reviews tab - shows comments
         if( comments_open() ) {
             $tabs['reviews'] = array(
@@ -86,38 +93,6 @@ if( !function_exists( 'ywtm_get_tab_ppl_language' ) ) {
     }
 }
 
-if( ! function_exists( 'ywctab_json_search_product_categories') ) {
-
-    function ywctab_json_search_product_categories( $x = '', $taxonomy_types = array('product_cat') ) {
-
-
-
-
-        global $wpdb;
-        $term = (string)urldecode(stripslashes(strip_tags($_GET['term'])));
-        $term = "%" . $term . "%";
-
-
-        $query_cat = $wpdb->prepare("SELECT {$wpdb->terms}.term_id,{$wpdb->terms}.name, {$wpdb->terms}.slug
-                                   FROM {$wpdb->terms} INNER JOIN {$wpdb->term_taxonomy} ON {$wpdb->terms}.term_id = {$wpdb->term_taxonomy}.term_id
-                                   WHERE {$wpdb->term_taxonomy}.taxonomy IN (%s) AND {$wpdb->terms}.name LIKE %s", implode(",", $taxonomy_types), $term);
-
-        $product_categories = $wpdb->get_results($query_cat);
-
-        $to_json = array();
-
-        foreach ( $product_categories as $product_category ) {
-
-            $to_json[$product_category->term_id] = "#" . $product_category->term_id . "-" . $product_category->name;
-        }
-
-        wp_send_json( $to_json );
-
-
-    }
-}
-add_action('wp_ajax_yith_tab_manager_json_search_product_categories',  'ywctab_json_search_product_categories', 10);
-
  function ywtm_get_meta( $tab_id, $meta_key ){
 
     $value = get_post_meta( $tab_id, $meta_key, true );
@@ -128,3 +103,70 @@ add_action('wp_ajax_yith_tab_manager_json_search_product_categories',  'ywctab_j
 
     return $value;
 }
+
+
+/**get_tab_types
+ *
+ * return type tabs
+ *
+ * @author Salvatore Strano
+ * @since 1.0.0
+ * @return array
+ */
+ function ywtm_get_tab_types()
+{
+
+    $tab_type = array(
+        'global' => __( 'Global Tab', 'yith-woocommerce-tab-manager' ),
+        'category' => __( 'Category Tab', 'yith-woocommerce-tab-manager' ),
+        'product' => __( 'Product Tab', 'yith-woocommerce-tab-manager' )
+    );
+
+    return $tab_type;
+
+}
+
+/**return layout type of tabs
+ * @author Salvatore Strano
+ * @since 1.0.0
+ * @return array
+ */
+ function ywtm_get_layout_types()
+{
+
+    $tab_layout_types = apply_filters( 'yith_add_layout_tab', array(
+
+            'default' => __( 'Editor', 'yith-woocommerce-tab-manager' ),
+            'video' => __( 'Video Gallery', 'yith-woocommerce-tab-manager' ),
+            'gallery' => __( 'Image Gallery', 'yith-woocommerce-tab-manager' ),
+            'faq' => __( 'FAQ', 'yith-woocommerce-tab-manager' ),
+            'download' => __( 'Download', 'yith-woocommerce-tab-manager' ),
+            'map' => __( 'Map', 'yith-woocommerce-tab-manager' ),
+            'contact' => __( 'Contact', 'yith-woocommerce-tab-manager' ),
+            'shortcode' => __( 'Shortcode', 'yith-woocommerce-tab-manager' )
+
+        )
+    );
+
+    return $tab_layout_types;
+}
+
+/**
+ * map the old icon with last font awesome
+ * @author Salvatore Strano
+ * @since 1.2.0
+ * @param $icon_name
+ *
+ * @return string
+ */
+function ywtm_map_old_icon_with_new( $icon_name ){
+
+
+	if( strpos( $icon_name,'FontAwesome:fa-' )!== false ){
+
+		$icon_name = str_replace( 'FontAwesome:fa-','FontAwesome:', $icon_name );
+	}
+
+	return $icon_name;
+}
+

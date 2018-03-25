@@ -3,8 +3,8 @@ Contributors: emrevona
 Donate link: http://profiles.wordpress.org/emrevona/
 Tags: cache, performance, wp-cache, total cache, super cache
 Requires at least: 3.3
-Tested up to: 4.8
-Stable tag: 0.8.7.4
+Tested up to: 4.9
+Stable tag: 0.8.7.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,7 @@ Wpfc does not support Wordpress Multisite yet.
 5. Leverage browser caching - Reduce page load times for repeat visitors
 6. Combine CSS - Reduce number of HTTP round-trips by combining multiple CSS resources into one
 7. Combine JS
+8. Disable Emoji - You can remove the emoji inline css and wp-emoji-release.min.js
 
 <h4>Supported languages: </h4>
 
@@ -100,6 +101,37 @@ Wpfc does not support Wordpress Multisite yet.
 18. Database Cleanup
 
 == Changelog ==
+
+= 0.8.7.8 =
+* to check <title> for 404 if the header return 200
+* to clear all the cache if the visibility is converted to private
+* refactoring of ignored()
+* to stop loading the admin functions if DOING_AJAX is set
+* to fix excluding attachment pages problem
+* <strong>[FEATURE]</strong> Compatible with Yet Another Stars Rating
+* to disable including powerfulhtml class for ajax request
+* to convert the uninstall method to uninstall.php
+* <strong>[FEATURE]</strong> exclude Google Analytics Parameters [<a target="_blank" href="http://www.wpfastestcache.com/features/cache-url-with-google-analytics-parameters-querystring/#disable-cache-google-analytics-parameters">Details</a>]
+* to add WPFC_DISABLE_WEBP [<a target="_blank" href="http://www.wpfastestcache.com/premium/image-optimization/#disable-webp">Details</a>]
+* to fix 403 cdn template error
+* to fix height problem of lightbox
+
+= 0.8.7.7 =
+* to remove "via php" text if WPFC_REMOVE_VIA_FOOTER_COMMENT is defined as true
+* <strong>[FEATURE]</strong> Restart Preload [<a target="_blank" href="http://www.wpfastestcache.com/features/restart-preload-after-completed/">Details</a>]
+* to fix the problem of selecting chinese language automatically
+* to fix php notice trying to get property of non-object in delete_cache_of_term()
+* to speed up getting db optimization statistics()
+* to show the cache of main content without query string if google analytics parameters are set [<a target="_blank" href="http://www.wpfastestcache.com/features/cache-url-with-google-analytics-parameters-querystring/">Details</a>]
+
+
+= 0.8.7.6 =
+* to fix the problem which show the same cache for every language on Polylang
+* <strong>[FEATURE]</strong> to remove wordpress emojis [<a target="_blank" href="http://www.wpfastestcache.com/optimization/disableremove-wordpress-emojis/">Details</a>]
+
+= 0.8.7.5 =
+* <strong>[FEATURE]</strong> Compatible with Easy HTTPS (SSL) Redirection
+* to clear of the post when WPML is active
 
 = 0.8.7.4 =
 * to exclude the renamed my-account page of woocommerce
@@ -691,7 +723,7 @@ Wpfc does not create .htaccess automatically so you need to create empty one.
 When the cached files are deleted, they are moved to "tmpWpfc" instead of being deleted and a cron-job is set. Delete all files are so difficult for server so cron-job is set not to use a lot of CPU resources. Cron-job is set and it deletes 100 files every 5 minutes. When all files in "tmpWpfc" are deleted, cron-job is unset.
 
 = How can stop caching for some pages? =
-If you add &lt;!--[wpfcNOT]--&gt; into source coude, creating cache stops. You can find it on visual and text editor after opening Add New Post panel.
+If you add &lt;!-- [wpfcNOT] --&gt; into source coude, creating cache stops. You can find it on visual and text editor after opening Add New Post panel.
 
 = Does Wpfc work with WPMU (Wordpress Multisite) properly? =
 No. Wpfc does not support Wordpress Multisite yet.

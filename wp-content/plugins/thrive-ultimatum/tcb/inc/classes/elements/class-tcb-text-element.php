@@ -24,6 +24,16 @@ class TCB_Text_Element extends TCB_Element_Abstract {
 	}
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'text';
+	}
+
+
+	/**
 	 * Return icon class needed for display in menu
 	 *
 	 * @return string
@@ -38,7 +48,7 @@ class TCB_Text_Element extends TCB_Element_Abstract {
 	 * @return string
 	 */
 	public function identifier() {
-		return '.thrv_text_element';
+		return '.thrv_wrapper.thrv_text_element';
 	}
 
 	/**
@@ -50,12 +60,23 @@ class TCB_Text_Element extends TCB_Element_Abstract {
 		return array(
 			'text'       => array(
 				'config' => array(
+					'ToggleControls' => array(
+						'config'  => array(
+							'name'    => __( 'Type', 'thrive-cb' ),
+							'buttons' => array(
+								array( 'value' => 'tcb-text-font-size', 'text' => __( 'Font Size', 'thrive-cb' ), 'default' => true ),
+								array( 'value' => 'tcb-text-line-height', 'text' => __( 'Line Height', 'thrive-cb' ) ),
+								array( 'value' => 'tcb-text-letter-spacing', 'text' => __( 'Letter Spacing', 'thrive-cb' ) ),
+							),
+						),
+						'extends' => 'ButtonGroup',
+					),
 					'FontSize'       => array(
 						'config'  => array(
 							'default' => '16',
 							'min'     => '1',
 							'max'     => '100',
-							'label'   => __( 'Font Size', 'thrive-cb' ),
+							'label'   => '',
 							'um'      => array( 'px', 'em' ),
 							'css'     => 'fontSize',
 						),
@@ -66,7 +87,7 @@ class TCB_Text_Element extends TCB_Element_Abstract {
 							'default' => '1',
 							'min'     => '1',
 							'max'     => '200',
-							'label'   => __( 'Line Height', 'thrive-cb' ),
+							'label'   => '',
 							'um'      => array( 'em', 'px' ),
 							'css'     => 'lineHeight',
 						),
@@ -77,7 +98,7 @@ class TCB_Text_Element extends TCB_Element_Abstract {
 							'default' => 'auto',
 							'min'     => '0',
 							'max'     => '100',
-							'label'   => __( 'Letter Spacing', 'thrive-cb' ),
+							'label'   => '',
 							'um'      => array( 'px' ),
 							'css'     => 'letterSpacing',
 						),
@@ -85,9 +106,10 @@ class TCB_Text_Element extends TCB_Element_Abstract {
 					),
 					'FontColor'      => array(
 						'config'  => array(
-							'default' => '000',
-							'label'   => __( 'Font Color', 'thrive-cb' ),
-							'options' => array(
+							'default'    => '000',
+							'label'      => '',
+							'label_icon' => 'format-color-text',
+							'options'    => array(
 								'output' => 'object',
 							),
 						),
@@ -95,9 +117,10 @@ class TCB_Text_Element extends TCB_Element_Abstract {
 					),
 					'FontBackground' => array(
 						'config'  => array(
-							'default' => '000',
-							'label'   => __( 'Font Highlight', 'thrive-cb' ),
-							'options' => array(
+							'default'    => '000',
+							'label'      => '',
+							'label_icon' => 'format-color-fill',
+							'options'    => array(
 								'output' => 'object',
 							),
 						),
@@ -150,9 +173,20 @@ class TCB_Text_Element extends TCB_Element_Abstract {
 					),
 				),
 			),
+			'borders'    => array(
+				'config' => array(
+					'Borders' => array(
+						'important' => true,
+					),
+					'Corners' => array(
+						'important' => true,
+					),
+				),
+			),
 			'shadow'     => array(
 				'config' => array(
 					'css_attribute' => 'box-shadow',
+					'important'     => true,
 				),
 			),
 			'typography' => array(

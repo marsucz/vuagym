@@ -2,9 +2,9 @@
 	<div class="color-picker-control"><input type="text" class="color-picker"></div>
 <# } else { #>
 	<div class="color-picker-control clearfix row middle-xs">
-		<# if(this.model.config.label && this.model.config.label.trim().length > 0) { #>
-			<div class="color-picker-label col-xs-5">
-				<#= this.model.config.label #>
+		<# if(this.model.config.label || this.model.config.label_icon ) { #>
+			<div class="color-picker-label col-xs-<#= this.model.config.label_icon?'2':'6' #>">
+				 <#= this.model.config.label_icon ? TVE.icon( this.model.config.label_icon ) : this.model.config.label #>
 			</div>
 		<# } #>
 		<# if( this.model.config.icon ) { #>
@@ -12,7 +12,7 @@
 				<#= TVE.icon('bucket') #>
 			</div>
 		<# } #>
-		<div class="color-picker-input col-xs-<#= this.model.config.icon?'10':'7' #>">
+		<div class="color-picker-input col-xs-<#= this.model.config.label_icon?'10':'6' #>">
 			<input type="text" class="color-picker">
 			<div class="color-input-container">
 				<input type="text" class="color-input" disabled>

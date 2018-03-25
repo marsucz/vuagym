@@ -17,6 +17,11 @@ if ( ! class_exists( ' YITH_Role_Based_Prices_Admin' ) ) {
 			add_action( 'woocommerce_admin_field_show-prices-user-role', array( $this, 'show_prices_user_type' ) );
 			add_action( 'pre_update_option', array( $this, 'update_custom_message' ), 20, 3 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'include_admin_script' ) );
+			add_action( 'save_post', array( $this, 'ywcrb_delete_role_based_transient' ), 10 ,1 );
+			add_action( 'wp_trash_post', array( $this, 'ywcrb_delete_role_based_transient' ), 10 ,1 );
+			add_action( 'untrash_post', array( $this, 'ywcrb_delete_role_based_transient' ), 10 ,1 );
+			add_action( 'delete_post', array( $this, 'ywcrb_delete_role_based_transient' ), 10 ,1 );
+
 
 		}
 
@@ -108,6 +113,20 @@ if ( ! class_exists( ' YITH_Role_Based_Prices_Admin' ) ) {
 			}
 
 			return $value;
+		}
+
+		public function ywcrb_delete_role_based_transient( $post_id ){
+
+			$post_type = get_post_type( $post_id );
+			$post_types = array( 'product','product_variation' );
+
+			if( ( 'yith_price_rule' == $post_type ) || ( in_array( $post_type, $post_types )  ) ){
+
+				delete_site_transient( 'ywcrb_rolebased_prices' );
+
+			}
+
+
 		}
 	}
 }

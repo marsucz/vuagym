@@ -2,118 +2,27 @@
  * Created by Your Inspiration on 10/04/2015.
  */
 jQuery(document).ready(function ($) {
+    $('#custom_check_map').on('click', function () {
 
-    //Handle multi-dependencies
-    function multi_dependencies_handler ( id, deps, values, first) {
-        var result = true;
+        if (!$('#custom_check_map').is(":checked")) {
 
-        for (var i = 0; i < deps.length; i++) {
-
-            if( deps[i].substr( 0, 6 ) == ':radio' )
-            {deps[i] = deps[i] + ':checked'; }
-
-            var val = $( deps[i] ).val();
-
-            if( $(deps[i]).attr('type') == 'checkbox'){
-                var thisCheck = $(deps[i]);
-                if ( thisCheck.is ( ':checked' ) ) {
-                    val = 'yes';
-                }
-                else {
-                    val = 'no';
-                }
-            }
-            if( result && (val==values[i]) ){
-                result=true;
-            }
-            else {
-                result=false;
-                break;
-            }
+            $('#custom_width_enable').css('display', 'block');
         }
-
-        if( !result ) {
-            $( id + '-container' ).parent().hide();
-        } else {
-            $( id + '-container' ).parent().show();
-        }
-    }
-
-    function isArray(myArray) {
-        return myArray.constructor.toString().indexOf('Array') > -1;
-    }
-
-
-    $('select#_ywtm_tab_category').ajaxChosen({
-        method: 		'GET',
-        url: 		yith_tab_params.admin_url	,
-        dataType: 		'json',
-        afterTypeDelay: 100,
-        minTermLength: 	3,
-        data:		{
-            action: 	yith_tab_params.actions.search_product_categories,
-            security: 	yith_tab_params.security,
-            default: 	'',
-            plugin:     yith_tab_params.plugin
-        }
-    }, function (data) {
-
-        var terms = {};
-
-        $.each(data, function (i, val) {
-            terms[i] = val;
-
-        });
-
-        return terms;
+        else
+            $('#custom_width_enable').css('display', 'none');
     });
 
-    //metaboxes
-    $('.metaboxes-tab [data-field]').each(function(){
-        var t = $(this);
-
-        var deps= t.data('dep').split(',');
+    $('.add_field_check').on('change', function () {
 
 
-        if(isArray(deps) && deps.length>1){
-            var field = '#' + t.data('field');
-            var values= t.data('value').split(',');
-            multi_dependencies_handler( field, deps,values,true );
-            for( var i=0; i<deps.length; i++){
-                deps[i]= '#'+deps[i];
-            }
+        var t = $(this),
+            id_sub_cont = '#' + t.attr('id') + '_req';
 
-            for( var i=0; i<deps.length; i++)
-                $(deps[i]).on('change', function(){
-                    multi_dependencies_handler( field, deps,values,false );
-                }).change();
-        }
-    });
-
-
-
- $('#custom_check_map').on('click', function(){
-
-   if( !$('#custom_check_map').is(":checked") ) {
-
-       $('#custom_width_enable').css('display','block');
-     }
-     else
-       $('#custom_width_enable').css('display','none');
- });
-
-    $('.add_field_check').on('change', function(){
-
-
-        var t= $(this),
-            id_sub_cont= '#'+t.attr('id')+'_req';
-
-        if(t.is(':checked')){
+        if (t.is(':checked')) {
 
             $(id_sub_cont).show();
         }
-        else
-        {
+        else {
             $(id_sub_cont).hide();
         }
 
@@ -125,7 +34,7 @@ jQuery(document).ready(function ($) {
     var downloadable_file_frame;
     var file_path_field;
 
-    $(document).on( 'click', '.tab_upload_file_button', function( event ){
+    $(document).on('click', '.tab_upload_file_button', function (event) {
 
         var $el = $(this);
 
@@ -134,7 +43,7 @@ jQuery(document).ready(function ($) {
         event.preventDefault();
 
         // If the media frame already exists, reopen it.
-        if ( downloadable_file_frame ) {
+        if (downloadable_file_frame) {
             downloadable_file_frame.open();
             return;
         }
@@ -142,10 +51,10 @@ jQuery(document).ready(function ($) {
         var downloadable_file_states = [
             // Main states.
             new wp.media.controller.Library({
-                library:   wp.media.query(),
-                multiple:  false,
-                title:     $el.data('choose'),
-                priority:  20,
+                library: wp.media.query(),
+                multiple: false,
+                title: $el.data('choose'),
+                priority: 20,
                 filterable: 'uploaded',
             })
         ];
@@ -165,21 +74,21 @@ jQuery(document).ready(function ($) {
         });
 
         // When an image is selected, run a callback.
-        downloadable_file_frame.on( 'select', function() {
+        downloadable_file_frame.on('select', function () {
 
             var file_path = '';
             var selection = downloadable_file_frame.state().get('selection');
 
-            selection.map( function( attachment ) {
+            selection.map(function (attachment) {
 
                 attachment = attachment.toJSON();
 
-                if ( attachment.url )
+                if (attachment.url)
                     file_path = attachment.url
 
-            } );
+            });
 
-            file_path_field.val( file_path );
+            file_path_field.val(file_path);
         });
 
 
@@ -187,28 +96,55 @@ jQuery(document).ready(function ($) {
         downloadable_file_frame.open();
     });
 
-   $('.ywtm_override_cb').on('change', function(){
+    $('.ywtm_override_cb').on('change', function () {
 
         var t = $(this),
             tab_type = t.data('tab_type'),
             container_id = '#ywtm_wc_tab_content_';
 
-        switch(tab_type){
+        switch (tab_type) {
             case 'reviews':
-                container_id+='reviews';
+                container_id += 'reviews';
                 break;
             case 'description':
-                container_id+= 'description';
+                container_id += 'description';
                 break;
             case 'additional_information':
-                container_id+= 'additional_information';
+                container_id += 'additional_information';
                 break;
         }
 
-        if(t.is(':checked'))
+        if (t.is(':checked'))
             $(container_id).show();
         else
             $(container_id).hide();
     }).change();
+
+    /*FORM CHECK BOX
+
+     */
+
+    var disable_opt = function (disable) {
+            disable.css('opacity', '0.3');
+            disable.css('pointer-events', 'none');
+        },
+
+        enable_opt = function (disable) {
+            disable.css('opacity', '1');
+            disable.css('pointer-events', 'auto');
+        };
+
+    $('#field_name,#field_webaddr,#field_subj').on('change', function (e) {
+
+        var current_check_box = $(this),
+            id = current_check_box.attr('id');
+
+        if (current_check_box.is(':checked')) {
+            enable_opt($('#' + id + '_req').closest('.form-field'));
+        } else {
+            disable_opt($('#' + id + '_req').closest('.form-field'));
+        }
+
+    }).trigger('change');
 });
 

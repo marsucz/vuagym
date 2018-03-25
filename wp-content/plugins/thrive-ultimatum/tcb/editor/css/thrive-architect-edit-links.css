@@ -6,6 +6,11 @@
     padding-left: 40px;
 }
 
+.thrive-architect-edit-link.thrive-architect-edit-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .thrive-architect-edit-link:focus, .thrive-architect-edit-link:hover, .thrive-architect-edit-link:active {
     outline: none;
     color: #FFF;

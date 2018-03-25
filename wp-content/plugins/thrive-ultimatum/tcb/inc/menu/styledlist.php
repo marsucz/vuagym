@@ -18,10 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="dropdown-content">
 		<div class="tve-control tcb-text-center" data-view="ModalPicker"></div>
 		<hr>
-		<div class="tve-control" data-view="icons_color"></div>
-		<hr>
-		<div class="tve-control" data-view="icons_size"></div>
-		<hr>
 		<div class="tve-control" data-view="item_spacing"></div>
 		<hr>
 		<div class="tve-control" data-key="preview" data-initializer="list_preview_control"></div>

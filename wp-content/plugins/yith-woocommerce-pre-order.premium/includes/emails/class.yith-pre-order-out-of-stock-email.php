@@ -43,7 +43,7 @@ if ( ! class_exists( 'YITH_Pre_Order_Out_Of_Stock_Email' ) ) {
 
 			parent::__construct();
 
-			$this->recipient = get_option( 'admin_email' );
+			$this->recipient = $this->get_option( 'recipient', get_option( 'admin_email' ) );
 		}
 
 		public function trigger( $product_id ) {
@@ -84,31 +84,39 @@ if ( ! class_exists( 'YITH_Pre_Order_Out_Of_Stock_Email' ) ) {
 		public function init_form_fields() {
 			$this->form_fields = array(
 				'enabled'    => array(
-					'title'   => __( 'Enable/Disable', 'woocommerce' ),
+					'title'   => __( 'Enable/Disable', 'yith-woocommerce-pre-order' ),
 					'type'    => 'checkbox',
-					'label'   => __( 'Enable this email notification', 'woocommerce' ),
+					'label'   => __( 'Enable this email notification', 'yith-woocommerce-pre-order' ),
 					'default' => 'yes'
 				),
+				'recipient' => array(
+					'title'         => __( 'Recipient(s)', 'yith-woocommerce-pre-order' ),
+					'type'          => 'text',
+					'description'   => sprintf( __( 'Enter recipients (comma separated) for this email. Defaults to %s.', 'yith-woocommerce-pre-order' ), '<code>' . esc_attr( get_option( 'admin_email' ) ) . '</code>' ),
+					'placeholder'   => '',
+					'default'       => '',
+					'desc_tip'      => true,
+				),
 				'subject'    => array(
-					'title'       => __( 'Subject', 'woocommerce' ),
+					'title'       => __( 'Subject', 'yith-woocommerce-pre-order' ),
 					'type'        => 'text',
-					'description' => sprintf( __( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', 'woocommerce' ), $this->subject ),
+					'description' => sprintf( __( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', 'yith-woocommerce-pre-order' ), $this->subject ),
 					'placeholder' => '',
 					'default'     => '',
 					'desc_tip'    => true
 				),
 				'heading'    => array(
-					'title'       => __( 'Email Heading', 'woocommerce' ),
+					'title'       => __( 'Email Heading', 'yith-woocommerce-pre-order' ),
 					'type'        => 'text',
-					'description' => sprintf( __( 'This controls the main heading included in the email notification. Leave blank to use the default heading: <code>%s</code>.', 'woocommerce' ), $this->heading ),
+					'description' => sprintf( __( 'This controls the main heading included in the email notification. Leave blank to use the default heading: <code>%s</code>.', 'yith-woocommerce-pre-order' ), $this->heading ),
 					'placeholder' => '',
 					'default'     => '',
 					'desc_tip'    => true
 				),
 				'email_type' => array(
-					'title'       => __( 'Email type', 'woocommerce' ),
+					'title'       => __( 'Email type', 'yith-woocommerce-pre-order' ),
 					'type'        => 'select',
-					'description' => __( 'Choose which format of email to send.', 'woocommerce' ),
+					'description' => __( 'Choose which format of email to send.', 'yith-woocommerce-pre-order' ),
 					'default'     => 'html',
 					'class'       => 'email_type wc-enhanced-select',
 					'options'     => $this->get_email_type_options(),

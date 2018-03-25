@@ -10,6 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<div class="thrv_wrapper thrv_heading">
-	<h1><?php echo __( 'Your Heading Here', 'thrive-cb' ) ?></h1>
+<div class="thrv_wrapper thrv_heading" data-tag="h2">
+	<h2><?php echo __( 'Your Heading Here', 'thrive-cb' ) ?></h2>
 </div>

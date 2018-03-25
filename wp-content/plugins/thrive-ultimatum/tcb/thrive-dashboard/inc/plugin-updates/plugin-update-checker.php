@@ -8,15 +8,15 @@
  * http://www.gnu.org/licenses/gpl.html
  */
 
-if ( ! class_exists( 'TVE_PluginUpdateChecker_1_3_2' ) ):
+if ( ! class_exists( 'TVE_PluginUpdateChecker_1_3_2', false ) ) {
 
 	/**
 	 * A custom plugin update checker.
 	 *
-	 * @author Janis Elsts
+	 * @author    Janis Elsts
 	 * @copyright 2013
-	 * @version 1.3.1
-	 * @access public
+	 * @version   1.3.1
+	 * @access    public
 	 */
 	class TVE_PluginUpdateChecker_1_3_2 {
 		protected $secret_key = '@#$()%*%$^&*(#@$%@#$%93827456MASDFJIK3245';
@@ -40,11 +40,11 @@ if ( ! class_exists( 'TVE_PluginUpdateChecker_1_3_2' ) ):
 		/**
 		 * Class constructor.
 		 *
-		 * @param string $metadataUrl The URL of the plugin's metadata file.
-		 * @param string $pluginFile Fully qualified path to the main plugin file.
-		 * @param string $slug The plugin's 'slug'. If not specified, the filename part of $pluginFile sans '.php' will be used as the slug.
+		 * @param string  $metadataUrl The URL of the plugin's metadata file.
+		 * @param string  $pluginFile  Fully qualified path to the main plugin file.
+		 * @param string  $slug        The plugin's 'slug'. If not specified, the filename part of $pluginFile sans '.php' will be used as the slug.
 		 * @param integer $checkPeriod How often to check for updates (in hours). Defaults to checking every 12 hours. Set to 0 to disable automatic update checks.
-		 * @param string $optionName Where to store book-keeping info about update checks. Defaults to 'external_updates-$slug'.
+		 * @param string  $optionName  Where to store book-keeping info about update checks. Defaults to 'external_updates-$slug'.
 		 */
 		public function __construct( $metadataUrl, $pluginFile, $slug = '', $checkPeriod = 12, $optionName = '', $api_slug = '' ) {
 			$this->metadataUrl        = $metadataUrl;
@@ -363,10 +363,11 @@ if ( ! class_exists( 'TVE_PluginUpdateChecker_1_3_2' ) ):
 				$timeout = $this->checkPeriod * 3600;
 			}
 
-			$shouldCheck =
-				empty( $state ) ||
-				! isset( $state->lastCheck ) ||
-				( ( time() - $state->lastCheck ) >= $timeout );
+			$shouldCheck
+				= empty( $state )
+				  ||
+				  ! isset( $state->lastCheck )
+				  || ( ( time() - $state->lastCheck ) >= $timeout );
 
 			if ( $shouldCheck ) {
 				$this->checkForUpdates();
@@ -424,8 +425,8 @@ if ( ! class_exists( 'TVE_PluginUpdateChecker_1_3_2' ) ):
 		 *
 		 * @see plugins_api()
 		 *
-		 * @param mixed $result
-		 * @param string $action
+		 * @param mixed        $result
+		 * @param string       $action
 		 * @param array|object $args
 		 *
 		 * @return mixed
@@ -507,7 +508,7 @@ if ( ! class_exists( 'TVE_PluginUpdateChecker_1_3_2' ) ):
 		 * You can change the link text by using the "puc_manual_check_link-$slug" filter.
 		 * Returning an empty string from the filter will disable the link.
 		 *
-		 * @param array $pluginMeta Array of meta links.
+		 * @param array  $pluginMeta Array of meta links.
 		 * @param string $pluginFile
 		 *
 		 * @return array
@@ -536,16 +537,17 @@ if ( ! class_exists( 'TVE_PluginUpdateChecker_1_3_2' ) ):
 
 		/**
 		 * Check for updates when the user clicks the "Check for updates" link.
+		 *
 		 * @see self::addCheckForUpdatesLink()
 		 *
 		 * @return void
 		 */
 		public function handleManualCheck() {
-			$shouldCheck =
-				isset( $_GET['puc_check_for_updates'], $_GET['puc_slug'] )
-				&& $_GET['puc_slug'] == $this->slug
-				&& current_user_can( 'update_plugins' )
-				&& check_admin_referer( 'puc_check_for_updates' );
+			$shouldCheck
+				= isset( $_GET['puc_check_for_updates'], $_GET['puc_slug'] )
+				  && $_GET['puc_slug'] == $this->slug
+				  && current_user_can( 'update_plugins' )
+				  && check_admin_referer( 'puc_check_for_updates' );
 
 			if ( $shouldCheck ) {
 				$update = $this->checkForUpdates();
@@ -562,6 +564,7 @@ if ( ! class_exists( 'TVE_PluginUpdateChecker_1_3_2' ) ):
 
 		/**
 		 * Display the results of a manual update check.
+		 *
 		 * @see self::handleManualCheck()
 		 *
 		 * You can change the result message by using the "puc_manual_check_message-$slug" filter.
@@ -657,10 +660,10 @@ if ( ! class_exists( 'TVE_PluginUpdateChecker_1_3_2' ) ):
 		 * and the "-$plugin_slug" suffix to the filter name. For example, "request_info_result"
 		 * becomes "puc_request_info_result-your_plugin_slug".
 		 *
-		 * @param string $tag
+		 * @param string   $tag
 		 * @param callable $callback
-		 * @param int $priority
-		 * @param int $acceptedArgs
+		 * @param int      $priority
+		 * @param int      $acceptedArgs
 		 */
 		public function addFilter( $tag, $callback, $priority = 10, $acceptedArgs = 1 ) {
 			add_filter( 'puc_' . $tag . '-' . $this->slug, $callback, $priority, $acceptedArgs );
@@ -677,17 +680,17 @@ if ( ! class_exists( 'TVE_PluginUpdateChecker_1_3_2' ) ):
 		}
 	}
 
-endif;
+}
 
-if ( ! class_exists( 'TVE_PluginInfo_1_3' ) ):
+if ( ! class_exists( 'TVE_PluginInfo_1_3', false ) ) {
 
 	/**
 	 * A container class for holding and transforming various plugin metadata.
 	 *
-	 * @author Janis Elsts
+	 * @author    Janis Elsts
 	 * @copyright 2012
-	 * @version 1.3
-	 * @access public
+	 * @version   1.3
+	 * @access    public
 	 */
 	class TVE_PluginInfo_1_3 {
 		//Most fields map directly to the contents of the plugin's info.json file.
@@ -718,7 +721,7 @@ if ( ! class_exists( 'TVE_PluginInfo_1_3' ) ):
 		 * returned by an external update API.
 		 *
 		 * @param string $json Valid JSON string representing plugin info.
-		 * @param bool $triggerErrors
+		 * @param bool   $triggerErrors
 		 *
 		 * @return TVE_PluginInfo|null New instance of PluginInfo, or NULL on error.
 		 */
@@ -808,18 +811,17 @@ if ( ! class_exists( 'TVE_PluginInfo_1_3' ) ):
 			return $info;
 		}
 	}
+}
 
-endif;
-
-if ( ! class_exists( 'TVE_PluginUpdate_1_3' ) ):
+if ( ! class_exists( 'TVE_PluginUpdate_1_3', false ) ) {
 
 	/**
 	 * A simple container class for holding information about an available update.
 	 *
-	 * @author Janis Elsts
+	 * @author    Janis Elsts
 	 * @copyright 2012
-	 * @version 1.2
-	 * @access public
+	 * @version   1.2
+	 * @access    public
 	 */
 	class TVE_PluginUpdate_1_3 {
 		public $id = 0;
@@ -834,7 +836,7 @@ if ( ! class_exists( 'TVE_PluginUpdate_1_3' ) ):
 		 * Create a new instance of PluginUpdate from its JSON-encoded representation.
 		 *
 		 * @param string $json
-		 * @param bool $triggerErrors
+		 * @param bool   $triggerErrors
 		 *
 		 * @return TVE_PluginUpdate|null
 		 */
@@ -917,10 +919,9 @@ if ( ! class_exists( 'TVE_PluginUpdate_1_3' ) ):
 			return $update;
 		}
 	}
+}
 
-endif;
-
-if ( ! class_exists( 'TVE_PucFactory' ) ):
+if ( ! class_exists( 'TVE_PucFactory', false ) ) {
 
 	/**
 	 * A factory that builds instances of other classes from this library.
@@ -943,10 +944,10 @@ if ( ! class_exists( 'TVE_PucFactory' ) ):
 		 *
 		 * @see PluginUpdateChecker::__construct()
 		 *
-		 * @param $metadataUrl
-		 * @param $pluginFile
+		 * @param        $metadataUrl
+		 * @param        $pluginFile
 		 * @param string $slug
-		 * @param int $checkPeriod
+		 * @param int    $checkPeriod
 		 * @param string $optionName
 		 *
 		 * @return TVE_PluginUpdateChecker
@@ -996,9 +997,9 @@ if ( ! class_exists( 'TVE_PucFactory' ) ):
 		 *
 		 * @access private This method is only for internal use by the library.
 		 *
-		 * @param string $generalClass Class name without version numbers, e.g. 'PluginUpdateChecker'.
+		 * @param string $generalClass   Class name without version numbers, e.g. 'PluginUpdateChecker'.
 		 * @param string $versionedClass Actual class name, e.g. 'PluginUpdateChecker_1_2'.
-		 * @param string $version Version number, e.g. '1.2'.
+		 * @param string $version        Version number, e.g. '1.2'.
 		 */
 		public static function addVersion( $generalClass, $versionedClass, $version ) {
 			if ( ! isset( self::$classVersions[ $generalClass ] ) ) {
@@ -1008,8 +1009,7 @@ if ( ! class_exists( 'TVE_PucFactory' ) ):
 			self::$sorted                                     = false;
 		}
 	}
-
-endif;
+}
 
 //Register classes defined in this file with the factory.
 TVE_PucFactory::addVersion( 'PluginUpdateChecker', 'TVE_PluginUpdateChecker_1_3_2', '1.3.2' );
@@ -1020,17 +1020,17 @@ TVE_PucFactory::addVersion( 'PluginInfo', 'TVE_PluginInfo_1_3', '1.3' );
  * Create non-versioned variants of the update checker classes. This allows for backwards
  * compatibility with versions that did not use a factory, and it simplifies doc-comments.
  */
-if ( ! class_exists( 'TVE_PluginUpdateChecker' ) ) {
+if ( ! class_exists( 'TVE_PluginUpdateChecker', false ) ) {
 	class TVE_PluginUpdateChecker extends TVE_PluginUpdateChecker_1_3_2 {
 	}
 }
 
-if ( ! class_exists( 'TVE_PluginUpdate' ) ) {
+if ( ! class_exists( 'TVE_PluginUpdate', false ) ) {
 	class TVE_PluginUpdate extends TVE_PluginUpdate_1_3 {
 	}
 }
 
-if ( ! class_exists( 'TVE_PluginInfo' ) ) {
+if ( ! class_exists( 'TVE_PluginInfo', false ) ) {
 	class TVE_PluginInfo extends TVE_PluginInfo_1_3 {
 	}
 }

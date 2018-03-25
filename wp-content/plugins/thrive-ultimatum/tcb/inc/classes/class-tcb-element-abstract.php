@@ -15,6 +15,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 abstract class TCB_Element_Abstract {
 
 	/**
+	 * Element alternate.
+	 *
+	 * @var string
+	 */
+	protected $_alternate = '';
+
+
+	/**
+	 * TCB_Element_Abstract constructor.
+	 *
+	 * @param string $alternate element alternate.
+	 */
+	public function __construct_alternate( $alternate = '' ) {
+		if ( empty( $this->_alternate ) ) {
+			$this->_alternate = $alternate;
+		}
+	}
+
+	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return $this->_alternate;
+	}
+
+
+	/**
 	 * Element tag.
 	 *
 	 * @var string
@@ -57,7 +86,7 @@ abstract class TCB_Element_Abstract {
 	 */
 	public function components() {
 		$own_components = $this->own_components();
-		$components     = tve_array_replace_recursive( $this->general_components(), $this->own_components() );
+		$components     = tve_array_replace_recursive( $this->general_components(), $own_components );
 		foreach ( $own_components as $key => $component ) {
 
 			if ( isset( $component['disabled_controls'] ) ) {
@@ -85,11 +114,26 @@ abstract class TCB_Element_Abstract {
 	 * @return array
 	 */
 	protected function general_components() {
+		/**
+		 * Avoid creating extra javascript configuration data
+		 */
+		if ( $this->inherit_components_from() || $this->is_placeholder() ) {
+			return array();
+		}
 		$texts = array(
 			' p',
 			' li',
 			' blockquote',
 			' address',
+		);
+
+		$headings = array(
+			' h1',
+			' h2',
+			' h3',
+			' h4',
+			' h5',
+			' h6',
 		);
 
 		$h1_spacing = $h2_spacing = $h3_spacing = $p_spacing = array(
@@ -123,6 +167,18 @@ abstract class TCB_Element_Abstract {
 				),
 				'order'             => 90,
 				'config'            => array(
+					'ToggleControls' => array(
+						'config'  => array(
+							'name'    => __( 'Type', 'thrive-cb' ),
+							'buttons' => array(
+								array( 'value' => 'tcb-typography-font-size', 'text' => __( 'Font Size', 'thrive-cb' ), 'default' => true ),
+								array( 'value' => 'tcb-typography-line-height', 'text' => __( 'Line Height', 'thrive-cb' ) ),
+								array( 'value' => 'tcb-typography-letter-spacing', 'text' => __( 'Letter Spacing', 'thrive-cb' ) ),
+							),
+						),
+						'extends' => 'ButtonGroup',
+					),
+
 					'FontSize'      => array(
 						'css_suffix' => $texts,
 						'css_prefix' => '#tve_editor ',
@@ -130,7 +186,7 @@ abstract class TCB_Element_Abstract {
 							'default' => '16',
 							'min'     => '1',
 							'max'     => '100',
-							'label'   => __( 'Font Size', 'thrive-cb' ),
+							'label'   => '',
 							'um'      => array( 'px', 'em' ),
 							'css'     => 'fontSize',
 						),
@@ -141,14 +197,15 @@ abstract class TCB_Element_Abstract {
 							'default' => 'auto',
 							'min'     => '0',
 							'max'     => '100',
-							'label'   => __( 'Letter Spacing', 'thrive-cb' ),
+							'label'   => '',
 							'um'      => array( 'px' ),
 							'css'     => 'letterSpacing',
 						),
 						'extends' => 'Slider',
 					),
 					'FontColor'     => array(
-						'css_suffix' => $texts,
+						'css_suffix' => array_merge( $texts, $headings ),
+						'old_suffix' => $texts, //TODO: Remove this after some time
 						'css_prefix' => '#tve_editor ',
 						'config'     => array(
 							'default' => '000',
@@ -189,7 +246,8 @@ abstract class TCB_Element_Abstract {
 						'extends' => 'ButtonGroup',
 					),
 					'TextStyle'     => array(
-						'css_suffix' => $texts,
+						'css_suffix' => array_merge( $texts, $headings ),
+						'old_suffix' => $texts, //TODO: Remove this after some time
 						'config'     => array(
 							'name'     => __( 'Text Style', 'thrive-cb' ),
 							'checkbox' => true,
@@ -267,7 +325,7 @@ abstract class TCB_Element_Abstract {
 							'default' => '16',
 							'min'     => '1',
 							'max'     => '100',
-							'label'   => __( 'Line Height', 'thrive-cb' ),
+							'label'   => '',
 							'um'      => array( 'px', 'em' ),
 							'css'     => 'lineHeight',
 						),
@@ -288,12 +346,18 @@ abstract class TCB_Element_Abstract {
 			'background'       => array(
 				'order'             => 110,
 				'config'            => array(
-					'ColorPicker' => array(
+					'ColorPicker'       => array(
 						'config' => array(
 							'icon' => true,
 						),
 					),
-					'PreviewList' => array(
+					'PreviewFilterList' => array(
+						'config' => array(
+							'sortable'    => false,
+							'extra_class' => 'tcb-preview-list-white',
+						),
+					),
+					'PreviewList'       => array(
 						'config' => array(
 							'sortable' => true,
 						),
@@ -318,6 +382,7 @@ abstract class TCB_Element_Abstract {
 			'shadow'           => array(
 				'order' => 140,
 			),
+
 		);
 	}
 
@@ -337,7 +402,11 @@ abstract class TCB_Element_Abstract {
 			'tag'            => $this->tag(),
 			'is_placeholder' => $this->is_placeholder(),
 			'hover'          => $this->has_hover_state(),
+			'has_group'      => $this->has_group_editing(),
 		);
+		if ( ( $inherit_from = $this->inherit_components_from() ) ) {
+			$config['inherit_from'] = $inherit_from;
+		}
 
 		$config = apply_filters( 'tcb_element_' . $this->tag() . '_config', $config );
 
@@ -490,10 +559,30 @@ abstract class TCB_Element_Abstract {
 	/**
 	 * Whether or not the this element can be edited while under :hover state
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function has_hover_state() {
 		return false;
+	}
+
+	/**
+	 * Whether or not this element has cloud templates
+	 *
+	 * @return bool
+	 */
+	public function has_cloud_templates() {
+		return false;
+	}
+
+	/**
+	 * Allows different element names to use the same exact components as a base building block
+	 * Example: a Testimonial element uses the same exact components as the Columns element ( because it is a column container element ) and
+	 * has extra testimonial options
+	 *
+	 * @return null|string
+	 */
+	public function inherit_components_from() {
+		return null;
 	}
 
 	/**
@@ -543,11 +632,52 @@ abstract class TCB_Element_Abstract {
 	}
 
 	/**
-	 * Element category that will be displayed in the sidebar
+	 * Element category that will be displayed in the sidebar.
+	 * If the element is hidden it's ok not to have a category defined.
 	 *
 	 * @throws Exception
 	 */
 	public function category() {
-		throw new Exception( 'Please define category for element:' . $this->name() );
+		if ( ! $this->hide() ) {
+			throw new Exception( 'Please define category for element:' . $this->name() );
+		}
+	}
+
+	public function has_group_editing() {
+		return false;
+	}
+
+	/**
+	 *
+	 *
+	 * @return array
+	 */
+	public function group_component() {
+		return array(
+			'group' => array(
+				'hidden' => true,
+				'config' => array(
+					'ButtonToggle' => array(
+						'config' => array(
+							'label'   => '',
+							'class'   => 'tcb-group-toggle-btn',
+							'tooltip' => array(
+								'active'   => __( 'Group styling disabled. The styling will be applied only for the selected element.', 'thrive-cb' ),
+								'inactive' => __( 'Group styling active. The same styling will be applied to similar elements.', 'thrive-cb' ),
+							),
+						),
+					),
+					'preview'      => array(
+						'config'  => array(
+							'name'        => '',
+							'label_col_x' => 0,
+							'options'     => array(),
+						),
+						'extends' => 'Select',
+					),
+
+				),
+			),
+		);
 	}
 }

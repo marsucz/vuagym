@@ -26,6 +26,16 @@ class TCB_Ct_Element extends TCB_Element_Abstract {
 	}
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'template,content';
+	}
+
+
+	/**
 	 * Return icon class needed for display in menu
 	 *
 	 * @return string

@@ -181,15 +181,11 @@ function _tve_dash_util_helper_get_json( $url, $fn = 'wp_remote_get' ) {
  * Checks if the current request is performed by a crawler. It identifies crawlers by inspecting the user agent string
  *
  * @param bool $apply_filter Whether or not to apply the crawler detection filter ( tve_dash_is_crawler )
+ * @param bool $check_cache_plugins
  *
  * @return int|false False form empty UAS. int 1|0 if a crawler has|not been detected
  */
 function tve_dash_is_crawler( $apply_filter = false ) {
-
-	$plugins_cache = tve_dash_detect_cache_plugin();
-	if ( empty( $plugins_cache ) ) {
-		return false;
-	}
 
 	if ( isset( $GLOBALS['thrive_dashboard_bot_detection'] ) ) {
 		return $GLOBALS['thrive_dashboard_bot_detection'];
@@ -224,21 +220,22 @@ function tve_dash_is_crawler( $apply_filter = false ) {
  */
 function tve_dash_get_menu_products_order() {
 	return array(
+		'tva',
+		'tcm',
+		'tho',
+		'tvo',
+		'tab',
+		'tl',
+		'tqb',
+		'tu',
 		'license_manager',
 		'general_settings',
 		'ui_toolkit',
 		'font_manager',
 		'font_import_manager',
 		'icon_manager',
-		'tho',
-		'tl',
-		'tvo',
-		'tqb',
 		'tcb',
-		'tcm',
 		'tcm_sub_menu',
-		'tu',
-		'tva',
 		/*For Thrive Themes*/
 		'thrive_theme_admin_page_templates',
 		'thrive_theme_license_validation',

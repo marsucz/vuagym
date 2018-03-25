@@ -610,5 +610,5 @@ function tve_ult_render_shortcode( $arguments, $is_editor = true ) {
 		return class_exists( 'TU_Shortcode_Countdown' ) ? TU_Shortcode_Countdown::instance()->code( $arguments['tve_ult_campaign'], $arguments['tve_ult_shortcode'] ) : 'Shortcode could not be rendered';
 	}
 
-	return '<div class="thrive-shortcode-html">' . str_replace( 'tve_editor', '', $output ) . '</div>';
+	return '<div class="thrive-shortcode-html">' . str_replace( 'id="tve_editor"', '', $output ) . '</div>';
 }

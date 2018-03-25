@@ -1,6 +1,6 @@
 <?php
 /* global constants */
-defined( 'TVE_VERSION' ) || DEFINE( "TVE_VERSION", '2.0.15' );
+defined( 'TVE_VERSION' ) || DEFINE( "TVE_VERSION", '2.0.28' );
 defined( 'TVE_TCB_DB_VERSION' ) || define( 'TVE_TCB_DB_VERSION', '1.1' );
 defined( 'TVE_LANDING_PAGE_TEMPLATE' ) || DEFINE( "TVE_LANDING_PAGE_TEMPLATE", plugins_url() . '/thrive-visual-editor/landing-page/templates' );
 defined( 'TVE_LANDING_PAGE_TEMPLATE_DOWNLOADED' ) || DEFINE( "TVE_LANDING_PAGE_TEMPLATE_DOWNLOADED", plugins_url() . '/../uploads/tcb_lp_templates/templates' );
@@ -9,6 +9,9 @@ defined( 'TVE_EDITOR_FLAG' ) || define( 'TVE_EDITOR_FLAG', 'tve' );
 defined( 'TVE_FRAME_FLAG' ) || define( 'TVE_FRAME_FLAG', 'tcbf' );
 defined( 'TVE_TCB_CORE_INCLUDED' ) || define( 'TVE_TCB_CORE_INCLUDED', true );
 defined( 'TVE_TCB_ROOT_PATH' ) || define( 'TVE_TCB_ROOT_PATH', plugin_dir_path( __FILE__ ) );
+define( 'TCB_CT_POST_TYPE', 'tcb_content_template' );
+define( 'TVE_CLOUD_TEMPLATES_FOLDER', 'tcb_content_templates' );
+
 
 // global options
 // all style sheet families listed below will be added to the editor.
@@ -43,18 +46,18 @@ $tve_thrive_shortcodes = array(
 	'quiz_shortcode'                      => 'tqb_render_shortcode',
 );
 
-require_once dirname( __FILE__ ) . '/inc/compat.php';
-require_once dirname( __FILE__ ) . '/inc/helpers/social.php';
-require_once dirname( __FILE__ ) . '/inc/functions.php';
-require_once dirname( __FILE__ ) . '/inc/classes/class-tcb-editor-ajax.php';
-require_once dirname( __FILE__ ) . '/inc/classes/class-tcb-editor.php';
-require_once dirname( __FILE__ ) . '/inc/classes/class-tcb-elements.php';
-require_once dirname( __FILE__ ) . '/inc/classes/class-tcb-font-manager.php';
-require_once dirname( __FILE__ ) . '/inc/classes/class-tcb-icon-manager.php';
-require_once dirname( __FILE__ ) . '/inc/classes/class-tcb-post.php';
+require_once plugin_dir_path( __FILE__ ) . 'inc/compat.php';
+require_once plugin_dir_path( __FILE__ ) . 'inc/helpers/social.php';
+require_once plugin_dir_path( __FILE__ ) . 'inc/functions.php';
+require_once plugin_dir_path( __FILE__ ) . 'inc/classes/class-tcb-editor-ajax.php';
+require_once plugin_dir_path( __FILE__ ) . 'inc/classes/class-tcb-editor.php';
+require_once plugin_dir_path( __FILE__ ) . 'inc/classes/class-tcb-elements.php';
+require_once plugin_dir_path( __FILE__ ) . 'inc/classes/class-tcb-font-manager.php';
+require_once plugin_dir_path( __FILE__ ) . 'inc/classes/class-tcb-icon-manager.php';
+require_once plugin_dir_path( __FILE__ ) . 'inc/classes/class-tcb-post.php';
 
 /* init the Event Manager */
-require_once dirname( __FILE__ ) . '/event-manager/init.php';
+require_once plugin_dir_path( __FILE__ ) . 'event-manager/init.php';
 
 /* include the admin menu settings page for the font manager */
 if ( is_admin() && ! defined( 'TCB_ADMIN_INIT' ) ) {

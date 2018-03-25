@@ -18,7 +18,6 @@ wp_enqueue_script('yit-tabmap-script' );
 if( isset( $map ) && !empty( $map ) && $map!="" && $map['addr']!=""){
 $id = 'map_canvas_' .mt_rand();
 extract($map);
-//$full_width = ( $full_width == "yes" ) ? true : false;
 $css_width = "";
 
 if( !$show_width ){
@@ -32,12 +31,8 @@ if( !$show_width ){
 }
 
 
-//$latitude = ( isset( $lat ) && $lat != '' ) ? ' data-lat="' . $lat . '"' : '';
-//$longitude = ( isset( $long ) && $long != '' ) ? ' data-lng="' . $long . '"' : '';
 $address = ( isset( $addr ) && $addr != '' ) ? $addr  : '';
 $zoom = ( isset( $zoom ) && $zoom != '' ) ?  $zoom : 15;
-//$marker = ( isset( $mark ) && $mark != '' ) ? ' data-marker="' . $mark . '"' : '';
-//$style = ( isset( $style ) && $style != '' ) ? ' data-style="' . $style . '"' : '';
 $width_syle = ( $show_width ) ? "full-width section_fullwidth" : "" ;
 
 ?>

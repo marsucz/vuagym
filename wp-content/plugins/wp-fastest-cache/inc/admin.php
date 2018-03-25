@@ -10,6 +10,8 @@
 		public function __construct(){
 			$this->options = $this->getOptions();
 
+			$this->set_content_url();
+			
 			//to call like that because on WP Multisite current_user_can() cannot get the user
 			add_action('admin_init', array($this, "optionsPageRequest"));
 
@@ -392,29 +394,34 @@
 
 		public function insertWebp($htaccess){
 			if(class_exists("WpFastestCachePowerfulHtml")){
-				$webp = true;
+				if(defined("WPFC_DISABLE_WEBP") && WPFC_DISABLE_WEBP){
+					$webp = false;
+				}else{
+					$webp = true;
+				}
 			}else{
 				$webp = false;
 			}
 
-			$basename = "$1.webp";
+							
+			if($webp){
+				$basename = "$1.webp";
 
-			// this part for sub-directory installation
-			// site_url() and home_url() must be the same
-			if(preg_match("/https?\:\/\/[^\/]+\/(.+)/", site_url(), $siteurl_base_name)){
-				if(preg_match("/https?\:\/\/[^\/]+\/(.+)/", home_url(), $homeurl_base_name)){
-					$homeurl_base_name[1] = trim($homeurl_base_name[1], "/");
-					$siteurl_base_name[1] = trim($siteurl_base_name[1], "/");
+				// this part for sub-directory installation
+				// site_url() and home_url() must be the same
+				if(preg_match("/https?\:\/\/[^\/]+\/(.+)/", site_url(), $siteurl_base_name)){
+					if(preg_match("/https?\:\/\/[^\/]+\/(.+)/", home_url(), $homeurl_base_name)){
+						$homeurl_base_name[1] = trim($homeurl_base_name[1], "/");
+						$siteurl_base_name[1] = trim($siteurl_base_name[1], "/");
 
-					if($homeurl_base_name[1] == $siteurl_base_name[1]){
-						if(preg_match("/".preg_quote($homeurl_base_name[1], "/")."$/", trim(ABSPATH, "/"))){
-							$basename = $homeurl_base_name[1]."/".$basename;
+						if($homeurl_base_name[1] == $siteurl_base_name[1]){
+							if(preg_match("/".preg_quote($homeurl_base_name[1], "/")."$/", trim(ABSPATH, "/"))){
+								$basename = $homeurl_base_name[1]."/".$basename;
+							}
 						}
 					}
 				}
-			}
-							
-			if($webp){
+
 				if(ABSPATH == "//"){
 					$RewriteCond = "RewriteCond %{DOCUMENT_ROOT}/".$basename." -f"."\n";
 				}else{
@@ -616,6 +623,7 @@
 					$this->excludeAdminCookie()."\n".
 					$this->http_condition_rule()."\n".
 					"RewriteCond %{HTTP_USER_AGENT} !(".$this->get_excluded_useragent().")"."\n".
+					"RewriteCond %{HTTP_USER_AGENT} !(WP\sFastest\sCache\sPreload(\siPhone\sMobile)?\s*Bot)"."\n".
 					"RewriteCond %{REQUEST_METHOD} !POST"."\n".
 					$ifIsNotSecure."\n".
 					"RewriteCond %{REQUEST_URI} !(\/){2}$"."\n".
@@ -794,6 +802,8 @@
 			$wpFastestCacheGzip = isset($this->options->wpFastestCacheGzip) ? 'checked="checked"' : "";
 			$wpFastestCacheCombineJs = isset($this->options->wpFastestCacheCombineJs) ? 'checked="checked"' : "";
 			$wpFastestCacheCombineJsPowerFul = isset($this->options->wpFastestCacheCombineJsPowerFul) ? 'checked="checked"' : "";
+			$wpFastestCacheDisableEmojis = isset($this->options->wpFastestCacheDisableEmojis) ? 'checked="checked"' : "";
+
 			$wpFastestCacheRenderBlocking = isset($this->options->wpFastestCacheRenderBlocking) ? 'checked="checked"' : "";
 			
 			$wpFastestCacheRenderBlockingCss = isset($this->options->wpFastestCacheRenderBlockingCss) ? 'checked="checked"' : "";
@@ -802,8 +812,8 @@
 			
 
 			$wpFastestCacheLazyLoad = isset($this->options->wpFastestCacheLazyLoad) ? 'checked="checked"' : "";
-
-
+			$wpFastestCacheLazyLoad_keywords = isset($this->options->wpFastestCacheLazyLoad_keywords) ? $this->options->wpFastestCacheLazyLoad_keywords : "";
+			$wpFastestCacheLazyLoad_placeholder = isset($this->options->wpFastestCacheLazyLoad_placeholder) ? $this->options->wpFastestCacheLazyLoad_placeholder : "default";
 
 
 			$wpFastestCacheLBC = isset($this->options->wpFastestCacheLBC) ? 'checked="checked"' : "";
@@ -835,6 +845,9 @@
 			$wpFastestCachePreload_tag = isset($this->options->wpFastestCachePreload_tag) ? 'checked="checked"' : "";
 			$wpFastestCachePreload_attachment = isset($this->options->wpFastestCachePreload_attachment) ? 'checked="checked"' : "";
 			$wpFastestCachePreload_number = isset($this->options->wpFastestCachePreload_number) ? $this->options->wpFastestCachePreload_number : 4;
+			$wpFastestCachePreload_restart = isset($this->options->wpFastestCachePreload_restart) ? 'checked="checked"' : "";
+
+
 
 
 			$wpFastestCacheStatus = isset($this->options->wpFastestCacheStatus) ? 'checked="checked"' : "";
@@ -1117,6 +1130,13 @@
 								<div class="get-info"><a target="_blank" href="http://www.wpfastestcache.com/optimization/leverage-browser-caching/"><img src="<?php echo plugins_url("wp-fastest-cache/images/info.png"); ?>" /></a></div>
 							</div>
 
+							<div class="questionCon">
+								<div class="question">Disable Emojis</div>
+								<div class="inputCon"><input type="checkbox" <?php echo $wpFastestCacheDisableEmojis; ?> id="wpFastestCacheDisableEmojis" name="wpFastestCacheDisableEmojis"><label for="wpFastestCacheDisableEmojis">You can remove the emoji inline css and wp-emoji-release.min.js</label></div>
+								<div class="get-info"><a target="_blank" href="http://www.wpfastestcache.com/optimization/disableremove-wordpress-emojis/"><img src="<?php echo plugins_url("wp-fastest-cache/images/info.png"); ?>" /></a></div>
+							</div>
+
+
 							<?php if(class_exists("WpFastestCachePowerfulHtml")){ ?> 
 								<?php if(method_exists("WpFastestCachePowerfulHtml", "render_blocking")){ ?>
 									<div class="questionCon">
@@ -1193,10 +1213,15 @@
 											// "fr-FR",
 											// "it-IT",
 											// "ja",
-											// "nl-NL",
-											// "pt-PT",
-											// "pt-BR",
+											"nl-NL",
+											"pt-PT",
+											"pt-BR",
 											"tr-TR",
+											"nicheadvice.co.uk",
+											"addkenmerken.net",
+											"animefantastica.com",
+											"rynofitness.com.au",
+											"margotickets.com",
 											"berkatan.com",
 											"yenihobiler.com",
 											"hobiblogu.com",
@@ -1211,7 +1236,14 @@
 											"spycoupon.in",
 											"groovypost.com",
 											"parkviewhomes.info",
-											"myparkviewhomes.com"
+											"myparkviewhomes.com",
+											"kompressorcheck.de",
+											"cutflower.com",
+											"sackkarre-tests.de",
+											"schraubstock-test.de",
+											"knarrenkasten-tests.de",
+											"zahlungserinnerung-vorlage.de",
+											"eigenbeleg-vorlage.de"
 											);
 														
 							if(in_array(get_bloginfo('language'), $tester_arr) || in_array(str_replace("www.", "", $_SERVER["HTTP_HOST"]), $tester_arr)){ ?>
@@ -1220,9 +1252,20 @@
 									<?php if(method_exists("WpFastestCachePowerfulHtml", "lazy_load")){ ?>
 										<div class="questionCon">
 											<div class="question">Lazy Load</div>
-											<div class="inputCon"><input type="checkbox" <?php echo $wpFastestCacheLazyLoad; ?> id="wpFastestCacheLazyLoad" name="wpFastestCacheLazyLoad"><label for="wpFastestCacheLazyLoad">Lazy Load</label></div>
+											<div class="inputCon">
+												<input type="hidden" value="<?php echo $wpFastestCacheLazyLoad_placeholder; ?>" id="wpFastestCacheLazyLoad_placeholder" name="wpFastestCacheLazyLoad_placeholder">
+												<input type="hidden" value="<?php echo $wpFastestCacheLazyLoad_keywords; ?>" id="wpFastestCacheLazyLoad_keywords" name="wpFastestCacheLazyLoad_keywords">
+												<input type="checkbox" <?php echo $wpFastestCacheLazyLoad; ?> id="wpFastestCacheLazyLoad" name="wpFastestCacheLazyLoad"><label for="wpFastestCacheLazyLoad">Load images and iframes when they enter the browsers viewport</label>
+											</div>
 											<div class="get-info"><a target="_blank" href="http://www.wpfastestcache.com/premium/lazy-load-reduce-http-request-and-page-load-time/"><img src="<?php echo plugins_url("wp-fastest-cache/images/info.png"); ?>" /></a></div>
 										</div>
+
+										<?php 
+											if(file_exists(WPFC_WP_PLUGIN_DIR."/wp-fastest-cache-premium/pro/templates/lazy-load.php")){
+												include_once WPFC_WP_PLUGIN_DIR."/wp-fastest-cache-premium/pro/templates/lazy-load.php"; 
+											}
+										?>
+
 									<?php }else{ ?>
 										<div class="questionCon update-needed">
 											<div class="question">Lazy Load</div>
@@ -1604,7 +1647,7 @@
 				    				<h1 style="float:left;" id="just-h1">Just</h1><h1><span style="margin-left:5px;" id="wpfc-premium-price"><?php echo $premium_price; ?></span></h1>
 				    				<p>The download button will be available after paid. You can buy the premium version now.</p>
 
-				    				<?php if(!preg_match("/Caiu\s*Na/i", get_bloginfo("name")) && !preg_match("/(caiuna|escort|porn)/i", $_SERVER["HTTP_HOST"]) && !preg_match("/\.ir$/i", $_SERVER["HTTP_HOST"])){ ?>
+				    				<?php if(!preg_match("/Caiu\s*Na/i", get_bloginfo("name")) && !preg_match("/(caiuna|escort|porn)/i", $_SERVER["HTTP_HOST"])){ ?>
 					    				<?php if(class_exists("WpFastestCachePowerfulHtml")){ ?>
 						    					<button id="wpfc-buy-premium-button" type="submit" class="wpfc-btn primaryDisableCta" style="width:200px;">
 							    					<span>Purchased</span>
@@ -1612,7 +1655,7 @@
 						    				<?php }else{ ?>
 							    				<form action="https://api.wpfastestcache.net/paypal/buypremium/" method="post">
 							    					<input type="hidden" name="ip" value="<?php echo $_SERVER["REMOTE_ADDR"]; ?>">
-							    					<input type="hidden" name="wpfclang" value="<?php echo $this->options->wpFastestCacheLanguage; ?>">
+							    					<input type="hidden" name="wpfclang" value="<?php echo isset($this->options->wpFastestCacheLanguage) ? $this->options->wpFastestCacheLanguage : ""; ?>">
 							    					<input type="hidden" name="bloglang" value="<?php echo get_bloginfo('language'); ?>">
 							    					<input type="hidden" name="hostname" value="<?php echo str_replace(array("http://", "www."), "", $_SERVER["HTTP_HOST"]); ?>">
 								    				<button id="wpfc-buy-premium-button" type="submit" class="wpfc-btn primaryCta" style="width:200px;">
@@ -1697,6 +1740,7 @@
 										<option value="startwith">Start With</option>
 										<option value="contain">Contain</option>
 										<option value="exact">Exact</option>
+										<option value="googleanalytics">has Google Analytics Parameters</option>
 								</select>
 							</div>
 							<div class="wpfc-exclude-rule-line-middle">
@@ -1889,7 +1933,7 @@
 										type: 'GET', 
 										url: ajaxurl,
 										cache: false,
-										data : {"action": "wpfc_cdn_options_ajax_request"},
+										data : {"action": "wpfc_cdn_options"},
 										dataType : "json",
 										success: function(data){
 											if(data.id){
@@ -2037,11 +2081,12 @@
 			</div>
 
 			<div class="omni_admin_sidebar">
+				<?php if(class_exists("WpFastestCachePowerfulHtml")){ ?>
+				<?php }else{ ?>
 				<div class="omni_admin_sidebar_section" style="padding:0 !important;border:none !important;background:none !important;">
-					<a href="//inmotion-hosting.evyy.net/c/149801/353727/4222" target="_blank">
-						<img style="width: 273px; margin-left: -27px;" src="<?php echo plugins_url("wp-fastest-cache/images/inmotion-ads.png"); ?>">
-					</a>
+					<!-- ads area -->
 				</div>
+				<?php } ?>
 				<div class="omni_admin_sidebar_section" id="vote-us">
 					<h3 style="color: antiquewhite;">Rate Us</h3>
 					<ul>
@@ -2216,6 +2261,8 @@
 				jQuery(document).ready(function() {
 					Wpfclang.init("<?php echo $wpFastestCacheLanguage; ?>");
 				});
+				
+				document.getElementById("wpFastestCacheLanguage").value = "<?php echo $wpFastestCacheLanguage; ?>";
 			</script>
 			<?php
 			if(isset($_SERVER["SERVER_SOFTWARE"]) && $_SERVER["SERVER_SOFTWARE"] && !preg_match("/iis/i", $_SERVER["SERVER_SOFTWARE"]) && !preg_match("/nginx/i", $_SERVER["SERVER_SOFTWARE"])){

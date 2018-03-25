@@ -12,11 +12,11 @@ if ( ! defined( 'YWCCP' ) ) {
 } // Exit if accessed directly
 
 // billing fields
-add_filter( 'woocommerce_billing_fields', 'ywccp_load_custom_billing_fields', 5, 1 );
-add_filter( 'woocommerce_admin_billing_fields', 'ywccp_load_custom_billing_fields_admin', 5, 1 );
+add_filter( 'woocommerce_billing_fields', 'ywccp_load_custom_billing_fields', 50, 1 );
+add_filter( 'woocommerce_admin_billing_fields', 'ywccp_load_custom_billing_fields_admin', 50, 1 );
 // shipping fields
-add_filter( 'woocommerce_shipping_fields', 'ywccp_load_custom_shipping_fields', 5, 1 );
-add_filter( 'woocommerce_admin_shipping_fields', 'ywccp_load_custom_shipping_fields_admin', 5, 1 );
+add_filter( 'woocommerce_shipping_fields', 'ywccp_load_custom_shipping_fields', 50, 1 );
+add_filter( 'woocommerce_admin_shipping_fields', 'ywccp_load_custom_shipping_fields_admin', 50, 1 );
 
 // additional fields
 add_filter( 'woocommerce_checkout_fields', 'ywccp_add_additional_fields', 100, 1 );
@@ -30,6 +30,10 @@ add_filter( 'woocommerce_order_formatted_billing_address', 'ywccp_update_formatt
 add_filter( 'woocommerce_order_formatted_shipping_address', 'ywccp_update_formatted_shipping_address_order', 10, 2 );
 add_filter( 'woocommerce_formatted_address_replacements', 'ywccp_update_address_replacement', 10, 2 );
 add_action( 'woocommerce_email_after_order_table', 'ywccp_email_additional_fields_list', 10, 4 );
+
+// filter customer billing and shipping address
+add_filter( 'woocommerce_customer_get_billing', 'ywccp_customer_get_billing', 10, 2 );
+add_filter( 'woocommerce_customer_get_shipping', 'ywccp_customer_get_shipping', 10, 2 );
 
 // compatibility with WooCommerce Customer Order CSV Export
 add_filter( 'wc_customer_order_csv_export_order_headers', 'ywccp_customer_order_csv_export_order_headers', 1, 2 );
@@ -143,7 +147,7 @@ if( ! function_exists( 'ywccp_add_address_formats' ) ) {
 	 */
 	function ywccp_add_address_formats( $formats ) {
 
-		$overwrite       = get_option( 'ywccp-override-formatted-addresses', 'yes' ) == 'yes';
+		$overwrite       = get_option( 'ywccp-override-formatted-addresses', 'no' ) == 'yes';
 		$new_replacement = ywccp_get_fields_localisation_address_formats( 'all' );
 
 		foreach ( $formats as $country => &$value ) {
@@ -193,6 +197,36 @@ if( ! function_exists( 'ywccp_update_formatted_shipping_address_order' ) ) {
         $replacement = ywccp_get_address_replacement( 'shipping', $order );
 
         return array_merge( $shipping_fields, $replacement );
+	}
+}
+
+if( ! function_exists( 'ywccp_customer_get_billing' ) ) {
+	/**
+	 * Filter customer billing address
+	 *
+	 * @since 1.1.0
+	 * @author Francesco Licandro
+	 * @param array $value
+	 * @param object $customer \WC_Customer
+	 * @return array
+	 */
+	function ywccp_customer_get_billing( $value, $customer ) {
+		return ywccp_customer_get_address( $value, $customer );
+	}
+}
+
+if( ! function_exists( 'ywccp_customer_get_shipping' ) ) {
+	/**
+	 * Filter customer shipping address
+	 *
+	 * @since 1.1.0
+	 * @author Francesco Licandro
+	 * @param array $value
+	 * @param object $customer \WC_Customer
+	 * @return array
+	 */
+	function ywccp_customer_get_shipping( $value, $customer ) {
+		return ywccp_customer_get_address( $value, $customer, 'shipping' );
 	}
 }
 
@@ -374,7 +408,7 @@ if( ! function_exists( 'ywccp_customer_order_csv_export_order_headers' ) ) {
 
 if( ! function_exists( 'ywccp_customer_order_csv_export_order_row' ) ) {
 	/**
-	 * Modify order row for ccsv export
+	 * Modify order row for CSV export
 	 * 
 	 * @since 1.0.3
 	 * @author Francesco Licandro
@@ -414,18 +448,7 @@ if( ! function_exists( 'ywccp_filter_wpml_strings' ) ) {
 				continue;
 			}
 			foreach( $field as $key => &$single ) {
-				// get label
-				if( isset( $single['label'] ) && $single['label'] ) {
-					$single['label'] = apply_filters( 'wpml_translate_single_string', $single['label'], 'yith-woocommerce-checkout-manager', 'plugin_ywccp_' . $key . '_label' );
-				}
-				// get placeholder
-				if( isset( $single['placeholder'] ) && $single['placeholder'] ) {
-					$single['placeholder'] = apply_filters( 'wpml_translate_single_string', $single['placeholder'], 'yith-woocommerce-checkout-manager', 'plugin_ywccp_' . $key . '_placeholder' );
-				}
-				// get tooltip
-				if( isset( $single['custom_attributes']['data-tooltip'] ) && $single['custom_attributes']['data-tooltip'] ) {
-					$single['custom_attributes']['data-tooltip'] = apply_filters( 'wpml_translate_single_string', $single['custom_attributes']['data-tooltip'], 'yith-woocommerce-checkout-manager', 'plugin_ywccp_' . $key . '_tooltip' );
-				}
+				$single = ywccp_field_filter_wpml_strings( $key, $single );
 			}
 		}
 		

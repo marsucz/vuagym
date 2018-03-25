@@ -11,9 +11,9 @@
  */
 function tve_dash_init_action() {
 	if ( $GLOBALS['tve_dash_loaded_from'] === 'plugins' ) {
-		defined( 'TVE_DASH_URL' ) || define( 'TVE_DASH_URL', rtrim( plugins_url(), "/\\" ) . "/" . trim( $GLOBALS['tve_dash_included']['folder'], "/\\" ) . '/thrive-dashboard' );
+		defined( 'TVE_DASH_URL' ) || define( 'TVE_DASH_URL', untrailingslashit( plugins_url() ) . '/' . trim( $GLOBALS['tve_dash_included']['folder'], '/\\' ) . '/thrive-dashboard' );
 	} else {
-		defined( 'TVE_DASH_URL' ) || define( 'TVE_DASH_URL', rtrim( get_template_directory_uri(), "/\\" ) . '/thrive-dashboard' );
+		defined( 'TVE_DASH_URL' ) || define( 'TVE_DASH_URL', untrailingslashit( get_template_directory_uri() ) . '/thrive-dashboard' );
 	}
 
 	defined( 'TVE_DASH_IMAGES_URL' ) || define( 'TVE_DASH_IMAGES_URL', TVE_DASH_URL . '/css/images' );
@@ -176,9 +176,9 @@ function tve_dash_enqueue() {
 
 	tve_dash_enqueue_script( 'tve-dash-main-js', TVE_DASH_URL . '/js/dist/tve-dash' . $js_suffix, array(
 		'jquery',
-		'backbone'
+		'backbone',
 	) );
-	tve_dash_enqueue_script( 'jquery-zclip', TVE_DASH_URL . '/js/util/jquery.zclip.1.1.1/jquery.zclip.min.js', array( 'jquery' ) );
+	tve_dash_enqueue_script( 'jquery-zclip', TVE_DASH_URL . '/js/util/jquery.zclip.1.1.1/jquery.zclip.js', array( 'jquery' ) );
 	tve_dash_enqueue_style( 'tve-dash-styles-css', TVE_DASH_URL . '/css/styles.css' );
 	tve_dash_enqueue_script( 'tve-dash-api-wistia-popover', '//fast.wistia.com/assets/external/popover-v1.js', array(), '', true );
 
@@ -375,9 +375,22 @@ function tve_dash_frontend_enqueue() {
 
 	tve_dash_enqueue_script( 'tve-dash-frontend', TVE_DASH_URL . '/js/dist/frontend.min.js', array( 'jquery' ), false, true );
 
-	$data = array(
-		'ajaxurl'    => admin_url( 'admin-ajax.php' ),
-		'is_crawler' => (bool) tve_dash_is_crawler( true ),
+	/**
+	 * When a caching plugin is active on the user's site, we need to always send the first ajax load request - we cannot know for sure if the page will be cached for a crawler or a regular visitor
+	 */
+
+	$force_ajax_send = tve_dash_detect_cache_plugin();
+	$data            = array(
+		'ajaxurl'         => admin_url( 'admin-ajax.php' ),
+		/**
+		 * 'force_send_ajax' => true if any caching plugin is active
+		 */
+		'force_ajax_send' => $force_ajax_send !== false,
+		/**
+		 * 'is_crawler' only matters in case there is cache plugin active
+		 * IF we find an active caching plugin -> 'is_crawler' is irrelevant and the initial ajax request will be always sent
+		 */
+		'is_crawler'      => $force_ajax_send !== false ? false : (bool) tve_dash_is_crawler( true ),
 		// Apply the filter to allow overwriting the bot detection. Can be used by 3rd party plugins to force the initial ajax request
 	);
 	wp_localize_script( 'tve-dash-frontend', 'tve_dash_front', $data );

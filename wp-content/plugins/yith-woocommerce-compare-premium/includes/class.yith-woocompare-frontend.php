@@ -209,7 +209,8 @@ if( !class_exists( 'YITH_Woocompare_Frontend' ) ) {
                 'auto_open' => get_option( 'yith_woocompare_auto_open', 'yes' ),
                 'loader'    => YITH_WOOCOMPARE_ASSETS_URL . '/images/loader.gif',
                 'button_text' => get_option('yith_woocompare_button_text'),
-                'cookie_name' => $this->cookie_name
+                'cookie_name' => $this->cookie_name,
+                'close_label' => _x( 'Close', 'Label for popup close icon', 'yith-woocommerce-compare' )
             ) );
 
             wp_localize_script( 'yith-woocompare-main', 'yith_woocompare', $args );
@@ -282,7 +283,8 @@ if( !class_exists( 'YITH_Woocompare_Frontend' ) ) {
             }
 
 	        $args = $this->_vars();
-	        $args['share'] = false;
+	        $args['fixed']  = false;
+            $args['iframe'] = 'yes';
 
             // remove all styles from compare template
             add_action( 'wp_print_styles', array( $this, 'remove_all_styles' ), 100);
@@ -414,7 +416,7 @@ if( !class_exists( 'YITH_Woocompare_Frontend' ) ) {
         public function view_table_url( $product_id = false ) {
 	        $url_args = array(
 		        'action'    => $this->action_view,
-		        'iframe'    => true
+		        'iframe'    => 'yes'
 	        );
 
             $lang = defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : false;
@@ -677,14 +679,13 @@ if( !class_exists( 'YITH_Woocompare_Frontend' ) ) {
                  * @type object $product /WC_Product
                  */
                 $product = $this->wc_get_product( $product_id );
-                if ( ! $product )
-	                continue;
-                ?>
-                <li>
-                    <a href="<?php echo $this->remove_product_url( $product_id ) ?>" data-product_id="<?php echo $product_id; ?>" class="remove" title="<?php _e( 'Remove', 'yith-woocommerce-compare' ) ?>">x</a>
-                    <a class="title" href="<?php echo get_permalink( $product_id ) ?>"><?php echo $product->get_title() ?></a>
-                </li>
-            <?php
+                if ( ! $product ) {
+                    continue;
+                }
+                wc_get_template( 'yith-compare-widget-item.php', array(
+                    'product' => $product,
+                    'product_id' => $product_id
+                ), '', YITH_WOOCOMPARE_TEMPLATE_PATH . '/' );
             }
 
             $return = ob_get_clean();
@@ -749,6 +750,11 @@ if( !class_exists( 'YITH_Woocompare_Frontend' ) ) {
                 if ( ! empty( $product ) ) {
                     $product_id = $product->ID;
                 }
+            }
+            
+            // make sure to get always the product id of current language
+            if( function_exists( 'wpml_object_id_filter' ) ) {
+                $product_id = wpml_object_id_filter( $product_id, 'product', false );
             }
 
             // if product ID is 0, maybe the product doesn't exists or is wrong.. in this case, doesn't show the button

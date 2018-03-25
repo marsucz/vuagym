@@ -130,9 +130,10 @@
           }
         }
         .t-caption {
-          display: none;
           margin: 0 5px;
           padding: 0 0 5px;
+          background-color: transparent;
+          color: #333;
         }
       }
       &[data-dd="2"] {

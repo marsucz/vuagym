@@ -16,6 +16,16 @@ class TCB_Form_Icon_Element extends TCB_Icon_Element {
 	protected $_tag = 'icon';
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'icon,media';
+	}
+
+
+	/**
 	 * @return string
 	 */
 	public function identifier() {

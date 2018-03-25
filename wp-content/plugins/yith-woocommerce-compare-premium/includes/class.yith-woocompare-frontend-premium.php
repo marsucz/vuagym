@@ -122,6 +122,14 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 	     */
 	    public $page_id = 0;
 
+	    /**
+	     * Is or not an iFrame
+	     *
+	     * @var string
+	     * @since 2.2.2
+	     */
+	    public $is_iframe = 'no';
+
         /**
          * Constructor
          *
@@ -161,7 +169,7 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 	        add_filter( 'yith_woocompare_remove_compare_link_by_cat', array( $this, 'exclude_compare_by_cat' ), 10, 2 );
 
 	        // enqueue scripts styles premium
-	        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_premium_scripts' ), 20 );
+	        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_premium_scripts' ), 5 );
 	        // localize args filter
 	        add_filter( 'yith_woocompare_main_script_localize_array', array( $this, 'premium_localize_args' ), 10, 1 );
 
@@ -221,6 +229,8 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 		    $this->excluded_categories_inverse = ( get_option( 'yith_woocompare_excluded_category_inverse', 'no' ) == 'yes' );
 
 			$this->compare_by_cat = get_option( 'yith_woocompare_use_category' ) == 'yes';
+
+		    isset( $_REQUEST['iframe'] ) && $this->is_iframe = $_REQUEST['iframe'];
 	    }
 
 	    /**
@@ -333,9 +343,9 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 		    wp_register_style( 'yith_woocompare_owl_style', YITH_WOOCOMPARE_ASSETS_URL . '/css/owl.carousel.css', array(), false, 'all' );
 
 		    // dataTables
-		    wp_register_script( 'jquery-fixedheadertable', YITH_WOOCOMPARE_ASSETS_URL . '/js/jquery.dataTables.min.js', array('jquery'), '1.10.7', true );
+		    wp_register_script( 'jquery-fixedheadertable', YITH_WOOCOMPARE_ASSETS_URL . '/js/jquery.dataTables.min.js', array('jquery'), '1.10.16', true );
 		    wp_register_style( 'jquery-fixedheadertable-style', YITH_WOOCOMPARE_ASSETS_URL . '/css/jquery.dataTables.css', array(), false, 'all' );
-		    wp_register_script( 'jquery-fixedcolumns', YITH_WOOCOMPARE_ASSETS_URL . '/js/FixedColumns.min.js', array('jquery', 'jquery-fixedheadertable' ), '3.0.4', true );
+		    wp_register_script( 'jquery-fixedcolumns', YITH_WOOCOMPARE_ASSETS_URL . '/js/FixedColumns.min.js', array('jquery', 'jquery-fixedheadertable' ), '3.2.3', true );
 		    wp_register_script( 'jquery-imagesloaded', YITH_WOOCOMPARE_ASSETS_URL . '/js/imagesloaded.pkgd.min.js', array('jquery'), '3.1.8', true );
 
 		    // if page remove colorbox
@@ -523,6 +533,11 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 						    }
 						    $product->fields[$field] = sprintf( '<span>%s</span>', esc_html( $availability['availability'] ) );
 						    break;
+					    case 'sku':
+							$sku = $product->get_sku();
+							! $sku && $sku = '-';
+						    $product->fields[$field] = $sku;
+						    break;
 					    case 'weight':
 						    if( $weight = $product->get_weight() ){
 							    $weight = wc_format_localized_decimal( $weight ) . ' ' . esc_attr( get_option( 'woocommerce_weight_unit' ) );
@@ -539,6 +554,7 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 						    $product->fields[$field] = sprintf( '<span>%s</span>', esc_html( $dimensions ) );
 						    break;
 					    default:
+
 						    if ( taxonomy_exists( $field ) ) {
 							    $product->fields[$field] = array();
 							    $terms = get_the_terms( $product_id, $field );
@@ -553,11 +569,14 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 						    }
 						    elseif( ! empty( $attributes ) ) {
 
-							    if( ! isset( $attributes[$field] ) ) {
+							    // encode field for all charset
+							    $sfield = strtolower( urlencode( $field ) );
+
+							    if( ! isset( $attributes[$sfield] ) ) {
 								    continue;
 							    }
 
-							    $current_attribute = $attributes[$field];
+							    $current_attribute = $attributes[$sfield];
 
 							    if( ! empty( $current_attribute['options'] ) ) {
 								    $product->fields[$field] = implode( ', ', $current_attribute['options'] );
@@ -675,10 +694,11 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 	    public function add_logo_to_compare( $products_list = array() ){
 
 		    $image    = get_option( 'yith-woocompare-table-image' );
-		    $in_page  = get_option( 'yith-woocompare-table-image-in-page' ) == 'yes';
-		    $in_popup = get_option( 'yith-woocompare-table-image-in-popup' ) == 'yes';
 
-		    if( ! $image || ( is_page( $this->page_id ) && ! $in_page ) || ( isset( $_REQUEST['iframe'] ) && ! $in_popup ) ) {
+		    $toShow  = get_option( 'yith-woocompare-table-image-in-page' ) == 'yes' && $this->is_iframe != 'yes';
+		    ! $toShow && $toShow = get_option( 'yith-woocompare-table-image-in-popup' ) == 'yes';
+
+		    if( ! $image || ! $toShow ) {
 			    return;
 		    }
 
@@ -726,10 +746,13 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 		    }
 
 		    foreach( $categories as $category ) {
+			    if( ! $category ) {
+				    continue;
+			    }
 			    $cat[$category->term_id] = $category->name;
 		    }
-
-		    return $cat;
+		    
+		    return apply_filters( 'yith_woocompare_get_product_categories', $cat, $categories, $product_id );
 	    }
 
 	    /**
@@ -833,6 +856,8 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 		    if( empty( $this->excluded_categories ) )
 			    return false;
 
+		    // prevent
+
 		    $product_cat = array_keys( $this->get_product_categories( $product_id ) );
 		    $intersect = array_intersect( $product_cat, $this->excluded_categories );
 
@@ -858,11 +883,13 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 			    'products' => ''
 		    ), $atts );
 
-			$products = array_filter( explode( ',', $atts['products'] ) );
+		    // set products
+		    $products = ( is_page( $this->page_id ) && isset( $_REQUEST['yith_compare_prod'] ) ) ? base64_decode( $_REQUEST['yith_compare_prod'] ) : $atts['products'];
+		    $products = array_filter( explode( ',', $products ) );
 
+		    // is share or a custom table -> fixed to true
 			if( ! empty( $products ) ) {
-				$products = array_unique( $products );
-				$_REQUEST['yith_compare_prod'] = base64_encode( implode( ',', $products ) );
+				$products       = array_unique( $products );
 				// then set correct products list and current cat
 				$this->set_variables_prod_cat( $products );
 			}
@@ -874,13 +901,20 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 		    
 		    // get args
 		    $args = $this->_vars( $products );
+		    $args['fixed'] = ! empty( $products );
 		    // change args
-		    $args['share']    = isset( $_REQUEST['yith_compare_prod'] );
+		    $args['iframe'] = $this->is_iframe;
 
 			ob_start();
 		        wc_get_template( 'yith-compare-table.php', $args, '', YITH_WOOCOMPARE_TEMPLATE_PATH . '/' );
 
-		    return ob_get_clean();
+		    $html = ob_get_clean();
+
+		    // reset query
+		    wp_reset_query();
+		    wp_reset_postdata();
+
+		    return $html;
 	    }
 
 	    /**
@@ -897,10 +931,10 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 			    return;
 
 		    // check for page/popup
-		    $in_page  = get_option( 'yith-woocompare-share-in-page' ) == 'yes' && ( is_page( $this->page_id ) || isset( $_REQUEST['iframe'] ) );
-		    $in_popup = get_option( 'yith-woocompare-share-in-popup' ) != 'yes' && isset( $_REQUEST['iframe'] );
+		    $toShow  = get_option( 'yith-woocompare-share-in-page' ) == 'yes' && $this->is_iframe != 'yes';
+		    ! $toShow && $toShow = get_option( 'yith-woocompare-share-in-popup' ) == 'yes';
 
-		    if( ! $in_page || $in_popup ) {
+		    if( ! $toShow ) {
 			    return;
 		    }
 
@@ -937,6 +971,8 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 
 		    // get all categories
 		    $all_cat = $this->get_product_categories( $this->products_list );
+		    // let's third part filter categories
+		    $all_cat = apply_filters( 'yith_woocompare_product_categories_table_filter', $all_cat, $this->products_list );
 
 		    if( empty( $all_cat ) ) {
 			    return;
@@ -944,14 +980,12 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 
 		    // set data for compare share
 		    $data = isset( $_REQUEST['yith_compare_prod'] ) ? 'data-product_ids="' . $_REQUEST['yith_compare_prod'] . '"' : '';
-		    $data .= isset( $_REQUEST['iframe'] ) ? ' data-iframe="1"' : '';
-
 		    ?>
 
 		    <div id="yith-woocompare-cat-nav">
 			    <h3><?php echo get_option( 'yith-woocompare-categories-filter-title', __( 'Category Filter', 'yith-woocommerce-compare' ) ) ?></h3>
 
-		        <ul class="yith-woocompare-nav-list" <?php echo $data ?>>
+		        <ul class="yith-woocompare-nav-list" data-iframe="<?php echo $this->is_iframe ?>" <?php echo $data ?>>
 
 		        <?php
 		        foreach( $all_cat as $cat_id => $cat_name ) :
@@ -985,7 +1019,7 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 			    die();
 
 
-		    if( isset( $_REQUEST['iframe'] ) ){
+		    if( $this->is_iframe == 'yes' ){
 			    header('Content-Type: text/html; charset=utf-8');
 			    $this->compare_table_html();
 		    }
@@ -1009,10 +1043,10 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 	        }
 
 	        // check for page/popup
-	        $in_page  = get_option( 'yith-woocompare-related-in-page' ) == 'yes' && ( is_page( $this->page_id ) || isset( $_REQUEST['iframe'] ) );
-	        $in_popup = get_option( 'yith-woocompare-related-in-popup' ) != 'yes' && isset( $_REQUEST['iframe'] );
+	        $toShow  = get_option( 'yith-woocompare-related-in-page' ) == 'yes' && $this->is_iframe != 'yes';
+	        ! $toShow && $toShow = get_option( 'yith-woocompare-related-in-popup' ) == 'yes';
 
-	        if( ! $in_page || $in_popup ) {
+	        if( ! $toShow ) {
 		        return;
 	        }
 
@@ -1049,7 +1083,7 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 
 	        // set args
 	        $args = array(
-		        'iframe'        => isset( $_REQUEST['iframe'] ),
+		        'iframe'        => $this->is_iframe,
 		        'products'      => $related,
 		        'related_title' => get_option( 'yith-woocompare-related-title' )
 	        );
@@ -1066,7 +1100,7 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 	     */
 	    public function remove_product_ajax_premium() {
 
-		    if( ! isset( $_REQUEST['iframe'] ) && ! ( isset( $_REQUEST['responseType'] ) && $_REQUEST['responseType'] == 'product_list' ) ){
+		    if( $this->is_iframe != 'yes' && ! ( isset( $_REQUEST['responseType'] ) && $_REQUEST['responseType'] == 'product_list' ) ){
 
 			    echo do_shortcode( '[yith_woocompare_table]' );
 
@@ -1084,7 +1118,7 @@ if( ! class_exists( 'YITH_Woocompare_Frontend_Premium' ) ) {
 
 	        if( isset( $_REQUEST['is_related'] ) && $_REQUEST['is_related'] != 'false' ){
 
-		        if( isset( $_REQUEST['iframe'] ) && $_REQUEST['iframe'] != 'false' ) {
+		        if( $this->is_iframe == 'yes' ) {
 			        header('Content-Type: text/html; charset=utf-8');
 		            $this->compare_table_html();
 			    }

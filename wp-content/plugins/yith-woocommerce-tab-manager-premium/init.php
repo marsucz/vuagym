@@ -3,15 +3,16 @@
  * Plugin Name: YITH WooCommerce Tab Manager Premium
  * Plugin URI: http://yithemes.com/themes/plugins/yith-woocommerce-tab-manager/
  * Description: YITH WooCommerce Tab Manager allows you to add Tab to products.
- * Version: 1.1.25
+ * Version: 1.2.3
  * Author: YITHEMES
  * Author URI: http://yithemes.com/
  * Text Domain: yith-woocommerce-tab-manager
  * Domain Path: /languages/
- *
+ * WC requires at least: 3.0.0
+ * WC tested up to: 3.3.1
  * @author Your Inspiration Themes
  * @package YITH WooCommerce Tab Manager
- * @version 1.1.25
+ * @version 1.2.3
  */
  
 /*
@@ -45,7 +46,7 @@ yit_deactive_free_version( 'YWTM_FREE_INIT', plugin_basename( __FILE__ ) );
 
 
 if ( !defined( 'YWTM_VERSION' ) ) {
-    define( 'YWTM_VERSION', '1.1.25' );
+    define( 'YWTM_VERSION', '1.2.3' );
 }
 
 if ( ! defined( 'YWTM_PREMIUM' ) ) {
@@ -122,11 +123,20 @@ if ( ! function_exists( 'YITH_Tab_Manager_Premium_Init' ) ) {
      */
     function YITH_Tab_Manager_Premium_Init() {
         // Load required classes and functions
+        require_once( YWTM_INC .'yith-tab-manager-functions.php' );
         require_once( YWTM_INC . 'class.yith-woocommerce-tab-manager.php' );
-        require_once( YWTM_INC . 'class.yith-woocommerce-tab-manager-premium.php' );
+        require_once( YWTM_INC . 'class.yith-wctm-admin.php' );
+        require_once( YWTM_INC . 'class.yith-wctm-frontend.php' );
+        require_once( YWTM_INC . 'class.yith-wctm-post-type.php' );
 
-        global $YIT_Tab_Manager ;
-        $YIT_Tab_Manager = YITH_WC_Tab_Manager_Premium::get_instance();
+        //load premium classes
+        require_once( YWTM_INC .'yith-tab-manager-actions.php' );
+        require_once( YWTM_INC.'class.yith-product-tab.php');
+        require_once( YWTM_INC.'class.yith-wctm-admin-premium.php' );
+        require_once( YWTM_INC.'class.yith-wctm-frontend-premium.php' );
+        require_once( YWTM_INC.'class.yith-wctm-post-type-premium.php' );
+        global $YIT_Tab_Manager;
+        $YIT_Tab_Manager= YITH_Tab_Manager();
     }
 }
 

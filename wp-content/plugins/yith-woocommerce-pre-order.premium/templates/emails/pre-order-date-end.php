@@ -39,7 +39,17 @@ if ( is_array( $email->object ) ) {
 				<li>
 					<a href="<?php echo $link; ?>"><?php echo $pre_order_product->product->get_title() ?></a> -
                     <span style="font-weight: bold"><?php echo $date . ' ' . $offset_name; ?></span>
-					<div><?php echo $pre_order_product->product->get_image() ?></div>
+					<div>
+                        <?php
+                        $dimensions = wc_get_image_size( 'shop_thumbnail' );
+                        $height     = esc_attr( $dimensions['height'] );
+                        $width      = esc_attr( $dimensions['width'] );
+                        $src        = ( $pre_order_product->product->get_image_id() ) ? current( wp_get_attachment_image_src( $pre_order_product->product->get_image_id(), 'shop_catalog' ) ) : wc_placeholder_img_src();
+
+                        $image = '<a href="' . $link .'"><img src="'. $src . '" height="' . $height . '" width="' . $width . '" /></a>';
+                        echo $image;
+                        ?>
+                    </div>
 				</li>
 				<?php
 			}
@@ -63,7 +73,15 @@ if ( is_array( $email->object ) ) {
 	<p><?php printf( __( "Hi Admin, this Pre-Order product is about to expire:", 'yith-woocommerce-pre-order' ) ); ?></p>
 	<p><?php echo '<a href="' . $link . '">' . $pre_order_product->product->get_title() . '</a> - <span style="font-weight: bold">' . $date . ' ' . $offset_name . '</span>'; ?></p>
 	<div>
-		<?php echo $pre_order_product->product->get_image(); ?>
+        <?php
+		$dimensions = wc_get_image_size( 'shop_thumbnail' );
+		$height     = esc_attr( $dimensions['height'] );
+		$width      = esc_attr( $dimensions['width'] );
+		$src        = ( $pre_order_product->product->get_image_id() ) ? current( wp_get_attachment_image_src( $pre_order_product->product->get_image_id(), 'shop_catalog' ) ) : wc_placeholder_img_src();
+
+		$image = '<a href="' . $link .'"><img src="'. $src . '" height="' . $height . '" width="' . $width . '" /></a>';
+        echo $image;
+        ?>
 	</div>
 	<?php
 }

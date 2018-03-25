@@ -314,8 +314,8 @@ if ( !class_exists( 'YITH_WCBEP_Admin' ) ) {
                 wp_enqueue_script( 'jquery-ui-datepicker' );
 
 
-                wp_enqueue_script( 'chosen' );
-                wp_enqueue_style( 'chosen' );
+                wp_enqueue_script( 'select2' );
+                wp_enqueue_style( 'select2' );
 
                 wp_enqueue_script( 'jquery-ui-resizable' );
 

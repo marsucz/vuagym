@@ -3,16 +3,16 @@
  * Plugin Name: YITH WooCommerce Role Based Prices Premium
  * Plugin URI: //yithemes.com/themes/plugins/yith-woocommerce-role-based-prices/
  * Description: YITH WooCommerce Role Based Prices allows to admin of add price role for your user
- * Version: 1.0.20
+ * Version: 1.1.1
  * Author: YITHEMES
  * Author URI: http://yithemes.com/
  * Text Domain: yith-woocommerce-role-based-prices
  * Domain Path: /languages/
  * WC requires at least: 3.0.0
- * WC tested up to: 3.2.1
+ * WC tested up to: 3.3.0
  * @author Your Inspiration Themes
  * @package YITH WooCommerce Role Based Prices Premium
- * @version 1.0.20
+ * @version 1.1.1
  */
 
 /*
@@ -44,7 +44,7 @@ register_activation_hook( __FILE__, 'yith_plugin_registration_hook' );
 
 
 if ( !defined( 'YWCRBP_VERSION' ) ) {
-    define( 'YWCRBP_VERSION', '1.0.20' );
+    define( 'YWCRBP_VERSION', '1.1.1' );
 }
 
 if ( !defined( 'YWCRBP_PREMIUM' ) ) {

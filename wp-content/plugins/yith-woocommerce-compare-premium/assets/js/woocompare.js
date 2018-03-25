@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
             widget_list = $('.yith-woocompare-widget ul.products-list'),
             related    = button.parents( '#yith-woocompare-related' ),
             is_related = related.length ? true : false,
-            iframe     = is_related ? related.data( 'iframe' ) : false,
+            iframe     = is_related ? related.data( 'iframe' ) : 'no',
             data;
 
         // set data
@@ -100,6 +100,7 @@ jQuery(document).ready(function($) {
                 height: '80%',
                 fixed: true,
                 className: 'yith_woocompare_colorbox',
+                close: yith_woocompare.close_label,
                 onClosed: function(){
 
                     if( yith_woocompare.im_in_page ) {
@@ -193,7 +194,7 @@ jQuery(document).ready(function($) {
     $('.yith-woocompare-widget')
 
         // view table (click on compare)
-        .on('click', 'a.compare', function (e) {
+        .on('click', 'a.compare-widget', function (e) {
             if( yith_woocompare.is_page ) {
                 return;
             }
@@ -205,9 +206,7 @@ jQuery(document).ready(function($) {
         .on('click', 'li a.remove, a.clear-all', function (e) {
             e.preventDefault();
 
-            var lang = $( '.yith-woocompare-widget .products-list').data('lang');
-
-            var button = $(this),
+            var lang = $( '.yith-woocompare-widget .products-list').data('lang'), button = $(this),
                 prod_id = button.data('product_id'),
                 data = {
                     action: yith_woocompare.actionremove,
@@ -378,6 +377,8 @@ jQuery(document).ready(function($) {
             Tables.each( function(){
                 var t = $(this);
 
+                // TODO check fixedcolumns number it must be lower or equal to number of columns
+                
                 t.imagesLoaded( function(){
                     dTable = t.DataTable( {
                         'info': false,
@@ -387,12 +388,11 @@ jQuery(document).ready(function($) {
                         'ordering': false,
                         'searching': false,
                         'autoWidth': false,
-                        'destroy': true
+                        'destroy': true,
+                        'fixedColumns':   {
+                            leftColumns: yith_woocompare.fixedcolumns
+                        }
                     });
-
-                    new $.fn.dataTable.FixedColumns( dTable, {
-                        leftColumns: yith_woocompare.fixedcolumns
-                    } );
                 });
             });
         }
@@ -495,5 +495,5 @@ jQuery(document).ready(function($) {
         }
     }
 
-    hide_show_widget( $('.yith-woocompare-widget ul.products-list') );
+    update_widget();
 });

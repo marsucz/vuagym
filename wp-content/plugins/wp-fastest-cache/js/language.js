@@ -23,11 +23,6 @@ var Wpfclang = {
 	init: function(language){
 		this.language = language;
 		this.translate();
-		this.setLanguageInputField();
-	},
-	setLanguageInputField: function(){
-		var self = this;
-		jQuery("#wpFastestCacheLanguage").val(self.language);
 	},
 	translate: function(){
 		if(typeof window.wpfc != "undefined" && typeof window.wpfc.dictionary != "undefined"){

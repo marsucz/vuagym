@@ -25,6 +25,15 @@ class TCB_Numberedlist_Element extends TCB_Element_Abstract {
 	}
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'list';
+	}
+
+	/**
 	 * Return icon class needed for display in menu
 	 *
 	 * @return string
@@ -57,7 +66,7 @@ class TCB_Numberedlist_Element extends TCB_Element_Abstract {
 	 * @return array
 	 */
 	public function own_components() {
-		return array(
+		$numberedlist = array(
 			'numberedlist' => array(
 				'config' => array(
 					'FontFace'         => array(
@@ -111,6 +120,7 @@ class TCB_Numberedlist_Element extends TCB_Element_Abstract {
 					),
 					'item_spacing'     => array(
 						'css_suffix' => ' > ul > li',
+						'css_prefix' => '#tve_editor ',
 						'config'     => array(
 							'default' => '20',
 							'min'     => '1',
@@ -182,6 +192,8 @@ class TCB_Numberedlist_Element extends TCB_Element_Abstract {
 				),
 			),
 		);
+
+		return array_merge( $numberedlist, $this->group_component() );
 	}
 
 	/**
@@ -190,5 +202,36 @@ class TCB_Numberedlist_Element extends TCB_Element_Abstract {
 	 */
 	public function category() {
 		return $this->get_thrive_advanced_label();
+	}
+
+	/**
+	 * Group Edit Properties
+	 *
+	 * @return array|bool
+	 */
+	public function has_group_editing() {
+		return array(
+			'exit_label'    => __( 'Exit Group Styling', 'thrive-cb' ),
+			'select_values' => array(
+				array(
+					'value'    => 'all_list_items',
+					'selector' => '.thrv-styled-list-item',
+					'name'     => __( 'Grouped List Items', 'thrive-cb' ),
+					'singular' => __( '-- List Item %s', 'thrive-cb' ),
+				),
+				array(
+					'value'    => 'all_numbers',
+					'selector' => '.thrv-disabled-label',
+					'name'     => __( 'Grouped Figures', 'thrive-cb' ),
+					'singular' => __( '-- Figure %s', 'thrive-cb' ),
+				),
+				array(
+					'value'    => 'all_texts',
+					'selector' => '.thrv-advanced-inline-text',
+					'name'     => __( 'Grouped Texts', 'thrive-cb' ),
+					'singular' => __( '-- Text %s', 'thrive-cb' ),
+				),
+			),
+		);
 	}
 }

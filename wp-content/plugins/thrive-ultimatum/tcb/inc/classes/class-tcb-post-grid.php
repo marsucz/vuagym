@@ -294,7 +294,7 @@ class TCB_Post_Grid {
 		foreach ( $this->_config['layout'] as $layout ) {
 			if ( ! empty( $this->_config['teaser_layout'][ $layout ] ) && $this->_config['teaser_layout'][ $layout ] === 'true' ) {
 				$function_name = '_display_post_' . $layout;
-				$html          .= call_user_func( array( $this, $function_name ), $post );
+				$html .= call_user_func( array( $this, $function_name ), $post );
 			}
 		}
 
@@ -346,7 +346,8 @@ class TCB_Post_Grid {
 			$content = empty( $post->post_excerpt ) ? $this->_get_summary_text( $content ) : $post->post_excerpt;
 
 		} elseif ( $this->_config['text_type'] === 'fulltext' ) {
-
+			$content = preg_replace( '#<a href="javascript:(.+?)</a>#', '', $content );
+			$content = preg_replace( '#<span class="tve_s_cnt">(.+?)</span> shares#', '', $content );
 			$content = strip_tags( $content, '<p><h1><h2><h3><h4><h5><h6><a><strong><b>' );
 			// Remove breaks (new line characters)
 			$content = trim( preg_replace( '/[\r\n\t ]+/', ' ', $content ) );
@@ -392,6 +393,8 @@ class TCB_Post_Grid {
 	}
 
 	private function _get_summary_text( $text ) {
+		$text = preg_replace( '#<a href="javascript:(.+?)</a>#', '', $text );
+		$text = preg_replace( '#<span class="tve_s_cnt">(.+?)</span> shares#', '', $text );
 		$text = wp_strip_all_tags( $text, true );
 		$text = wp_trim_words( $text, 20, '&#91;...&#93;' );
 

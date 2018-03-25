@@ -1417,7 +1417,7 @@ TD_NM.views = TD_NM.views || {};
 		};
 
 		Backbone.View.prototype.tvd_nm_scroll_first_error = function ( $input ) {
-			if ( ! ( this instanceof TVE_Dash.views.Modal ) || ! $input.length ) {
+			if ( ! (this instanceof TVE_Dash.views.Modal) || ! $input.length ) {
 				return this;
 			}
 			var input_top = $input.offset().top,
@@ -1703,6 +1703,7 @@ TD_NM.views = TD_NM.views || {};
 				this.render_tl_tests();
 				this.render_tho_tests();
 				this.render_tqb_tests();
+				this.render_tab_tests();
 
 				return this;
 			},
@@ -1740,6 +1741,23 @@ TD_NM.views = TD_NM.views || {};
 
 				return this;
 			},
+			render_tab_tests: function () {
+				var element = this.$( '#tvd-nm-tab-tests-wrapper' ),
+					model = new TD_NM.models.Base( {
+						title: 'Thrive Optimize',
+						empty_message: TD_NM.util.printf( TD_NM.t.no_s_found, [TD_NM.t.split_tests] )
+					} ),
+					collection = new TD_NM.collections.OptionsCheckbox( TD_NM.split_tests.tab );
+
+				if ( this.model instanceof TD_NM.models.Trigger ) {
+					var selected_items = new TD_NM.collections.Options( this.model.get( 'settings' ).tab );
+					collection.match_selected( selected_items );
+				}
+
+				this.tab_section_view = this.render_section( element, model, collection );
+
+				return this;
+			},
 			render_tho_tests: function () {
 				var element = this.$( '#tvd-nm-tho-tests-wrapper' ),
 					model = new TD_NM.models.Base( {
@@ -1761,7 +1779,8 @@ TD_NM.views = TD_NM.views || {};
 				return {
 					tl: this.tl_section_view.collection.where( {selected: true} ),
 					tho: this.tho_section_view.collection.where( {selected: true} ),
-					tqb: this.tqb_section_view.collection.where( {selected: true} )
+					tqb: this.tqb_section_view.collection.where( {selected: true} ),
+					tab: this.tab_section_view.collection.where( {selected: true} )
 				}
 			},
 			are_valid: function () {
@@ -1775,6 +1794,10 @@ TD_NM.views = TD_NM.views || {};
 				}
 
 				if ( this.tqb_section_view.collection.where( {selected: true} ).length > 0 ) {
+					return true;
+				}
+
+				if ( this.tab_section_view.collection.where( {selected: true} ).length > 0 ) {
 					return true;
 				}
 

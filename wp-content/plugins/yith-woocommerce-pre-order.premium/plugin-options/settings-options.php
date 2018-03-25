@@ -75,6 +75,10 @@ return array(
 
             'option5' => array(),
 
+            'option6' => array(),
+
+            'option7' => array(),
+
             'settings_general_end'      => array(
                 'type' => 'sectionend',
                 'id'   => 'yith_wcpo_settings_general_end'
@@ -100,10 +104,6 @@ return array(
                 'default' => _x( 'Pre-Order Now', 'Default label for add to cart button(Pre-Order Now)', 'yith-woocommerce-pre-order' )
             ),
 
-            'option6' => array(),
-
-            'option7' => array(),
-
             'option8' => array(),
 
             'option9' => array(),
@@ -111,6 +111,10 @@ return array(
             'option10' => array(),
 
             'option11' => array(),
+
+            'option12' => array(),
+
+            'option13' => array(),
 
             'settings_label_end' => array(
                 'type' => 'sectionend',

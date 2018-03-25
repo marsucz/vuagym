@@ -1,0 +1,595 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: YIT WooCommerce Cart Messages\n"
+"POT-Creation-Date: 2017-12-06 16:13+0100\n"
+"PO-Revision-Date: 2015-03-30 11:57+0100\n"
+"Last-Translator: \n"
+"Language-Team: Yithemes <plugins@yithemes.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.1\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e;_n:1,2;__ngettext:1,2;"
+"__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;"
+"_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=n!=1;\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: plugin-fw\n"
+
+#: class.yith-woocommerce-cart-message.php:82
+msgctxt "Post Type General Name"
+msgid "Yith Cart Messages"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:83
+msgctxt "Post Type Singular Name"
+msgid "Yith Cart Message"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:84
+msgid "Cart Message"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:85
+msgid "Parent Item:"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:86
+msgid "All Messages"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:87
+msgid "View Messages"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:88
+#: class.yith-woocommerce-cart-message.php:89
+msgid "Add New Message"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:90
+msgid "Edit Message"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:91
+msgid "Update Message"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:92
+msgid "Search Message"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:93
+msgid "Not found"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:94
+msgid "Not found in Trash"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:98
+msgid "ywcm_message"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:99
+msgid "Yith Cart Message Description"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:127
+#: class.yith-woocommerce-cart-message.php:128
+msgid "Yith Cart Messages"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:185
+msgid "Title"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:186
+msgid "Type"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:187
+#: plugin-options/metabox/ywcm_metabox.php:46
+#: plugin-options/metabox/ywcm_metabox.php:107
+#: plugin-options/metabox/ywcm_metabox.php:173
+#: plugin-options/metabox/ywcm_metabox.php:201
+#: plugin-options/metabox/ywcm_metabox.php:226
+#: plugin-options/metabox/ywcm_metabox.php:274
+msgid "Message"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:188
+msgid "Button Text"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:189
+msgid "Button Url"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:190
+msgid "Date"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:237
+msgid "Products in Cart"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:238
+msgid "Categories in Cart"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:239
+msgid "Simple Message"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:243
+msgid "Minimum Amount"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:244
+msgid "Deadline"
+msgstr ""
+
+#: class.yith-woocommerce-cart-message.php:245
+msgid "Referrer"
+msgstr ""
+
+#: class.yith-woocommerce-cart-messages-premium.php:291
+#, php-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: class.yith-woocommerce-cart-messages-premium.php:294
+#, php-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: class.yith-woocommerce-cart-messages.php:172
+#: class.yith-woocommerce-cart-messages.php:240
+#: plugin-options/metabox/ywcm_metabox.php:34
+msgid "Settings"
+msgstr ""
+
+#: class.yith-woocommerce-cart-messages.php:176
+#: class.yith-woocommerce-cart-messages.php:242
+msgid "Premium Version"
+msgstr ""
+
+#: class.yith-woocommerce-cart-messages.php:180
+#: plugin-options/layout-options.php:18
+msgid "Layouts"
+msgstr ""
+
+#: class.yith-woocommerce-cart-messages.php:186
+#: class.yith-woocommerce-cart-messages.php:187
+msgid "Cart Messages"
+msgstr ""
+
+#: class.yith-woocommerce-cart-messages.php:605
+msgid "Plugin Documentation"
+msgstr ""
+
+#: class.yith-woocommerce-cart-messages.php:622
+msgid "YITH WooCommerce Cart Messages"
+msgstr ""
+
+#: class.yith-woocommerce-cart-messages.php:623
+msgid ""
+"In the YIT Plugins tab you can find the YITH WooCommerce Cart Messages "
+"options.\r\n"
+"With this menu, you can access to all the settings of our plugins that you "
+"have activated.\r\n"
+"YITH WooCommerce Cart Messages is available in an outstanding PREMIUM "
+"version with many new options, <a href=\""
+msgstr ""
+
+#: plugin-options/layout-options.php:19
+msgid "In this section you can customize each message layout"
+msgstr ""
+
+#: plugin-options/layout-options.php:32
+msgid "Layout 2"
+msgstr ""
+
+#: plugin-options/layout-options.php:38 plugin-options/layout-options.php:115
+#: plugin-options/layout-options.php:182 plugin-options/layout-options.php:256
+#: plugin-options/layout-options.php:318
+msgid "Box background color"
+msgstr ""
+
+#: plugin-options/layout-options.php:46 plugin-options/layout-options.php:122
+#: plugin-options/layout-options.php:189
+msgid "Box border color"
+msgstr ""
+
+#: plugin-options/layout-options.php:54 plugin-options/layout-options.php:129
+#: plugin-options/layout-options.php:196 plugin-options/layout-options.php:264
+#: plugin-options/layout-options.php:326
+msgid "Box text color"
+msgstr ""
+
+#: plugin-options/layout-options.php:62
+msgid "Icon background color"
+msgstr ""
+
+#: plugin-options/layout-options.php:70 plugin-options/layout-options.php:137
+#: plugin-options/layout-options.php:204 plugin-options/layout-options.php:272
+#: plugin-options/layout-options.php:334
+msgid "Icon image"
+msgstr ""
+
+#: plugin-options/layout-options.php:78 plugin-options/layout-options.php:144
+#: plugin-options/layout-options.php:211 plugin-options/layout-options.php:279
+#: plugin-options/layout-options.php:341
+msgid "Button background color"
+msgstr ""
+
+#: plugin-options/layout-options.php:86 plugin-options/layout-options.php:152
+#: plugin-options/layout-options.php:220 plugin-options/layout-options.php:288
+#: plugin-options/layout-options.php:349
+msgid "Button background color on hover "
+msgstr ""
+
+#: plugin-options/layout-options.php:94 plugin-options/layout-options.php:160
+#: plugin-options/layout-options.php:228 plugin-options/layout-options.php:296
+#: plugin-options/layout-options.php:357
+msgid "Button text color"
+msgstr ""
+
+#: plugin-options/layout-options.php:109
+msgid "Layout 3"
+msgstr ""
+
+#: plugin-options/layout-options.php:176
+msgid "Layout 4"
+msgstr ""
+
+#: plugin-options/layout-options.php:236
+msgid "Button border color"
+msgstr ""
+
+#: plugin-options/layout-options.php:250
+msgid "Layout 5"
+msgstr ""
+
+#: plugin-options/layout-options.php:312
+msgid "Layout 6"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:15
+msgid "Cart"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:18
+msgid "Checkout"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:21
+msgid "Shop"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:24
+msgid "Single Product"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:28
+msgid "Message Settings"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:37
+msgid "Message Type"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:38
+msgid "Choose the type of the message"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:47
+msgid ""
+"Edit the message. You can use {remaining_amount} as remaining amount "
+"required to meet the minimum order amount"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:58
+msgid "Minimum order amount"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:59
+msgid "Minimum order amount to encourage users to purchase more."
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:69
+#: plugin-options/metabox/ywcm_metabox.php:133
+msgid "Threshold amount"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:70
+msgid "Threshold amount after which notice should start appear."
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:80
+msgid "Exclude coupons amount"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:92
+msgid "Hide the message if these products are in cart"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:93
+msgid "If there are these products in cart the message is not showed"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:108
+msgid ""
+"You can edit the text using the following placeholder: <br>\r\n"
+"{remaining_quantity} indicates the remaining quantity;<br>\r\n"
+"{products} specifies which of the listed product is in the cart;<br>\r\n"
+"{quantity} indicates quantity in cart,\r\n"
+"{required_quantity} states the exact number of product to purchase."
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:122
+msgid "Required quantity"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:123
+#: plugin-options/metabox/ywcm_metabox.php:134
+msgid "The minimum total amount of above selected products."
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:144
+msgid "Select products"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:145
+#: plugin-options/metabox/ywcm_metabox.php:159
+#: plugin-options/metabox/ywcm_metabox.php:368
+msgid "Leave empty to select all products of the shop"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:158
+msgid "Select products to exclude"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:174
+msgid ""
+"You can edit the message using <br>{categories} to state the list of "
+"categories."
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:185
+msgid "Select categories"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:202
+#: plugin-options/metabox/ywcm_metabox.php:275
+msgid "Edit the message"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:212
+msgid "Referrer url"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:213
+msgid ""
+"Show a custom message to users who reach your site through a specific URL"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:227
+msgid "You can edit the message with {time_remain} as a time variable."
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:237
+msgid "Deadline hour"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:238
+msgid "Deadline hour is in 24-hour format and it can be a number from 1 to 24."
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:251
+msgid "Deadline days"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:252
+msgid "Select the days in which you want to activate and show this notice."
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:257
+msgid "Sunday"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:258
+msgid "Monday"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:259
+msgid "Tuesday"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:260
+msgid "Wednesday"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:261
+msgid "Thursday"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:262
+msgid "Friday"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:263
+msgid "Saturday"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:288
+msgid "Text Button (optional)"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:289
+msgid ""
+"The text of the button for the action call. Leave it empty if you do not "
+"want to show it."
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:294
+msgid "Button URL (optional)"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:295
+msgid "The URL of the button of the call to action"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:300
+msgid "Open a link in another tab"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:307
+msgid "Choose a custom layout"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:311
+msgid "Layout-1 - Woocommerce Layout"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:312
+msgid "Layout-2"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:313
+msgid "Layout-3"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:314
+msgid "Layout-4"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:315
+msgid "Layout-5"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:316
+msgid "Layout-6"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:321
+msgid "Show to"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:325
+msgid "Guests and Customers"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:326
+msgid "Guests"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:327
+msgid "Customers"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:332
+msgid "Start date (optional)"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:333
+msgid "Choose a date when message will appear"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:339
+msgid "Expiration date (optional)"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:340
+msgid "Choose a date until this message will appear"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:346
+msgid "Show in"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:347
+msgid ""
+"Choose the woocommerce pages on which you want this notice to be active."
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:356
+msgid "Only in the product selected"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:367
+msgid "Select products where show the message"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:380
+msgid "Hide the message when the products above are on cart"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:391
+msgid "Cart Page Position"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:396
+msgid "Before cart"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:397
+msgid "Before cart table"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:398
+msgid "Before cart contents"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:399
+msgid "After cart contents"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:400
+msgid "After cart table"
+msgstr ""
+
+#: plugin-options/metabox/ywcm_metabox.php:401
+msgid "After cart"
+msgstr ""
+
+#: plugin-options/settings-options.php:21
+msgid "General settings"
+msgstr ""
+
+#: plugin-options/settings-options.php:27
+msgid "Show in cart page"
+msgstr ""
+
+#: plugin-options/settings-options.php:35
+msgid "Show in checkout page"
+msgstr ""
+
+#: plugin-options/settings-options.php:43
+msgid "Show in shop page"
+msgstr ""
+
+#: plugin-options/settings-options.php:51
+msgid "Show in single product page"
+msgstr ""
+
+#: yith-cart-messages-functions.php:11
+msgid "All categories"
+msgstr ""
+
+#: yith-cart-messages-functions.php:26
+msgid "Dear Guest"
+msgstr ""
+
+#: yith-cart-messages.php:98
+msgid ""
+"You can't activate the plugin if you haven't activate woocommerce in advance."
+msgstr ""

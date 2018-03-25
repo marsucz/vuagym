@@ -2,6 +2,7 @@ jQuery( function ( $ ) {
     var is_debug                             = false,
         page_wrapper                         = $( '#yith-wcbep-my-page-wrapper' ),
         is_vendor                            = page_wrapper.data( 'is-vendor' ) == 'yes',
+        wpml_current_lang                    = page_wrapper.data( 'wpml-current-language' ),
         attr_filter_select                   = $( '.yith_webep_attr_chosen' ),
         resize_table                         = $( '#yith-wcbep-resize-table' ),
         yith_wcbep_chosen                    = $( '.yith-wcbep-chosen' ),
@@ -48,6 +49,10 @@ jQuery( function ( $ ) {
         f_sale_price_value                   = $( '#yith-wcbep-sale-price-filter-value' ),
         f_weight_select                      = $( '#yith-wcbep-weight-filter-select' ),
         f_weight_value                       = $( '#yith-wcbep-weight-filter-value' ),
+        f_stock_qty_select                   = $( '#yith-wcbep-stock-qty-filter-select' ),
+        f_stock_qty_value                    = $( '#yith-wcbep-stock-qty-filter-value' ),
+        f_stock_status                       = $( '#yith-wcbep-stock-status-filter-select' ),
+        f_status                             = $( '#yith-wcbep-status-filter-select' ),
         f_per_page                           = $( '#yith-wcbep-per-page-filter' ),
         f_product_type                       = $( '#yith-wcbep-product-type-filter-select' ),
         f_show_variations                    = $( '#yith-wcbep-show-variations-filter' ),
@@ -61,6 +66,8 @@ jQuery( function ( $ ) {
         b_categories_sel                     = $( '#yith-wcbep-categories-bulk-select' ),
         b_categories_val                     = $( '#yith-wcbep-categories-bulk-chosen' ),
         b_attributes_val                     = $( '.yith-wcbep-attributes-bulk-chosen' ),
+        b_attributes_visible_val             = $( '.yith-wcbep-attributes-visible-bulk-select' ),
+        b_attributes_variation_val           = $( '.yith-wcbep-attributes-used-for-variation-bulk-select' ),
         b_tags_sel                           = $( '#yith-wcbep-tags-bulk-select' ),
         b_tags_val                           = $( '#yith-wcbep-tags-bulk-value' ),
         b_tags_rep                           = $( '#yith-wcbep-tags-bulk-replace' ),
@@ -148,10 +155,12 @@ jQuery( function ( $ ) {
                 if ( val != '' && typeof val != 'object' ) {
                     val = [ val ];
                 }
-                for ( var i in val ) {
-                    txt += select.find( 'option[value=' + val[ i ] + ']' ).html();
-                    if ( i < (val.length - 1) ) {
-                        txt += ', ';
+                if ( val != '' ) {
+                    for ( var i in val ) {
+                        txt += select.find( 'option[value=' + val[ i ] + ']' ).html();
+                        if ( i < (val.length - 1) ) {
+                            txt += ', ';
+                        }
                     }
                 }
                 a.find( '.yith-wcbep-select-values' ).html( txt );
@@ -169,7 +178,7 @@ jQuery( function ( $ ) {
 
                 return;
             } else if ( b == custom_input_textarea ) {
-                a.html( b.find( 'textarea' ).val() );
+                a.text( b.find( 'textarea' ).val() );
                 return;
             } else if ( b == custom_input_date ) {
                 a.html( b.find( 'input' ).val() );
@@ -532,7 +541,7 @@ jQuery( function ( $ ) {
                         custom_input_categories.offset( selected.offset() );
                         custom_input_categories.find( '.chosen' ).select2( 'open' );
                     } else if ( selected.hasClasses( [ 'description', 'shortdesc', 'purchase_note' ], 'OR' ) ) {
-                        custom_input_textarea.find( 'textarea' ).val( selected.html() );
+                        custom_input_textarea.find( 'textarea' ).val( selected.text() );
                         custom_input_textarea.show();
                         custom_input_textarea.offset( selected.offset() );
                     } else if ( selected.hasClasses( [ 'image' ], 'OR' ) || $( event.target ).closest( 'td' ).hasClasses( [ 'image' ], 'OR' ) ) {
@@ -738,6 +747,8 @@ jQuery( function ( $ ) {
                             } else {
                                 cols.push( not_editable_div.html() );
                             }
+                        } else if ( $( this ).hasClasses( [ 'description', 'shortdesc', 'purchase_note' ], 'OR' ) ) {
+                            cols.push( $( this ).text() );
                         } else {
                             cols.push( $( this ).html() );
                         }
@@ -1351,6 +1362,9 @@ jQuery( function ( $ ) {
         } );
 
         var data = {
+            paged              : '1',
+            order              : 'desc',
+            orderby            : 'ID',
             f_title_select     : f_title_select.val(),
             f_title_value      : f_title_value.val(),
             f_sku_select       : f_sku_select.val(),
@@ -1364,8 +1378,12 @@ jQuery( function ( $ ) {
             f_sale_price_value : f_sale_price_value.val(),
             f_weight_select    : f_weight_select.val(),
             f_weight_value     : f_weight_value.val(),
+            f_stock_qty_select : f_stock_qty_select.val(),
+            f_stock_qty_value  : f_stock_qty_value.val(),
             f_per_page         : f_per_page.val(),
             f_product_type     : f_product_type.val(),
+            f_stock_status     : f_stock_status.val(),
+            f_status           : f_status.val(),
             f_show_variations  : f_show_variations[ 0 ].checked ? 'yes' : 'no'
         };
         list.update( data );
@@ -1427,10 +1445,9 @@ jQuery( function ( $ ) {
             categories_labels.push( $( this ).text() );
         } );
 
-
         for ( var index in my_checked_rows ) {
             var ckd = my_checked_rows[ index ];
-            if ( current_matrix_keys.indexOf( 'categories' ) > -1 ) {
+            if ( categories_v.length > 0 && current_matrix_keys.indexOf( 'categories' ) > -1 ) {
                 var categories_cell      = $( cell_matrix[ ckd ][ current_matrix_keys.indexOf( 'categories' ) ] ),
                     categories_old_value = $.parseJSON( categories_cell.find( '.yith-wcbep-select-selected' ).val() ),
                     categories_new       = '';
@@ -1559,7 +1576,7 @@ jQuery( function ( $ ) {
             }
 
             // Numbers
-            var number_array = [ 'weight', 'height', 'width', 'length', 'stock_quantity', 'download_limit', 'download_expiry', 'regular_price', 'sale_price' ];
+            var number_array = [ 'weight', 'height', 'width', 'length', 'stock_quantity', 'download_limit', 'download_expiry', 'regular_price', 'sale_price', 'menu_order' ];
             for ( var i in number_array ) {
                 if ( current_matrix_keys.indexOf( number_array[ i ] ) > -1 ) {
                     var cell      = $( cell_matrix[ ckd ][ current_matrix_keys.indexOf( number_array[ i ] ) ] ),
@@ -1617,8 +1634,7 @@ jQuery( function ( $ ) {
             for ( var i in textarea_array ) {
                 if ( current_matrix_keys.indexOf( textarea_array[ i ] ) > -1 ) {
                     var cell      = $( cell_matrix[ ckd ][ current_matrix_keys.indexOf( textarea_array[ i ] ) ] ),
-                        //old_value              = matrix[ckd][current_matrix_keys.indexOf( textarea_array[i] )],
-                        old_value = cell.html(),
+                        old_value = cell.text(),
                         new_value = '';
 
                     var s = $( '#yith-wcbep-' + textarea_array[ i ] + '-bulk-select' ).val();
@@ -1640,7 +1656,7 @@ jQuery( function ( $ ) {
                                 new_value = old_value.replace( new RegExp( v, "g" ), r );
                                 break;
                         }
-                        cell.html( new_value );
+                        cell.text( new_value );
                     }
                 }
             }
@@ -1800,6 +1816,42 @@ jQuery( function ( $ ) {
                         }
                     }
                     cell.find( '.yith-wcbep-select-values' ).html( txt );
+                }
+            } );
+
+            // for ATTRIBUTES - is visible
+            b_attributes_visible_val.each( function () {
+                var self = $( this );
+                if ( current_matrix_keys.indexOf( 'attr_' + self.data( 'taxonomy-name' ) ) > -1 ) {
+                    var cell = $( cell_matrix[ ckd ][ current_matrix_keys.indexOf( 'attr_' + self.data( 'taxonomy-name' ) ) ] ),
+                        s    = self.val();
+
+                    switch ( s ) {
+                        case 'yes':
+                            cell.find( '.yith-wcbep-attr-is-visible' ).val( '1' );
+                            break;
+                        case 'no':
+                            cell.find( '.yith-wcbep-attr-is-visible' ).val( '0' );
+                            break;
+                    }
+                }
+            } );
+
+            // for ATTRIBUTES - used for variation
+            b_attributes_variation_val.each( function () {
+                var self = $( this );
+                if ( current_matrix_keys.indexOf( 'attr_' + self.data( 'taxonomy-name' ) ) > -1 ) {
+                    var cell = $( cell_matrix[ ckd ][ current_matrix_keys.indexOf( 'attr_' + self.data( 'taxonomy-name' ) ) ] ),
+                        s    = self.val();
+
+                    switch ( s ) {
+                        case 'yes':
+                            cell.find( '.yith-wcbep-attr-is-variation' ).val( '1' );
+                            break;
+                        case 'no':
+                            cell.find( '.yith-wcbep-attr-is-variation' ).val( '0' );
+                            break;
+                    }
                 }
             } );
 
@@ -1997,6 +2049,53 @@ jQuery( function ( $ ) {
                 }
             }
 
+            // STOCK QTY
+            if ( f_stock_qty_value.val().length > 0 ) {
+                var this_stock_qty   = parseFloat( t_row[ current_matrix_keys.indexOf( 'stock_quantity' ) ] ),
+                    filter_stock_qty = parseFloat( f_stock_qty_value.val() );
+
+                switch ( f_stock_qty_select.val() ) {
+                    case 'mag':
+                        if ( !( this_stock_qty > filter_stock_qty ) ) finded = false;
+                        break;
+                    case 'min':
+                        if ( !( this_stock_qty < filter_stock_qty ) ) finded = false;
+                        break;
+                    case 'ug':
+                        if ( !( this_stock_qty == filter_stock_qty ) ) finded = false;
+                        break;
+                    case 'magug':
+                        if ( !( this_stock_qty >= filter_stock_qty ) ) finded = false;
+                        break;
+                    case 'minug':
+                        if ( !( this_stock_qty <= filter_stock_qty ) ) finded = false;
+                        break;
+                }
+            }
+
+            // STOCK Status
+            if ( f_stock_status.val().length > 0 ) {
+                var this_stock_status   = t_row[ current_matrix_keys.indexOf( 'stock_status' ) ],
+                    filter_stock_status = f_stock_status.val();
+                if ( this_stock_status == 0 && filter_stock_status == 'instock' ) {
+                    finded = false;
+                }
+
+                if ( this_stock_status == 1 && filter_stock_status == 'outofstock' ) {
+                    finded = false;
+                }
+            }
+
+            // Status
+            if ( f_status.val().length > 0 ) {
+                var this_status   = t_row[ current_matrix_keys.indexOf( 'status' ) ],
+                    filter_status = f_status.val();
+                if ( filter_status ) {
+                    finded = this_status === filter_status;
+                }
+            }
+
+
             //INCLUDE VARIATIONS
             var include_variation_in_cheched = f_show_variations[ 0 ].checked ? 'yes' : 'no';
             if ( include_variation_in_cheched == 'no' ) {
@@ -2096,7 +2195,7 @@ jQuery( function ( $ ) {
                                     }
                                 } );
                     } else {
-                        get_products_btn.trigger( 'click' );
+                        list.update();
                         percentual_container.delay( 1500 ).fadeOut();
                     }
                 };
@@ -2190,6 +2289,7 @@ jQuery( function ( $ ) {
                         importer.fadeOut( 'fast' );
                         importer_upload_url.val( '' );
                         //get_products_btn.trigger('click');
+
                     }
                 } );
     } );
@@ -2201,7 +2301,8 @@ jQuery( function ( $ ) {
             paged            : '1',
             order            : 'desc',
             orderby          : 'ID',
-            f_show_variations: 'no'
+            f_show_variations: 'no',
+            lang             : wpml_current_lang
         },
 
         init: function () {
@@ -2223,16 +2324,17 @@ jQuery( function ( $ ) {
                     f_attributes.push( [ $( this ).data( 'taxonomy-name' ), $( this ).val() ] );
                 } );
 
-                var data = $.extend(
+                $.extend(
                     list.f_data,
                     {
-                        paged  : list.__query( query, 'paged' ) || '1',
-                        order  : list.__query( query, 'order' ) || 'desc',
-                        orderby: list.__query( query, 'orderby' ) || 'ID',
+                        paged  : list.__query( query, 'paged' ) || 1,
+                        order  : list.__query( query, 'order' ) || list.f_data.order,
+                        orderby: list.__query( query, 'orderby' ) || list.f_data.orderby
                     }
                 );
 
-                list.update( data );
+
+                list.update( list.f_data );
             } );
 
             $( 'input[name=paged]' ).on( 'change', function ( e ) {
@@ -2241,20 +2343,24 @@ jQuery( function ( $ ) {
                     e.preventDefault();
 
                 var query       = $( '.tablenav-pages a' )[ 0 ].search.substring( 1 ),
-                    input_paged = $( 'input[name=paged]' );
+                    paged       = parseInt( $( this ).val() ),
+                    total_pages = parseInt( $( '#total_pages' ).val() );
 
-                var data = $.extend(
+                paged = Math.min( paged, total_pages );
+                paged = Math.max( paged, 1 );
+
+                $.extend(
                     list.f_data,
                     {
-                        paged  : parseInt( input_paged.val() ) || '1',
-                        order  : list.__query( query, 'order' ) || 'desc',
-                        orderby: list.__query( query, 'orderby' ) || 'ID',
+                        paged  : paged,
+                        order  : list.__query( query, 'order' ) || list.f_data.order,
+                        orderby: list.__query( query, 'orderby' ) || list.f_data.orderby
                     }
                 );
 
                 window.clearTimeout( timer );
                 timer = window.setTimeout( function () {
-                    list.update( data );
+                    list.update( list.f_data );
                 }, delay );
             } );
         },
@@ -2263,17 +2369,18 @@ jQuery( function ( $ ) {
          *
          * Send the call and replace table parts with updated version!
          *
-         * @param {object} data The data to pass through AJAX
          */
         update: function ( data ) {
             table.block( block_params );
             save_btn.prop( 'disabled', true );
             bulk_edit_btn.prop( 'disabled', true );
 
-            list.f_data = data;
+            if ( typeof data != 'undefined' ) {
+                $.extend( list.f_data, data );
+            }
 
             if ( f_brands.length ) {
-                data = $.extend(
+                list.f_data = $.extend(
                     {
                         f_brands: f_brands.val()
                     },
@@ -2294,11 +2401,11 @@ jQuery( function ( $ ) {
                         custom_taxonomies_data.push( single_taxonomy_data );
                     }
                 } );
-                data = $.extend(
+                list.f_data = $.extend(
                     {
                         f_custom_taxonomies: custom_taxonomies_data
                     },
-                    data
+                    list.f_data
                 );
             }
 
@@ -2309,7 +2416,7 @@ jQuery( function ( $ ) {
                                 _ajax_yith_wcbep_list_nonce: $( '#_ajax_yith_wcbep_list_nonce' ).val(),
                                 action                     : '_ajax_fetch_yith_wcbep_list'
                             },
-                            data
+                            list.f_data
                         ),
                         success: function ( resp ) {
 
@@ -2359,5 +2466,4 @@ jQuery( function ( $ ) {
 
     // And now Show it!
     list.init();
-
 } );

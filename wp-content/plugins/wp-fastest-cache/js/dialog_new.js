@@ -22,7 +22,11 @@ var Wpfc_New_Dialog = {
 		
 		self.clone.show();
 		
-		self.clone.draggable();
+		self.clone.draggable({
+			stop: function(){
+				jQuery(this).height("auto");
+			}
+		});
 		self.clone.position({my: "center", at: "center", of: window});
 		self.clone.find(".close-wiz").click(function(){
 			self.remove(this);
@@ -37,6 +41,9 @@ var Wpfc_New_Dialog = {
 				callback(self);
 			}
 		}
+
+		self.click_event_add_new_keyword_button();
+		self.add_new_keyword_keypress();
 	},
 	remove: function(button){
 		jQuery(button).closest("div[id^='wpfc-modal-']").remove();
@@ -138,5 +145,35 @@ var Wpfc_New_Dialog = {
 				}
 			}
 		});
-	}
+	},
+	add_new_keyword_keypress: function(){
+		Wpfc_New_Dialog.clone.find(".wpfc-textbox-con .fixed-search input").keypress(function(e){
+			if(e.keyCode == 13){
+				var keyword = jQuery(e.target).val().replace(/(\s|\,)/g, "");
+				
+				Wpfc_New_Dialog.clone.find(".wpfc-textbox-con").hide();
+				jQuery(e.target).val("");
+				jQuery('<li class="keyword-item"><a class="keyword-label">' + keyword + '</a></li>').insertBefore(Wpfc_New_Dialog.clone.find(".wpfc-add-new-keyword").closest(".keyword-item")).click(function(){
+					jQuery(this).remove();
+				});
+			}
+		});
+	},
+	click_event_add_new_keyword_button: function(){
+		Wpfc_New_Dialog.clone.find(".wpfc-add-new-keyword").click(function(){
+			Wpfc_New_Dialog.clone.find(".wpfc-textbox-con").show();
+			Wpfc_New_Dialog.clone.find(".wpfc-textbox-con .fixed-search input").focus();
+		});
+	},
+	insert_keywords: function(id, keywords){
+		if(keywords){
+			jQuery.each(keywords.split(","), function( index, value ) {
+				jQuery('<li class="keyword-item"><a class="keyword-label">' + value + '</a></li>').insertBefore(jQuery("div[id^='" + id + "']").find(".wpfc-add-new-keyword").closest(".keyword-item")).click(function(){
+					jQuery(this).remove();
+				});
+			});
+		}
+
+		
+	},
 };

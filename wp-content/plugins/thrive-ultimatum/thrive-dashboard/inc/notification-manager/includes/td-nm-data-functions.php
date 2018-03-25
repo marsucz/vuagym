@@ -55,7 +55,7 @@ function td_nm_save_notification( $model ) {
  * Assign some post_meta for the a notification|post
  *
  * @param array $trigger
- * @param int $notification_id
+ * @param int   $notification_id
  *
  * @return int|false
  */
@@ -102,7 +102,7 @@ function td_nm_get_notifications( $filters = array() ) {
 
 	foreach ( $posts as $post ) {
 
-		$trigger = td_nm_get_trigger( $post->ID );
+		$trigger          = td_nm_get_trigger( $post->ID );
 		$trigger_instance = TD_NM_Trigger_Factory::get_instance( $trigger );
 
 		if ( $applicable = $trigger_instance->is_notification_applicable() ) {

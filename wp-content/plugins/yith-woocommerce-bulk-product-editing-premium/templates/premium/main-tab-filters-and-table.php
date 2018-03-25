@@ -6,9 +6,11 @@ if ( !defined( 'YITH_WCBEP' ) ) {
 $filters_to_show = apply_filters( 'yith_wcbep_filters_to_show', array( 'categories', 'tags', 'attributes' ) );
 $is_vendor       = isset( YITH_WCBEP()->compatibility->multivendor ) && YITH_WCBEP()->compatibility->multivendor->is_vendor();
 
+global $sitepress;
+$current_language = !empty( $sitepress ) ? $sitepress->get_current_language() : 'all';
 ?>
 
-    <div id="yith-wcbep-my-page-wrapper" data-is-vendor="<?php echo $is_vendor ? 'yes' : 'no'; ?>">
+    <div id="yith-wcbep-my-page-wrapper" data-is-vendor="<?php echo $is_vendor ? 'yes' : 'no'; ?>" data-wpml-current-language="<?php echo $current_language; ?>">
         <div class="yith-wcbep-filter-wrap">
             <h2><?php _e( 'Filters', 'yith-woocommerce-bulk-product-editing' ); ?></h2>
             <button type="button" class="yith-wcbep-toggle" data-target="#yith-wcbep-filter-form">
@@ -143,7 +145,7 @@ $is_vendor       = isset( YITH_WCBEP()->compatibility->multivendor ) && YITH_WCB
                                                 foreach ( $terms as $t ) {
                                                     ?>
                                                     <option
-                                                        value="<?php echo $t->term_id; ?>"><?php echo $t->name; ?></option>
+                                                            value="<?php echo $t->term_id; ?>"><?php echo $t->name; ?></option>
                                                     <?php
                                                 }
                                                 ?>
@@ -214,11 +216,55 @@ $is_vendor       = isset( YITH_WCBEP()->compatibility->multivendor ) && YITH_WCB
                     </tr>
                     <tr>
                         <td class="yith-wcbep-filter-form-label-col">
+                            <label><?php _e( 'Stock Qty', 'woocommerce' ) ?></label>
+                        </td>
+                        <td class="yith-wcbep-filter-form-content-col">
+                            <select id="yith-wcbep-stock-qty-filter-select" name="yith-wcbep-stock-qty-filter-select"
+                                    class="yith-wcbep-miniselect is_resetable">
+                                <option value="mag"> ></option>
+                                <option value="min"> <</option>
+                                <option value="ug"> ==</option>
+                                <option value="magug"> >=</option>
+                                <option value="minug"> <=</option>
+                            </select>
+                            <input type="text" id="yith-wcbep-stock-qty-filter-value"
+                                   name="yith-wcbep-stock-qty-filter-value" class="yith-wcbep-minifield is_resetable">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="yith-wcbep-filter-form-label-col">
+                            <label><?php _e( 'Stock status', 'woocommerce' ) ?></label>
+                        </td>
+                        <td class="yith-wcbep-filter-form-content-col">
+                            <select id="yith-wcbep-stock-status-filter-select" name="yith-wcbep-stock-status-filter-select"
+                                    class="is_resetable yith-wcbep-fullwidth-in-filters">
+                                <option value=""></option>
+                                <option value="instock"><?php _e( 'In stock', 'woocommerce' ) ?></option>
+                                <option value="outofstock"><?php _e( 'Out of stock', 'woocommerce' ) ?></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="yith-wcbep-filter-form-label-col">
+                            <label><?php _e( 'Status', 'woocommerce' ) ?></label>
+                        </td>
+                        <td class="yith-wcbep-filter-form-content-col">
+                            <select id="yith-wcbep-status-filter-select" name="yith-wcbep-status-filter-select"
+                                    class="is_resetable yith-wcbep-fullwidth-in-filters">
+                                <?php $statuses = array_merge( array( '' => '' ), get_post_statuses() ); ?>
+                                <?php foreach ( $statuses as $key => $value ) : ?>
+                                    <option value="<?php echo $key ?>"><?php echo $value ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="yith-wcbep-filter-form-label-col">
                             <label><?php _e( 'Product Type', 'yith-woocommerce-bulk-product-editing' ) ?></label>
                         </td>
                         <td class="yith-wcbep-filter-form-content-col">
                             <select id="yith-wcbep-product-type-filter-select" name="yith-wcbep-product-type-filter-select"
-                                    class="is_resetable">
+                                    class="is_resetable yith-wcbep-fullwidth-in-filters">
                                 <option value=""><?php _e( 'Show all product types', 'yith-woocommerce-bulk-product-editing' ) ?></option>
                                 <?php
                                 foreach ( yith_wcbep_get_wc_product_types() as $product_type_name => $product_type_label ) {

@@ -2,13 +2,25 @@
 
 Contributors: yithemes
 Requires at least: 3.5.1
-Tested up to: 4.8.2
-Stable tag: 1.0.20
+Tested up to: 4.9.2
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Documentation: https://yithemes.com/docs-plugins/yith-woocommerce-role-based-prices/
 
 == Changelog ==
+= 1.1.1 =
+* New: Support to WooCommerce 3.3.0
+* New: Support to WordPress 4.9.2
+* Update: Plugin Framework
+
+= 1.1.0 =
+* New: Support to WooCommerce 3.2.5
+* New: Support to YITH WooCommerce Subscription Premium 1.2.9
+* New: Support to WordPress 4.9.1
+* New: Transient system to save prices
+* Update: Plugin Framework
+* Fix: Support to grouped Products
 
 = 1.0.20 =
 * New: Support to WooCommerce 3.2.1

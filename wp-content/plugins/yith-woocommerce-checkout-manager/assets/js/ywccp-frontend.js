@@ -127,7 +127,12 @@ jQuery(document).ready(function ($) {
         $.each( timepicker, function () {
             $(this).timepicki({
                 reset: true,
-                disable_keyboard_mobile: true
+                disable_keyboard_mobile: true,
+                show_meridian: ywccp_front.time_format,
+                max_hour_value: ywccp_front.time_format ? '12' : '23',
+                min_hour_value: ywccp_front.time_format ? '1' : '0',
+                overflow_minutes:true,
+                increase_direction:'up'
             });
         });
 

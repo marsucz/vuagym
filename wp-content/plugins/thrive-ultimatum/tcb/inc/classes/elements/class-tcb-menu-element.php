@@ -22,6 +22,15 @@ class TCB_Menu_Element extends TCB_Element_Abstract {
 	public function name() {
 		return __( 'Custom Menu', 'thrive-cb' );
 	}
+	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'navigation menu, nav, nav menu';
+	}
+
 
 	/**
 	 * Return icon class needed for display in menu

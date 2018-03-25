@@ -8,7 +8,7 @@ var TVE_Ult_Int = window.TVE_Ult_Int = TVE_Ult_Int || {};
 	/**
 	 * On TCB Main Ready
 	 */
-	$( document ).on( 'tcb_main_ready', function () {
+	$( window ).on( 'tcb_main_ready', function () {
 
 		TVE_Ult_Int.DesignTemplates = require( './modals/design-templates' );
 		TVE_Ult_Int.DesignReset = require( './modals/design-reset' );

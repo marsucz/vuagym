@@ -64,14 +64,9 @@ class TCB_Editor {
 	}
 
 	/**
-	 * Template redirect hook for the main window ( containing the control panel and the post content iframe )
+	 * Setup actions for the main editor frame
 	 */
-	public function hook_template_redirect() {
-
-		if ( ! $this->is_main_frame() ) {
-			return;
-		}
-
+	public function setup_main_frame() {
 		remove_all_actions( 'wp_head' );
 
 		remove_all_actions( 'wp_enqueue_scripts' );
@@ -92,6 +87,18 @@ class TCB_Editor {
 		add_action( 'wp_enqueue_scripts', array( $this, 'main_frame_enqueue' ) );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'main_frame_dequeue' ), PHP_INT_MAX );
+	}
+
+	/**
+	 * Template redirect hook for the main window ( containing the control panel and the post content iframe )
+	 */
+	public function hook_template_redirect() {
+
+		if ( ! $this->is_main_frame() ) {
+			return;
+		}
+
+		$this->setup_main_frame();
 
 		/**
 		 * Action hook.
@@ -107,7 +114,7 @@ class TCB_Editor {
 	 * Check if the current screen is the main frame for the editor ( containing the control panel and the content frame )
 	 */
 	public function is_main_frame() {
-		if ( empty( $_REQUEST[ TVE_EDITOR_FLAG ] ) || ! is_singular() ) {
+		if ( empty( $_REQUEST[ TVE_EDITOR_FLAG ] ) || ! apply_filters( 'tcb_is_editor_page', is_singular() ) ) {
 			return false;
 		}
 		/**
@@ -158,7 +165,11 @@ class TCB_Editor {
 	 * Check if the current screen (request) if the inner contents iframe ( the one displaying the actual post content )
 	 */
 	public function is_inner_frame() {
-		if ( empty( $_REQUEST[ TVE_EDITOR_FLAG ] ) || ! is_singular() || empty( $_REQUEST[ TVE_FRAME_FLAG ] ) ) {
+		if ( apply_filters( 'tcb_is_inner_frame_override', false ) ) {
+			return true;
+		}
+
+		if ( empty( $_REQUEST[ TVE_EDITOR_FLAG ] ) || ! apply_filters( 'tcb_is_editor_page', is_singular() ) || empty( $_REQUEST[ TVE_FRAME_FLAG ] ) ) {
 			return false;
 		}
 		if ( ! $this->can_edit_post() ) {
@@ -168,7 +179,7 @@ class TCB_Editor {
 		/**
 		 * The iframe receives a query string variable
 		 */
-		if ( ! wp_verify_nonce( $_REQUEST[ TVE_FRAME_FLAG ], TVE_FRAME_FLAG . $this->post->ID ) ) {
+		if ( ! wp_verify_nonce( $_REQUEST[ TVE_FRAME_FLAG ], TVE_FRAME_FLAG ) ) {
 			return false;
 		}
 
@@ -211,7 +222,7 @@ class TCB_Editor {
 		wp_enqueue_script( 'tcb-scrollbar', tve_editor_url() . '/editor/js/libs/jquery.scrollbar.min.js' );
 		wp_enqueue_script( 'tcb-ace', tve_editor_url() . '/editor/js/libs/ace/ace.js' );
 
-		tve_enqueue_script( 'tve-main', tve_editor_js() . '/main' . $js_suffix, array(
+		$main_deps = apply_filters( 'tve_main_js_dependencies', array(
 			'jquery',
 			'jquery-ui-draggable',
 			'jquery-ui-autocomplete',
@@ -221,7 +232,9 @@ class TCB_Editor {
 			'tcb-leanmodal',
 			'tcb-velocity',
 			'backbone',
-		), false, true );
+		) );
+
+		tve_enqueue_script( 'tve-main', tve_editor_js() . '/main' . $js_suffix, $main_deps, false, true );
 
 		tve_enqueue_style( 'tve2_editor_style', tve_editor_css() . '/main/style.css' );
 
@@ -317,6 +330,7 @@ class TCB_Editor {
 			'post'                          => $this->post,
 			'elements'                      => $this->elements->js(),
 			'tpl_categ'                     => $this->elements->user_templates_category(),
+			'theme_dependency'              => get_post_meta( $this->post->ID, 'tve_disable_theme_dependency', true ),
 			'options'                       => $this->elements->component_options(),
 			'fonts'                         => $fm->all_fonts(),
 			'landing_page'                  => $post->is_landing_page(),
@@ -342,7 +356,7 @@ class TCB_Editor {
 			 * Filter tcb_js_translate allows adding javascript translations to the editor page ( main editor panel ).
 			 */
 			'i18n'                          => apply_filters( 'tcb_js_translate', require TVE_TCB_ROOT_PATH . 'inc/i18n.php' ),
-			'content_templates'             => $this->elements->get( 'ct' )->get_list(),
+			'content_templates'             => $this->elements->get( 'ct' ) ? $this->elements->get( 'ct' )->get_list() : array(),
 			/**
 			 * Page events
 			 */
@@ -354,6 +368,7 @@ class TCB_Editor {
 			'icon_pack_css'                 => $this->icon_pack_css(),
 			'cpanel_attr'                   => tve_cpanel_attributes(),
 			'has_non_landing_page_settings' => apply_filters( 'tve_post_having_non_lp_settings', array( 'post', 'page' ) ),
+			'tcb_selection_root'            => apply_filters( 'tcb_selection_root', $post->is_lightbox() || $post->is_landing_page() ? 'body' : '' ),
 		);
 
 		/** Do not localize anything that's not necessary */
@@ -432,7 +447,7 @@ class TCB_Editor {
 		 */
 		$current_uri = apply_filters( 'tcb_frame_request_uri', $_SERVER['REQUEST_URI'] );
 
-		return add_query_arg( TVE_FRAME_FLAG, wp_create_nonce( TVE_FRAME_FLAG . $this->post->ID ), $current_uri );
+		return add_query_arg( TVE_FRAME_FLAG, wp_create_nonce( TVE_FRAME_FLAG ), $current_uri );
 	}
 
 	/**
@@ -482,7 +497,7 @@ class TCB_Editor {
 		/**
 		 * Filter that allows one to use a landing page template on another custom post type
 		 */
-		return apply_filters( 'tcb_has_templates_tab', $this->post->post_type === 'page' || $this->post->post_type === 'tcb_lightbox' );
+		return apply_filters( 'tcb_has_templates_tab', true );
 	}
 
 	/**

@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="tve-control" data-key="style" data-initializer="credit_style_control"></div>
 		<div class="tve-control margin-top-20" data-key="monochrome_background" data-view="ColorPicker"></div>
 		<hr>
-		<div class="tve-control" data-key="cards_list" data-initializer="credit_style_control"></div>
+		<div class="tve-control tve-cards-list" data-key="cards_list" data-initializer="credit_style_control"></div>
 		<div class="tve-control" data-key="preview" data-initializer="card_preview_control"></div>
 		<hr>
 		<div class="tve-control" data-key="size" data-view="Slider"></div>

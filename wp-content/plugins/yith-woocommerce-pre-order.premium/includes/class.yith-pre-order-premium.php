@@ -48,6 +48,15 @@ if ( ! class_exists( 'YITH_Pre_Order_Premium' ) ) {
 		public $scheduling = null;
 
 		/**
+		 * Main Stock manager Instance
+		 *
+		 * @var YITH_Pre_Order_Stock_Manager
+		 * @since 1.3.0
+		 */
+		public $stock_manager = null;
+
+
+		/**
 		 * Construct
 		 *
 		 * @author Andrea Grillo <andrea.grillo@yithemes.com>
@@ -55,6 +64,22 @@ if ( ! class_exists( 'YITH_Pre_Order_Premium' ) ) {
 		 */
 		protected function __construct() {
 			parent::__construct();
+			add_filter( 'woocommerce_email_classes', array( $this, 'register_email_classes' ) );
+		}
+
+		public function register_email_classes( $email_classes ) {
+			$email_classes['YITH_Pre_Order_For_Sale_Date_Changed_Email'] = include( YITH_WCPO_PATH . 'includes/emails/class.yith-pre-order-for-sale-date-changed-email.php' );
+			if ( 'yes' == get_option( 'yith_wcpo_enable_pre_order_notification', 'no' ) ) {
+				$email_classes['YITH_Pre_Order_Date_End_Email'] = include( YITH_WCPO_PATH . 'includes/emails/class.yith-pre-order-date-end-email.php' );
+			}
+			if ( 'yes' == get_option( 'yith_wcpo_enable_pre_order_notification_for_sale', 'no' ) ) {
+				$email_classes['YITH_Pre_Order_Is_For_Sale_Email'] = include( YITH_WCPO_PATH . 'includes/emails/class.yith-pre-order-is-for-sale-email.php' );
+			}
+			if ( 'yes' == get_option( 'yith_wcpo_enable_pre_order_auto_outofstock_notification', 'no' ) ) {
+				$email_classes['YITH_Pre_Order_Out_Of_Stock_Email'] = include( YITH_WCPO_PATH . 'includes/emails/class.yith-pre-order-out-of-stock-email.php' );
+			}
+			return $email_classes;
+
 		}
 
 		/**
@@ -78,6 +103,7 @@ if ( ! class_exists( 'YITH_Pre_Order_Premium' ) ) {
             require_once( YITH_WCPO_PATH . 'includes/class.yith-pre-order-frontend-premium.php' );
             require_once( YITH_WCPO_PATH . 'includes/class.yith-pre-order-my-account-premium.php' );
             require_once( YITH_WCPO_PATH . 'includes/class.yith-pre-order-scheduling.php' );
+            require_once( YITH_WCPO_PATH . 'includes/class.yith-pre-order-stock-manager.php' );
         }
 
 
@@ -96,6 +122,7 @@ if ( ! class_exists( 'YITH_Pre_Order_Premium' ) ) {
 
 			$this->scheduling = new YITH_Pre_Order_Scheduling();
 			$this->download_links = new YITH_Pre_Order_Download_Links();
+			$this->stock_manager  = new YITH_Pre_Order_Stock_Manager();
 
 			if ( is_admin() ) {
 				$this->admin = new YITH_Pre_Order_Admin_Premium();

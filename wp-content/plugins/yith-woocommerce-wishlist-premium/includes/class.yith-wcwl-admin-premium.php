@@ -78,6 +78,9 @@ if ( !class_exists( 'YITH_WCWL_Admin_Premium' ) ) {
 			// modify params to use in templates files
 			add_filter( 'yith_wcwl_wishlist_table', array( $this, 'print_wishlist_table' ) );
 			add_filter( 'yith_wcwl_popular_table', array( $this, 'print_popular_table' ) );
+			
+			// export users that added a specific product in their wishlist
+			add_action( 'admin_action_export_users', array( $this, 'export_users_via_csv' ) );
 
 			// register admin actions
 			add_action( 'admin_action_delete_wishlist', array( $this, 'delete_wishlist_from_actions' ) );
@@ -492,6 +495,82 @@ if ( !class_exists( 'YITH_WCWL_Admin_Premium' ) ) {
 			}
 
 			wp_redirect( esc_url_raw( add_query_arg( array( 'page' => 'yith_wcwl_panel', 'tab' => 'list' ), admin_url( 'admin.php' ) ) ) );
+			die();
+		}
+
+		/**
+		 * Export users that added a specific product to their wishlists
+		 * 
+		 * @return void
+		 * @since 2.1.3
+		 */
+		public function export_users_via_csv() {
+			global $wpdb;
+
+			$product_id = isset( $_GET['product_id'] ) ? $_GET['product_id'] : false;
+			$product = wc_get_product( $product_id );
+
+			$query = "SELECT
+		             DISTINCT( u.ID ) AS id,
+		             u.user_login AS user_name,
+		             u.user_email AS user_email
+		             FROM {$wpdb->users} AS u
+		             LEFT JOIN {$wpdb->yith_wcwl_items} AS i ON u.ID = i.user_id
+		             WHERE i.prod_id = %d";
+
+			$query_args = array( $product_id );
+
+			$users = $wpdb->get_results( $wpdb->prepare( $query, $query_args ), ARRAY_A );
+
+			if( ! empty( $users ) ) {
+
+				$formatted_users = array();
+
+				foreach( $users as $user ){
+					$user_obj = get_userdata( $user['id'] );
+
+					if( ! $user_obj ){
+						continue;
+					}
+
+					$formatted_users[] = array(
+						$user['id'],
+						$user['user_email'],
+						! empty( $user_obj->billing_first_name ) ? $user_obj->billing_first_name : $user_obj->first_name,
+						! empty( $user_obj->billing_last_name ) ? $user_obj->billing_last_name : $user_obj->last_name
+					);
+				}
+
+				if( ! empty( $formatted_users ) ) {
+					$sitename = sanitize_key( get_bloginfo( 'name' ) );
+					$sitename .= ( ! empty( $sitename ) ) ? '-' : '';
+					$filename = $sitename . 'wishlist-users' . '-' . sanitize_title_with_dashes( $product->get_title() ) . '-' . date( 'Y-m-d-H-i' ) . '.csv';
+
+					//Add Labels to CSV
+					$formatted_users_labels[] = array(
+						__( 'User ID', 'yith-woocommerce-wishlist' ),
+						__( 'User Email', 'yith-woocommerce-wishlist' ),
+						__( 'User First Name', 'yith-woocommerce-wishlist' ),
+						__( 'User Last Name', 'yith-woocommerce-wishlist' )
+					);
+
+					$formatted_users = array_merge( $formatted_users_labels, $formatted_users );
+
+					header( 'Content-Description: File Transfer' );
+					header( 'Content-Disposition: attachment; filename=' . $filename );
+					header( 'Content-Type: text/xml; charset=' . get_option( 'blog_charset' ), true );
+
+					$df = fopen( 'php://output', 'w' );
+
+					foreach ( $formatted_users as $row ) {
+						fputcsv( $df, $row );
+					}
+
+					fclose( $df );
+				}
+			}
+			
+			die();
 		}
 
 		/* === WISHLIST COUNT PRODUCT COLUMN === */

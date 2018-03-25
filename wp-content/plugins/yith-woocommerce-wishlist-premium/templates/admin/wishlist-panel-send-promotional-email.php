@@ -25,7 +25,7 @@
 				</p>
 			</td>
 		</tr>
-		<?php if( ! empty( $coupons ) ): ?>
+		<?php if( wc_coupons_enabled() && ! empty( $coupons ) ): ?>
 		<tr valign="top">
 			<th scope="row" class="titledesc"><?php _e( 'Use coupon', 'yith-woocommerce-wishlist' ) ?></th>
 			<td class="forminp forminp-textarea">
@@ -43,8 +43,21 @@
 						<option value="<?php echo $coupon->post_title ?>"><?php echo $coupon->post_title ?></option>
 					<?php endforeach; ?>
 				</select>
+				<p class="description">
+					<?php _e( 'Select a coupon, among defined ones, to be used as a reference to calculate coupons\' placeholders in your email content.', 'yith-woocommerce-wishlist' ) ?>
+					<?php echo sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( 'post_type', 'shop_coupon', admin_url( 'post-new.php' ) ) ), __( 'Create a new Coupon', 'yith-woocommerce-wishlist' ) ) ?>
+				</p>
 			</td>
 		</tr>
+		<?php else: ?>
+			<tr valign="top">
+				<th scope="row" class="titledesc"><?php _e( 'Use coupon', 'yith-woocommerce-wishlist' ) ?></th>
+				<td class="forminp forminp-textarea">
+					<p class="description">
+						<?php echo sprintf( __( 'Please, <a href="%s">enable Coupons</a> and <a href="%s">create at least one</a>, in order to use Coupons\' placeholders in your email content', 'yith-woocommerce-wishlist' ), esc_url( add_query_arg( array( 'page' => 'wc-settings', 'tab' => 'checkout' ), admin_url( 'admin.php' ) ) ) , esc_url( add_query_arg( 'post_type', 'shop_coupon', admin_url( 'post-new.php' ) ) ) ) ?>
+					</p>
+				</td>
+			</tr>
 		<?php endif; ?>
 		</tbody>
 	</table>

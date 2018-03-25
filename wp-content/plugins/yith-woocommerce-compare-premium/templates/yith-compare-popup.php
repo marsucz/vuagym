@@ -10,7 +10,6 @@
 // remove the style of woocommerce
 if( defined('WOOCOMMERCE_USE_CSS') && WOOCOMMERCE_USE_CSS ) wp_dequeue_style('woocommerce_frontend_styles');
 
-$is_iframe  = (bool)( isset( $_REQUEST['iframe'] ) && $_REQUEST['iframe'] );
 // removes scripts for massive-dynamic theme
 remove_action('wp_enqueue_scripts', 'pixflow_theme_scripts');
     

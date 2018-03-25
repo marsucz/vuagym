@@ -8,7 +8,7 @@ var TVE = window.TVE || {},
 	/**
 	 * On TCB Main Ready
 	 */
-	$( document ).on( 'tcb_main_ready', function () {
+	$( window ).on( 'tcb_main_ready', function () {
 		TVE.Views.Components.ultimatum_countdown = require( './ultimatum-countdown-component' );
 
 		TVE_Ult_Ext.UltimatumCountdown = require( './modals/ultimatum-countdown' );

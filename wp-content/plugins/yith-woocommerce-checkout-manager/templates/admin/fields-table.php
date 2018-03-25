@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<th class="placeholder"><?php _e( 'Placeholder', 'yith-woocommerce-checkout-manager' ); ?></th>
 				<th class="validation-rules"><?php _e( 'Validation rules', 'yith-woocommerce-checkout-manager' ); ?></th>
 				<th class="status"><?php _e( 'Required', 'yith-woocommerce-checkout-manager' ); ?></th>
-				<th class="status"><?php _e( 'Clear Row', 'yith-woocommerce-checkout-manager' ); ?></th>
+<!--				<th class="status">--><?php //_e( 'Clear Row', 'yith-woocommerce-checkout-manager' ); ?><!--</th>-->
 				<th class="actions is_responsive"><?php _e( 'Actions', 'yith-woocommerce-checkout-manager' ); ?></th>
 			</tr>
 		</thead>
@@ -50,7 +50,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<th class="placeholder"><?php _e( 'Placeholder', 'yith-woocommerce-checkout-manager' ); ?></th>
 				<th class="validation-rules"><?php _e( 'Validation rules', 'yith-woocommerce-checkout-manager' ); ?></th>
 				<th class="status"><?php _e( 'Required', 'yith-woocommerce-checkout-manager' ); ?></th>
-				<th class="status"><?php _e( 'Clear Row', 'yith-woocommerce-checkout-manager' ); ?></th>
+<!--				<th class="status">--><?php //_e( 'Clear Row', 'yith-woocommerce-checkout-manager' ); ?><!--</th>-->
 				<th class="actions is_responsive"><?php _e( 'Actions', 'yith-woocommerce-checkout-manager' ); ?></th>
 			</tr>
 		</tfoot>
@@ -79,7 +79,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<input type="hidden" name="field_label_class[]" data-name="field_label_class" value="<?php echo $field['label_class']; ?>"/>
 
 					<input type="hidden" name="field_required[]" data-name="field_required" value="<?php echo $field['required']; ?>"/>
-					<input type="hidden" name="field_clear[]" data-name="field_clear" value="<?php echo $field['clear'] ?>"/>
+<!--					<input type="hidden" name="field_clear[]" data-name="field_clear" value="--><?php //echo $field['clear'] ?><!--"/>-->
 
 					<input type="hidden" name="field_enabled[]" data-name="field_enabled" value="<?php echo $field['enabled'] ?>"/>
 					<input type="hidden" name="field_validate[]" data-name="field_validate" value="<?php echo $field['validate'] ?>"/>
@@ -98,7 +98,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<td class="td_field_placeholder"><?php echo $field['placeholder']; ?></td>
 				<td class="td_field_validate"><?php echo $field['validate']; ?></td>
 				<td class="td_field_required status"><?php echo( $field['required'] == 1 ? '<span class="status-enabled tips" data-tip="' .  __( 'Yes', 'yith-woocommerce-checkout-manager' ) . '"></span>' : '-' ) ?></td>
-				<td class="td_field_clear status"><?php echo( $field['clear'] == 1 ? '<span class="status-enabled tips" data-tip="' .  __( 'Yes', 'yith-woocommerce-checkout-manager' ) . '"></span>' : '-' ) ?></td>
 				<td class="td_field_action is_responsive">
 					<button type="button" class="button edit_field"><?php _e( 'Edit', 'yith-woocommerce-checkout-manager' ); ?></button>
 					<?php

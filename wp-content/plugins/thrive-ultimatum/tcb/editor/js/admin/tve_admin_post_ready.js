@@ -97,34 +97,34 @@
 				alert( 'ERROR: ' + jqXHR.responseText );
 			} );
 		} )
-			.on( 'click', '#tcb2-show-wp-editor', function () {
-				/**
-				 * Enable the hidden input that will disable TCB editor when saving the post
-				 */
-				var $editlink = $form.find( '.tcb-enable-editor' ),
-					$postbox = $editlink.closest( '.postbox' );
-				$postbox.next( '.tcb-flags' ).find( 'input' ).prop( 'disabled', false );
-				$postbox.before( $editlink );
-				$postbox.remove();
-				$( 'body' ).removeClass( 'tcb-hide-wp-editor' );
-			} )
-			.on( 'click', '.tcb-enable-editor', function () {
-				$( 'body' ).removeClass( 'tcb-hide-wp-editor' );
-				$.ajax( {
-					type: 'post',
-					url: ajaxurl,
-					dataType: 'json',
-					data: {
-						_nonce: TCB_Post_Edit_Data.admin_nonce,
-						post_id: this.getAttribute( 'data-id' ),
-						action: 'tcb_admin_ajax_controller',
-						route: 'enable_tcb'
-					}
-				} ).done( function ( response ) {
-					$( window ).off( 'beforeunload.edit-post' );
-					location.reload();
-				} );
-			} );
+		     .on( 'click', '#tcb2-show-wp-editor', function () {
+			     /**
+			      * Enable the hidden input that will disable TCB editor when saving the post
+			      */
+			     var $editlink = $form.find( '.tcb-enable-editor' ),
+				     $postbox = $editlink.closest( '.postbox' );
+			     $postbox.next( '.tcb-flags' ).find( 'input' ).prop( 'disabled', false );
+			     $postbox.before( $editlink );
+			     $postbox.remove();
+			     $( 'body' ).removeClass( 'tcb-hide-wp-editor' );
+		     } )
+		     .on( 'click', '.tcb-enable-editor', function () {
+			     $( 'body' ).removeClass( 'tcb-hide-wp-editor' );
+			     $.ajax( {
+				     type: 'post',
+				     url: ajaxurl,
+				     dataType: 'json',
+				     data: {
+					     _nonce: TCB_Post_Edit_Data.admin_nonce,
+					     post_id: this.getAttribute( 'data-id' ),
+					     action: 'tcb_admin_ajax_controller',
+					     route: 'enable_tcb'
+				     }
+			     } ).done( function ( response ) {
+				     $( window ).off( 'beforeunload.edit-post' );
+				     $( 'input#save-post' ).click().prop( 'disabled', true );
+			     } );
+		     } );
 	} );
 
 })( jQuery );

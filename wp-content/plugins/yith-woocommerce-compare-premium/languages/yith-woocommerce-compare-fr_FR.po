@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: YITH Woocommerce Compare\n"
-"POT-Creation-Date: 2017-08-16 15:53+0200\n"
-"PO-Revision-Date: 2017-08-16 15:53+0200\n"
+"POT-Creation-Date: 2017-12-21 16:56+0100\n"
+"PO-Revision-Date: 2017-12-21 16:56+0100\n"
 "Last-Translator: YIThemes <support@yithemes.com>\n"
 "Language-Team: Your Inspiration Themes <support@yithemes.com>\n"
 "Language: fr\n"
@@ -50,8 +50,8 @@ msgstr ""
 
 #: includes/class.yith-woocompare-admin.php:153
 #: includes/class.yith-woocompare-admin.php:154
-#: includes/class.yith-woocompare-frontend-premium.php:597
-#: includes/class.yith-woocompare-frontend.php:480
+#: includes/class.yith-woocompare-frontend-premium.php:612
+#: includes/class.yith-woocompare-frontend.php:482
 #: includes/class.yith-woocompare.php:165 plugin-options/general-options.php:65
 #: plugin-options/general-options.php:66
 #: widgets/class.yith-woocompare-widget.php:51
@@ -93,22 +93,22 @@ msgstr ""
 msgid "Do you want to hard crop the image?"
 msgstr ""
 
-#: includes/class.yith-woocompare-frontend-premium.php:391
-#: includes/class.yith-woocompare-frontend-premium.php:616
+#: includes/class.yith-woocompare-frontend-premium.php:401
+#: includes/class.yith-woocompare-frontend-premium.php:631
 #: plugin-options/general-options.php:74 plugin-options/general-options.php:75
 msgid "View Compare"
 msgstr ""
 
-#: includes/class.yith-woocompare-frontend-premium.php:522
-#: includes/class.yith-woocompare-frontend.php:363
+#: includes/class.yith-woocompare-frontend-premium.php:532
+#: includes/class.yith-woocompare-frontend.php:365
 msgid "In stock"
 msgstr "En stock"
 
-#: includes/class.yith-woocompare-frontend-premium.php:915
+#: includes/class.yith-woocompare-frontend-premium.php:945
 msgid "Share on:"
 msgstr ""
 
-#: includes/class.yith-woocompare-frontend-premium.php:952
+#: includes/class.yith-woocompare-frontend-premium.php:982
 #: plugin-options/style-options.php:28
 msgid "Category Filter"
 msgstr ""
@@ -118,18 +118,17 @@ msgid "Added"
 msgstr "Ajouté"
 
 #: includes/class.yith-woocompare-frontend.php:208
-#: templates/yith-compare-popup.php:51
+#: templates/yith-compare-popup.php:50
 msgid "Product Comparison"
 msgstr "Comparaison de produits"
 
-#: includes/class.yith-woocompare-frontend.php:671
+#: includes/class.yith-woocompare-frontend.php:213
+msgid "Close"
+msgstr ""
+
+#: includes/class.yith-woocompare-frontend.php:673
 msgid "No products to compare"
 msgstr "Aucun produits à comparer"
-
-#: includes/class.yith-woocompare-frontend.php:684
-#: templates/yith-compare-table.php:56 templates/yith-compare-table.php:91
-msgid "Remove"
-msgstr "Retirer"
 
 #: includes/class.yith-woocompare-helper.php:55
 msgid "Product Info"
@@ -148,14 +147,18 @@ msgid "Description"
 msgstr ""
 
 #: includes/class.yith-woocompare-helper.php:59
+msgid "Sku"
+msgstr ""
+
+#: includes/class.yith-woocompare-helper.php:60
 msgid "Availability"
 msgstr "Disponibilité"
 
-#: includes/class.yith-woocompare-helper.php:60
+#: includes/class.yith-woocompare-helper.php:61
 msgid "Weight"
 msgstr ""
 
-#: includes/class.yith-woocompare-helper.php:61
+#: includes/class.yith-woocompare-helper.php:62
 msgid "Dimensions"
 msgstr ""
 
@@ -163,7 +166,7 @@ msgstr ""
 msgid "yith-compare"
 msgstr ""
 
-#: init.php:40
+#: init.php:42
 msgid ""
 "YITH WooCommerce Compare Premium is enabled but not effective. It requires "
 "WooCommerce in order to work."
@@ -738,9 +741,14 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: templates/yith-compare-table.php:21
+#: templates/yith-compare-table.php:18
 msgid "No products added in the comparison table."
 msgstr ""
+
+#: templates/yith-compare-table.php:53 templates/yith-compare-table.php:88
+#: templates/yith-compare-widget-item.php:22
+msgid "Remove"
+msgstr "Retirer"
 
 #: widgets/class.yith-woocompare-widget.php:23
 msgid "The widget shows the list of products added in the comparison table."
@@ -750,7 +758,7 @@ msgstr ""
 msgid "YITH WooCommerce Compare Widget"
 msgstr ""
 
-#: widgets/class.yith-woocompare-widget.php:77
+#: widgets/class.yith-woocompare-widget.php:76
 msgid "Hide if compare table is empty"
 msgstr ""
 

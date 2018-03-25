@@ -21,6 +21,15 @@ class TCB_Ultimatum_Countdown_Element extends TCB_Element_Abstract {
 	}
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'thrive, scarcity';
+	}
+
+	/**
 	 * Return icon class needed for display in menu
 	 *
 	 * @return string

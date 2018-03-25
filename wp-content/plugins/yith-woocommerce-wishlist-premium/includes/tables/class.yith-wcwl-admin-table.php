@@ -286,7 +286,7 @@ if ( ! class_exists( 'YITH_WCWL_Admin_Table' ) ) {
 	            'user_id' => false,
 	            'user_search' => isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false,
 	            'wishlist_visibility' => isset( $_REQUEST['wishlist_privacy'] ) ? $_REQUEST['wishlist_privacy'] : 'all',
-	            'show_empty' => false
+	            'show_empty' => apply_filters( 'yith_wcwl_admin_table_show_empty_list', false )
             ) ) );
 
             // sets columns headers

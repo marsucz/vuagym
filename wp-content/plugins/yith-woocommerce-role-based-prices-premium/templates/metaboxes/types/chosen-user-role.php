@@ -16,8 +16,19 @@ extract( $args );
 $is_multiple = isset( $multiple ) && $multiple;
 $multiple = ( $is_multiple ) ? ' multiple' : '';
 $placeholder = isset( $placeholder ) ? $placeholder : '';
+
+$deps_html = '';
+if ( function_exists( 'yith_field_deps_data' ) ) {
+	$deps_html = yith_field_deps_data( $args );
+} else {
+	if ( isset( $deps ) ) {
+		$deps_ids    = $deps['ids'];
+		$deps_values = $deps['values'];
+		$deps_html   = "data-field='$id' data-dep='{$deps_ids}' data-value='$deps_values'";
+	}
+}
 ?>
-<div id="<?php echo $id ?>-container" class="chosen" <?php if ( isset( $deps ) ): ?>data-field="<?php echo $id ?>" data-dep="<?php echo $deps['ids'] ?>" data-value="<?php echo $deps['values'] ?>" <?php endif ?>>
+<div id="<?php echo $id ?>-container" class="chosen" <?php echo $deps_html;?> >
 
     <label for="<?php echo $id ?>"><?php echo $label ?></label>
 

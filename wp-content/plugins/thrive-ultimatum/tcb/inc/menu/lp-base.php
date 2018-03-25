@@ -21,5 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<hr>
 			<div class="tve-control" data-view="ContentWidth"></div>
 		</div>
+		<hr>
+		<div class="tve-control" data-view="RemoveThemeCss"></div>
 	</div>
 </div>

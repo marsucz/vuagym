@@ -30,6 +30,7 @@ $how_apply = empty( $how_apply )? 'only_this' : $how_apply;
             <?php endforeach;?>
         </select>
         <button type="button" class="button add_price_rule"><?php _e( 'Add','yith-woocommerce-role-based-prices');?></button>
+        <div class="clear"></div>
     </div>
    <div class="options_group how_apply_product_rule">
     <p class="form-field">

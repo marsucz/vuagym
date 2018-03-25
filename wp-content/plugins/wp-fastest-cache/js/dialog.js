@@ -8,7 +8,11 @@ var Wpfc_Dialog = {
 
 		jQuery("#" + id).show();
 		
-		jQuery("#" + id).draggable();
+		jQuery("#" + id).draggable({
+			stop: function(){
+				jQuery(this).height("auto");
+			}
+		});
 
 		jQuery("#" + id).position({my: "center", at: "center", of: window});
 

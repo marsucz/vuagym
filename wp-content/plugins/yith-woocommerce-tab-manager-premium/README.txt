@@ -3,13 +3,43 @@
 Contributors: yithemes
 Tags: tab, woocommerce, product, custom tab, e-commerce, ecommerce, commerce, global tab, product tab, tab manager, tabs, shop, yith, yit, yithemes
 Requires at least: 3.5.1
-Tested up to: 4.8
-Stable tag: 1.1.25
+Tested up to: 4.9.4
+Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Documentation: http://yithemes.com/docs-plugins/yith-woocommerce-tab-manager/
 
 == Changelog ==
+
+= 1.2.3 =
+= New: Integration with YITH Frontend Manager for WooCommerce version 1.4.0
+* New: Support to WooCommerce 3.3.1
+* New: Support to WordPress 4.9.4
+* Update: Plugin Framework 3.0.12
+
+= 1.2.2 =
+* New: Dutch language file
+* Fix: Image gallery issue
+* Fix: Form type issue
+* Update: Plugin Framework
+
+= 1.2.1 =
+* Fix: WPML issue with tab showing up in every language
+* Fix: Contact form doesn't display on frontend
+* Update: Plugin Framework 3.0.1
+
+= 1.2.0 =
+* New: Support to WooCommerce 3.2.5
+* New: Support to WordPress 4.9.1
+* Tweak: Restyled tab manager metaboxes
+* Update: Plugin Framework 3.0
+* Update: Language files
+* Fix:  Show video in the content tab
+
+= 1.1.26 =
+* New: Show "Last Modified" date  in the tab list
+* New: Support to WooCommerce 3.2.0-RC2
+* Update: Plugin Framework
 
 = 1.1.25 =
 * Update: Plugin Framework

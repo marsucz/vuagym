@@ -21,4 +21,10 @@
 		<label class="tcb-checkbox"><input type="checkbox" data-setting="t" value="1"><span><?php echo __( 'Show title', 'thrive-cb' ) ?></span></label>
 		<label class="tcb-checkbox"><input type="checkbox" data-setting="b" value="1"><span><?php echo __( 'Show byline', 'thrive-cb' ) ?></span></label>
 	</div>
+	<div class="small-margin-top">
+		<span class="info-text-white"><?php echo tcb_icon( 'info' ) ?></span>
+		<span class="info-text-white">
+			<?php echo __( 'Title, portrait and byline are visible only when the video is stopped.' ); ?>
+		</span>
+	</div>
 </div>

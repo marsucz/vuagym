@@ -115,8 +115,8 @@ abstract class Loco_mvc_AdminController extends Loco_mvc_Controller {
      */
     public function filter_update_footer( $text ){
         $html = sprintf( '<span>v%s</span>', loco_plugin_version() );
-        if( $this->bench && ( $info = $this->get('debug') ) ){
-            $html .= sprintf('<span>%sms</span>', number_format($info->time,2) );
+        if( $this->bench && ( $info = $this->get('_debug') ) ){
+            $html .= sprintf('<span>%ss</span>', number_format_i18n($info['time'],2) );
         }
         return $html;
     }
@@ -148,7 +148,7 @@ abstract class Loco_mvc_AdminController extends Loco_mvc_Controller {
 
 
     /**
-     * All admin screens must define help tabs, eve if they return empty
+     * All admin screens must define help tabs, even if they return empty
      * @return array
      */
     public function getHelpTabs(){
@@ -209,9 +209,11 @@ abstract class Loco_mvc_AdminController extends Loco_mvc_Controller {
         }
         // take benchmark for debugger to be rendered in footer
         if( $this->bench ){
-            $this->set('debug', new Loco_mvc_ViewParams( array( 
+            $this->set('_debug', new Loco_mvc_ViewParams( array( 
                 'time' => microtime(true) - $this->bench,
             ) ) );
+            // additional debugging info when enabled
+            $jsConf['WP_DEBUG'] = true;
         }
         return $view->render( $tpl );
     }

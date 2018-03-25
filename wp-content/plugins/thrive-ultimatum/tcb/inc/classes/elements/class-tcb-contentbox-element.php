@@ -24,6 +24,16 @@ class TCB_ContentBox_Element extends TCB_Element_Abstract {
 	}
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'container,box,content';
+	}
+
+
+	/**
 	 * Return icon class needed for display in menu
 	 *
 	 * @return string
@@ -61,7 +71,7 @@ class TCB_ContentBox_Element extends TCB_Element_Abstract {
 							'um'      => array( 'px', 'vh' ),
 							'css'     => 'min-height',
 						),
-						'to'      => '.tve-cb',
+						'to'      => ' > .tve-cb',
 						'extends' => 'Slider',
 					),
 					'BoxWidth'  => array(

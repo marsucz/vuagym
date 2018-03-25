@@ -73,7 +73,8 @@ class TCB_Landing_Page_Cloud_Templates_Api {
 	 */
 	public function getTemplateList() {
 		$params = array(
-			'route' => 'getAll',
+			'route'       => 'getAll',
+			'tar_version' => TVE_VERSION,
 		);
 
 		$response = $this->_request( $params, 2 );
@@ -547,7 +548,7 @@ class TCB_Landing_Page_Transfer {
 		if ( preg_match_all( $image_regexp, $page_content, $matches ) ) {
 
 			foreach ( $matches[3] as $index => $src ) {
-				$img_src    = $matches[1][ $index ] . $matches[2][ $index ] . $src . $matches[4][ $index ];
+				$img_src    = $matches[2][ $index ] . $src . $matches[4][ $index ];
 				$no_qstring = explode( '?', $img_src );
 				$img_src    = $no_qstring[0];
 
@@ -562,10 +563,14 @@ class TCB_Landing_Page_Transfer {
 				$image_map[ $replacement ] = array(
 					'name' => basename( $img_src ),
 					'path' => $full_image_path,
-					'url'  => $img_src,
+					'url'  => $matches[1][ $index ] . $img_src,
 				);
 
-				$page_content = str_replace( $img_src, '{{img=' . $replacement . '}}', $page_content );
+				$page_content = str_replace( array(
+					'https://' . $img_src,
+					'http://' . $img_src,
+					'//' . $img_src,
+				), '{{img=' . $replacement . '}}', $page_content );
 			}
 		}
 
@@ -580,10 +585,11 @@ class TCB_Landing_Page_Transfer {
 	 * @return array
 	 */
 	protected function getTCBMeta( $post_id ) {
-		$config = array();
+		$config                = array();
+		$non_lp_dependent_keys = array( 'tve_landing_page', 'tve_disable_theme_dependency' );
 
 		foreach ( tve_get_used_meta_keys() as $key ) {
-			$config[ $key ] = $key === 'tve_landing_page' ? get_post_meta( $post_id, $key, true ) : tve_get_post_meta( $post_id, $key );
+			$config[ $key ] = in_array( $key, $non_lp_dependent_keys ) ? get_post_meta( $post_id, $key, true ) : tve_get_post_meta( $post_id, $key );
 		}
 
 		unset( $config['tve_content_before_more'], $config['tve_save_post'] );
@@ -1049,6 +1055,12 @@ class TCB_Landing_Page_Transfer {
 		/* 4. set all post-meta values to the lightbox */
 		$this->importParseImageLinks( $config, $image_map );
 		update_post_meta( $page_id, 'tve_landing_page', $config['tve_landing_page'] );
+
+		if ( ! empty( $config['tve_disable_theme_dependency'] ) ) {
+			//Options that disable the CSS from theme. Can be 1 if activated or 0 if not activated
+			update_post_meta( $page_id, 'tve_disable_theme_dependency', $config['tve_disable_theme_dependency'] );
+		}
+		
 		foreach ( tve_get_used_meta_keys() as $meta_key ) {
 			if ( ! isset( $config[ $meta_key ] ) || $meta_key == 'tve_landing_page' ) {
 				continue;

@@ -371,7 +371,6 @@ if ( ! class_exists( 'Yoast_License_Manager', false ) ) {
 		 * @return boolean True if license is active
 		 */
 		public function license_is_valid() {
-			/* Nulled by Null.Market team */
 			return true;
 		}
 

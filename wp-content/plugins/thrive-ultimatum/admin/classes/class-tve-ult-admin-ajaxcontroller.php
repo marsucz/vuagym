@@ -441,6 +441,8 @@ class Tve_Ult_Admin_AjaxController {
 			'tve_lead_2s_lightbox',
 			'tve_ult_campaign',
 			'tvo_testimonials',
+			'reply',
+			'tva_lesson',
 		) );
 		$post_types     = array_diff( $all_post_types, $exception_list );
 

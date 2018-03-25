@@ -16,9 +16,20 @@
     left: 50%;
     margin-left: -5px;
 }
+
 span.ywccp_error {
-    font-size: 12px;
+    font-size: 11px;
     color: #a00;
+}
+
+.woocommerce form.checkout .form-row {
+    clear: right;
+}
+body.rtl .woocommerce form.checkout .form-row {
+    clear: left;
+}
+.woocommerce form.checkout .form-row-wide {
+    clear: both;
 }
 
 /*##################

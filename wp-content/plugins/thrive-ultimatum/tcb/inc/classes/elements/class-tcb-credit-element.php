@@ -22,6 +22,15 @@ class TCB_Credit_Element extends TCB_Element_Abstract {
 	public function name() {
 		return __( 'Credit Card', 'thrive-cb' );
 	}
+	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'icon ';
+	}
+
 
 	/**
 	 * Return icon class needed for display in menu

@@ -12,6 +12,7 @@
 	</div>
 	<div class="dropdown-content">
 		<div class="gradient-layers"></div>
+		<div class="tve-control" data-key="PreviewFilterList" data-view="PreviewList"></div>
 		<div class="tve-control" data-view="PreviewList"></div>
 		<div class="v-sep"></div>
 		<div class="tve-control" data-view="ColorPicker" data-show-gradient="0"></div>
@@ -26,7 +27,11 @@
 	</div>
 	<div class="dropdown-content">
 		<div class="hide-states">
-			<div class="tve-control" data-view="FontSize"></div>
+			<div class="tve-control" data-view="ToggleControls"></div>
+
+			<div class="tve-control tcb-typography-toggle-element tcb-typography-font-size" data-view="FontSize"></div>
+			<div class="tve-control tcb-typography-toggle-element tcb-typography-line-height" data-view="LineHeight"></div>
+			<div class="tve-control tcb-typography-toggle-element tcb-typography-letter-spacing" data-view="LetterSpacing"></div>
 			<hr class="typography-font-color-hr">
 		</div>
 		<div class="tve-control" data-view="FontColor"></div>
@@ -35,7 +40,6 @@
 			<div class="tve-control col-xs-6" data-view="TextAlign"></div>
 			<div class="tve-control col-xs-6" data-view="TextStyle"></div>
 		</div>
-		<hr class="typography-text-transform-hr">
 		<div class="row middle-xs">
 			<div class="tve-control col-xs-12" data-view="TextTransform"></div>
 		</div>
@@ -50,10 +54,6 @@
 				<?php tcb_icon( 'edit', false, 'sidebar', 'tcb-input-button click', array( 'data-fn' => 'openFonts' ) ) ?>
 			</div>
 		</div>
-		<div class="hide-states">
-			<hr class="typography-line-height-hr">
-			<div class="tve-control" data-view="LineHeight"></div>
-		</div>
 		<div class="tve-advanced-controls extend-grey">
 			<div class="dropdown-header" data-prop="advanced">
 				<span>
@@ -63,12 +63,8 @@
 			</div>
 
 			<div class="dropdown-content clear-top">
-				<div class="hide-states">
-					<div class="tve-control" data-view="LetterSpacing"></div>
-					<hr>
-				</div>
 				<div class="text-shadow-component margin-bottom-10">
-					<div class="row middle-xs tcb-shadow-row margin-bottom-10">
+					<div class="row middle-xs tcb-shadow-row margin-bottom-10 margin-top-10">
 						<div class="col-xs-6">
 							<span class="input-label"><?php echo __( 'Text Shadow', 'thrive-cb' ); ?></span>
 						</div>
@@ -80,7 +76,7 @@
 					</div>
 					<div class="row">
 						<div class="col-xs-12">
-							<div id="tcb-text-shadow-list" class="tcb-relative"></div>
+							<div id="tcb-text-shadow-list" class="tcb-relative tcb-preview-list"></div>
 						</div>
 					</div>
 				</div>
@@ -195,7 +191,7 @@
 		</div>
 		<div class="dropdown-content">
 			<div class="tve-shadow" id="tcb-shadow-buttons"></div>
-			<div id="tcb-box-shadow-list" class="tcb-relative"></div>
+			<div id="tcb-box-shadow-list" class="tcb-relative tcb-preview-list"></div>
 		</div>
 	</div>
 
@@ -239,60 +235,47 @@
 
 <div id="tve-lp-fonts-component" class="tve-component" data-view="LpFonts">
 	<div class="dropdown-header" data-prop="docked">
-		<div class="group-description"><?php echo __( 'Landing Page Fonts', 'thrive-cb' ) ?></div>
+		<div class="group-description"><?php echo __( 'Landing Page Text Options', 'thrive-cb' ) ?></div>
 		<i></i>
 	</div>
 	<div class="dropdown-content">
-		<div class="tve-advanced-controls extend-grey">
-			<div class="dropdown-header" data-prop="paragraph">
-				<span>
-					<?php echo __( 'Paragraph', 'thrive-cb' ); ?>
-				</span><i></i>
-			</div>
-			<div class="dropdown-content clear-top" data-apply="p, li"></div>
+		<div class="tcb-text-center">
+			<button class="tve-button grey long click" data-fn="edit_font_options"><?php echo __( 'EDIT PAGE TEXTS', 'thrive-cb' ); ?></button>
+		</div>
+	</div>
+</div>
+
+<div id="tve-cloud-templates-component" data-key="cloud_templates" class="tve-component dynamic-component" style="order: 5;" data-view="CloudTemplates">
+	<div class="dropdown-header" data-prop="docked">
+		<div class="group-description"><?php echo __( 'Template Options', 'thrive-cb' ) ?></div>
+		<i></i>
+	</div>
+	<div class="dropdown-content">
+		<div class="tve-image tve-button click whitey dashed" data-fn-click="open_modal">
+			<?php echo __( 'Change Template', 'thrive-cb' ) ?>
 		</div>
 
+	</div>
+</div>
 
-		<div class="tve-advanced-controls extend-grey">
-			<div class="dropdown-header" data-prop="heading1">
-				<span>
-					<?php echo __( 'Heading 1', 'thrive-cb' ); ?>
-				</span><i></i>
+<div id="tve-group-component" class="tve-component" data-view="Group">
+	<div class="dropdown-header" data-prop="docked">
+		<div class="group-description"><?php echo __( 'Currently styling', 'thrive-cb' ) ?></div>
+		<i></i>
+	</div>
+	<div class="dropdown-content">
+		<div class="row">
+			<div class="col-xs-10">
+				<div class="tve-control" data-view="preview"></div>
 			</div>
-
-			<div class="dropdown-content clear-top" data-apply="h1"></div>
+			<div class="col-xs-2">
+				<div class="tve-control" data-view="ButtonToggle"></div>
+			</div>
+		</div>
+		<hr>
+		<div class="tcb-text-center margin-top-10">
+			<a href="javascript:void(0);" class="click clear-format" data-fn="close_group_options"><?php tcb_icon( 'exit-to-app' ); ?> <span id="tcb-exit-group-editing"><?php echo __( 'Exit Group Styling', 'thrive-cb' ); ?></span></a>
 		</div>
 
-
-		<div class="tve-advanced-controls extend-grey">
-			<div class="dropdown-header" data-prop="heading2">
-				<span>
-					<?php echo __( 'Heading 2', 'thrive-cb' ); ?>
-				</span><i></i>
-			</div>
-
-			<div class="dropdown-content clear-top" data-apply="h2"></div>
-		</div>
-
-
-		<div class="tve-advanced-controls extend-grey">
-			<div class="dropdown-header" data-prop="heading3">
-				<span>
-					<?php echo __( 'Heading 3', 'thrive-cb' ); ?>
-				</span><i></i>
-			</div>
-
-			<div class="dropdown-content clear-top" data-apply="h3"></div>
-		</div>
-
-		<div class="tve-advanced-controls extend-grey">
-			<div class="dropdown-header" data-prop="hyperlink">
-				<span>
-					<?php echo __( 'Hyperlink Settings', 'thrive-cb' ); ?>
-				</span><i></i>
-			</div>
-
-			<div class="dropdown-content clear-top" data-apply="a" data-tpl="landing-pages/link-settings"></div>
-		</div>
 	</div>
 </div>

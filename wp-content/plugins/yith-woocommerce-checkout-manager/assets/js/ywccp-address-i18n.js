@@ -23,12 +23,20 @@ jQuery( function( $ ) {
     // Handle locale
         .bind( 'country_to_state_changing', function( event, country, wrapper ) {
 
-            var thisform = wrapper, thislocale;
+            var thisform = wrapper, thislocale, section;
+
+            // get section
+            section = thisform.attr('class');
+            section = ( section && section.indexOf('billing') !== -1 ) ? 'billing' : 'shipping';
 
             if ( typeof locale[ country ] !== 'undefined' ) {
                 thislocale = locale[ country ];
             } else {
-                thislocale = locale['default'];
+                thislocale = locale['default'][section];
+            }
+
+            if( ! thislocale ) {
+                return false;
             }
 
             // Handle locale fields
@@ -38,7 +46,7 @@ jQuery( function( $ ) {
 
                 var field = thisform.find( value );
 
-                if ( thislocale[ key ] ) {
+                if ( thislocale && thislocale[ key ] ) {
 
                     if ( thislocale[ key ].label ) {
                         field.find( 'label' ).html( thislocale[ key ].label );
@@ -50,7 +58,7 @@ jQuery( function( $ ) {
 
                     field_is_required( field, false );
 
-                    if ( typeof thislocale[ key ].required === 'undefined' && locale['default'][ key ].required === true ) {
+                    if ( typeof thislocale[ key ].required === 'undefined' && locale['default'][section] && locale['default'][section][ key ].required === true ) {
                         field_is_required( field, true );
                     } else if ( thislocale[ key ].required === true ) {
                         field_is_required( field, true );
@@ -64,27 +72,27 @@ jQuery( function( $ ) {
                         }
                     }
 
-                } else if ( locale['default'][ key ] ) {
+                } else if ( locale['default'][section] && locale['default'][section][ key ] ) {
 
                     if ( 'state' !== key ) {
-                        if ( typeof locale['default'][ key ].hidden === 'undefined' || locale['default'][ key ].hidden === false ) {
+                        if ( typeof locale['default'][section][ key ].hidden === 'undefined' || locale['default'][section][ key ].hidden === false ) {
                             field.show();
-                        } else if ( locale['default'][ key ].hidden === true ) {
+                        } else if ( locale['default'][section][ key ].hidden === true ) {
                             field.hide().find( 'input' ).val( '' );
                         }
                     }
 
                     if ( 'postcode' === key || 'city' === key || 'state' === key ) {
-                        if ( locale['default'][ key ].label ) {
-                            field.find( 'label' ).html( locale['default'][ key ].label );
+                        if ( locale['default'][section][ key ].label ) {
+                            field.find( 'label' ).html( locale['default'][section][ key ].label );
                         }
 
-                        if ( locale['default'][ key ].placeholder ) {
-                            field.find( 'input' ).attr( 'placeholder', locale['default'][ key ].placeholder );
+                        if ( locale['default'][section][ key ].placeholder ) {
+                            field.find( 'input' ).attr( 'placeholder', locale['default'][section][ key ].placeholder );
                         }
                     }
 
-                    if ( locale['default'][ key ].required === true ) {
+                    if ( locale['default'][section][ key ].required === true ) {
                         if ( field.find( 'label abbr' ).length === 0 ) {
                             field_is_required( field, true );
                         }

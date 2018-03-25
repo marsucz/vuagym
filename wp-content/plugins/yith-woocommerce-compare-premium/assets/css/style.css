@@ -2,28 +2,20 @@
 FIXED COLUMNS
 ##############*/
 
-/* Block out what is behind the fixed column's header and footer */
-table.DTFC_Cloned thead,
-table.DTFC_Cloned tfoot {
-    background-color: white;
+table.DTFC_Cloned thead, table.DTFC_Cloned tfoot{
+    background-color:white;
 }
-
-/* Block out the gap above the scrollbar on the right, when there is a fixed
- * right column
- */
-div.DTFC_Blocker {
-    background-color: white;
+div.DTFC_Blocker{
+    background-color:white;
 }
-
 div.DTFC_LeftWrapper table.dataTable,
-div.DTFC_RightWrapper table.dataTable {
-    margin-bottom: 0;
-    z-index: 2;
+div.DTFC_RightWrapper table.dataTable{
+    margin-bottom:0;
+    z-index:2;
 }
-
 div.DTFC_LeftWrapper table.dataTable.no-footer,
-div.DTFC_RightWrapper table.dataTable.no-footer {
-    border-bottom: none;
+div.DTFC_RightWrapper table.dataTable.no-footer{
+    border-bottom:none;
 }
 
 /*############################
@@ -97,6 +89,10 @@ table.dataTable.compare-list tfoot th {
     font-size: 14px;
 }
 
+.rtl #yith-woocompare table.compare-list tbody th {
+    text-align: right;
+}
+
 #yith-woocompare table.dataTable.compare-list tbody th,
 #yith-woocompare table.dataTable.compare-list tbody td {
     border-right: 1px solid #e7e7e7;
@@ -116,11 +112,6 @@ table.dataTable.compare-list tfoot th {
 
 #yith-woocompare-table_wrapper {
     margin: 10px 0;
-}
-
-#yith-woocompare-table_wrapper table thead,
-#yith-woocompare-table_wrapper table tfoot {
-    display: none;
 }
 
 #yith-woocompare table.dataTable.compare-list tbody .product_info td {

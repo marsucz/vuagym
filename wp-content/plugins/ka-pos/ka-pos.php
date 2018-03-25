@@ -404,10 +404,8 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
-    
-    $kv = new KiotViet_API();
+        $kv = new KiotViet_API();
     echo $kv->get_access_token();
-    
 }
 
 function update_default_manual_sync_options() {

@@ -114,6 +114,11 @@ if ( !class_exists( 'YITH_WCWL_Premium' ) ) {
 			$wishlist_visibility = ( isset( YITH_WCWL()->details['wishlist_visibility'] ) && is_numeric( YITH_WCWL()->details['wishlist_visibility'] ) && YITH_WCWL()->details['wishlist_visibility'] >= 0 && YITH_WCWL()->details['wishlist_visibility'] <= 2 ) ? YITH_WCWL()->details['wishlist_visibility'] : 0;
 			$user_id = ( ! empty( YITH_WCWL()->details['user_id'] ) ) ? YITH_WCWL()->details['user_id'] : false;
 
+			// filtering params
+			$wishlist_name = apply_filters( 'yith_wcwl_adding_to_wishlist_wishlist_name', $wishlist_name );
+			$wishlist_visibility = apply_filters( 'yith_wcwl_adding_to_wishlist_wishlist_visibility', $wishlist_visibility );
+			$user_id = apply_filters( 'yith_wcwl_adding_to_wishlist_user_id', $user_id );
+
 			if( $user_id == false ){
 				YITH_WCWL()->errors[] = __( 'You need to log in before creating a new wishlist', 'yith-woocommerce-wishlist' );
 				return "error";
@@ -388,7 +393,7 @@ if ( !class_exists( 'YITH_WCWL_Premium' ) ) {
 		 * @author Antonio La Rocca <antonio.larocca@yithemes.it>
 		 */
 		public function load_wc_mailer() {
-			add_action( 'send_estimate_mail', array( 'WC_Emails', 'send_transactional_email' ), 10, 3 );
+			add_action( 'send_estimate_mail', array( 'WC_Emails', 'send_transactional_email' ), 10, 4 );
 			add_action( 'send_promotion_mail', array( 'WC_Emails', 'send_transactional_email' ), 10, 2 );
 		}
 
@@ -492,14 +497,16 @@ if ( !class_exists( 'YITH_WCWL_Premium' ) ) {
 				$reply_email = ! empty( $_POST['reply_email'] ) ? sanitize_email( $_POST['reply_email'] ) : false;
 
 				if( is_user_logged_in() || $reply_email ){
-					do_action( 'send_estimate_mail', $wishlist_id, $additional_notes, $reply_email );
+					do_action( 'send_estimate_mail', $wishlist_id, $additional_notes, $reply_email, $_POST );
 					wc_add_notice( apply_filters( 'yith_wcwl_estimate_sent', __( 'Estimate request sent', 'yith-woocommerce-wishlist' ) ), 'success' );
 				}
 				else{
 					wc_add_notice( apply_filters( 'yith_wcwl_estimate_missing_email', __( 'You should provide a valid email, that we can use to contact you', 'yith-woocommerce-wishlist' ) ), 'error' );
 				}
 
-				wp_redirect( YITH_WCWL()->get_wishlist_url( 'view' . '/' . ( ( ! empty( $wishlist_id ) ) ? $wishlist_id : '' ) ), 301 );
+				$redirect_url = apply_filters( 'yith_wcwl_after_ask_an_estimate_redirect', YITH_WCWL()->get_wishlist_url( 'view' . '/' . ( ( ! empty( $wishlist_id ) ) ? $wishlist_id : '' ) ), $wishlist_id, $additional_notes, $reply_email, $_POST );
+
+				wp_redirect( $redirect_url );
 				exit();
 			}
 		}
@@ -618,7 +625,7 @@ if ( !class_exists( 'YITH_WCWL_Premium' ) ) {
 					}
 				}
 
-				$message = ( $res !== false ) ? sprintf( __( 'Element correctly moved to %s', 'yith-woocommerce-wishlist' ), $to_wishlist_name ) : __( 'There was an error while moving an item to another wishlist. Please, try again later', 'yith-woocommerce-wishlist' );
+				$message = ( $res !== false ) ? apply_filters( 'yith_wcwl_moved_element_message', sprintf( __( 'Element correctly moved to %s', 'yith-woocommerce-wishlist' ), $to_wishlist_name ), $to_wishlist_name ) : __( 'There was an error while moving an item to another wishlist. Please, try again later', 'yith-woocommerce-wishlist' );
 				$message_type = ( $res !== false ) ? 'success' : 'error';
 
 				wc_add_notice( $message, $message_type );

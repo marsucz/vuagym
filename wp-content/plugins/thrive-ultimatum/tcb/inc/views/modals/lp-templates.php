@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <h2 class="tcb-modal-title"><?php echo __( 'Choose Landing Page Template', 'thrive-cb' ) ?></h2>
 <?php if ( ! empty( $GLOBALS['tcb_lp_cloud_error'] ) ) : ?>
-	<?php $support_link = '<a href="https://thrivethemes.com/forums/forum/plugins/thrive-architect/" title="Support Forum">Support Forum</a>' ?>
+	<?php $support_link = '<a href="https://thrivethemes.com/forums/forum/plugins/thrive-architect/" title="Support Forum">' . __( 'Support Forum', 'thrive-cb' ) . '</a>' ?>
 	<div class="cloud-lp-error message-inline">
 		<div class="tcb-notification">
 			<div class="tcb-notification-icon tcb-notification-icon-error">

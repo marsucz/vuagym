@@ -151,7 +151,7 @@ class Thrive_Dash_List_Connection_Sendinblue extends Thrive_Dash_List_Connection
 				return array();
 			}
 
-			foreach ( $raw['data']['lists'] as $item ) {
+			foreach ( $raw['data'] as $item ) {
 				$lists [] = array(
 					'id'   => $item['id'],
 					'name' => $item['name']

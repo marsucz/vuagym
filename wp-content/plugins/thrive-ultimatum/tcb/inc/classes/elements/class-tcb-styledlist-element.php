@@ -25,6 +25,15 @@ class TCB_Styledlist_Element extends TCB_Element_Abstract {
 	}
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'list';
+	}
+
+	/**
 	 * Return icon class needed for display in menu
 	 *
 	 * @return string
@@ -59,11 +68,12 @@ class TCB_Styledlist_Element extends TCB_Element_Abstract {
 	 * @return array
 	 */
 	public function own_components() {
-		return array(
+		$styledlist = array(
 			'styledlist' => array(
 				'config' => array(
 					'item_spacing' => array(
 						'css_suffix' => ' > ul > li',
+						'css_prefix' => '#tve_editor ',
 						'config'     => array(
 							'default' => '20',
 							'min'     => '1',
@@ -79,27 +89,10 @@ class TCB_Styledlist_Element extends TCB_Element_Abstract {
 							'label' => __( 'Change all icons', 'thrive-cb' ),
 						),
 					),
-					'icons_color'  => array(
-						'config'  => array(
-							'label' => __( 'Icons color', 'thrive-cb' ),
-						),
-						'extends' => 'ColorPicker',
-					),
 					'preview'      => array(
 						'config' => array(
 							'sortable' => true,
 						),
-					),
-					'icons_size'   => array(
-						'config'  => array(
-							'default' => '18',
-							'min'     => '8',
-							'max'     => '200',
-							'label'   => __( 'Icon size', 'thrive-cb' ),
-							'um'      => array( 'px' ),
-							'css'     => 'fontSize',
-						),
-						'extends' => 'Slider',
 					),
 				),
 			),
@@ -125,6 +118,8 @@ class TCB_Styledlist_Element extends TCB_Element_Abstract {
 				),
 			),
 		);
+
+		return array_merge( $styledlist, $this->group_component() );
 	}
 
 	/**
@@ -133,5 +128,36 @@ class TCB_Styledlist_Element extends TCB_Element_Abstract {
 	 */
 	public function category() {
 		return $this->get_thrive_advanced_label();
+	}
+
+	/**
+	 * Group Edit Properties
+	 *
+	 * @return array|bool
+	 */
+	public function has_group_editing() {
+		return array(
+			'exit_label'    => __( 'Exit Group Styling', 'thrive-cb' ),
+			'select_values' => array(
+				array(
+					'value'    => 'all_list_items',
+					'selector' => '.thrv-styled-list-item',
+					'name'     => __( 'Grouped List Items', 'thrive-cb' ),
+					'singular' => __( '-- List Item %s', 'thrive-cb' ),
+				),
+				array(
+					'value'    => 'all_icons',
+					'selector' => '.thrv_icon:not(.tve_lg_input_container .thrv_icon)',
+					'name'     => __( 'Grouped Icons', 'thrive-cb' ),
+					'singular' => __( '-- Icon %s', 'thrive-cb' ),
+				),
+				array(
+					'value'    => 'all_texts',
+					'selector' => '.thrv-advanced-inline-text',
+					'name'     => __( 'Grouped Texts', 'thrive-cb' ),
+					'singular' => __( '-- Text %s', 'thrive-cb' ),
+				),
+			),
+		);
 	}
 }

@@ -16,8 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<i></i>
 	</div>
 	<div class="dropdown-content">
-		<div class="tve-control" data-view="numbers_color"></div>
-		<hr>
 		<div class="tve-control" data-view="starting_number"></div>
 		<hr>
 		<div class="tve-control" data-view="increment_number"></div>
@@ -32,10 +30,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php tcb_icon( 'edit', false, 'sidebar', 'tcb-input-button click', array( 'data-fn' => 'openFonts' ) ) ?>
 			</div>
 		</div>
-		<hr>
-		<div class="tve-control" data-view="decorations"></div>
-		<hr>
-		<div class="tve-control" data-view="numbers_size"></div>
 		<hr>
 		<div class="tve-control" data-view="item_spacing"></div>
 		<hr>

@@ -76,6 +76,26 @@ if ( ! class_exists( 'YITH_WCWL_Popular_Table' ) ) {
 	    }
 
 	    /**
+	     * Print column for product category
+	     *
+	     * @param $item array Item for the current record
+	     * @return string Column content
+	     * @since 2.0.5
+	     */
+	    public function column_category( $item ){
+		    $product_categories = wp_get_post_terms( $item['id'], 'product_cat' );
+
+		    if( ! $product_categories || is_wp_error( $product_categories ) ){
+			    return '-';
+		    }
+
+		    $product_categories_names = wp_list_pluck( $product_categories, 'name' );
+
+		    $column_content = implode( ', ', $product_categories_names );
+		    return $column_content;
+	    }
+
+	    /**
 	     * Print column for wishlist count
 	     *
 	     * @param $item array Item for the current record
@@ -85,6 +105,22 @@ if ( ! class_exists( 'YITH_WCWL_Popular_Table' ) ) {
 	    public function column_count( $item ){
 		    $column_content = $item['wishlist_count'];
 		    return sprintf( '<a href="%s">%d</a>', esc_url( add_query_arg( array( 'page' => 'yith_wcwl_panel', 'tab' => 'popular', 'action' => 'show_users', 'product_id' => $item['id'] ), admin_url( 'admin.php' ) ) ), $column_content );
+	    }
+
+	    /**
+	     *
+	     */
+	    public function column_last_sent( $item ) {
+		    $last_sent = get_post_meta( $item['id'], 'last_promotional_email', true );
+
+		    if( ! $last_sent ){
+			    $column = __( 'N/A', 'yith-woocommerce-wishlist' );
+		    }
+		    else{
+			    $column = date( wc_date_format(), $last_sent );
+		    }
+
+		    return $column;
 	    }
 
 	    /**
@@ -98,10 +134,19 @@ if ( ! class_exists( 'YITH_WCWL_Popular_Table' ) ) {
 		    $product_url = get_permalink( $item['id'] );
 		    $product_edit_url = get_edit_post_link( $item['id'] );
 		    $view_users_url = esc_url( add_query_arg( array( 'page' => 'yith_wcwl_panel', 'tab' => 'popular', 'action' => 'show_users', 'product_id' => $item['id'] ), admin_url( 'admin.php' ) ) );
+		    $export_users_url = esc_url( add_query_arg( array( 'action' => 'export_users', 'product_id' => $item['id'] ), admin_url( 'admin.php' ) ) );
 		    $send_promotional_email = esc_url( add_query_arg( array( 'page' => 'yith_wcwl_panel', 'tab' => 'popular', 'action' => 'send_promotional_email', 'product_id' => $item['id'] ), admin_url( 'admin.php' ) ) );
 		    $product_name = $item['post_title'];
 
-		    $column_content = sprintf( '<a class="button" href="%s" title="%s">%s</a> <a class="button" href="%s" title="%s">%s</a> <a class="button" href="%s" title="%s">%s</a> <a class="button" href="%s" title="%s">%s</a>', $send_promotional_email, __( 'Send promotional email', 'yith-woocommerce-wishlist' ), __( 'Send promotional email', 'yith-woocommerce-wishlist' ), $view_users_url, __( 'View users that have added this product to their wishlist', 'yith-woocommerce-wishlist' ), __( 'View users', 'yith-woocommerce-wishlist' ), $product_url, sprintf( __( 'View "%s"', 'yith-woocommerce-wishlist' ), $product_name ), __( 'View product', 'yith-woocommerce-wishlist' ), $product_edit_url, __( 'Edit title', 'yith-woocommerce-wishlist' ), __( 'Edit', 'yith-woocommerce-wishlist' ) );
+		    $actions = array(
+			    sprintf( '<a class="button" href="%s" title="%s">%s</a>', $send_promotional_email, __( 'Send promotional email', 'yith-woocommerce-wishlist' ), __( 'Send promotional email', 'yith-woocommerce-wishlist' ) ),
+			    sprintf( '<a class="button" href="%s" title="%s">%s</a>', $view_users_url, __( 'View users that have added this product to their wishlist', 'yith-woocommerce-wishlist' ), __( 'View users', 'yith-woocommerce-wishlist' ) ),
+			    sprintf( '<a class="button" href="%s" title="%s">%s</a>', $export_users_url, __( 'Export users that have added this product to their wishlist', 'yith-woocommerce-wishlist' ), __( 'Export users', 'yith-woocommerce-wishlist' ) ),
+			    sprintf( '<a class="button" href="%s" title="%s">%s</a>', $product_url, sprintf( __( 'View "%s"', 'yith-woocommerce-wishlist' ), $product_name ), __( 'View product', 'yith-woocommerce-wishlist' ) ),
+			    sprintf( '<a class="button" href="%s" title="%s">%s</a>', $product_edit_url, __( 'Edit title', 'yith-woocommerce-wishlist' ), __( 'Edit', 'yith-woocommerce-wishlist' ) )
+		    );
+
+		    $column_content = implode( ' ', $actions );
 
 		    return $column_content;
 	    }
@@ -134,7 +179,9 @@ if ( ! class_exists( 'YITH_WCWL_Popular_Table' ) ) {
             $columns = array(
                 'thumb'     => sprintf( '<span class="wc-image tips" data-tip="%s">%s</span>', __( 'Image', 'yith-woocommerce-wishlist' ), __( 'Image', 'yith-woocommerce-wishlist' ) ),
                 'name'      => __( 'Name', 'yith-woocommerce-wishlist' ),
+	            'category'  => __( 'Category', 'yith-woocommerce-wishlist' ),
                 'count'     => __( 'Wishlist count', 'yith-woocommerce-wishlist' ),
+	            'last_sent' => __( 'Last promotional email sent', 'yith-woocommerce-wishlist' ),
 	            'actions'   => __( 'Actions', 'yith-woocommerce-wishlist' )
             );
             return $columns;

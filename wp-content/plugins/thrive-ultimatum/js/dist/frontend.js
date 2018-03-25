@@ -304,7 +304,9 @@ var ThriveGlobal = ThriveGlobal || {$j: jQuery.noConflict()};
 		$design.removeClass( 'tvu-triggered' );
 		if ( $design.hasClass( 'tvu-header' ) ) {
 			$body.animate( {
-				marginTop: $body.data( 'tvu-original-margin' )
+				// it fixes a conflict with leads scroll mat
+				// marginTop: $body.data( 'tvu-original-margin' )
+				marginTop: 0
 			}, 300 );
 		}
 		if ( $design.is( '.tve-ult-widget' ) ) {

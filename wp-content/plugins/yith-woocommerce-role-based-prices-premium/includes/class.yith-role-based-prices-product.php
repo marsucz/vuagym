@@ -38,8 +38,8 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 			add_action( 'woocommerce_process_product_meta', array( $this, 'save_product_meta' ), 25, 2 );
 			add_action( 'woocommerce_save_product_variation', array( $this, 'save_product_variation_meta' ), 25, 2 );
 			add_action( 'woocommerce_single_product_summary', array( $this, 'single_product_summary' ), 5 );
-			add_action( 'woocommerce_variable_product_sync', array( $this, 'variable_product_sync' ), 20, 2 );
-			// add_filter( 'woocommerce_variation_prices_price', array( $this, 'variation_prices_price' ), 30, 3 );
+			add_action( 'woocommerce_variable_product_sync_data', array( $this, 'variable_product_sync' ), 20, 1 );
+
 			add_filter( 'woocommerce_product_get_price', array( $this, 'get_price' ), 20, 2 );
 			add_filter( 'woocommerce_product_variation_get_price', array( $this, 'get_price' ), 20, 2 );
 
@@ -50,7 +50,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 			add_filter( 'woocommerce_get_variation_price_html', array( $this, 'get_price_html' ), 11, 2 );
 
 			add_filter( 'yith_wcpb_ajax_get_bundle_total_price', array( $this, 'get_bundle_total_price_html' ) );
-			//add_filter( 'woocommerce_show_variation_price', array( $this, 'show_variation_price' ), 5, 3 );
+			add_filter( 'woocommerce_show_variation_price', array( $this, 'show_variation_price' ), 5, 3 );
 
 			$hook = $this->get_hook_position( 'ywcrbp_position_user_txt' );
 			add_action( 'woocommerce_single_product_summary', array( $this, 'print_custom_message' ), $hook );
@@ -58,7 +58,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 			add_action( 'wp_ajax_add_new_price_role', array( $this, 'add_new_price_role' ) );
 			add_action( 'wp_ajax_add_new_variation_price_role', array( $this, 'add_new_variation_price_role' ) );
 
-			add_filter( 'woocommerce_product_is_on_sale', array( $this, 'product_is_on_sale' ), 20, 2 );
+
 
 			if( defined('YITH_YWRAQ_PREMIUM' ) ){
 
@@ -211,6 +211,8 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 				yit_save_prop( $product, '_product_rules', $variation_rule );
 
 			}
+
+			delete_site_transient( 'ywcrb_rolebased_prices' );
 		}
 
 
@@ -278,11 +280,11 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 			$is_custom_price       = $this->is_custom_price( $product );
 
 
-//			if ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || $return_original_price || $is_custom_price ) {
-//				return $price;
-//			}
+			if ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || $return_original_price || $is_custom_price ) {
+				return $price;
+			}
 
-//			if ( $price !== '' && ! is_null( $product ) ) {
+			if ( $price !== '' && ! is_null( $product ) && !$product->is_type('variable') ) {
 
 				$role_price = $this->get_role_based_price( $product );
 
@@ -292,7 +294,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 
 					$price = apply_filters( 'yith_wcrbp_get_role_based_price', $price, $product );
 				}
-//			}
+			}
 
 			return $price;
 		}
@@ -320,23 +322,42 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 
 			global $woocommerce_wpml, $sitepress;
 
-			$product_id       = yit_get_product_id( $product );
+
+			if( $product->is_type('variation')){
+			    $product_id = is_callable( array( $product, 'get_id' ) ) ? $product->get_id(): $product->variation_id;
+            }else {
+				$product_id = yit_get_product_id( $product );
+			}
+
+
 			$role_based_price = yit_get_prop( $product, 'ywcrp_role_based_price' );
 
-			if ( empty( $role_based_price ) ) {
+			$current_rule = $this->user_role['role'];
+
+			if ( empty( $role_based_price ) || 'no_price' == $role_based_price ) {
 
 
-				$current_rule = $this->user_role['role'];
+			    $all_role_based_prices = get_site_transient( 'ywcrb_rolebased_prices' );
 
-				$global_rule = YITH_Role_Based_Type()->get_price_rule_by_user_role( $current_rule, $product_id );
+			    $all_role_based_prices = empty( $all_role_based_prices ) ? array() : $all_role_based_prices;
+			    if( empty( $all_role_based_prices ) || (  !isset( $all_role_based_prices[$product_id][$current_rule] ) ) ) {
 
-				$role_based_price = ywcrbp_calculate_product_price_role( $product, $global_rule, $current_rule );
+
+				    $global_rule = YITH_Role_Based_Type()->get_price_rule_by_user_role( $current_rule, $product_id );
+
+				    $role_based_price = ywcrbp_calculate_product_price_role( $product, $global_rule, $current_rule );
+
+
+				    $all_role_based_prices[$product_id][$current_rule] =  $role_based_price;
+				    set_site_transient( 'ywcrb_rolebased_prices', $all_role_based_prices );
+			    }else{
+			        $role_based_price = $all_role_based_prices[$product_id][$current_rule];
+
+                }
 				yit_set_prop( $product, array( 'ywcrp_role_based_price' => $role_based_price ) );
 
 			}
-
 			return apply_filters( 'yith_ywrbp_price', $role_based_price, $product_id );
-
 
 		}
 
@@ -351,37 +372,24 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 		 */
 		public function get_price_html( $price, $product ) {
 
-			global $woocommerce_wpml, $sitepress;
-
-			$product_id = yit_get_base_product_id( $product );
-
 			$is_custom_price = $this->is_custom_price( $product );
 
-			if ( $is_custom_price ) {
+			if ( $is_custom_price  ) {
 				return $price;
 			}
 
-			$role_price                  = $this->get_role_based_price( $product );
+
 			$product_has_some_role_price = $this->has_price_rule( $product );
 
-			if ( $is_custom_price ) {
 
-			}
-//			if ( ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) ) {
-//
-//				if ( $product_has_some_role_price ) {
-//					$price = sprintf( '%s <p class="ywcrbp_admin_product_has_rule">%s</p>', $price, __( 'There are some price rules for this product', 'yith-woocommerce-role-based-prices' ) );
-//				}
-//			} 
-//                        else {
+			if ( ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) ) {
+
+				if ( $product_has_some_role_price ) {
+					$price = sprintf( '%s <p class="ywcrbp_admin_product_has_rule">%s</p>', $price, __( 'There are some price rules for this product', 'yith-woocommerce-role-based-prices' ) );
+				}
+			} else {
 
 				$product_type = $product->get_type();
-
-
-				if ( isset( $sitepress ) ) {
-
-					$product_id = apply_filters( 'translate_object_id', $product_id, get_post_type( $product_id ), false, $sitepress->get_default_language() );
-				}
 
 
 				switch ( $product_type ) {
@@ -409,7 +417,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 					}
 				}
 
-//			}
+			}
 
 
 			return apply_filters( 'ywcrbp_get_price_html', $price, $product );
@@ -459,7 +467,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 						$regular_price_html = wc_price( yit_get_display_price( $product, $regular_price ) ) . $this->get_price_suffix( $product, $regular_price );
 						$regular_price_txt  = get_option( 'ywcrbp_regular_price_txt' );
 
-						$regular_price_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: unset;" class="ywcrbp_regular_price">Giá gốc: <del>%s %s</del></span>', $regular_price_txt, $regular_price_html );
+						$regular_price_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="ywcrbp_regular_price">Giá gốc: <del>%s %s</del></span>', $regular_price_txt, $regular_price_html );
 
 						add_filter( 'woocommerce_product_get_price', array( $this, 'get_price' ), 20, 2 );
 						add_filter( 'woocommerce_product_variation_get_price', array( $this, 'get_price' ), 20, 2 );
@@ -634,7 +642,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 			if( $show_regular_price ){
 
 				if( $min_regular_price!== $max_regular_price ){
-					$regular_price_html = wc_format_price_range( $min_regular_price, $max_regular_price );
+					$regular_price_html = ywcrbp_get_format_price_from_to( $product, $min_regular_price, $max_regular_price );
 				}else {
 					$regular_price_html = wc_price( $min_regular_price );
 				}
@@ -645,7 +653,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 
 			if( $show_on_sale_price && $product->is_on_sale() ){
 				if( $min_sale_price!== $max_sale_price ){
-					$sale_price_html = wc_format_price_range( $min_sale_price, $max_sale_price );
+					$sale_price_html = ywcrbp_get_format_price_from_to( $product, $min_sale_price, $max_sale_price );
 				}else {
 					$sale_price_html = wc_price( $min_sale_price );
 				}
@@ -668,7 +676,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 				}
 
 				if( $min_your_price !== $max_your_price ){
-					$your_price_html = wc_format_price_range( $min_your_price, $max_your_price );
+					$your_price_html = ywcrbp_get_format_price_from_to($product, $min_your_price, $max_your_price );
 				}else{
 
 					$your_price_html = wc_price( $min_your_price );
@@ -683,20 +691,19 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 				if ( empty( $sale_price_html ) && empty( $your_price_html ) ) {
 					$regular_price_html = sprintf( '<span class="%s">%s %s</span>', 'ywcrbp_regular_price', 'Giá bán:', $regular_price_html ); //$regular_price_txt
 				} else {
-					$regular_price_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: unset;" class="%s">Giá gốc: <del>%s %s</del></span>', 'ywcrbp_regular_price', $regular_price_txt, $regular_price_html );
+					$regular_price_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="%s">Giá gốc: <del>%s %s</del></span>', 'ywcrbp_regular_price', $regular_price_txt, $regular_price_html );
 				}
 			}
-
-			if ( ! empty( $sale_price_html ) ) {
-				if ( empty( $your_price_html ) ) {
-					$sale_price_html = sprintf( '<span class="%s">%s %s</span>', 'ywcrbp_sale_price', 'Giá sale:', $sale_price_html ); //$sale_price_txt
-				} else {
-					$sale_price_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: unset;" class="%s">Giá sale: <del>%s %s</del></span>', 'ywcrbp_sale_price', $sale_price_txt, $sale_price_html );
-				}
-			}
+		
 			if ( ! empty( $your_price_html ) ) {
-
 				$your_price_html = sprintf( '<span class="%s">%s %s</span>', 'ywcrbp_your_price', $your_price_txt, $your_price_html );
+				return $regular_price_html.$your_price_html;
+			} else if ( ! empty( $sale_price_html ) ) {
+				if ( empty( $your_price_html ) ) {
+					$sale_price_html = sprintf( '<span class="%s">%s %s</span>', 'ywcrbp_sale_price', 'Giá bán:', $sale_price_html ); //$sale_price_txt
+				} else {
+					$sale_price_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="%s">Giá bán: <del>%s %s</del></span>', 'ywcrbp_sale_price', $sale_price_txt, $sale_price_html );
+				}
 			}
 
 			return $regular_price_html.$sale_price_html.$your_price_html;
@@ -717,12 +724,12 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 
 				$single_prod_group = wc_get_product( $child_id );
 				$price_child       = $this->get_role_based_price( $single_prod_group );
-				$price_child       = ( 'no_price' === $price_child ) ? $single_prod_group->price : $price_child;
+				$price_child       = ( 'no_price' === $price_child ) ? $single_prod_group->get_price('edit') : $price_child;
 				$child_prices[]    = $price_child;
 			}
 
 			$child_prices     = array_unique( $child_prices );
-			$get_price_method = 'get_price_' . $tax_display_mode . 'uding_tax';
+			$get_price_method = 'yit_get_price_' . $tax_display_mode . 'uding_tax';
 
 			if ( ! empty( $child_prices ) ) {
 				$min_price = min( $child_prices );
@@ -732,13 +739,12 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 				$max_price = '';
 			}
 
+
 			if ( $min_price ) {
 				if ( $min_price == $max_price ) {
-					$display_price = wc_price( $product->$get_price_method( 1, $min_price ) );
+					$display_price = wc_price( $get_price_method( $product, 1, $min_price ) );
 				} else {
-					$from          = wc_price( $product->$get_price_method( 1, $min_price ) );
-					$to            = wc_price( $product->$get_price_method( 1, $max_price ) );
-					$display_price = sprintf( _x( '%1$s&ndash;%2$s', 'Price range: from-to', 'woocommerce' ), $from, $to );
+					$display_price = ywcrbp_get_format_price_from_to( $product, $min_price, $max_price );
 				}
 
 				$price = $display_price . $this->get_price_suffix( $product );
@@ -802,7 +808,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 
 			if( $regular_price!==$your_price ) {
 				if ( $has_your_price || ! empty( $sale_price ) && $regular_price !== $sale_price && $product->is_on_sale() ) {
-					$regular_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: unset;" class="ywcrbp_regular_price">Giá gốc: <del>%s %s</del></span>', $regular_price_txt, $regular_price_html );
+					$regular_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="ywcrbp_regular_price">Giá gốc: <del>%s %s</del></span>', $regular_price_txt, $regular_price_html );
 				} else {
 					$regular_html = sprintf( '<span class="ywcrbp_regular_price">%s %s</span>', 'Giá bán:', $regular_price_html ); //$regular_price_txt
 				}
@@ -831,9 +837,9 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 				$sale_price_html = wc_price( yit_get_display_price( $product, $sale_price ) ) . $this->get_price_suffix( $product, $sale_price );
 
 				if ( $has_your_price ) {
-					$sale_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: unset;" class="ywcrbp_sale_price">Giá sale: <del>%s %s</del></span>', $sale_price_txt, $sale_price_html );
+					//$sale_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="ywcrbp_sale_price">Giá bán: <del>%s %s</del></span>', $sale_price_txt, $sale_price_html );
 				} else {
-					$sale_html = sprintf( '<span class="ywcrbp_sale_price">%s %s</span>', 'Giá sale:', $sale_price_html ); //$sale_price_txt
+					$sale_html = sprintf( '<span class="ywcrbp_sale_price">%s %s</span>', 'Giá bán:', $sale_price_html ); //$sale_price_txt
 				}
 			}
 
@@ -854,7 +860,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 			$your_price_html = wc_price( yit_get_display_price( $product, $price ) ) . $this->get_price_suffix( $product, $price );
 			$your_price_txt  = get_option( 'ywcrbp_your_price_txt' );
 			if ( $price === 0 ) {
-				$your_price_html = sprintf( '<span class="ywcrbp_your_price">%s <span class="amount">%s</span></span>', $your_price_txt, __( 'Chưa có', 'woocommerce' ) );
+				$your_price_html = sprintf( '<span class="ywcrbp_your_price">%s <span class="amount">%s</span></span>', $your_price_txt, __( 'Đang cập nhật', 'woocommerce' ) );
 			} else {
 				$your_price_html = sprintf( '<span class="ywcrbp_your_price">%s %s</span>', $your_price_txt, $your_price_html );
 			}
@@ -1035,93 +1041,35 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 
 		}
 
+
+
+
 		/**
-		 * syncronize all variation for a product
+		 * syncronize variable product prices
 		 *
-		 * @author YITHEMES
+		 * @author Salvatore Strano
 		 * @since  1.0.0
 		 *
-		 * @param $product_id
-		 * @param $children
+		 * @param WC_Product_Variable $product
+		 *
 		 */
-		public function variable_product_sync( $product_id, $children ) {
-			if ( $children ) {
+		public function variable_product_sync( $product ) {
 
-				$min_price    = null;
-				$max_price    = null;
-				$min_price_id = null;
-				$max_price_id = null;
+		    $children = $product->get_visible_children();
 
-				// Main active prices
-				$min_price    = null;
-				$max_price    = null;
-				$min_price_id = null;
-				$max_price_id = null;
+		    delete_post_meta( $product->get_id(), '_price' );
 
-				// Regular prices
-				$min_regular_price    = null;
-				$max_regular_price    = null;
-				$min_regular_price_id = null;
-				$max_regular_price_id = null;
+		    foreach( $children as $child ){
+		        $variation = wc_get_product( $child );
+				$child_price = $this->get_role_based_price( $variation );
 
-				// Sale prices
-				$min_sale_price    = null;
-				$max_sale_price    = null;
-				$min_sale_price_id = null;
-				$max_sale_price_id = null;
-
-				foreach ( array( 'price', 'regular_price', 'sale_price' ) as $price_type ) {
-
-					foreach ( $children as $child_id ) {
-
-						$child_price = get_post_meta( $child_id, '_' . $price_type, true );
-
-						// Skip non-priced variations
-						if ( $child_price === '' ) {
-							continue;
-						}
-
-						// Skip hidden variations
-						if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) ) {
-							$stock = get_post_meta( $child_id, '_stock', true );
-							if ( $stock !== "" && $stock <= get_option( 'woocommerce_notify_no_stock_amount' ) ) {
-								continue;
-							}
-						}
-
-						$child = wc_get_product( $child_id );
-						// get price for this variation
-						$child_price = $this->get_role_based_price( $child );
-
-						// Find min price
-						if ( is_null( ${"min_{$price_type}"} ) || $child_price < ${"min_{$price_type}"} ) {
-							${"min_{$price_type}"}    = $child_price;
-							${"min_{$price_type}_id"} = $child_id;
-						}
-
-						// Find max price
-						if ( is_null( ${"max_{$price_type}"} ) || $child_price > ${"max_{$price_type}"} ) {
-							${"max_{$price_type}"}    = $child_price;
-							${"max_{$price_type}_id"} = $child_id;
-						}
-
-					}
-
-					// Store prices
-					update_post_meta( $product_id, '_min_variation_' . $price_type, ${"min_{$price_type}"} );
-					update_post_meta( $product_id, '_max_variation_' . $price_type, ${"max_{$price_type}"} );
-
-					// Store ids
-					update_post_meta( $product_id, '_min_' . $price_type . '_variation_id', ${"min_{$price_type}_id"} );
-					update_post_meta( $product_id, '_max_' . $price_type . '_variation_id', ${"max_{$price_type}_id"} );
-				}
-
-
-				// The VARIABLE PRODUCT price should equal the min price of any type
-				update_post_meta( $product_id, '_price', $min_price );
-
-				wc_delete_product_transients( $product_id );
+				if( 'no_price' !== $child_price ){
+				    add_post_meta( $product->get_id(), '_price', $child_price );
+                }else{
+				    add_post_meta( $product->get_id(), '_price', $product->get_price('edit' ) );
+                }
 			}
+
 		}
 
 		/**
@@ -1167,23 +1115,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 		 */
 		public function show_variation_price( $show, $product, $variation ) {
 
-			$rolebasedvariations = $this->get_variation_new_prices( $product );
-
-			if ( empty( $rolebasedvariations ) ) {
-				return $show;
-			} else {
-
-				$min_price = current( $rolebasedvariations );
-				$max_price = end( $rolebasedvariations );
-
-				if ( $min_price !== $max_price ) {
-					return '<span class="price">' . $variation->get_price_html() . '</span>';
-				} else {
-					return '';
-				}
-
-			}
-
+		    return true;
 		}
 
 		/**

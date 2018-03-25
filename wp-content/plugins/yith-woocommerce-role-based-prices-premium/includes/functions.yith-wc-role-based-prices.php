@@ -432,3 +432,26 @@ if ( ! function_exists( 'get_user_role_label_by_slug' ) ) {
 
 }
 
+
+if( !function_exists( 'ywcrbp_get_format_price_from_to' ) ){
+
+	/**
+	 * @param WC_Product $product
+	 * @param float $from
+	 * @param float $to
+	 * @return string
+	 */
+	function ywcrbp_get_format_price_from_to ( $product, $from, $to ){
+
+		$price_html = '';
+
+		if( function_exists( 'wc_format_price_range' ) ){
+			$price_html = wc_format_price_range( $from, $to );
+
+		}else{
+			$price_html = $product->get_price_html_from_to( $from,$to );
+		}
+
+		return $price_html;
+	}
+}

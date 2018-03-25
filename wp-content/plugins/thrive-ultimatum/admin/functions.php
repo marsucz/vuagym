@@ -133,7 +133,9 @@ function tve_ult_admin_enqueue_scripts( $hook ) {
 	wp_enqueue_script( 'jquery' );
 	wp_enqueue_script( 'backbone' );
 	wp_enqueue_script( 'jquery-ui-sortable', false, array( 'jquery' ) );
-	wp_enqueue_script( 'tu-highcharts', TVE_Ult_Const::plugin_url( 'admin/js/dist/highcharts.js' ) );
+	tve_dash_enqueue_script( 'tve-dash-highcharts', TVE_DASH_URL . '/js/util/highcharts/highcharts.js', array(
+		'jquery',
+	), false, false );
 
 	wp_enqueue_script( 'jquery-ui-datepicker' );
 

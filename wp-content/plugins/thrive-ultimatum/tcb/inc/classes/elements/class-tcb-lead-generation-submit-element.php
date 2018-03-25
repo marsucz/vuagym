@@ -32,12 +32,12 @@ class TCB_Lead_Generation_Submit_Element extends TCB_Element_Abstract {
 		return array(
 			'lead_generation_submit' => array(
 				'config' => array(
-					'ModalPicker'  => array(
+					'ModalPicker' => array(
 						'config' => array(
 							'label' => __( 'Add Icon', 'thrive-cb' ),
 						),
 					),
-					'icon_side'    => array(
+					'icon_side'   => array(
 						'css_suffix' => ' .thrv_icon',
 						'css_prefix' => '#tve_editor ',
 						'config'     => array(
@@ -54,7 +54,7 @@ class TCB_Lead_Generation_Submit_Element extends TCB_Element_Abstract {
 							),
 						),
 					),
-					'ButtonColor'  => array(
+					'ButtonColor' => array(
 						'css_suffix' => ' button',
 						'css_prefix' => '#tve_editor ',
 						'config'     => array(
@@ -64,7 +64,7 @@ class TCB_Lead_Generation_Submit_Element extends TCB_Element_Abstract {
 						),
 						'extends'    => 'ColorPicker',
 					),
-					'ButtonWidth'  => array(
+					'ButtonWidth' => array(
 						'css_prefix' => '#tve_editor ',
 						'config'     => array(
 							'default' => '100',
@@ -76,7 +76,7 @@ class TCB_Lead_Generation_Submit_Element extends TCB_Element_Abstract {
 						),
 						'extends'    => 'Slider',
 					),
-					'ButtonAlign'  => array(
+					'ButtonAlign' => array(
 						'config'  => array(
 							'name'    => __( 'Button Align', 'thrive-cb' ),
 							'buttons' => array(
@@ -105,10 +105,10 @@ class TCB_Lead_Generation_Submit_Element extends TCB_Element_Abstract {
 						),
 						'extends' => 'ButtonGroup',
 					),
-					'style'         => array(
+					'style'       => array(
 						'css_suffix' => ' button',
 						'css_prefix' => '#tve_editor ',
-						'config' => array(
+						'config'     => array(
 							'label'   => __( 'Style', 'thrive-cb' ),
 							'items'   => array(
 								'default'      => __( 'Default', 'thrive-cb' ),

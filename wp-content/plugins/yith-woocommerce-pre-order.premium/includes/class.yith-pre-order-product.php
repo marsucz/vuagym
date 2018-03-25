@@ -125,14 +125,14 @@ if ( ! class_exists( 'YITH_Pre_Order_Product' ) ) {
 		}
 
 		public function clear_pre_order_product() {
-			yit_delete_prop( $this->product, '_ywpo_preorder' );
-			yit_delete_prop( $this->product, '_ywpo_preorder_notified' );
-			yit_delete_prop( $this->product, '_ywpo_for_sale_date' );
-			yit_delete_prop( $this->product, '_ywpo_preorder_label' );
-			yit_delete_prop( $this->product, '_ywpo_price_adjustment' );
-			yit_delete_prop( $this->product, '_ywpo_preorder_price' );
-			yit_delete_prop( $this->product, '_ywpo_adjustment_type' );
-			yit_delete_prop( $this->product, '_ywpo_price_adjustment_amount' );
+			delete_post_meta( $this->id, '_ywpo_preorder' );
+			delete_post_meta( $this->id, '_ywpo_preorder_notified' );
+			delete_post_meta( $this->id, '_ywpo_for_sale_date' );
+			delete_post_meta( $this->id, '_ywpo_preorder_label' );
+			delete_post_meta( $this->id, '_ywpo_price_adjustment' );
+			delete_post_meta( $this->id, '_ywpo_preorder_price' );
+			delete_post_meta( $this->id, '_ywpo_adjustment_type' );
+			delete_post_meta( $this->id, '_ywpo_price_adjustment_amount' );
 		}
 
 

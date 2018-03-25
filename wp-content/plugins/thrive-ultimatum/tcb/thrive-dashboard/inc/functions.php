@@ -107,7 +107,7 @@ function tve_dash_get_option( $name, $default = false ) {
  * wrapper over the wp update_option() function
  *
  * @param string $name
- * @param mixed  $value
+ * @param mixed $value
  *
  * @return bool
  */
@@ -141,9 +141,9 @@ function tve_dash_ui_toolkit() {
  *
  * @param        $handle
  * @param string $src
- * @param array  $deps
- * @param bool   $ver
- * @param bool   $in_footer
+ * @param array $deps
+ * @param bool $ver
+ * @param bool $in_footer
  */
 function tve_dash_enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer = false ) {
 	if ( $ver === false ) {
@@ -162,7 +162,7 @@ function tve_dash_enqueue_script( $handle, $src = '', $deps = array(), $ver = fa
  * @param       $handle
  * @param       $src
  * @param array $deps
- * @param bool  $ver
+ * @param bool $ver
  * @param       $media
  */
 function tve_dash_enqueue_style( $handle, $src, $deps = array(), $ver = false, $media = 'all' ) {
@@ -236,7 +236,7 @@ function tve_dash_get_features() {
 	 * For now, the font manager is available only for the users who have a custom font loaded.
 	 */
 	$custom_fonts = json_decode( get_option( 'thrive_font_manager_options' ), true );
-	if ( count( $custom_fonts ) === 0 ) {
+	if ( empty( $custom_fonts ) ) {
 		unset( $dash_features['font_manager'] );
 	}
 
@@ -326,7 +326,7 @@ function tve_dash_detect_cache_plugin() {
 		'wp-super-cache/wp-cache.php',
 		'w3-total-cache/w3-total-cache.php',
 		'wp-rocket/wp-rocket.php',
-		'wp-fastest-cache/wpFastestCache.php'
+		'wp-fastest-cache/wpFastestCache.php',
 	);
 	$known_plugins = apply_filters( 'tve_dash_cache_known_plugins', $known_plugins );
 

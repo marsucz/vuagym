@@ -26,7 +26,7 @@ define('DB_NAME', 'db_vuagym');
 define('DB_USER', 'root');
 
 /** MySQL database password */
-define('DB_PASSWORD', '12345678');
+define('DB_PASSWORD', '123456');
 
 /** MySQL hostname */
 define('DB_HOST', 'localhost');
@@ -77,11 +77,7 @@ $table_prefix  = 'vg_';
  *
  * @link https://codex.wordpress.org/Debugging_in_WordPress
  */
-define('WP_DEBUG', true);
-define( 'WP_DEBUG_LOG', true );
-define( 'WP_DEBUG_DISPLAY', true );
-define( 'SCRIPT_DEBUG', true );
-@ini_set( 'display_errors', 1 );
+define('WP_DEBUG', false);
 
 /* That's all, stop editing! Happy blogging. */
 

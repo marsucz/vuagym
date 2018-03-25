@@ -115,7 +115,7 @@
 				"js": {
 					"external": {
 						"main.js": function (exports, module, require) {
-							eval("/**\n * Created by Ovidiu on 7/20/2017.\n */\nvar TVE = window.TVE || {},\n\tTVE_Ult_Ext = window.TVE_Ult_Ext = TVE_Ult_Ext || {};\n\n(function ( $ ) {\n\t/**\n\t * On TCB Main Ready\n\t */\n\t$( document ).on( 'tcb_main_ready', function () {\n\t\tTVE.Views.Components.ultimatum_countdown = require( './ultimatum-countdown-component' );\n\n\t\tTVE_Ult_Ext.UltimatumCountdown = require( './modals/ultimatum-countdown' );\n\t} );\n})( jQuery );\n//# sourceURL=workspace/tcb-bridge/assets/js/external/main.js");
+							eval("/**\n * Created by Ovidiu on 7/20/2017.\n */\nvar TVE = window.TVE || {},\n\tTVE_Ult_Ext = window.TVE_Ult_Ext = TVE_Ult_Ext || {};\n\n(function ( $ ) {\n\t/**\n\t * On TCB Main Ready\n\t */\n\t$( window ).on( 'tcb_main_ready', function () {\n\t\tTVE.Views.Components.ultimatum_countdown = require( './ultimatum-countdown-component' );\n\n\t\tTVE_Ult_Ext.UltimatumCountdown = require( './modals/ultimatum-countdown' );\n\t} );\n})( jQuery );\n//# sourceURL=workspace/tcb-bridge/assets/js/external/main.js");
 						},
 						"modals": {
 							"ultimatum-countdown.js": function (exports, module, require) {

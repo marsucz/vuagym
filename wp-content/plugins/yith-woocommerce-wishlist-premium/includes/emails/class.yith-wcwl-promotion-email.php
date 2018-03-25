@@ -111,6 +111,8 @@ if( !class_exists( 'YITH_WCWL_Promotion_Email' ) ) {
 				}
 			}
 
+			update_post_meta( yit_get_product_id( $this->object ), 'last_promotional_email', time() );
+
 			add_filter( 'yith_wcwl_promotional_email_send_result', $result ? '__return_true' : '__return_false' );
 		}
 
@@ -186,8 +188,9 @@ if( !class_exists( 'YITH_WCWL_Promotion_Email' ) ) {
 				include_once( trailingslashit( WC()->plugin_path() ) . 'includes/wc-cart-functions.php' );
 			}
 
-			$this->find = array_merge(
-				$this->find,
+			$image_size = apply_filters( 'yith_wcwl_promotional_email_thumbnail_item_size', array( 32, 32 ) );
+
+			$find = array_merge(
 				array(
 					'user_name' => '{user_name}',
 					'user_email' => '{user_email}',
@@ -207,14 +210,13 @@ if( !class_exists( 'YITH_WCWL_Promotion_Email' ) ) {
 				)
 			);
 
-			$this->replace = array_merge(
-				$this->replace,
+			$replace = array_merge(
 				array(
 					'user_name' => $this->user->user_login,
 					'user_email' => $this->user->user_email,
 					'user_first_name' => $this->user->billing_first_name,
 					'user_last_name' => $this->user->billing_first_name,
-					'product_image' => $this->object->get_image( apply_filters( 'yith_wcwl_promotional_email_thumbnail_size', 'shop_thumbnail' ) ),
+					'product_image' => apply_filters( 'yith_wcwl_promotional_email_item_thumbnail', '<div style="margin-bottom: 5px"><img src="' . ( $this->object->get_image_id() ? current( wp_get_attachment_image_src( $this->object->get_image_id(), 'thumbnail' ) ) : wc_placeholder_img_src() ) . '" alt="' . esc_attr__( 'Product image', 'woocommerce' ) . '" height="' . esc_attr( $image_size[1] ) . '" width="' . esc_attr( $image_size[0] ) . '" style="vertical-align:middle; margin-' . ( is_rtl() ? 'left' : 'right' ) . ': 10px;" /></div>', $this->object ),
 					'product_name' => $this->object->get_title(),
 					'product_price' => $this->object->get_price_html(),
 					'product_url' => $this->object->get_permalink(),
@@ -227,6 +229,17 @@ if( !class_exists( 'YITH_WCWL_Promotion_Email' ) ) {
 					'coupon_value' => wc_price( $this->coupon->get_discount_amount( $this->object->get_price() ) )
 				)
 			);
+
+			if( version_compare( wc()->version, '3.2.0', '>=' ) ){
+				$this->placeholders = array_merge(
+					$this->placeholders,
+					array_combine( array_values( $find ), array_values( $replace ) )
+				);
+			}
+			else{
+				$this->find = array_merge( $this->find, $find );
+				$this->replace = array_merge( $this->replace, $replace );
+			}
 
 			$custom_content = apply_filters( 'yith_wcwl_custom_html_content_' . $this->id, $this->format_string( stripcslashes( $this->content_html ) ), $this->object );
 			return $custom_content;

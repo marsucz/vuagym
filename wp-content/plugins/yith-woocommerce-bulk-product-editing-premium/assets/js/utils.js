@@ -5,15 +5,24 @@ jQuery( function ( $ ) {
      */
     $( '.yith-wcbep-toggle' ).each( function () {
         var $toggleAnchor = $( this ),
-            $target       = $( $toggleAnchor.data( 'target' ) );
+            $target       = $( $toggleAnchor.data( 'target' ) ),
+            animate       = $toggleAnchor.data( 'animate' ) || false;
 
         $toggleAnchor.on( 'click', function () {
             if ( $( this ).is( '.closed' ) ) {
                 $( this ).removeClass( 'closed' );
-                $target.show();
+                if ( animate ) {
+                    $target.slideUp();
+                } else {
+                    $target.show();
+                }
             } else {
                 $( this ).addClass( 'closed' );
-                $target.hide();
+                if ( animate ) {
+                    $target.slideDown();
+                } else {
+                    $target.hide();
+                }
             }
         } );
     } );

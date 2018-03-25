@@ -85,13 +85,6 @@ $field_types = ywccp_get_field_type();
 					<label for="field_required"><?php _e( 'Required', 'yith-woocommerce-checkout-manager' ) ?></label>
 				</td>
 			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>
-					<input type="checkbox" name="field_clear" value="1" />
-					<label for="field_clear"><?php _e( 'Clear Row', 'yith-woocommerce-checkout-manager' ); ?></label>
-				</td>
-			</tr>
 			<tr class="remove_default" data-hide="heading">
 				<td>&nbsp;</td>
 				<td>

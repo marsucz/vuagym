@@ -53,12 +53,12 @@ if ( !function_exists( 'yith_wcbep_posts_filter_where' ) ) {
                     $compare = 'NOT LIKE';
                     break;
                 case 'starts':
-                    $compare = 'LIKE';
-                    $value   = $f_title_val . '%';
+                    $compare = 'REGEXP';
+                    $value   = '^' . $f_title_val ;
                     break;
                 case 'ends':
-                    $compare = 'LIKE';
-                    $value   = '%' . $f_title_val;
+                    $compare = 'REGEXP';
+                    $value   = $f_title_val . '$';
                     break;
             }
 

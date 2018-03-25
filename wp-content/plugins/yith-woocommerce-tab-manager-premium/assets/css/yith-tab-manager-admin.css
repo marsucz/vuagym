@@ -65,73 +65,8 @@
     resize:none;
 }
 
-/* === ICON MANAGER === */
-#_ywtm_icon_tab-container div.ywtm-icon-manager ul.ywtm-icon-list-wrapper li {
-    float: left;
-    width: 20px;
-    height: 20px;
-    font-size: 15px;
-    cursor: pointer;
-    padding: 3px;
-}
-
-#_ywtm_icon_tab-container div.ywtm-icon-manager ul.ywtm-icon-list-wrapper:after {
-    content: '';
-    clear: both;
-    display: block;
-}
-
-#_ywtm_icon_tab-container  div.ywtm-icon-manager{
-    max-height: 200px;
-    overflow-y: scroll;
-    margin-bottom: 25px;
-    border: 1px solid #DFDFDF;
-    padding: 10px;
-    clear: left;
-    display: block;
-}
-
-#_ywtm_icon_tab-container div.ywtm-icon-manager ul.ywtm-icon-list-wrapper li.ywtm-icon-none:before{
-    content: '';
-    width: 8px;
-    height: 8px;
-    margin-top: 2px;
-}
-
-#_ywtm_icon_tab-container div.ywtm-icon-manager ul.ywtm-icon-list-wrapper li.active{
-    position: relative;
-}
-#_ywtm_icon_tab-container div.ywtm-icon-manager ul.ywtm-icon-list-wrapper li.active:before {
-    position: absolute;
-    border: 1px solid #CD5555;
-    display: block;
-    transform: scale(1.5);
-    -webkit-transform: scale(1.5);
-    -mox-transform: scale(1.5);
-    -ms-transform: scale(1.5);
-    -o-transform: scale(1.5);
-    padding: 3px;
-    background: #fff;
-    left: 0;
-    top: 0;
-    transition: transform 0.3s ease;
-    -webkit-transition: -webkit-transform 0.3s ease;
-    -moz-transition: -moz-transform 0.3s ease;
-    -ms-transition: -ms-transform 0.3s ease;
-    -o-transition: -o-transform 0.3s ease;
-}
-
-#_ywtm_icon_tab-container div.ywtm-icon-manager .ywtm-icon-manager-text .ywtm-icon-preview {
-    height: 30px;
-    font-size: 25px;
-    margin-bottom: 15px;
-    border: 0;
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-}
-
-.ywtm-icon-manager-text .ywtm-icon-text{
+#yit-icons-manager-wrapper-_ywtm_icon_tab_icon,
+.yith-plugin-fw-upload-field-wrapper{
     display: none;
 }
 
@@ -204,26 +139,17 @@ table.wp-list-table .column-thumbnail {
 
 /*Contact form field admin*/
 
-.the-metabox .custom_form_field div.form_video_row {
-
-    margin-bottom: 10px;
+.ywtb-form-row{
+    height: 80px;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
 }
-
-.the-metabox .custom_form_field div.form_video_row p.sub_form_video_row {
-
-   font-size:12px;
-   margin-top: 10px;
-   font-style: italic;
+#ywtb-form-field-container .ywtb-field{
+    float:left;
+    margin-right: 50px;
 }
-
-.my-tabs a:before{
-    display: none;
-}
-
-
-.the-metabox .select_wrapper  {
-
-    width:90% !important;
+#ywtb-form-field-container .ywtb-field span{
+    display: inline-block;
 }
 
 /**WooCommerce TABS**/
@@ -246,7 +172,7 @@ table.wp-list-table .column-thumbnail {
     margin-right: 10px;
 }
 .ywtm_override label,.ywtm_hide label, .ywtm_title label{
- 
+
     float: none;
     margin: 0!important;
     padding: 0!important;
@@ -271,29 +197,117 @@ table.wp-list-table .column-thumbnail {
     border-bottom: 1px solid #eee;
 }
 
-/*#_ywtm_icon_tab-container [data-font="FontAwesome"]:before, span.ywtm_icon[data-font="FontAwesome"]:before{
-    font-family: 'FontAwesome';
-    content: attr(data-icon);
-    speak: none;
-    font-weight: normal;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
-    font-style: normal;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}*/
+.ywtm_icon{
+    margin-left: 0!important;
+}
 
-/* Use the following CSS code if you want to use data attributes for inserting your icons */
-#_ywtm_icon_tab-container [data-font="FontAwesome"]:before, span.ywtm_icon[data-font="FontAwesome"]:before {
-    font-family: 'FontAwesome';
-    content: attr(data-icon);
+#woocommerce-product-data ul.wc-tabs li.my-tabs_ywtm_wc_tab a::before {
+    font-family: WooCommerce!important;
+    content: '\e03d';
+}
+
+
+/*TAB MANAGER TABLE for video gallery and download*/
+.ywtb-table {
+    width: 98%;
+
+    padding: 0!important;
+}
+
+.ywtb-table th {
+    padding: 7px 0 7px 7px!important;
+}
+
+.ywtb-table th.sort {
+    width: 17px;
+    padding: 7px!important
+}
+.ywtb-table td.sort:before{
+    content: '\f333';
+    font-family: Dashicons;
+    text-align: center;
+    line-height: 1;
+    color: #999;
+    display: block;
+    width: 17px;
+    float: left;
+    height: 100%;
+}
+
+.ywtb-table td{
+    vertical-align: middle!important;
+    position: relative;
+
+}
+
+.ywtb-table td input {
+    width:100%!important;
+}
+
+.ywtb-table td textarea{
+    width: 100%!important;
+}
+.ywtb-table td.faq_name, .woocommerce_options_panel .downloadable_files .ywtb-table td.file_name{
+    vertical-align: top!important;
+}
+
+.ywtb-table td select{
+    width: 200px;
+}
+.ywtb-table td.sort {
+    width: 17px;
+    cursor: move;
+    font-size: 15px;
+    text-align: center;
+    background: #f9f9f9;
+    padding-right: 7px!important;
+}
+
+.ywtb-table td a.delete{
+    display: block;
+    text-indent: -9999px;
+    position: relative;
+    height: 1em;
+    width: 1em;
+    font-size: 1.2em;
+}
+
+.ywtb-table td a.delete:before{
+    font-family: Dashicons;
     speak: none;
-    font-weight: normal;
+    font-weight: 400;
     font-variant: normal;
     text-transform: none;
     line-height: 1;
-    font-style: normal;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    text-indent: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    content: "";
+    color: #999;
+}
+
+.ywtb-table td a.delete:hover:before{
+    color:#a00;
+}
+
+.yith-plugin-fw-ywtb-video-gallery-type-field-wrapper .ywtb-table{
+    margin-top: 20px;
+}
+
+.custom_tab_options label{
+    font-weight: bold;
+}
+
+#woocommerce-product-data ul.wc-tabs li.my-tabs a::before{
+    content: ''!important;
+}
+
+.woocommerce_options_panel .custom_tab_options textarea{
+    height:auto!important;
 }

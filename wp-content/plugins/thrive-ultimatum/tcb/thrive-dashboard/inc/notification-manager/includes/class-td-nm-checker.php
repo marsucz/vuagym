@@ -21,6 +21,7 @@ class TD_NM_Checker {
 		add_action( 'tve_leads_form_conversion', array( __CLASS__, 'on_email_sign_up' ), 10, 5 );
 		add_action( 'tve_leads_action_set_test_item_winner', array( $this, 'on_split_test_ends' ), 10, 2 );
 		add_action( 'tho_action_set_test_item_winner', array( $this, 'on_split_test_ends' ), 10, 2 );
+		add_action( 'tab_action_set_test_item_winner', array( $this, 'on_split_test_ends' ), 10, 2 );
 		add_action( 'tqb_split_test_ends', array( $this, 'on_split_test_ends' ), 10, 2 );
 		add_action( 'tvo_testimonial_added_through_capture_form', array( $this, 'on_testimonial_added' ), 10, 2 );
 		add_action( 'tqb_quiz_completed', array( $this, 'on_quiz_completion' ), 10, 2 );

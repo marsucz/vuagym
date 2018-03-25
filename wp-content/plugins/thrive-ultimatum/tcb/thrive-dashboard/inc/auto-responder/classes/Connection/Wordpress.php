@@ -90,7 +90,33 @@ class Thrive_Dash_List_Connection_Wordpress extends Thrive_Dash_List_Connection_
 			);
 		}
 
+		$this->_switch_list_items( $roles, 'administrator', 'subscriber' );
+
 		return $roles;
+	}
+
+	protected function _switch_list_items( &$list, $item1, $item2 ) {
+
+		//find items keys
+		foreach ( $list as $index => $item ) {
+			if ( ! empty( $item['id'] ) && $item['id'] === $item1 ) {
+				$item1_key = $index;
+			}
+
+			if ( ! empty( $item['id'] ) && $item['id'] === $item2 ) {
+				$item2_key = $index;
+			}
+		}
+
+		//if keys are are set and found
+		if ( isset( $item1_key ) && isset( $item2_key ) && $item1_key !== $item2_key ) {
+			//do the switch
+			$tmp                = $list[ $item2_key ]; //save item 2
+			$list[ $item2_key ] = $list[ $item1_key ]; //overwrite item 2 with item 1
+			$list[ $item1_key ] = $tmp;
+		}
+
+		return $list;
 	}
 
 	/**

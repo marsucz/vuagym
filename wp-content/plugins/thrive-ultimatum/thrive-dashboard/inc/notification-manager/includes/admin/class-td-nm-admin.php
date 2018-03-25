@@ -252,6 +252,8 @@ class TD_NM_Admin {
 		$tests = array(
 			'tl'  => array(),
 			'tho' => array(),
+			'tqb' => array(),
+			'tab' => array(),
 		);
 
 		if ( $tvedb ) {
@@ -290,6 +292,20 @@ class TD_NM_Admin {
 			}
 		}
 
+		if ( class_exists( 'Thrive_AB_Test_Manager' ) ) {
+			$tab_test_manager = new Thrive_AB_Test_Manager();
+			$tab_tests        = $tab_test_manager->get_tests( array(
+				'status' => 'running',
+			) );
+
+			foreach ( $tab_tests as $test ) {
+				$tests['tab'][] = array(
+					'value' => $test['id'],
+					'label' => $test['title'],
+				);
+			}
+		}
+
 		return $tests;
 	}
 
@@ -303,7 +319,7 @@ class TD_NM_Admin {
 		$items = array();
 
 		/**
-		 * @var string $key
+		 * @var string                               $key
 		 * @var Thrive_Dash_List_Connection_Abstract $instance
 		 */
 		foreach ( $email_services as $key => $instance ) {

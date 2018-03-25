@@ -1,0 +1,24 @@
+.vc_element-icon.icon-st{
+	background-image: url('../image/7up.png');
+}
+#adminmenu .toplevel_page_ot-theme-options .wp-menu-image img {
+	padding: 1px;
+}
+#option-tree-header #option-tree-logo a{
+	padding-top: 0px !important;
+}
+#option-tree-header #option-tree-logo a:before{
+	display: none !important;
+}
+.live-previews img{
+	width: 400px;
+	max-width: 100%;
+}
+.menu-item-settings .live-previews img{
+	width: auto;
+	max-height: 400px;
+	max-width: 400px;
+}
+.vc_license-activation-notice{
+	display: none !important;
+}

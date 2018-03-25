@@ -3,12 +3,58 @@
 Contributors: yithemes
 Tags: woocommerce, e-commerce, shop, pre, order, pre-order, pre-purchase, buy, purchase, date, release, yit, yith, yithemes
 Requires at least: 4.0
-Tested up to: 4.7
-Stable tag: 1.3.0
+Tested up to: 4.9.4
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Changelog ==
+
+= Version 1.4.0 - Released: Feb 14, 2018 =
+
+* New: Support to WC 3.3.1.
+* New: Support to WordPress 4.9.4.
+* Update: Plugin Core.
+* Fix: repeated emails when product get out of stock and becoming Pre-Order.
+* Remove: function auto_badge_for_pre_order.
+
+= Version 1.3.7 - Released: Jan 31, 2018 =
+
+* New: Support to WC 3.3.0.
+* Fix: Compatibility with YITH WooCommerce Subscriptions Premium for product variations.
+* Update: Plugin core.
+* Update: Language files.
+
+= Version 1.3.6 - Released: Dec 27, 2017 =
+
+* New: Dutch language
+* Fix: Product Countdown was being applied to non Pre-Order products
+
+= Version 1.3.5 - Released: Dec 1, 2017 =
+
+* New: Option Pre-Order price for guest users
+
+= Version 1.3.4 - Released: Nov 28, 2017 =
+
+* New: Added shortcode "yith_pre_order_products" for displaying Pre-Order products loop. Shortcode arguments: 'columns', 'orderby', 'order', 'posts_per_page'
+
+= Version 1.3.3 - Released: Oct 17, 2017 =
+
+* Fix: solved problem on discounted prices with Badge Management integration
+
+= Version 1.3.2 - Released: Oct 11, 2017 =
+
+* New: Support to WooCommerce 3.2.0 RC2
+* New: option "Show Regular price crossed out" for showing the regular price (crossed out) next to the pre-order price.
+* Fix: Flatsome fix for showing the availability date in Quick View.
+* Fix: The order item meta "ywpo_item_preorder_notified" now has private access
+* Fix: Removed clear_pre_order_product() when a product gets out of stock
+
+= Version 1.3.1 - Released: Aug 31, 2017 =
+
+* New: When products get out of stock, set as Pre-Order. When products get in stock again, the product will lose the Pre-Order status.
+* Fixed: Out of stock selling issues (Require WooCommerce 3.0 or higher)
+* Fixed: Out of stock email issue.
 
 = Version 1.3.0 - Released: Jul 24, 2017 =
 

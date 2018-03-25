@@ -57,10 +57,7 @@ if ( ! class_exists( 'YWCCP_Front' ) ) {
 		 * @since 1.0.0
 		 */
 		public function __construct() {
-
-			// init string and register it for WPML translation
-			add_filter( 'woocommerce_checkout_fields', array( $this, 'init_strings' ), 100, 1 );
-
+			
 			// enqueue scripts and styles
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 9 );
 
@@ -78,6 +75,10 @@ if ( ! class_exists( 'YWCCP_Front' ) ) {
 
 			// validate fields
 			add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_fields' ), 10, 1 );
+			
+			// filter locale array
+			add_filter( 'woocommerce_get_country_locale_default', array( $this, 'set_locale_default' ), 10, 1 );
+			add_filter( 'woocommerce_get_country_locale', array( $this, 'set_locale' ), 10, 1 );
 		}
 
 		/**
@@ -100,21 +101,22 @@ if ( ! class_exists( 'YWCCP_Front' ) ) {
 			wp_register_script( 'ywccp-external-script', YWCCP_ASSETS_URL . '/js/ywccp-external.min.js', array( 'jquery' ), $this->version, true );
 			// frontend script
 			wp_register_script( 'ywccp-front-script', YWCCP_ASSETS_URL . '/js/ywccp-frontend'.$min.'.js', array( 'jquery', 'ywccp-external-script' ), $this->version, true );
-			wp_register_script( 'wc-address-i18n', YWCCP_ASSETS_URL . '/js/ywccp-address-i18n'.$min.'.js', array( 'jquery', 'ywccp-front-script' ), $this->version, true );
 
 			if ( is_checkout() || $this->check_myaccount() ) {
 				wp_enqueue_script( 'ywccp-external-script' );
 				wp_enqueue_script( 'ywccp-front-script' );
 				wp_enqueue_style( 'ywccp-front-style' );
 				wp_enqueue_script( 'jquery-ui-datepicker');
-				//wp_enqueue_style( 'ywccp-jquery-ui-style', '//code.jquery.com/ui/' . $jquery_version . '/themes/smoothness/jquery-ui.css', array(), $jquery_version );
+
+				wp_register_script( 'wc-address-i18n', YWCCP_ASSETS_URL . '/js/ywccp-address-i18n'.$min.'.js', array( 'jquery', 'ywccp-front-script' ), $this->version, true );
 
 				wp_localize_script( 'ywccp-front-script', 'ywccp_front', array(
 					'validation_enabled' => get_option('ywccp-enable-js-error-check') == 'yes',
 					'vat_validation_enabled' => get_option( 'ywccp-enable-js-vat-check' ) == 'yes',
 					'err_msg'   => __( 'This is a required field.', 'yith-woocommerce-checkout-manager' ),
 					'err_msg_vat' => __( 'The VAT number you have entered seems to be wrong.', 'yith-woocommerce-checkout-manager' ),
-					'err_msg_mail' => __( 'The mail you have entered seems to be wrong.', 'yith-woocommerce-checkout-manager' )
+					'err_msg_mail' => __( 'The mail you have entered seems to be wrong.', 'yith-woocommerce-checkout-manager' ),
+					'time_format'  => get_option( 'ywccp-time-format-datepicker', '12' ) == '12'
 				));
 
 				$inline_style = ywccp_add_custom_style();
@@ -322,13 +324,13 @@ if ( ! class_exists( 'YWCCP_Front' ) ) {
 			$checkout_fields = WC()->checkout->checkout_fields;
 
 			foreach ( $checkout_fields as $fieldset_key => $fieldset ) {
+
+				if( 'shipping' === $fieldset_key && ( ! $posted['ship_to_different_address'] || ! WC()->cart->needs_shipping_address() ) ) {
+					continue;
+				}
+
 				foreach ( $fieldset as $key => $field ) {
 					if ( isset( $posted[ $key ] ) ) {
-						// Check for required checkbox
-						if( isset( $field['type'] ) && $field['type'] == 'checkbox' && isset( $field['required'] ) && $field['required'] && ! $posted[$key] ) {
-							wc_add_notice( apply_filters( 'woocommerce_checkout_required_field_notice', sprintf( _x( '%s is a required field.', 'FIELDNAME is a required field.', 'woocommerce' ), '<strong>' . $field['label'] . '</strong>' ), $field['label'] ), 'error' );
-							continue;
-						}
 						// Validation rules
 						if ( ! empty( $field['validate'] ) && is_array( $field['validate'] ) && $posted[ $key ] !== '' ) {
 							foreach ( $field['validate'] as $rule ) {
@@ -455,38 +457,78 @@ if ( ! class_exists( 'YWCCP_Front' ) ) {
 		}
 
 		/**
-		 * Register strings for WPML translation
+		 * Filter locale default for ywccp_address_i18n
 		 *
-		 * @since 1.0.0
+		 * @since 1.0.6
 		 * @author Francesco Licandro
+		 * @param array $locale
+		 * @return array
 		 */
-		public function init_strings( $fields ){
+		public function set_locale_default( $locale ){
 
-			// remove filter for get strings
-			//remove_filter( 'woocommerce_checkout_fields', 'ywccp_filter_wpml_strings', 999 );
-			//$fields = WC()->checkout->checkout_fields;
+            // remove itself to prevent infinite loop
+            remove_filter( 'woocommerce_get_country_locale_default', array( $this, 'set_locale_default' ), 10 );
 
-			foreach( $fields as $section => $field ) {
-				if( $section == 'account' ) {
-					continue;
-				}
-				foreach( $field as $key => $single ) {
-					// register label
-					if( isset( $single['label'] ) && $single['label'] ) {
-						do_action( 'wpml_register_single_string', 'yith-woocommerce-checkout-manager', 'plugin_ywccp_' . $key . '_label', $single['label'] );
+			$new_locale = array();
+			$keys = array( 'address_1', 'address_2', 'state', 'postcode', 'city' );
+			$billing = ywccp_get_checkout_fields('billing');
+			$shipping = ywccp_get_checkout_fields('shipping');
+
+            foreach( $billing as $key => $value ) {
+	            // check for translations
+	            $value  = ywccp_field_filter_wpml_strings( $key, $value );
+                $key    = str_replace('billing_', '', $key );
+                if( in_array( $key, $keys ) ) {
+                    $new_locale['billing'][ $key ] = array(
+                        'required'    => isset( $value['required'] ) ? $value['required'] : false,
+                        'label'       => isset( $value['label'] ) ? $value['label'] : '',
+                        'placeholder' => isset( $value['placeholder'] ) ? $value['placeholder'] : ''
+                    );
+                }
+            }
+            foreach( $shipping as $key => $value ) {
+	            // check for translations
+	            $value  = ywccp_field_filter_wpml_strings( $key, $value );
+                $key = str_replace('shipping_', '', $key);
+                if( in_array( $key, $keys ) ) {
+                    $new_locale['shipping'][ $key ] = array(
+                        'required'    => isset( $value['required'] ) ? $value['required'] : false,
+                        'label'       => isset( $value['label'] ) ? $value['label'] : '',
+                        'placeholder' => isset( $value['placeholder'] ) ? $value['placeholder'] : ''
+                    );
+                }
+            }
+
+            // re-add
+            add_filter( 'woocommerce_get_country_locale_default', array( $this, 'set_locale_default' ), 10, 1 );
+
+            return $new_locale;
+		}
+
+		/**
+		 * Filter locale for ywccp_address_i18n
+		 *
+		 * @since 1.0.6
+		 * @author Francesco Licandro
+		 * @param array $locale
+		 * @return array
+		 */
+		public function set_locale( $locale ) {
+
+			foreach ( $locale as $country => &$fields ) {
+				foreach ( $fields as $key => &$field ) {
+					if( ! is_array( $field ) ) {
+						continue;
 					}
-					// register placeholder
-					if( isset( $single['placeholder'] ) && $single['placeholder'] ) {
-						do_action( 'wpml_register_single_string', 'yith-woocommerce-checkout-manager', 'plugin_ywccp_' . $key . '_placeholder', $single['placeholder'] );
-					}
-					// register tooltip
-					if( isset( $single['custom_attributes']['data-tooltip'] ) && $single['custom_attributes']['data-tooltip'] ) {
-						do_action( 'wpml_register_single_string', 'yith-woocommerce-checkout-manager', 'plugin_ywccp_' . $key . '_tooltip', $single['custom_attributes']['data-tooltip'] );
+					foreach( $field as $attr => $attr_value ) {
+						if( $attr == 'label' || $attr == 'placeholder' ) {
+							unset( $field[$attr] );
+						}
 					}
 				}
 			}
 
-			return $fields;
+			return $locale;
 		}
 	}
 }

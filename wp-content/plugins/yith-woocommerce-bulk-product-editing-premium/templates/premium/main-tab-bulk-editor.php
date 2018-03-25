@@ -132,6 +132,20 @@ $has_custom_fields_set = !empty( $custom_fields );
                 </tr>
                 <tr>
                     <td class="yith-wcbep-bulk-form-label-col">
+                        <label><?php _e( 'Menu order', 'woocommerce' ) ?></label>
+                    </td>
+                    <td class="yith-wcbep-bulk-form-content-col">
+                        <select id="yith-wcbep-menu_order-bulk-select" name="yith-wcbep-menu_order-bulk-select" class="yith-wcbep-miniselect is_resetable">
+                            <option value="new"><?php _e( 'Set new', 'yith-woocommerce-bulk-product-editing' ) ?></option>
+                            <option value="inc"><?php _e( 'Increase by value', 'yith-woocommerce-bulk-product-editing' ) ?></option>
+                            <option value="dec"><?php _e( 'Decrease by value', 'yith-woocommerce-bulk-product-editing' ) ?></option>
+                            <option value="del"><?php _e( 'Delete', 'yith-woocommerce-bulk-product-editing' ) ?></option>
+                        </select>
+                        <input type="text" id="yith-wcbep-menu_order-bulk-value" name="yith-wcbep-menu_order-bulk-value" class="yith-wcbep-minifield is_resetable">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="yith-wcbep-bulk-form-label-col">
                         <label><?php _e( 'Sold Individually', 'woocommerce' ) ?></label>
                     </td>
                     <td class="yith-wcbep-bulk-form-content-col">
@@ -213,7 +227,7 @@ $has_custom_fields_set = !empty( $custom_fields );
                         </select>
                         <input type="hidden" id="yith-wcbep-image-bulk-value" name="yith-wcbep-image-bulk-value" class="is_resetable">
                         <input type="hidden" id="yith-wcbep-image-bulk-src" name="yith-wcbep-image-bulk-src" class="is_resetable">
-                        <input type="button" id="yith-wcbep-image-bulk-choose-image" name="yith-wcbep-image-bulk-choose-image" class="button" value="<?php _e('Choose Image'); ?>"/>
+                        <input type="button" id="yith-wcbep-image-bulk-choose-image" name="yith-wcbep-image-bulk-choose-image" class="button" value="<?php _e( 'Choose Image' ); ?>"/>
                         <span id="yith-wcbep-image-bulk-preview"></span>
                     </td>
                 </tr>
@@ -285,10 +299,15 @@ $has_custom_fields_set = !empty( $custom_fields );
                         $attr_label              = $tax->attribute_label;
                         $terms                   = get_terms( $attribute_taxonomy_name, array( 'hide_empty' => '0' ) );
                         if ( count( $terms ) > 0 ) {
+                            $visible_row_id    = "yith-wcbep-bulk-form-attributes-visible-row-$attribute_taxonomy_name";
+                            $variation_row_id  = "yith-wcbep-bulk-form-attributes-used-for-variation-row-$attribute_taxonomy_name";
+                            $toggle_rows_class = "yith-wcbep-bulk-form-attributes-options-row-$attribute_taxonomy_name";
                             ?>
                             <tr>
-                                <td class="yith-wcbep-bulk-form-label-col">
+                                <td class="yith-wcbep-bulk-form-label-col" style="position: relative">
                                     <label><?php echo $attr_label; ?></label>
+                                    <span class="yith-wcbep-bulk-form-attributes-toggle-options dashicons dashicons-arrow-down-alt2 yith-wcbep-toggle closed"
+                                          data-target=".<?php echo $toggle_rows_class ?>"></span>
                                 </td>
                                 <td class="yith-wcbep-bulk-form-content-col">
                                     <select class="yith-wcbep-attributes-bulk-select yith-wcbep-miniselect is_resetable">
@@ -312,6 +331,32 @@ $has_custom_fields_set = !empty( $custom_fields );
                                             ?>
                                         </select>
                                     </div>
+                                </td>
+                            </tr>
+                            <tr id="<?php echo $visible_row_id; ?>" class="yith-wcbep-bulk-form-attributes-visible-row <?php echo $toggle_rows_class ?>">
+                                <td class="yith-wcbep-bulk-form-label-col">
+                                    <label><?php echo $attr_label; ?> - <?php _e( 'is visible', 'yith-woocommerce-bulk-product-editing' ) ?></label>
+                                </td>
+                                <td class="yith-wcbep-bulk-form-content-col">
+                                    <select class="yith-wcbep-attributes-visible-bulk-select yith-wcbep-miniselect is_resetable"
+                                            data-taxonomy-name="<?php echo $attribute_taxonomy_name; ?>">
+                                        <option value=""></option>
+                                        <option value="yes"><?php _e( 'Yes', 'yith-woocommerce-bulk-product-editing' ) ?></option>
+                                        <option value="no"><?php _e( 'No', 'yith-woocommerce-bulk-product-editing' ) ?></option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr id="<?php echo $variation_row_id; ?>" class="yith-wcbep-bulk-form-attributes-used-for-variation-row <?php echo $toggle_rows_class ?>">
+                                <td class="yith-wcbep-bulk-form-label-col">
+                                    <label><?php echo $attr_label; ?> - <?php _e( 'used for variations', 'yith-woocommerce-bulk-product-editing' ) ?></label>
+                                </td>
+                                <td class="yith-wcbep-bulk-form-content-col">
+                                    <select class="yith-wcbep-attributes-used-for-variation-bulk-select yith-wcbep-miniselect is_resetable"
+                                            data-taxonomy-name="<?php echo $attribute_taxonomy_name; ?>">
+                                        <option value=""></option>
+                                        <option value="yes"><?php _e( 'Yes', 'yith-woocommerce-bulk-product-editing' ) ?></option>
+                                        <option value="no"><?php _e( 'No', 'yith-woocommerce-bulk-product-editing' ) ?></option>
+                                    </select>
                                 </td>
                             </tr>
                             <?php

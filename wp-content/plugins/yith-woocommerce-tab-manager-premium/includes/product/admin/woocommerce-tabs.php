@@ -7,12 +7,14 @@
  */
 if( !defined( 'ABSPATH' ) )
     exit;
-
-global $post;
-
-$product_id = $post->ID;
+/**
+ * @var WC_Product $product_object
+ */
+global $product_object;
+$product_id = yit_get_product_id( $product_object );
 
 $wc_tabs = ywtm_get_default_tab( $product_id );
+$content = $product_object->get_description();
 
 ?>
 
@@ -25,7 +27,7 @@ $wc_tabs = ywtm_get_default_tab( $product_id );
         $tab_title = get_post_meta( $product_id, '_ywtm_title_tab_'.$key, true );
         $tab_title = $tab_title ? $tab_title : $tab['title'].$count_review;
         $tab_content = get_post_meta( $product_id, '_ywtm_content_tab_'.$key , true);
-        $tab_content = $tab_content ? $tab_content : apply_filters( 'the_content',$post->post_content );
+        $tab_content = $tab_content ? $tab_content : apply_filters( 'the_content',$content );
         $tab_priority = get_post_meta( $product_id, '_ywtm_priority_tab_'.$key, true );
         $tab_priority = $tab_priority ? $tab_priority : $tab['priority'];
 

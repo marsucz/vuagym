@@ -20,9 +20,11 @@ if ( ! class_exists( 'YITH_WRBP_Compatibilities' ) ) {
 				require_once( 'class.compatibility-role-based-prices-multivendor.php' );
 			}
 
-			if ( defined( 'YITH_YWDPD_PREMIUM' ) ) {
-				require_once( 'class.yith-ywrbp-yith-dynamic-pricing-module.php' );
+			if( defined( 'YITH_YWSBS_PREMIUM' ) ){
+				require_once( 'class.ywrbp-subscription-module.php' );
 			}
+
+
 		}
 
 		/**

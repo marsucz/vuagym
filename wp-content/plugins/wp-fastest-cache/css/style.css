@@ -552,7 +552,7 @@ span.deleteicon span.cleared {
 .success-wpfc{
     border-color: #4F8A10 !important;
     color: #4F8A10 !important;
-    background: #DFF2BF url("../images/success.png") no-repeat 10px !important;
+    background: #DFF2BF url("") no-repeat 10px !important;
 }
 .success-wpfc p, .error-wpfc p{
     padding: 2px 2px 2px 0px !important;

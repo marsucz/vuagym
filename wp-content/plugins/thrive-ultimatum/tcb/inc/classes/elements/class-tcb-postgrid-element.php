@@ -25,6 +25,15 @@ class TCB_Postgrid_Element extends TCB_Element_Abstract {
 	}
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'list';
+	}
+
+	/**
 	 * Return icon class needed for display in menu
 	 *
 	 * @return string
@@ -565,7 +574,6 @@ class TCB_Postgrid_Element extends TCB_Element_Abstract {
 					'LetterSpacing',
 					'.typography-font-color-hr',
 					'.typography-text-transform-hr',
-					'.typography-line-height-hr',
 					'p_spacing',
 					'h1_spacing',
 					'h2_spacing',

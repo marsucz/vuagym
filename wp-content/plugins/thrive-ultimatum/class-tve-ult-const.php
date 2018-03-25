@@ -8,7 +8,7 @@ class TVE_Ult_Const {
 	/**
 	 * TU plugin version
 	 */
-	const PLUGIN_VERSION = '2.0.15';
+	const PLUGIN_VERSION = '2.0.28';
 
 	/**
 	 * Database version for current TU version
@@ -18,7 +18,7 @@ class TVE_Ult_Const {
 	/**
 	 * Required TCB version
 	 */
-	const REQUIRED_TCB_VERSION = '2.0.15';
+	const REQUIRED_TCB_VERSION = '2.0.28';
 
 	/**
 	 * Database prefix for all TU tables

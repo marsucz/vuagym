@@ -95,6 +95,9 @@ var ThriveGlobal = ThriveGlobal || {$j: jQuery.noConflict()};
 	TVE_Dash.send_ajax = function ( ajax_data, callbacks ) {
 		$.ajax( {
 			url: tve_dash_front.ajaxurl,
+			xhrFields: {
+				withCredentials: true
+			},
 			data: {
 				action: 'tve_dash_front_ajax',
 				tve_dash_data: ajax_data
@@ -132,7 +135,7 @@ var ThriveGlobal = ThriveGlobal || {$j: jQuery.noConflict()};
 				return false;
 			}
 			/* We don't need to run this initial AJAX request if a bot is currently crawling the site - performance improvement */
-			if ( tve_dash_front.is_crawler ) {
+			if ( ! tve_dash_front.force_ajax_send && tve_dash_front.is_crawler ) {
 				return false;
 			}
 			TVE_Dash.send_ajax( ajax_data, callbacks );

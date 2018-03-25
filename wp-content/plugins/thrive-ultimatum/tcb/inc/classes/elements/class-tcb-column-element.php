@@ -47,7 +47,7 @@ class TCB_Column_Element extends TCB_Element_Abstract {
 	 * @return string
 	 */
 	public function identifier() {
-		return '.tcb-col';
+		return 'div.tcb-col';
 	}
 
 	/**

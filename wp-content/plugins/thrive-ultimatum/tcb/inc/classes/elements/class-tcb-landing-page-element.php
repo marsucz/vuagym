@@ -56,6 +56,7 @@ class TCB_Landing_page_Element extends TCB_Element_Abstract {
 		return '';
 	}
 
+
 	/**
 	 * Hide all general components.
 	 *
@@ -65,6 +66,14 @@ class TCB_Landing_page_Element extends TCB_Element_Abstract {
 		return array(
 			'lp-base'          => array(
 				'config' => array(
+					'RemoveThemeCss'   => array(
+						'config'  => array(
+							'name'    => '',
+							'label'   => __( 'Remove Theme CSS', 'thrive-cb' ),
+							'default' => false,
+						),
+						'extends' => 'Checkbox',
+					),
 					'ContentWidth'     => array(
 						'to'      => '#tve_editor',
 						'config'  => array(

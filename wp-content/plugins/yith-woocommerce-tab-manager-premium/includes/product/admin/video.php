@@ -2,22 +2,22 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-?>
-<?php
-
-$videos = get_post_meta ( $post->ID, $tab.'_custom_video',true );
+global $product_object;
+$product_id = yit_get_product_id( $product_object );
+$tab_id = $tab->ID;
+$videos = get_post_meta ( $product_id, $tab_id.'_custom_video',true );
 
 $video_settings = isset( $videos['settings'] ) ? $videos['settings'] : array();
 
 //$height     =   isset( $video_settings['height'] )  ? $video_settings['height']   : 100;
 $columns    =   isset( $video_settings['columns'] ) ? $video_settings['columns']  : 1
 ?>
-<div id="<?php echo $tab;?>_tab" class="panel woocommerce_options_panel">
+<div id="<?php echo $tab_id;?>_tab" class="panel woocommerce_options_panel">
     <div class="custom_tab_options" >
         <div class="options_group">
             <p class="form-field">
                 <label for="custom_columns_number"><?php _e('Videos per row','yith-woocommerce-tab-manager');?></label>
-                <input type="number" id="custom_columns_number" min="1" max="4" step="1" name="<?php echo $tab?>_columns_number_video" value="<?php echo esc_attr($columns);?>"/>
+                <input type="number" id="custom_columns_number" min="1" max="4" step="1" name="<?php echo $field_name;?>[columns_number_video]" value="<?php echo esc_attr($columns);?>"/>
                 <span class="description"><?php _e('Set how many columns to show', 'yith-woocommerce-tab-manager');?></span>
             </p>
         </div>
@@ -36,7 +36,6 @@ $columns    =   isset( $video_settings['columns'] ) ? $video_settings['columns']
                 <tbody>
                 <?php
 
-                $videos = get_post_meta ( $post->ID, $tab.'_custom_video',true );
 
                 if ( isset( $videos['video'] ) ) {
                     foreach ( $videos['video'] as $key => $video ) {
@@ -67,5 +66,4 @@ $columns    =   isset( $video_settings['columns'] ) ? $video_settings['columns']
         </div>
       </div>
     </div>
-
 </div>

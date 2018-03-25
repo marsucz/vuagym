@@ -17,19 +17,19 @@ class Thrive_Dash_List_Connection_Drip extends Thrive_Dash_List_Connection_Abstr
 	}
 
 	/**
+	 * Return the connection email merge tag
+	 *
+	 * @return String
+	 */
+	public static function getEmailMergeTag() {
+		return '{{ subscriber.email }}';
+	}
+
+	/**
 	 * @return string the API connection title
 	 */
 	public function getTitle() {
 		return 'Drip';
-	}
-
-	/**
-	 * instantiate the API code required for this connection
-	 *
-	 * @return mixed
-	 */
-	protected function _apiInstance() {
-		return new Thrive_Dash_Api_Drip( $this->param( 'token' ) );
 	}
 
 	/**
@@ -99,45 +99,6 @@ class Thrive_Dash_List_Connection_Drip extends Thrive_Dash_List_Connection_Abstr
 
 		} catch ( Exception $e ) {
 			return $e->getMessage();
-		}
-	}
-
-	/**
-	 * get all Subscriber Lists from this API service
-	 *
-	 * @return array|bool for error
-	 */
-	protected function _getLists() {
-		try {
-			/** @var Thrive_Dash_Api_Drip $api */
-			$api = $this->getApi();
-
-			$campaigns = $api->get_campaigns( array(
-				'account_id' => $this->param( 'client_id' ),
-				'status'     => 'all',
-			) );
-
-			if ( empty( $campaigns ) || ! is_array( $campaigns ) ) {
-				$this->_error = __( 'There is not Campaign in your Drip account to be fetched !', TVE_DASH_TRANSLATE_DOMAIN );
-
-				return false;
-			}
-
-			$lists = array();
-
-			foreach ( $campaigns['campaigns'] as $campaign ) {
-				$lists[] = array(
-					'id'   => $campaign['id'],
-					'name' => $campaign['name'],
-				);
-			}
-
-			return $lists;
-
-		} catch ( Exception $e ) {
-			$this->_error = $e->getMessage();
-
-			return false;
 		}
 	}
 
@@ -219,10 +180,10 @@ class Thrive_Dash_List_Connection_Drip extends Thrive_Dash_List_Connection_Abstr
 			}
 
 			$api->record_event( array(
-				'account_id'  => $this->param( 'client_id' ),
-				'action'      => 'Submitted a Thrive Leads form',
-				'email'       => $arguments['email'],
-				'proprieties' => $proprieties,
+				'account_id' => $this->param( 'client_id' ),
+				'action'     => 'Submitted a Thrive Leads form',
+				'email'      => $arguments['email'],
+				'properties' => $proprieties,
 			) );
 
 			return true;
@@ -304,11 +265,50 @@ class Thrive_Dash_List_Connection_Drip extends Thrive_Dash_List_Connection_Abstr
 	}
 
 	/**
-	 * Return the connection email merge tag
+	 * instantiate the API code required for this connection
 	 *
-	 * @return String
+	 * @return mixed
 	 */
-	public static function getEmailMergeTag() {
-		return '{{ subscriber.email }}';
+	protected function _apiInstance() {
+		return new Thrive_Dash_Api_Drip( $this->param( 'token' ) );
+	}
+
+	/**
+	 * get all Subscriber Lists from this API service
+	 *
+	 * @return array|bool for error
+	 */
+	protected function _getLists() {
+		try {
+			/** @var Thrive_Dash_Api_Drip $api */
+			$api = $this->getApi();
+
+			$campaigns = $api->get_campaigns( array(
+				'account_id' => $this->param( 'client_id' ),
+				'status'     => 'all',
+			) );
+
+			if ( empty( $campaigns ) || ! is_array( $campaigns ) ) {
+				$this->_error = __( 'There is not Campaign in your Drip account to be fetched !', TVE_DASH_TRANSLATE_DOMAIN );
+
+				return false;
+			}
+
+			$lists = array();
+
+			foreach ( $campaigns['campaigns'] as $campaign ) {
+				$lists[] = array(
+					'id'   => $campaign['id'],
+					'name' => $campaign['name'],
+				);
+			}
+
+			return $lists;
+
+		} catch ( Exception $e ) {
+			$this->_error = $e->getMessage();
+
+			return false;
+		}
 	}
 }

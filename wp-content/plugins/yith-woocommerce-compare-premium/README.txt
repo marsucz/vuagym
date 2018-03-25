@@ -1,5 +1,52 @@
 == Changelog ==
 
+= 2.3.0 = Released on Feb 01, 2017
+
+* New: Support to WordPress 4.9.2.
+* New: Support to WooCommerce 3.3.0.
+* Update: Plugin Core.
+* Update: Language Files.
+* Fix: Custom attributes missing for not latin charset.
+* Fix: Removed unused widget options.
+
+= 2.2.4 = Released on Dec 21, 2017
+
+* New: Support to WordPress 4.9.1.
+* New: Support to WooCommerce 3.2.6.
+* New: Product image in compare widget.
+* New: Compare widget template templates/yith-compare-widget-item.php.
+* Update: Plugin Core.
+* Update: Language Files.
+* Fix: Reset query and postdata after each compare table.
+
+= 2.2.3 = Released on Nov 23, 2017
+
+* New: Support to WordPress 4.9.0.
+* New: Support to WooCommerce 3.2.5.
+* New: Widget reloads using AJAX.
+* Fix: WPML config XML.
+
+= 2.2.2 = Released on Nov 10, 2017
+
+* New: Support to WordPress 4.8.3.
+* New: Support to WooCommerce 3.2.3.
+* New: Product SKU in compare table.
+* Update: Plugin Core.
+* Fix: Related products and share link after an ajax event on compare table.
+* Fix: Make sure to get always WPML translated product on add compare link.
+* Fix: Removed unused global product in compare table.
+* Dev: New filter yith_woocompare_widget_products_html for compare widget html.
+
+= 2.2.1 = Released on Oct 20, 2017
+
+* New: Support to WordPress 4.8.2.
+* New: Support to WooCommerce 3.2.1.
+* Update: Plugin Core.
+* Update: dataTables and FixedColumns scripts.
+* Fix: Fixed columns for compare table.
+* Fix: RTL style.
+* Dev: New filter yith_woocompare_get_product_categories for product categories on compare.
+
 = 2.2.0 = Released on Aug 16, 2017
 
 * New: Support to WordPress 4.8.1.

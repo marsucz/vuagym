@@ -11,6 +11,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<div class="thrv_wrapper thrv-divider" data-style="tve_sep-1" data-thickness="5" data-color="rgb(66, 66, 66)">
+<div class="thrv_wrapper thrv-divider" data-style="tve_sep-1" data-thickness="3" data-color="rgb(66, 66, 66)">
 	<hr class="tve_sep tve_sep-1">
 </div>

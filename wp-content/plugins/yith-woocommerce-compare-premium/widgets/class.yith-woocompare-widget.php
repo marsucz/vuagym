@@ -48,7 +48,7 @@ if( !class_exists( 'YITH_WOOCOMPARE' ) ) {
             </ul>
 
             <a href="<?php echo $yith_woocompare->obj->remove_product_url('all') ?>" data-product_id="all" class="clear-all" rel="nofollow"><?php _e( 'Clear all', 'yith-woocommerce-compare' ) ?></a>
-            <a href="<?php echo $yith_woocompare->obj->view_table_url() ?>" class="compare added button" rel="nofollow"><?php _e( 'Compare', 'yith-woocommerce-compare' ) ?></a>
+            <a href="<?php echo $yith_woocompare->obj->view_table_url() ?>" class="compare-widget button" rel="nofollow"><?php _e( 'Compare', 'yith-woocommerce-compare' ) ?></a>
 
             <?php echo $after_widget;
         }
@@ -70,7 +70,6 @@ if( !class_exists( 'YITH_WOOCOMPARE' ) ) {
                     <input class="widefat" type="text" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" />
                 </label>
             </p>
-
             <p>
                 <label>
                     <input type="checkbox" id="<?php echo $this->get_field_id( 'hide_empty' ); ?>" name="<?php echo $this->get_field_name( 'hide_empty' ); ?>" <?php if( $instance['hide_empty'] ) echo 'checked="checked"'; ?>/>

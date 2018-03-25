@@ -4,20 +4,44 @@
  * API wrapper for WebinarJamStudio
  */
 class Thrive_Dash_Api_WebinarJamStudio {
-	const API_URL = 'https://app.webinarjam.com/api/v2/';
+	const NEW_API_URL = 'https://webinarjam.genndi.com/api/';
+	const OLD_API_URL = 'https://app.webinarjam.com/api/v2/';
 
 	protected $apiKey;
+	protected $apiUrl;
+	protected $apiVersion;
 
 	/**
 	 * @param string $apiKey always required
 	 *
 	 * @throws Thrive_Dash_Api_WebinarJamStudio_Exception
 	 */
-	public function __construct( $apiKey ) {
+	public function __construct( $apiKey, $apiVersion ) {
 		if ( empty( $apiKey ) ) {
 			throw new Thrive_Dash_Api_WebinarJamStudio_Exception( 'API Key is required' );
 		}
+
 		$this->apiKey = $apiKey;
+		$this->setWebinarJamApiVersion( $apiVersion );
+		$this->setWebinarJamApiUrl();
+	}
+
+	/**
+	 * Set api version
+	 *
+	 * @param $version
+	 */
+	public function setWebinarJamApiVersion( $version ) {
+		$this->apiVersion = $version;
+	}
+
+	/**
+	 * Set api url
+	 *
+	 * @param $url
+	 */
+	public function setWebinarJamApiUrl() {
+		$this->apiVersion == 1 ? $this->apiUrl = self::NEW_API_URL : $this->apiUrl = self::OLD_API_URL;
 	}
 
 	/**
@@ -49,11 +73,14 @@ class Thrive_Dash_Api_WebinarJamStudio {
 		$params = array(
 			'api_key'    => $this->apiKey,
 			'webinar_id' => $webinarKey,
-			'name'       => $name ? $name : ' ',
 			'email'      => $email,
 			'schedule'   => 0,
-			'phone'      => $phone ? $phone : ' '
+			'phone'      => $phone ? $phone : ' ',
 		);
+
+		$this->apiVersion == 1 ?
+			$params['first_name'] = $name ? $name : ' ' :
+			$params['name'] = $name ? $name : ' ';
 
 		$this->_call( 'register', $params, 'POST' );
 
@@ -77,7 +104,6 @@ class Thrive_Dash_Api_WebinarJamStudio {
 
 		return $this->_call( 'webinar', $params, 'POST' );
 	}
-
 	/**
 	 * perform a webservice call
 	 *
@@ -88,7 +114,7 @@ class Thrive_Dash_Api_WebinarJamStudio {
 	 * @throws Thrive_Dash_Api_WebinarJamStudio_Exception
 	 */
 	protected function _call( $path, $params = array(), $method = 'GET' ) {
-		$url = self::API_URL . ltrim( $path, '/' );
+		$url = $this->apiUrl . ltrim( $path, '/' );
 
 		$args = array(
 			'headers' => array(

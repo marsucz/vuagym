@@ -2,25 +2,27 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-?>
-<?php
-$gallery_images = get_post_meta( $post->ID, $tab."_custom_gallery", true );
+
+global $product_object;
+$product_id = yit_get_product_id( $product_object );
+$tab_id = $tab->ID;
+$gallery_images = get_post_meta( $product_id, $tab_id."_custom_gallery", true );
 $image_ids='';
 $gallery_settings = isset ( $gallery_images['settings'] ) ? $gallery_images['settings'] : array() ;
 //$height     =   isset( $gallery_settings['height'] )  ? $gallery_settings['height']   : 100;
 $columns    =   isset( $gallery_settings['columns'] ) ? $gallery_settings['columns']  : 1
 
 ?>
-<div id="<?php echo $tab;?>_tab" class="panel woocommerce_options_panel">
+<div id="<?php echo $tab_id;?>_tab" class="panel woocommerce_options_panel">
     <div class="custom_tab_options" >
         <div class="options_group">
             <p class="form-field">
                 <label for="custom_columns_number"><?php _e('Images per row','yith-woocommerce-tab-manager');?></label>
-                <input type="number" id="custom_columns_number" min="1" max="4" step="1" name="<?php echo $tab?>_columns_number" value="<?php echo $columns;?>"/>
+                <input type="number" id="custom_columns_number" min="1" max="4" step="1" name="<?php echo $field_name;?>[columns_number]" value="<?php echo $columns;?>"/>
                 <span class="description"><?php _e('Set how many columns to show', 'yith-woocommerce-tab-manager');?></span>
             </p>
         </div>
-       <div class="options_group">
+       <div class="options_group yith-plugin-fw">
         <div class="form-field image-gallery"  style="padding:10px;">
             <ul id="product-custom-extra-images" class="slides-wrapper extra-images ui-sortable clearfix">
             <?php
@@ -54,7 +56,7 @@ $columns    =   isset( $gallery_settings['columns'] ) ? $gallery_settings['colum
             ?>
              </ul>
                 <input type="button" data-choose="<?php _e( 'Add Images to Gallery', 'yith-woocommerce-tab-manager' ); ?>" data-update="<?php _e( 'Add to gallery', 'yith-woocommerce-tab-manager' ); ?>" value="<?php _e( 'Add images', 'yith-woocommerce-tab-manager' ) ?>" data-delete="<?php _e( 'Delete image', 'yith-woocommerce-tab-manager' ); ?>" data-text="<?php _e( 'Delete', 'yith-woocommerce-tab-manager' ); ?>" id="product-gallery-button" class="image-gallery-button button" />
-                <input type="hidden" class="image_gallery_ids" id="image_gallery_ids" name="<?php echo $tab;?>_custom_gallery_image_ids" value="<?php echo esc_attr( $image_ids ); ?>" />
+                <input type="hidden" class="image_gallery_ids" id="image_gallery_ids" name="<?php echo $field_name;?>[custom_gallery_image_ids]" value="<?php echo esc_attr( $image_ids ); ?>" />
         </div>
        </div>
     </div>

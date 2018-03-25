@@ -9,7 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Silence is golden!
 }
 
-require_once 'class-tcb-element-abstract.php';
+require_once plugin_dir_path( __FILE__ ) . 'class-tcb-element-abstract.php';
+require_once plugin_dir_path( __FILE__ ) . 'class-tcb-cloud-template-element-abstract.php';
 
 /**
  * Class TCB_Elements
@@ -52,9 +53,7 @@ class TCB_Elements {
 		$files = array_diff( scandir( $path ), array( '.', '..' ) );
 		foreach ( $files as $file ) {
 			$element = str_replace( array( 'class-tcb-', '-element.php' ), '', $file );
-			$chunks  = explode( '-', $element );
-			$chunks  = array_map( 'ucfirst', $chunks );
-			$element = implode( '_', $chunks );
+			$element = self::capitalize_class_name( $element );
 
 			$class = 'TCB_' . $element . '_Element';
 
@@ -218,6 +217,8 @@ class TCB_Elements {
 			}
 			include $file;
 		}
+
+		do_action( 'tcb_output_components' );
 	}
 
 	/**
@@ -346,6 +347,62 @@ class TCB_Elements {
 		}
 
 		return $return;
+	}
+
+	/**
+	 * transforms lead-generation into Lead_Generation
+	 *
+	 * @param string $element_file_name
+	 */
+	public static function capitalize_class_name( $element_file_name ) {
+
+		$chunks = explode( '-', $element_file_name );
+		$chunks = array_map( 'ucfirst', $chunks );
+
+		return implode( '_', $chunks );
+	}
+
+	/**
+	 * Instantiate an element class identified by $element_type or return it if it already exists in the instances array
+	 *
+	 * @param string $element_type
+	 *
+	 * @return null|TCB_Element_Abstract
+	 */
+	public function element_factory( $element_type ) {
+
+		if ( isset( $this->_instances[ $element_type ] ) ) {
+			return $this->_instances[ $element_type ];
+		}
+
+		$instance = null;
+
+		/**
+		 * Internal TCB elements
+		 */
+		$class_name = 'TCB_' . self::capitalize_class_name( $element_type ) . '_Element';
+		if ( ! class_exists( $class_name ) ) {
+			$file = plugin_dir_path( __FILE__ ) . 'elements/class-tcb-' . $element_type . '-element.php';
+			if ( file_exists( $file ) ) {
+				include $file;
+			}
+		}
+
+		if ( class_exists( $class_name ) ) {
+			$instance = new $class_name( $element_type );
+		}
+
+		if ( ! isset( $instance ) ) {
+			/**
+			 * Try out also possible external class instances
+			 */
+			$external_instances = apply_filters( 'tcb_element_instances', array() );
+			if ( isset( $external_instances[ $element_type ] ) ) {
+				$instance = $external_instances[ $element_type ];
+			}
+		}
+
+		return $instance;
 	}
 }
 

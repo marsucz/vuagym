@@ -2,6 +2,46 @@
 
 == Changelog ==
 
+= Version 1.2.7 - Released: Jan 09, 2017 =
+
+* New - filter by Status
+* Update - Plugin Framework 3
+* Fix - negative stock quantity issue in variation products
+* Fix - WPML language issue
+* Fix - prevent issue when clicking on Bulk Editor buttons
+* Fix - issue when filtering by price
+* Fix - issue when editing menu order with WooCommerce 2.6
+
+= Version 1.2.6 - Released: Oct 11, 2017 =
+
+* New - support to Support to WooCommerce 3.2.0 RC2
+* Fix - sale price scheduling with WooCommerce 3.x
+* Fix - table pagination issue
+* Fix - attribute field issue when the field is empty
+* Tweak - prevent issue due by wrong html code in description, short description and purchase note
+
+= Version 1.2.5 - Released: Sep 13, 2017 =
+
+* New - filter by Stock Status
+* New - filter by Stock Quantity
+* Fix - issue when saving changes in sorted table
+* Fix - issue when saving 'is visible' and 'used for variations' attribute options
+* Fix - issue when removing image
+* Fix - bulk editor z-index to prevent issue with WordPress Media Library
+
+= Version 1.2.4 - Released: Aug 28, 2017 =
+
+* New - bulk edit 'is visible' attribute option
+* New - bulk edit 'used for variations' attribute option
+* New - sort by stock quantity
+* New - bulk edit 'Menu Order'
+* New - added links to display products in the table
+* New - Dutch language
+* Tweak - use REGEX to search for title in DB
+* Fix - WPML integration
+* Fix - datepicker z-index
+* Fix - category issue
+
 = Version 1.2.3 - Released: Jun 05, 2017 =
 
 * New - product type filter
@@ -45,166 +85,166 @@
 
 = 1.1.25 =
 
-* Fixed: issue in combination with YITH WooCommerce Brands Add-on
+* Fix - issue in combination with YITH WooCommerce Brands Add-on
 
 = 1.1.24 =
 
-* Fixed: integration with YITH WooCommerce Brands Add-on
+* Fix - integration with YITH WooCommerce Brands Add-on
 
 = 1.1.23 =
 
-* Added: integration with YITH WooCommerce Multi Vendor
+* New - integration with YITH WooCommerce Multi Vendor
 
 = 1.1.22 =
 
-* Fixed: issue with variation attributes
+* Fix - issue with variation attributes
 
 = 1.1.21 =
 
-* Added: Spanish language
+* New - Spanish language
 
 = 1.1.20 =
 
-* Added: bulk edit "Stock status" field
+* New - bulk edit "Stock status" field
 
 = 1.1.19 =
 
-* Added: filter products by brand (in combination with YITH WooCommerce Brands Add-on Premium)
+* New - filter products by brand (in combination with YITH WooCommerce Brands Add-on Premium)
 
 = 1.1.18 =
 
-* Added: bulk edit product images
+* New - bulk edit product images
 
 = 1.1.17 =
 
-* Added: bulk edit "Date" field
-* Fixed: sorting and pagination issues when applying attribute and category filters
+* New - bulk edit "Date" field
+* Fix - sorting and pagination issues when applying attribute and category filters
 
 = 1.1.16 =
 
-* Added: possibility to bulk edit "Sale Price From" and "Sale Price To" dates
-* Fixed: saving tags issue when "Hierarchical Management for Products Tags" of YITH WooCommerce Ajax Product Filters is enabled
-* Fixed: search bug with many attributes
-* Fixed: documentation link
+* New - possibility to bulk edit "Sale Price From" and "Sale Price To" dates
+* Fix - saving tags issue when "Hierarchical Management for Products Tags" of YITH WooCommerce Ajax Product Filters is enabled
+* Fix - search bug with many attributes
+* Fix - documentation link
 
 = 1.1.15 =
 
-* Added: custom field bulk editing
-* Added: compatibility to YITH WooCommerce Deposits and Down Payments Premium
-* Fixed: compatibility issue on YITH WooCommerce Badge Management Premium (bulk removing badges)
+* New - custom field bulk editing
+* New - compatibility to YITH WooCommerce Deposits and Down Payments Premium
+* Fix - compatibility issue on YITH WooCommerce Badge Management Premium (bulk removing badges)
 
 = 1.1.14 =
 
-* Fixed: bug during exporting
-* Tweak: fixed minor bugs
+* Fix - bug during exporting
+* Tweak - fixed minor bugs
 
 = 1.1.13 =
 
-* Added: Shop Manager can now use Bulk Product Editing panel
-* Fixed: Bulk Product Editing table bugs
-* Tweak: fixed minor bugs
+* New - Shop Manager can now use Bulk Product Editing panel
+* Fix - Bulk Product Editing table bugs
+* Tweak - fixed minor bugs
 
 = 1.1.12 =
 
-* Fixed: js script bug on Bulk Product Editing page
+* Fix - js script bug on Bulk Product Editing page
 
 = 1.1.11 =
 
-* Fixed: edit date bug
-* Fixed: new product bug
+* Fix - edit date bug
+* Fix - new product bug
 
 = 1.1.10 =
 
-* Tweak: fixed edit attribute
+* Tweak - fixed edit attribute
 
 = 1.1.9 =
 
-* Tweak: fixed edit attribute
-* Tweak: fixed minor bugs
+* Tweak - fixed edit attribute
+* Tweak - fixed minor bugs
 
 = 1.1.8 =
 
-* Added: possibility to enable/disable table columns to improve performance
-* Tweak: fixed minor bug
+* New - possibility to enable/disable table columns to improve performance
+* Tweak - fixed minor bug
 
 = 1.1.7 =
 
-* Added: possibility to increase sale price by value or percentage from regular price
+* New - possibility to increase sale price by value or percentage from regular price
 
 = 1.1.6 =
 
-* Added: sorting by weight, width, height and lenght
-* Tweak: fixed minor bugs
+* New - sorting by weight, width, height and lenght
+* Tweak - fixed minor bugs
 
 = 1.1.5 =
 
-* Added: possibility to filter products by weight
+* New - possibility to filter products by weight
 
 = 1.1.4 =
 
-* Added: compatibility with WooCommerce 2.5
+* New - compatibility with WooCommerce 2.5
 * Improved: functionality to show variations in Bulk Product Editing table
-* Tweak: fixed minor bug
+* Tweak - fixed minor bug
 
 = 1.1.3 =
 
-* Added: compatibility with WooCommerce 2.5 RC2
-* Added: support to YITH WooCommerce Brands Add-on Premium
-* Tweak: fixed minor bug
+* New - compatibility with WooCommerce 2.5 RC2
+* New - support to YITH WooCommerce Brands Add-on Premium
+* Tweak - fixed minor bug
 
 = 1.1.2 =
 
-* Added: compatibility with WooCommerce 2.5 BETA 3
-* Added: support to YITH WooCommerce Badge Management Premium
-* Tweak: fixed minor bug
+* New - compatibility with WooCommerce 2.5 BETA 3
+* New - support to YITH WooCommerce Badge Management Premium
+* Tweak - fixed minor bug
 
 = 1.1.1 =
 
-* Added: compatibility with WordPress 4.4
-* Added: compatibility with WooCommerce 2.4.12
-* Added: WPML compatibility
-* Tweak: fixed bug in table pagination
+* New - compatibility with WordPress 4.4
+* New - compatibility with WooCommerce 2.4.12
+* New - WPML compatibility
+* Tweak - fixed bug in table pagination
 
 = 1.1.0 =
 
-* Tweak: improved performance
-* Tweak: improved search
-* Tweak: improved table sorting
-* Tweak: decreased response time for table creation
+* Tweak - improved performance
+* Tweak - improved search
+* Tweak - improved table sorting
+* Tweak - decreased response time for table creation
 
 = 1.0.10 =
 
-* Tweak: improved preformance
+* Tweak - improved preformance
 
 = 1.0.9 =
 
-* Fixed: variation display filtering by attributes
+* Fix - variation display filtering by attributes
 
 = 1.0.8 =
 
-* Fixed: variation visibility by category filter
-* Fixed: price bug after product saving
+* Fix - variation visibility by category filter
+* Fix - price bug after product saving
 
 = 1.0.7 =
 
-* Fixed: product image saving
+* Fix - product image saving
 
 = 1.0.6 =
 
-* Fixed: minor bug
+* Fix - minor bug
 
 = 1.0.5 =
 
-* Fixed: stock quantity and manage stock save
-* Fixed: saving options for stock quantity and manage stock
+* Fix - stock quantity and manage stock save
+* Fix - saving options for stock quantity and manage stock
 
 = 1.0.4 =
 
-* Tweak: performance improoved for bulk product editing
+* Tweak - performance improoved for bulk product editing
 
 = 1.0.3 =
 
-* Fixed: minor bug
+* Fix - minor bug
 
 = 1.0.2 =
 

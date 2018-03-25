@@ -39,7 +39,7 @@ if ( ! class_exists( 'YITH_Pre_Order_Frontend' ) ) {
 			if ( 'no' == get_option( 'yith_wcpo_enable_pre_order', 'no' ) ) {
 				return false;
 			}
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 12 );
 			add_filter( 'woocommerce_product_single_add_to_cart_text', array( $this, 'pre_order_label' ), 20, 2 );
 			add_filter( 'woocommerce_product_add_to_cart_text', array( $this, 'pre_order_label' ), 10, 2 );
 			add_filter( 'woocommerce_cart_item_name', array( $this, 'pre_order_product_cart_label' ), 80, 2 );

@@ -54,7 +54,6 @@ class Thrive_Dash_List_Connection_WebinarJamStudio extends Thrive_Dash_List_Conn
 		}
 
 		$this->setCredentials( $_POST['connection'] );
-
 		$result = $this->testConnection();
 
 		if ( $result !== true ) {
@@ -77,7 +76,8 @@ class Thrive_Dash_List_Connection_WebinarJamStudio extends Thrive_Dash_List_Conn
 	 */
 	public function testConnection() {
 		/** @var Thrive_Dash_Api_WebinarJamStudio $api */
-		$api = $this->getApi();
+		$api         = $this->getApi();
+
 		/**
 		 * just try getting the list of the webinars as a connection test
 		 */
@@ -91,12 +91,37 @@ class Thrive_Dash_List_Connection_WebinarJamStudio extends Thrive_Dash_List_Conn
 	}
 
 	/**
+	 * add a contact to a list
+	 *
+	 * @param mixed $list_identifier
+	 * @param array $arguments
+	 *
+	 * @return mixed
+	 */
+	public function addSubscriber( $list_identifier, $arguments ) {
+		/** @var Thrive_Dash_Api_WebinarJamStudio $api */
+		$api = $this->getApi();
+
+		try {
+			$name  = empty( $arguments['name'] ) ? '' : $arguments['name'];
+			$phone = ! isset( $arguments['phone'] ) || empty( $arguments['phone'] ) ? '' : $arguments['phone'];
+			$api->registerToWebinar( $list_identifier, $name, $arguments['email'], $phone );
+
+			return true;
+		} catch ( Thrive_Dash_Api_WebinarJamStudio_Exception $e ) {
+			return $e->getMessage();
+		} catch ( Exception $e ) {
+			return $e->getMessage();
+		}
+	}
+
+	/**
 	 * instantiate the API code required for this connection
 	 *
 	 * @return mixed
 	 */
 	protected function _apiInstance() {
-		return new Thrive_Dash_Api_WebinarJamStudio( $this->param( 'key' ) );
+		return new Thrive_Dash_Api_WebinarJamStudio( $this->param( 'key' ), $this->param('version') );
 	}
 
 	/**
@@ -124,30 +149,5 @@ class Thrive_Dash_List_Connection_WebinarJamStudio extends Thrive_Dash_List_Conn
 			return false;
 		}
 
-	}
-
-	/**
-	 * add a contact to a list
-	 *
-	 * @param mixed $list_identifier
-	 * @param array $arguments
-	 *
-	 * @return mixed
-	 */
-	public function addSubscriber( $list_identifier, $arguments ) {
-		/** @var Thrive_Dash_Api_WebinarJamStudio $api */
-		$api = $this->getApi();
-
-		try {
-			$name = empty( $arguments['name'] ) ? '' : $arguments['name'];
-			$phone = !isset( $arguments['phone'] ) || empty( $arguments['phone'] ) ? '' : $arguments['phone'];
-			$api->registerToWebinar( $list_identifier, $name, $arguments['email'], $phone );
-
-			return true;
-		} catch ( Thrive_Dash_Api_WebinarJamStudio_Exception $e ) {
-			return $e->getMessage();
-		} catch ( Exception $e ) {
-			return $e->getMessage();
-		}
 	}
 }

@@ -15,6 +15,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 class TCB_Button_Element extends TCB_Element_Abstract {
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'button';
+	}
+
+	/**
 	 * Name of the element
 	 *
 	 * @return string

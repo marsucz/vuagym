@@ -53,7 +53,7 @@
 					<label for="wpFastestCachePreload_attachment">Attachments</label>
 				</div>
 
-				<div class="wiz-input-cont" style="width: 91% !important;margin-bottom: 0px !important;">
+				<div class="wiz-input-cont" style="width: 91% !important;margin-bottom: 5px !important;">
 					<label class="mc-input-label" style="float:left;">
 						<table id="wpfc-form-spinner-preload" class="wpfc-form-spinner" cellpadding="0" cellspacing="0" border="0" height="20" width="70" style="border: 1px solid rgb(204, 204, 204); border-collapse: collapse; background: rgb(255, 255, 255);">
 							<tbody>
@@ -76,6 +76,14 @@
 					</label>
 					<label style="float:left;margin-left:8px;padding-top:4px;">pages per minute</label>
 				</div>
+
+				<div class="wiz-input-cont" style="width: 91% !important;margin-bottom: 0px !important;">
+					<label class="mc-input-label" style="margin-right: 5px;"><input type="checkbox" <?php echo $wpFastestCachePreload_restart; ?> id="wpFastestCachePreload_restart" name="wpFastestCachePreload_restart"></label>
+					<label for="wpFastestCachePreload_restart">Restart After Completed</label>
+					<a style="margin-left:5px;" target="_blank" href="http://www.wpfastestcache.com/features/restart-preload-after-completed/"><img src="<?php echo plugins_url("wp-fastest-cache/images/info.png"); ?>"></a>
+				</div>
+
+
 			</div>
 		</div>
 		<div class="window-buttons-wrapper" style="padding: 0px; display: inline-block; width: 100%; border-top: 1px solid rgb(255, 255, 255); background: none repeat scroll 0px 0px rgb(222, 222, 222); z-index: 999; position: relative; text-align: right; border-radius: 0px 0px 3px 3px;">

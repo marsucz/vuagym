@@ -63,7 +63,6 @@ var TVE_Dash = TVE_Dash || {};
 		}
 
 		return view.render().open();
-
 	};
 
 	/**
@@ -73,33 +72,33 @@ var TVE_Dash = TVE_Dash || {};
 	 */
 	TVE_Dash.bindZClip = function ( $element ) {
 		function bind_it() {
-			//bind zclip on links that copy the shortcode in clipboard
-			try {
-				$element.closest( '.tvd-copy-row' ).find( 'input.tvd-copy' ).on( 'click', function ( e ) {
-					this.select();
-					e.preventDefault();
-					e.stopPropagation();
-				} );
-				var _default_btn_color_class = $element.attr( 'data-tvd-btn-color-class' ) || 'tvd-btn-blue';
-
-				$element.zclip( {
-					path: TVE_Dash_Const.dash_url + '/js/util//jquery.zclip.1.1.1/ZeroClipboard.swf',
-					copy: function () {
-						return jQuery( this ).parents( '.tvd-copy-row' ).find( 'input' ).val();
-					},
-					afterCopy: function () {
-						var $link = jQuery( this );
-						$link.prev().select();
-						$link.removeClass( _default_btn_color_class ).addClass( 'tvd-btn-green' ).find( '.tvd-copy-text' ).html( '<span class="tvd-icon-check"></span>' );
-						setTimeout( function () {
-							$link.removeClass( 'tvd-btn-green' ).addClass( _default_btn_color_class ).find( '.tvd-copy-text' ).html( TVE_Dash_Const.translations.Copy );
-						}, 3000 );
-						$link.parent().prev().select();
-					}
-				} );
-			} catch ( e ) {
-				console.error && console.error( 'Error embedding zclip - most likely another plugin is messing this up' ) && console.error( e );
-			}
+			$element.each( function () {
+				var $elem = $( this ),
+					$input = $elem.closest( '.tvd-copy-row' ).find( 'input.tvd-copy' ).on( 'click', function ( e ) {
+						this.select();
+						e.preventDefault();
+						e.stopPropagation();
+					} ),
+					_default_btn_color_class = $elem.attr( 'data-tvd-btn-color-class' ) || 'tvd-btn-blue';
+				try {
+					$elem.zclip( {
+						path: TVE_Dash_Const.dash_url + '/js/util/jquery.zclip.1.1.1/ZeroClipboard.swf',
+						copy: function () {
+							return jQuery( this ).parents( '.tvd-copy-row' ).find( 'input' ).val();
+						},
+						afterCopy: function () {
+							var $link = jQuery( this );
+							$input.select();
+							$link.removeClass( _default_btn_color_class ).addClass( 'tvd-btn-green' ).find( '.tvd-copy-text' ).html( '<span class="tvd-icon-check"></span>' );
+							setTimeout( function () {
+								$link.removeClass( 'tvd-btn-green' ).addClass( _default_btn_color_class ).find( '.tvd-copy-text' ).html( TVE_Dash_Const.translations.Copy );
+							}, 3000 );
+						}
+					} );
+				} catch ( e ) {
+					console.error && console.error( 'Error embedding zclip - most likely another plugin is messing this up' ) && console.error( e );
+				}
+			} );
 		}
 
 		setTimeout( bind_it, 200 );
@@ -167,7 +166,23 @@ var TVE_Dash = TVE_Dash || {};
 		if ( TVE_Dash.page_loader ) {
 			TVE_Dash.page_loader.close();
 		}
+	};
 
+	/**
+	 * Check if underscore version >= 1.7.0 is used
+	 * They changed the _.template function
+	 */
+	TVE_Dash.is_old_underscore = function () {
+		if ( typeof TVE_Dash.__old_underscore === 'undefined' ) {
+			/**
+			 * _ v. 1.6.0 accepts data as the second parameter and calls the function
+			 * _ v. 1.7.0 accepts templateSettings as the second parameter
+			 */
+			var test = _.template( '<span>This is a test</span>', TVE_Dash.templateSettings, TVE_Dash.templateSettings );
+			TVE_Dash.__old_undescore = (typeof test === 'string' && test === '<span>This is a test</span>');
+		}
+
+		return TVE_Dash.__old_undescore;
 	};
 
 	/**
@@ -177,11 +192,20 @@ var TVE_Dash = TVE_Dash || {};
 	 * @param {object} [opt] optional. If sent, it will return html content (the rendered template)
 	 */
 	TVE_Dash.tpl = function ( tpl_path, opt ) {
-		var _html = $( 'script#' + tpl_path.replace( /\//g, '-' ) ).html() || '';
-		if ( opt ) {
-			return _.template( _html, this.templateSettings )( opt );
+		var _html = $( 'script#' + tpl_path.replace( /\//g, '-' ) ).html() || '',
+			args = [_html];
+
+		if ( this.is_old_underscore() ) {
+			args.push( null ); // send null as data
+			args.push( this.templateSettings );
+		} else {
+			args.push( this.templateSettings );
 		}
-		return _.template( _html, this.templateSettings );
+
+		if ( opt ) {
+			return _.template.apply( _, args )( opt );
+		}
+		return _.template.apply( _, args );
 	};
 
 	/**
@@ -371,6 +395,7 @@ var TVE_Dash = TVE_Dash || {};
 				if ( _.isArray( error ) ) {
 					_.each(
 						error, function ( field ) {
+
 							var _field = field;
 							if ( field.field ) { // if this is an object, we need to use the field property
 								_field = field.field
@@ -381,7 +406,9 @@ var TVE_Dash = TVE_Dash || {};
 								var $parent = $target.parents( '.tvd-modal-content' ).first();
 								$parent.length ? $parent.scrollTo( $target ) : null;
 							}
-
+							if ( $target.is( ':text' ) ) {
+								$target[0].select();
+							}
 							if ( field.message ) {
 								$target.siblings( 'label' ).attr( 'data-error', field.message );
 							}
@@ -16699,7 +16726,7 @@ if (typeof jQuery !== 'undefined') {
 			var _href = $( this ).attr( 'href' ),
 				$this = $( this );
 
-			if ( _href === 'javascript:void(0)' || _href === '#' || _href.indexOf( 'http' ) === - 1 || $this.attr( 'target' ) == '_blank' || $this.hasClass( 'tvd-no-load' ) ) {
+			if ( _href === 'javascript:void(0)' || _href === '#' || _href.indexOf( 'http' ) === - 1 || $this.attr( 'target' ) === '_blank' || $this.hasClass( 'tvd-no-load' ) ) {
 				return true;
 			}
 
@@ -16707,7 +16734,7 @@ if (typeof jQuery !== 'undefined') {
 
 			setTimeout( function () {
 				TVE_Dash.hideLoader();
-			}, 3000 );
+			}, 5000 );
 		} );
 	} );
 

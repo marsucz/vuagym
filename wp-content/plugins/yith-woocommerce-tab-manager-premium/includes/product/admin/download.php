@@ -2,8 +2,11 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+global $product_object;
+$product_id = yit_get_product_id( $product_object );
+$tab_id = $tab->ID;
 ?>
-<div id="<?php echo $tab;?>_tab" class="panel woocommerce_options_panel">
+<div id="<?php echo $tab_id;?>_tab" class="panel woocommerce_options_panel">
     <div class="custom_tab_options" >
         <div class="form-field downloadable_files" style="padding: 10px;">
           <!--  <label><?php _e( 'Downloadable Files', 'woocommerce' ); ?>:</label>-->
@@ -19,7 +22,7 @@ if (!defined('ABSPATH')) {
                 </thead>
                 <tbody>
                 <?php
-                $download_files = get_post_meta( $post->ID, $tab. '_custom_list_file', true );
+                $download_files = get_post_meta( $product_id, $tab_id. '_custom_list_file', true );
 
 
                 if ( $download_files ) {
@@ -49,6 +52,6 @@ if (!defined('ABSPATH')) {
                 </tfoot>
             </table>
         </div>
-
     </div>
+
 </div>

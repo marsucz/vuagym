@@ -33,9 +33,24 @@ endif;
 echo "\n****************************************************\n\n";
 
 if( ! empty( $additional_notes ) ):
-	echo __( "\nAdditional info:\n" );
+	echo "\n" . __( "Additional info:", 'yith-woocommerce-wishlist' ) . "\n";
 
 	echo  $additional_notes . "\n";
+
+	echo "\n****************************************************\n\n";
+endif;
+
+if( ! empty( $additional_data ) ):
+	echo "\n" . __( "Additional data:", 'yith-woocommerce-wishlist' ) . "\n";
+
+	foreach( $additional_data as $key => $value ):
+
+		$key = strip_tags( ucwords( str_replace( array( '_', '-' ), ' ', $key ) ) );
+		$value = strip_tags( $value );
+
+		echo "{$key}: {$value}\n";
+
+	endforeach;
 
 	echo "\n****************************************************\n\n";
 endif;

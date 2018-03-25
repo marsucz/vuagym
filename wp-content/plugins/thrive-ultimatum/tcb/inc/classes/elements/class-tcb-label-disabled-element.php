@@ -66,6 +66,10 @@ class TCB_Label_Disabled_Element extends TCB_Label_Element {
 				'disabled_controls' => array(
 					'TextTransform',
 					'typography-text-transform-hr',
+					'p_spacing',
+					'h1_spacing',
+					'h2_spacing',
+					'h3_spacing',
 				),
 				'config'            => array(
 					'FontColor'  => array(

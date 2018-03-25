@@ -110,6 +110,9 @@ if ( ! class_exists( 'YWCCP_Admin' ) ) {
 			add_action( 'admin_init', array( $this, 'reset_options' ) );
 
 			add_action( 'ywccp_print_admin_fields_section_table', array( $this, 'load_fields_table' ), 10, 1 );
+
+			// filter customer details on edit order section
+            add_filter( 'woocommerce_ajax_get_customer_details', array( $this, 'filter_ajax_customer_details'), 10, 3 );
 		}
 
 		/**
@@ -364,14 +367,13 @@ if ( ! class_exists( 'YWCCP_Admin' ) ) {
 
 				$new_fields[ $name ]                = array();
 				$new_fields[ $name ]['type']        = ! empty( $_POST['field_type'][ $i ] ) ? $_POST['field_type'][ $i ] : 'text';
-				$new_fields[ $name ]['label']       = ! empty( $_POST['field_label'][ $i ] ) ? $_POST['field_label'][ $i ] : '';
-				$new_fields[ $name ]['placeholder'] = ! empty( $_POST['field_placeholder'][ $i ] ) ? $_POST['field_placeholder'][ $i ] : '';
+				$new_fields[ $name ]['label']       = ! empty( $_POST['field_label'][ $i ] ) ? stripslashes( $_POST['field_label'][ $i ] ) : '';
+				$new_fields[ $name ]['placeholder'] = ! empty( $_POST['field_placeholder'][ $i ] ) ? stripslashes( $_POST['field_placeholder'][ $i ] ) : '';
 				$new_fields[ $name ]['options']     = ! empty( $_POST['field_options'][ $i ] ) ? $this->crete_options_array( $_POST['field_options'][ $i ], $new_fields[ $name ]['type'] ) : array();
 				$new_fields[ $name ]['class']       = ! empty( $_POST['field_class'][ $i ] ) ? array_map( 'wc_clean', explode( ',', $_POST['field_class'][ $i ] ) ) : array();
 				$new_fields[ $name ]['label_class'] = ! empty( $_POST['field_label_class'][ $i ] ) ? array_map( 'wc_clean', explode( ',', $_POST['field_label_class'][ $i ] ) ) : '';
 				$new_fields[ $name ]['validate']    = ! empty( $_POST['field_validate'][ $i ] ) ? explode( ',', $_POST['field_validate'][ $i ] ) : '';
 				$new_fields[ $name ]['required']    = ( ! empty( $_POST['field_required'][ $i ] ) && $new_fields[ $name ]['type'] != 'heading' ) ? true : false;
-				$new_fields[ $name ]['clear']       = ! empty( $_POST['field_clear'][ $i ] ) ? true : false;
 				$new_fields[ $name ]['enabled']     = ! empty( $_POST['field_enabled'][ $i ] ) ? true : false;
 				// check also in bulk action
 				if( ( $_POST['bulk_action'] || $_POST['bulk_action_bottom'] ) && isset( $_POST['select_field'][$i] ) ) {
@@ -425,7 +427,7 @@ if ( ! class_exists( 'YWCCP_Admin' ) ) {
 
 				// create key
 				$key = sanitize_title_with_dashes( $key );
-				$options_array[ $key ] = $option;
+				$options_array[ $key ] = stripslashes( $option );
 			}
 
 			return $options_array;
@@ -461,6 +463,39 @@ if ( ! class_exists( 'YWCCP_Admin' ) ) {
 			$section = isset( $_POST['ywccp-admin-section'] ) ? $_POST['ywccp-admin-section'] : '';
 			delete_option( 'ywccp_fields_' . $section . '_options' );
 		}
+
+		/**
+         * Filter WooCommerce Get customer details via ajax
+         *
+         * @since 1.0.11
+         * @author Francesco Licandro
+         * @access public
+         * @param array $data Customer details
+         * @param object $customer \WC_Customer
+         * @param string|integer $user_id The customer id
+         * @return array
+         */
+		public function filter_ajax_customer_details( $data, $customer, $user_id ) {
+
+            $custom_fields = array(
+                'billing'   => ywccp_get_fields_key_filtered( 'billing', true ),
+                'shipping'  => ywccp_get_fields_key_filtered( 'shipping', true )
+            );
+
+            // loop custom fields
+            foreach( $custom_fields as $section => $fields ) {
+                // double check id data section exists
+                if( ! isset( $data[ $section ] ) ) {
+                    continue;
+                }
+                // loop section fields
+                foreach( $fields as $field ) {
+                    $data[$section][$field] = $customer->get_meta($section . '_' . $field);
+                }
+            }
+
+		    return $data;
+        }
 	}
 }
 /**

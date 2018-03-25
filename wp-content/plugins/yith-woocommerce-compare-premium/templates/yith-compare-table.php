@@ -7,9 +7,6 @@
  * @version 1.1.4
  */
 
-/**
- * @type object $product /WC_Product
- */
 global $product, $yith_woocompare;
 
 ?>
@@ -44,7 +41,7 @@ global $product, $yith_woocompare;
 
 		<tbody>
 
-            <?php if( ! isset( $fields['product_info'] ) && ! $share ) : ?>
+            <?php if( ! isset( $fields['product_info'] ) && ! $fixed ) : ?>
             <tr class="remove">
                 <th>&nbsp;</th>
                 <?php
@@ -53,7 +50,7 @@ global $product, $yith_woocompare;
 	                $product_class = ( $index % 2 == 0 ? 'odd' : 'even' ) . ' product_' . $product_id
 	                ?>
                     <td class="<?php echo $product_class; ?>">
-                        <a href="<?php echo $yith_woocompare->obj->remove_product_url( $product_id ) ?>" data-is_page="1" data-product_id="<?php echo $product_id; ?>"><span class="remove">x</span><?php _e( 'Remove', 'yith-woocommerce-compare' ) ?></a>
+                        <a href="<?php echo $yith_woocompare->obj->remove_product_url( $product_id ) ?>" data-iframe="<?php echo $iframe ?>" data-product_id="<?php echo $product_id; ?>"><span class="remove">x</span><?php _e( 'Remove', 'yith-woocommerce-compare' ) ?></a>
                     </td>
                     <?php
 	                ++$index;
@@ -87,8 +84,8 @@ global $product, $yith_woocompare;
 
                                 case 'product_info':
 
-                                    if( ! $share )
-                                        echo '<div class="remove"><a href="'. $yith_woocompare->obj->remove_product_url( $product_id ) . '" data-is_page="1" data-product_id="'. $product_id . '"><span class="remove">x</span>' .  __( 'Remove', 'yith-woocommerce-compare' ) . '</a></div>';
+                                    if( ! $fixed )
+                                        echo '<div class="remove"><a href="'. $yith_woocompare->obj->remove_product_url( $product_id ) . '" data-iframe="'. $iframe . '" data-product_id="'. $product_id . '"><span class="remove">x</span>' .  __( 'Remove', 'yith-woocommerce-compare' ) . '</a></div>';
 
                                     if( $show_image || $show_title ) {
 	                                    echo '<a href="' . $product->get_permalink() .'">';

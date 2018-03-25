@@ -149,19 +149,22 @@ class TCB_Thrive_CSS_Animation extends TCB_Event_Action_Abstract {
 		return 'function(trigger, action, config) {
 			
             var $element = jQuery(this),
-                $at = $element.closest(".thrv_wrapper");
+                $at = $element.closest(".tcb-col, .thrv_wrapper");
             if ($at.length === 0) {
                 $at = $element;
             }
             if (!config.loop && $at.data("a-done")) {return;}
             $at.data("a-done",1);
             $at.removeClass("' . $classes . '").addClass("tve_anim_" + config.anim).removeClass("tve_anim_start");
-            setTimeout(function () {
-                $at.addClass("tve_anim_start");
-            }, 50);
             if (config.loop) {
+             $at.addClass("tve_anim_start");
 				if (trigger === "mouseover") { $element.one("mouseleave", function () { $at.removeClass("tve_anim_start"); }); }
 				if (trigger === "tve-viewport") { $element.one("tve-viewport-leave", function () { $at.removeClass("tve_anim_start"); }); }
+            }
+            else{
+             setTimeout(function () {
+                $at.addClass("tve_anim_start");
+            }, 50);
             }
             return false;
         }';

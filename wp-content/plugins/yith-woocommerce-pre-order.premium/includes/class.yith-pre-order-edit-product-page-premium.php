@@ -74,6 +74,11 @@ if ( ! class_exists( 'YITH_Pre_Order_Edit_Product_Page_Premium' ) ) {
 		public function update_settings( $post_id ) {
 		    $pre_order    = new YITH_Pre_Order_Product( $post_id );
 			$is_pre_order = isset( $_POST['_ywpo_preorder'] ) && ! is_array( $_POST['_ywpo_preorder'] ) ? 'yes' : 'no';
+
+			if ( 'yes' != get_option( 'yith_wcpo_enable_pre_order_auto_outofstock_notification', 'no' ) ) {
+				$pre_order->set_pre_order_status( $is_pre_order );
+            }
+
 			$pre_order->set_pre_order_status( $is_pre_order );
 
 			if ( 'yes' == $is_pre_order ) {
@@ -81,7 +86,7 @@ if ( ! class_exists( 'YITH_Pre_Order_Edit_Product_Page_Premium' ) ) {
 				$new_sale_date = (string) isset( $_POST['_ywpo_for_sale_date'] ) ? wc_clean( $_POST['_ywpo_for_sale_date'] ) : '';
 				$pre_order->set_for_sale_date( $new_sale_date );
 
-				// If the date is changed, it will be sent an email
+				// If the date is changed, an email will be sent
 				if ( ! empty( $previous_sale_date ) && ! empty( $new_sale_date ) ) {
 					if ( $new_sale_date !== $previous_sale_date ) {
 					    yit_delete_prop( $pre_order, '_ywpo_preorder_notified' );
@@ -182,8 +187,13 @@ if ( ! class_exists( 'YITH_Pre_Order_Edit_Product_Page_Premium' ) ) {
 
 						$item_is_pre_order = ! empty( $item['ywpo_item_preorder'] ) ? $item['ywpo_item_preorder'] : '';
 						$item_timestamp = ! empty( $item['ywpo_item_for_sale_date'] ) ? $item['ywpo_item_for_sale_date'] : '';
+						$item_is_notified = ! empty( $item['ywpo_item_preorder_notified'] ) ? $item['ywpo_item_preorder_notified'] : '';
 
 						if ( 'yes' != $item_is_pre_order ) {
+						    continue;
+                        }
+
+                        if ( 'yes' == $item_is_notified ) {
 						    continue;
                         }
 
@@ -191,17 +201,21 @@ if ( ! class_exists( 'YITH_Pre_Order_Edit_Product_Page_Premium' ) ) {
 	                        $customers[] = array(
 		                        'name'  => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
 		                        'email' => $order->get_billing_email(),
-		                        'order' => $order->get_order_number()
+		                        'order' => $order->get_id()
 	                        );
                         } else {
 	                        $customers[] = array(
 		                        'name'  => $order->billing_first_name . ' ' . $order->billing_last_name,
 		                        'email' => $order->billing_email,
-		                        'order' => $order->get_order_number()
+		                        'order' => $order->get_id()
 	                        );
                         }
 
 						$user_ids[] = $user_id;
+
+						if ( ! $new_sale_date ) {
+							wc_update_order_item_meta( $item_id, '_ywpo_item_preorder_notified', 'yes' );
+						}
 
 						// Change the order item meta only for Pre-Order which haven't end its date yet.
 						if ( ( $item_timestamp > time() || empty( $item_timestamp ) ) && $new_sale_date ) {
@@ -653,7 +667,9 @@ if ( ! class_exists( 'YITH_Pre_Order_Edit_Product_Page_Premium' ) ) {
 			$pre_order = new YITH_Pre_Order_Product( $post_id );
 
 			$is_pre_order = isset( $_POST['_ywpo_preorder'][ $_i ] ) ? 'yes' : 'no';
-			$pre_order->set_pre_order_status( $is_pre_order );
+			if ( 'yes' != get_option( 'yith_wcpo_enable_pre_order_auto_outofstock_notification', 'no' ) ) {
+				$pre_order->set_pre_order_status( $is_pre_order );
+			}
 
 			if ( 'yes' == $is_pre_order ) {
 				$previous_sale_date = $pre_order->get_for_sale_date();
@@ -700,10 +716,10 @@ if ( ! class_exists( 'YITH_Pre_Order_Edit_Product_Page_Premium' ) ) {
 
 			if ( 'product' == $current_screen->id || 'edit-shop_order' == $current_screen->id || 'edit-product' == $current_screen->id ) {
 				wp_enqueue_script( 'yith-wcpo-edit-product-page', YITH_WCPO_ASSETS_JS_URL . yit_load_js_file( 'edit-product-page.js' ), array( 'jquery' ), YITH_WCPO_VERSION, 'true' );
-				wp_enqueue_style( 'yith-wcpo-admin-css', YITH_WCPO_ASSETS_URL . '/css/admin.css', array(), YITH_WCPO_VERSION );
+				wp_enqueue_style( 'yith-wcpo-admin-css', YITH_WCPO_ASSETS_URL . 'css/admin.css', array(), YITH_WCPO_VERSION );
 
 				wp_enqueue_script( 'jquery-ui-datetimepicker', YITH_WCPO_ASSETS_JS_URL . yit_load_js_file( 'timepicker.js' ), array( 'jquery' ), YITH_WCPO_VERSION, 'true' );
-				wp_enqueue_style( 'jquery-ui-datetimepicker-style', YITH_WCPO_ASSETS_URL . '/css/timepicker.css', array(), YITH_WCPO_VERSION );
+				wp_enqueue_style( 'jquery-ui-datetimepicker-style', YITH_WCPO_ASSETS_URL . 'css/timepicker.css', array(), YITH_WCPO_VERSION );
 			}
 
 			if ( 'edit-product' == $current_screen->id || 'edit-product_cat' == $current_screen->id || 'edit-product_tag' == $current_screen->id ) {

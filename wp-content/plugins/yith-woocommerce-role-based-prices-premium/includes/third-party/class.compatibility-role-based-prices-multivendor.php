@@ -215,7 +215,7 @@ if ( ! class_exists( 'Compatibility_Role_Based_Prices_Multivendor' ) ) {
 		 */
 		public function add_product_params( $product_args ) {
 
-			if ( $this->has_multivendor_active() && $this->has_role_based_price_enabled() ) {
+			if ( $this->has_multivendor_active()  ) {
 
 				$vendor = yith_get_vendor( 'current', 'user' );
 

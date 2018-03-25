@@ -185,7 +185,7 @@ $options = array(
 			'default' => '1',
 			'type' => 'number',
 			'custom_attributes' => array(
-				'min'	=> '1'
+				'min'	=> '0'
 			)
 		),
 

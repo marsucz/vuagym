@@ -1,0 +1,26 @@
+.clever-mega-menu-customize-vc-iframe-wrapper {
+    background: #eee;
+    border-right: medium none;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    width: 800px;
+    bottom: 0;
+    height: 100%;
+    top: 0;
+    border-right: 1px solid #ddd;
+    transition: all 0.3s ease-in 0s;
+    &.clever-mega-menu-customize-hide-vc {
+        margin-left: -100%;
+    }
+}
+.clever-mega-menu-customize-vc-iframe {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 100%;
+    display: block;
+}

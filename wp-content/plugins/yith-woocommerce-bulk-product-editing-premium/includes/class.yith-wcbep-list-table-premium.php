@@ -52,7 +52,7 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
         static function get_default_columns() {
             $default = array(
                 'cb'                 => '<input type="checkbox">',
-                'show'               => '<span class="dashicons dashicons-admin-generic"></span>',
+                'show'               => '<span class="dashicons dashicons-admin-generic"></span><span class="dashicons dashicons-visibility"></span>',
                 'ID'                 => __( 'ID', 'yith-woocommerce-bulk-product-editing' ),
                 'title'              => __( 'Title', 'woocommerce' ),
                 'slug'               => __( 'Slug', 'woocommerce' ),
@@ -137,15 +137,16 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
 
         public function get_sortable() {
             $default = array(
-                'ID'            => array( 'ID', false ),
-                'title'         => array( 'title', false ),
-                'regular_price' => array( 'regular_price', false ),
-                'sale_price'    => array( 'sale_price', false ),
-                'date'          => array( 'date', false ),
-                'weight'        => array( 'weight', false ),
-                'height'        => array( 'height', false ),
-                'width'         => array( 'width', false ),
-                'length'        => array( 'length', false ),
+                'ID'             => array( 'ID', false ),
+                'title'          => array( 'title', false ),
+                'regular_price'  => array( 'regular_price', false ),
+                'sale_price'     => array( 'sale_price', false ),
+                'date'           => array( 'date', false ),
+                'weight'         => array( 'weight', false ),
+                'height'         => array( 'height', false ),
+                'width'          => array( 'width', false ),
+                'length'         => array( 'length', false ),
+                'stock_quantity' => array( 'stock_quantity', false ),
             );
 
             return !empty( $this->sortable ) ? $this->sortable : $default;
@@ -274,7 +275,11 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
             $f_sale_price_val           = isset( $_REQUEST[ 'f_sale_price_value' ] ) ? $_REQUEST[ 'f_sale_price_value' ] : null;
             $f_weight_sel               = !empty( $_REQUEST[ 'f_weight_select' ] ) ? $_REQUEST[ 'f_weight_select' ] : 'mag';
             $f_weight_val               = isset( $_REQUEST[ 'f_weight_value' ] ) ? $_REQUEST[ 'f_weight_value' ] : null;
+            $f_stock_qty_sel            = !empty( $_REQUEST[ 'f_stock_qty_select' ] ) ? $_REQUEST[ 'f_stock_qty_select' ] : 'mag';
+            $f_stock_qty_val            = isset( $_REQUEST[ 'f_stock_qty_value' ] ) ? $_REQUEST[ 'f_stock_qty_value' ] : null;
+            $f_stock_status             = isset( $_REQUEST[ 'f_stock_status' ] ) ? $_REQUEST[ 'f_stock_status' ] : null;
             $f_product_type             = !empty( $_REQUEST[ 'f_product_type' ] ) ? $_REQUEST[ 'f_product_type' ] : false;
+            $f_status                   = !empty( $_REQUEST[ 'f_status' ] ) ? $_REQUEST[ 'f_status' ] : false;
 
             /* =================================== E N D   F I L T E R S ============================================== */
 
@@ -293,7 +298,7 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
 
             $query_args = array(
                 'post_type'           => $post_types,
-                'post_status'         => 'any',
+                'post_status'         => !!$f_status ? $f_status : 'any',
                 'posts_per_page'      => $per_page,
                 'ignore_sticky_posts' => true,
                 'paged'               => $current_page,
@@ -309,6 +314,7 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                 $query_args[ 'post__in' ] = $posts_in;
             }
 
+            $meta_query = array();
 
             switch ( $order_by ) {
                 case 'regular_price':
@@ -335,9 +341,11 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                     $query_args[ 'orderby' ]  = 'meta_value_num';
                     $query_args[ 'meta_key' ] = '_length';
                     break;
+                case 'stock_quantity':
+                    $query_args[ 'orderby' ]  = 'meta_value_num';
+                    $query_args[ 'meta_key' ] = '_stock';
+                    break;
             }
-
-            $meta_query = array();
 
             // Filter SKU
             if ( isset( $f_sku_val ) && strlen( $f_sku_val ) > 0 ) {
@@ -389,10 +397,28 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                         break;
                 }
                 $meta_query[] = array(
-                    'key'     => '_regular_price',
-                    'type'    => 'NUMERIC',
-                    'value'   => $value,
-                    'compare' => $compare,
+                    array(
+                        'relation' => 'AND',
+                        array(
+                            'key'     => '_regular_price',
+                            'type'    => 'NUMERIC',
+                            'value'   => $value,
+                            'compare' => $compare,
+                        ),
+                        array(
+                            'relation' => 'OR',
+                            array(
+                                'key'     => '_regular_price',
+                                'compare' => 'NOT EXISTS',
+                            ),
+                            array(
+                                'key'     => '_price',
+                                'type'    => 'NUMERIC',
+                                'value'   => $value,
+                                'compare' => $compare,
+                            ),
+                        )
+                    )
                 );
             }
 
@@ -418,10 +444,28 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                         break;
                 }
                 $meta_query[] = array(
-                    'key'     => '_sale_price',
-                    'type'    => 'NUMERIC',
-                    'value'   => $value,
-                    'compare' => $compare,
+                    array(
+                        'relation' => 'AND',
+                        array(
+                            'key'     => '_sale_price',
+                            'type'    => 'NUMERIC',
+                            'value'   => $value,
+                            'compare' => $compare,
+                        ),
+                        array(
+                            'relation' => 'OR',
+                            array(
+                                'key'     => '_sale_price',
+                                'compare' => 'NOT EXISTS',
+                            ),
+                            array(
+                                'key'     => '_price',
+                                'type'    => 'NUMERIC',
+                                'value'   => $value,
+                                'compare' => $compare,
+                            ),
+                        )
+                    )
                 );
             }
 
@@ -451,6 +495,43 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                     'type'    => 'NUMERIC',
                     'value'   => $value,
                     'compare' => $compare,
+                );
+            }
+
+            // Filter Stock Qty
+            if ( isset( $f_stock_qty_val ) && is_numeric( $f_stock_qty_val ) ) {
+                $compare = '>';
+                $value   = $f_stock_qty_val;
+                switch ( $f_stock_qty_sel ) {
+                    case 'mag':
+                        $compare = '>';
+                        break;
+                    case 'min':
+                        $compare = '<';
+                        break;
+                    case 'ug':
+                        $compare = '=';
+                        break;
+                    case 'magug':
+                        $compare = '>=';
+                        break;
+                    case 'minug':
+                        $compare = '<=';
+                        break;
+                }
+                $meta_query[] = array(
+                    'key'     => '_stock',
+                    'type'    => 'NUMERIC',
+                    'value'   => $value,
+                    'compare' => $compare,
+                );
+            }
+
+            // Filter Stock Status
+            if ( !empty( $f_stock_status ) ) {
+                $meta_query[] = array(
+                    'key'   => '_stock_status',
+                    'value' => $f_stock_status,
                 );
             }
 
@@ -562,6 +643,7 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                                             'f_weight_value'      => !empty( $_REQUEST[ 'f_weight_value' ] ) ? $_REQUEST[ 'f_weight_value' ] : '',
                                             'f_per_page'          => !empty( $_REQUEST[ 'f_per_page' ] ) ? $_REQUEST[ 'f_per_page' ] : '',
                                             'f_show_variations'   => !empty( $_REQUEST[ 'f_show_variations' ] ) ? $_REQUEST[ 'f_show_variations' ] : '',
+                                            'f_product_type'      => !empty( $_REQUEST[ 'f_product_type' ] ) ? $_REQUEST[ 'f_product_type' ] : '',
                                         ) );
         }
 
@@ -572,7 +654,6 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
             $product_id      = $item->ID;
             $product         = wc_get_product( $product_id );
             $base_product_id = yit_get_base_product_id( $product );
-            $edit_link       = get_edit_post_link( $base_product_id );
 
             if ( $product->is_type( 'variation' ) ) {
                 $var_start = '<div class="not_editable">';
@@ -584,7 +665,11 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                     $r = $product_id;
                     break;
                 case 'show':
+                    $edit_link    = get_edit_post_link( $base_product_id );
+                    $product_link = get_the_permalink( $base_product_id );
+
                     $r = '<a href="' . $edit_link . '" target="_blank"><span class="dashicons dashicons-admin-generic"></span></a>';
+                    $r .= '<a href="' . $product_link . '" target="_blank"><span class="dashicons dashicons-visibility"></span></a>';
                     break;
                 case 'sku':
                     $r = $product instanceof WC_Data ? yit_get_prop( $product, 'sku', true, 'edit' ) : get_post_meta( $product_id, '_sku', true );
@@ -641,11 +726,11 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                     break;
 
                 case 'description':
-                    $r = $item->post_content;
+                    $r = htmlspecialchars( $item->post_content );
                     break;
 
                 case 'shortdesc':
-                    $r = $item->post_excerpt;
+                    $r = htmlspecialchars( $item->post_excerpt );
                     break;
                 case 'regular_price':
                 case 'sale_price':
@@ -677,8 +762,7 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                     if ( !$product->is_type( 'variation' ) ) {
                         $r = $product->get_stock_quantity();
                     } else {
-                        $stock_quantity = $product instanceof WC_Data ? $product->get_stock_quantity( 'edit' ) : $product->stock;
-                        $r              = $stock_quantity > 0 ? wc_stock_amount( $stock_quantity ) : '';
+                        $r = $product instanceof WC_Data ? $product->get_stock_quantity( 'edit' ) : $product->stock;
                     }
                     break;
                 case 'weight':
@@ -688,8 +772,16 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                 case 'purchase_note':
                 case 'download_limit':
                 case 'download_expiry':
-                case 'menu_order':
                     $r = yit_get_prop( $product, '_' . $column_name, true, 'edit' );
+                    if ( 'purchase_note' === $column_name )
+                        $r = htmlspecialchars( $r );
+                    break;
+                case 'menu_order':
+                    if ( $product instanceof WC_Data ) {
+                        $r = yit_get_prop( $product, '_' . $column_name, true, 'edit' );
+                    } else {
+                        $r = $product->get_post_data()->menu_order;
+                    }
                     break;
                 case 'cross_sells':
                     $db_key = 'cross_sell_ids';
@@ -730,7 +822,7 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                             <option value="shipping" ' . ( ( $value == 'shipping' ) ? 'selected' : '' ) . '>' . __( 'Shipping only', 'woocommerce' ) . '</option>
                             <option value="none" ' . ( ( $value == 'none' ) ? 'selected' : '' ) . '>' . _x( 'None', 'Tax status', 'woocommerce' ) . '</option>
                           </select>';
-                    $r .= '<input type="hidden" class="yith-wcbep-hidden-select-value" value="' . $value . '"/>';
+                    $r     .= '<input type="hidden" class="yith-wcbep-hidden-select-value" value="' . $value . '"/>';
                     break;
 
                 case 'tax_class':
@@ -761,7 +853,7 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                             <option value="notify" ' . ( ( $value == 'notify' ) ? 'selected' : '' ) . '>' . __( 'Allow, but notify customer', 'woocommerce' ) . '</option>
                             <option value="yes" ' . ( ( $value == 'yes' ) ? 'selected' : '' ) . '>' . __( 'Allow', 'woocommerce' ) . '</option>
                           </select>';
-                    $r .= '<input type="hidden" class="yith-wcbep-hidden-select-value" value="' . $value . '"/>';
+                    $r  .= '<input type="hidden" class="yith-wcbep-hidden-select-value" value="' . $value . '"/>';
                     break;
                 case 'shipping_class':
                     $current_shipping_class = '';
@@ -783,7 +875,7 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
                     wp_dropdown_categories( $args );
                     $r                      = ob_get_clean();
                     $current_shipping_class = ( $current_shipping_class > 0 ) ? $current_shipping_class : -1;
-                    $r .= '<input type="hidden" class="yith-wcbep-hidden-select-value" value="' . $current_shipping_class . '"/>';
+                    $r                      .= '<input type="hidden" class="yith-wcbep-hidden-select-value" value="' . $current_shipping_class . '"/>';
                     break;
                 case 'status':
                     $statuses = get_post_statuses();
@@ -1101,6 +1193,8 @@ if ( !class_exists( 'YITH_WCBEP_List_Table_Premium' ) ) {
 
             echo '<input id="order" type="hidden" name="order" value="' . $this->_pagination_args[ 'order' ] . '" />';
             echo '<input id="orderby" type="hidden" name="orderby" value="' . $this->_pagination_args[ 'orderby' ] . '" />';
+
+            echo '<input id="total_pages" type="hidden" value="' . $this->_pagination_args[ 'total_pages' ] . '" />';
 
             echo '<input type="hidden" name="f_title_select" value="' . $this->_pagination_args[ 'f_title_select' ] . '" />';
             echo '<input type="hidden" name="f_title_value" value="' . $this->_pagination_args[ 'f_title_value' ] . '" />';

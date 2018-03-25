@@ -24,6 +24,16 @@ class TCB_Html_Element extends TCB_Element_Abstract {
 	}
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'code';
+	}
+
+
+	/**
 	 * Return icon class needed for display in menu
 	 *
 	 * @return string

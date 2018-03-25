@@ -76,11 +76,16 @@ if ( ! class_exists( 'TCB_Editor_Ajax' ) ) {
 
 		/**
 		 *
-		 * @param string $message
+		 * @param string|WP_Error $message
 		 * @param int $code
 		 * @param string $str_code
 		 */
 		protected function error( $message, $code = 500, $str_code = '' ) {
+
+			if ( is_wp_error( $message ) ) {
+				$message = $message->get_error_message();
+			}
+
 			if ( $this->param( 'expect' ) === 'html' ) {
 				echo esc_html( $message );
 				wp_die();
@@ -144,6 +149,12 @@ if ( ! class_exists( 'TCB_Editor_Ajax' ) ) {
 			$s = trim( $s );
 
 			$selected_post_types = array( 'post', 'page', 'product' );
+
+			/**
+			 * Add filter to allow hooking into the selected post types
+			 */
+			$selected_post_types = apply_filters( 'tcb_autocomplete_selected_post_types', $selected_post_types );
+
 			if ( ! $this->param( 'ignore_settings' ) ) {//do not ignore user settings
 				/**
 				 * post types saved by the user
@@ -174,7 +185,7 @@ if ( ! class_exists( 'TCB_Editor_Ajax' ) ) {
 				'post_type'   => $selected_post_types,
 				'post_status' => 'publish',
 				's'           => $s,
-				'numberposts' => 10,
+				'numberposts' => 20,
 			);
 
 			$posts = array();
@@ -201,6 +212,8 @@ if ( ! class_exists( 'TCB_Editor_Ajax' ) ) {
 
 				$posts [] = $post;
 			}
+
+			$posts = apply_filters( 'tcb_autocomplete_returned_posts', $posts, $s );
 
 			wp_send_json( $posts );
 		}
@@ -647,6 +660,22 @@ if ( ! class_exists( 'TCB_Editor_Ajax' ) ) {
 		}
 
 		/**
+		 * Enables / Disables Theme CSS to Architect Page
+		 */
+		public function action_theme_css() {
+			$post_id  = $this->param( 'post_id' );
+			$checked  = $this->param( 'checked' );
+			$meta_key = 'tve_disable_theme_dependency';
+			if ( empty( $post_id ) || ! is_numeric( $post_id ) || ! is_string( $checked ) ) {
+				$this->error( __( 'Invalid Post Parameter', 'thrive-cb' ) );
+			}
+
+			update_post_meta( $post_id, $meta_key, $checked === 'true' ? 1 : 0 );
+
+			$this->json( array() );
+		}
+
+		/**
 		 * Generate post Grid Ajax Call
 		 */
 		public function action_post_grid() {
@@ -788,6 +817,64 @@ if ( ! class_exists( 'TCB_Editor_Ajax' ) ) {
 			}
 
 			return array( 'success' => true );
+		}
+
+		/**
+		 * Fetches a list of Cloud templates for an element
+		 *
+		 * @return array
+		 */
+		public function action_cloud_content_templates() {
+			if ( ! ( $type = $this->param( 'type' ) ) ) {
+				$this->error( __( 'Invalid element type', 'thrive-cb' ), 500 );
+			}
+
+			/** @var TCB_Cloud_Template_Element_Abstract $element */
+			if ( ! ( $element = tcb_elements()->element_factory( $type ) ) || ! is_a( $element, 'TCB_Cloud_Template_Element_Abstract' ) ) {
+				$this->error( __( 'Invalid element type', 'thrive-cb' ) . " ({$type})", 500 );
+			}
+
+			$templates = $element->get_cloud_templates();
+
+			if ( is_wp_error( $templates ) ) {
+				$this->error( $templates );
+			}
+
+			return array(
+				'success'   => true,
+				'templates' => $templates,
+			);
+		}
+
+		/**
+		 * Downloads a template from the cloud ( or fetches a template stored local )
+		 *
+		 * @return array
+		 */
+		public function action_cloud_content_template_download() {
+			if ( ! ( $type = $this->param( 'type' ) ) ) {
+				$this->error( __( 'Invalid element type', 'thrive-cb' ), 500 );
+			}
+
+			if ( ! ( $id = $this->param( 'id' ) ) ) {
+				$this->error( __( 'Missing template id', 'thrive-cb' ) . " ({$type})", 500 );
+			}
+
+			/** @var TCB_Cloud_Template_Element_Abstract $element */
+			if ( ! ( $element = tcb_elements()->element_factory( $type ) ) || ! is_a( $element, 'TCB_Cloud_Template_Element_Abstract' ) ) {
+				$this->error( __( 'Invalid element type', 'thrive-cb' ) . " ({$type})", 500 );
+			}
+
+			$data = $element->get_cloud_template_data( $id );
+
+			if ( is_wp_error( $data ) ) {
+				$this->error( $data );
+			}
+
+			return array(
+				'success' => true,
+				'data'    => $data,
+			);
 		}
 
 		/**

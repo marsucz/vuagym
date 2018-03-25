@@ -24,6 +24,16 @@ class TCB_Columns_Element extends TCB_Element_Abstract {
 	}
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'container,box,content';
+	}
+
+
+	/**
 	 * Return icon class needed for display in menu
 	 *
 	 * @return string
@@ -52,7 +62,7 @@ class TCB_Columns_Element extends TCB_Element_Abstract {
 	 */
 	public function own_components() {
 		return array(
-			'columns'   => array(
+			'columns'    => array(
 				'config' => array(
 					'GutterWidth'      => array(
 						'config'     => array(
@@ -68,8 +78,8 @@ class TCB_Columns_Element extends TCB_Element_Abstract {
 					),
 					'ColumnsOrder'     => array(
 						'config'  => array(
-							'name'    => __( 'Columns Order', 'thrive-cb' ),
-							'label'   => __( 'Reverse Order', 'thrive-cb' ),
+							'name'    => '',
+							'label'   => __( 'Reverse Column Order', 'thrive-cb' ),
 							'default' => false,
 						),
 						'to'      => ' > .tcb-flex-row',
@@ -140,7 +150,7 @@ class TCB_Columns_Element extends TCB_Element_Abstract {
 					),
 				),
 			),
-			'layout'    => array(
+			'layout'     => array(
 				'config' => array(
 					'MarginAndPadding' => array(
 						'margin_to'  => '',
@@ -151,7 +161,7 @@ class TCB_Columns_Element extends TCB_Element_Abstract {
 			'typography' => array(
 				'disabled_controls' => array(),
 			),
-			'animation' => array( 'hidden' => true ),
+			'animation'  => array( 'hidden' => true ),
 		);
 	}
 

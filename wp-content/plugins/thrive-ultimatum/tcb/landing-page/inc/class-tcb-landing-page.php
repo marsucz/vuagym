@@ -124,7 +124,7 @@ if ( ! class_exists( 'TCB_Landing_Page' ) ) {
 				$this->strip_head_css() : wp_head();
 
 			/* finally, call the tcb_landing_head hook */
-			apply_filters( self::HOOK_HEAD, $this->id );
+			do_action( self::HOOK_HEAD, $this->id );
 
 			if ( $this->is_v2() ) {
 				/** On thrive themes, there is a nasty overflow on html */
@@ -293,21 +293,21 @@ if ( ! class_exists( 'TCB_Landing_Page' ) ) {
 				echo $this->global_scripts['body'];
 			}
 
-			apply_filters( self::HOOK_BODY_OPEN, $this->id );
+			do_action( self::HOOK_BODY_OPEN, $this->id );
 		}
 
 		/**
 		 * called before the WP get_footer hook
 		 */
 		public function footer() {
-			apply_filters( self::HOOK_FOOTER, $this->id );
+			do_action( self::HOOK_FOOTER, $this->id );
 		}
 
 		/**
 		 * called right before the <body> end tag
 		 */
 		public function before_body_end() {
-			apply_filters( self::HOOK_BODY_CLOSE, $this->id );
+			do_action( self::HOOK_BODY_CLOSE, $this->id );
 
 			if ( ! empty( $this->global_scripts['footer'] ) && ! is_editor_page() ) {
 				$this->global_scripts['footer'] = $this->remove_jquery( $this->global_scripts['footer'] );
@@ -334,6 +334,13 @@ if ( ! class_exists( 'TCB_Landing_Page' ) ) {
 
 			if ( ! $this->needs_lightbox() ) {
 				return;
+			}
+
+			if ( isset( $this->globals['lightbox_id'] ) ) {
+				$lightbox = get_post( $this->globals['lightbox_id'] );
+				if ( ! $lightbox || $lightbox->post_type !== 'tcb_lightbox' ) {
+					unset( $lightbox );
+				}
 			}
 
 			if ( empty( $lightbox ) ) {
@@ -377,7 +384,7 @@ if ( ! class_exists( 'TCB_Landing_Page' ) ) {
 			$save_it             = $number_of_replacements;
 
 			if ( strpos( $post_content, "&quot;l_id&quot;:&quot;{$this->globals['lightbox_id']}&quot;" ) === false ) {
-				$post_content = preg_replace( '#&quot;l_id&quot;:(null|&quot;(.*?)&quot;)#', '&quot;l_id&quot;:&quot;' . $this->globals['lightbox_id'] . '&quot;', $post_content );
+				$post_content = preg_replace( '#&quot;l_id&quot;:(|&quot;)(\d+)(\1)#', '&quot;l_id&quot;:&quot;' . $this->globals['lightbox_id'] . '&quot;', $post_content );
 				$save_it      = true;
 			}
 
@@ -393,17 +400,21 @@ if ( ! class_exists( 'TCB_Landing_Page' ) ) {
 		 *
 		 * @return int
 		 */
-		public function new_lightbox( $title = null ) {
+		public function new_lightbox( $title = null, $lb_meta = null, $template_suffix = '' ) {
 			$landing_page = get_post( $this->id );
 			$meta         = array(
 				'tve_lp_lightbox' => $this->template,
 			);
 
-			$tcb_content = $this->lightbox_default_content();
+			$tcb_content = $this->lightbox_default_content( $template_suffix );
 
-			if ( $this->is_cloud_template && ! empty( $this->cloud_template_data['lightbox']['meta'] ) ) {
-				$meta                   = array_merge( $meta, $this->cloud_template_data['lightbox']['meta'] );
-				$meta['tve_custom_css'] = $this->get_cloud_css_v2( true );
+			if ( $this->is_cloud_template && is_null( $lb_meta ) && ! empty( $this->cloud_template_data['lightbox']['meta'] ) ) {
+				$lb_meta = $this->cloud_template_data['lightbox']['meta'];
+			}
+
+			if ( $this->is_cloud_template && ! is_null( $lb_meta ) ) {
+				$meta                   = array_merge( $meta, $lb_meta );
+				$meta['tve_custom_css'] = $this->get_cloud_css_v2( true, $template_suffix );
 				$lightbox_globals       = $meta['tve_globals'];
 			} else {
 				$lightbox_globals = array(
@@ -420,13 +431,47 @@ if ( ! class_exists( 'TCB_Landing_Page' ) ) {
 			);
 		}
 
+		public function update_lightbox( $lightbox_id, $title = null, $lb_meta = null, $template_suffix = '' ) {
+			$landing_page = get_post( $this->id );
+			$meta         = array(
+				'tve_lp_lightbox' => $this->template,
+			);
+
+			$tcb_content = $this->lightbox_default_content( $template_suffix );
+
+			if ( $this->is_cloud_template && is_null( $lb_meta ) && ! empty( $this->cloud_template_data['lightbox']['meta'] ) ) {
+				$lb_meta = $this->cloud_template_data['lightbox']['meta'];
+			}
+
+			if ( $this->is_cloud_template && ! is_null( $lb_meta ) ) {
+				$meta                   = array_merge( $meta, $lb_meta );
+				$meta['tve_custom_css'] = $this->get_cloud_css_v2( true, $template_suffix );
+				$lightbox_globals       = $meta['tve_globals'];
+			} else {
+				$lightbox_globals = array(
+					'l_cmw' => isset( $this->config['lightbox']['max_width'] ) ? $this->config['lightbox']['max_width'] : '600px',
+					'l_cmh' => isset( $this->config['lightbox']['max_height'] ) ? $this->config['lightbox']['max_height'] : '600px',
+				);
+			}
+
+			return TCB_Lightbox::update(
+				$lightbox_id,
+				$title ? $title : ( 'Lightbox - ' . $landing_page->post_title . ' (' . $this->config['name'] . ')' ),
+				$tcb_content,
+				$lightbox_globals,
+				$meta
+			);
+		}
+
 		/**
 		 * fetch default lightbox content from one of the files inside landing-page/lightbox/ folder
+		 *
+		 * @param string $template_suffix used for multi-lightboxes landing pages
 		 */
-		public function lightbox_default_content() {
+		public function lightbox_default_content( $template_suffix = '' ) {
 			if ( $this->is_cloud_template ) {
 				/* if it's a cloud template, the lightbox content needs to be fetched from wp-uploads/tcb_lp_templates/lightboxes/{template_name}.tpl */
-				$lb_file  = tcb_get_cloud_base_path() . 'lightboxes/' . $this->template . '.tpl';
+				$lb_file  = tcb_get_cloud_base_path() . 'lightboxes/' . $this->template . $template_suffix . '.tpl';
 				$contents = '';
 
 				if ( file_exists( $lb_file ) ) {
@@ -628,6 +673,9 @@ if ( ! class_exists( 'TCB_Landing_Page' ) ) {
 			if ( $this->is_cloud_template && ! empty( $this->cloud_template_data ) && (int) $this->cloud_template_data['LP_VERSION'] === 2 ) {
 				/* Load the default css for the page */
 				$meta['tve_custom_css'] = $this->get_cloud_css_v2();
+				if ( ! empty( $this->cloud_template_data['lightboxes'] ) ) {
+					$meta['tve_globals']['lb_map'] = isset( $globals['lb_map'] ) ? $globals['lb_map'] : array();
+				}
 			} elseif ( ! $this->is_cloud_template && ! empty( $this->config['head_css'] ) ) {
 				$meta['tve_custom_css'] = $this->config['head_css'];
 			}
@@ -648,20 +696,72 @@ if ( ! class_exists( 'TCB_Landing_Page' ) ) {
 
 			/* check to see if a default lightbox exists for this and if necessary, create it */
 			/* make sure the associated lightbox exists and is setup in the event manager */
-			$this->check_lightbox( false );
+			if ( isset( $this->cloud_template_data['lightboxes'] ) ) {
+				/**
+				 * new version: multiple lightboxes for a landing page
+				 */
+				$this->ensure_multi_lightbox( isset( $meta['tve_globals']['lb_map'] ) ? $meta['tve_globals']['lb_map'] : array() );
+			} else {
+				$this->check_lightbox( false );
+			}
 
 			tve_update_post_custom_fonts( $this->post->ID, array() );
+		}
+
+		/**
+		 * Make sure all the needed lightboxes exist
+		 */
+		public function ensure_multi_lightbox( $lb_id_map = array() ) {
+			$lightboxes = $this->cloud_template_data['lightboxes'];
+
+			/* check if the id of the lightbox from the content is different than the id of the generated lightbox */
+			$post_content = $this->meta( 'tve_updated_post', null, true );
+
+			foreach ( $lightboxes as $lb_id => $lb_data ) {
+				if ( isset( $lb_id_map[ $lb_id ] ) ) {
+					$lb = get_post( $lb_id_map[ $lb_id ] );
+					if ( ! $lb ) {
+						unset( $lb_id_map[ $lb_id ] );
+					}
+				}
+				if ( ! isset( $lb_id_map[ $lb_id ] ) ) {
+					$lb_id_map[ $lb_id ] = $this->new_lightbox( null, $lb_data['meta'], '-' . $lb_id );
+				} else {
+					$this->update_lightbox( $lb_id_map[ $lb_id ], null, $lb_data['meta'], '-' . $lb_id );
+				}
+				$post_content = preg_replace( '#&quot;l_id&quot;:(&quot;)?' . $lb_id . '(&quot;)?#', '&quot;l_id&quot;:&quot;' . $lb_id_map[ $lb_id ] . '&quot;', $post_content );
+			}
+
+			/**
+			 * Page events
+			 */
+			if ( ! empty( $this->cloud_template_data['meta']['tve_page_events'] ) ) {
+				$this->page_events = $this->cloud_template_data['meta']['tve_page_events'];
+
+				foreach ( $this->page_events as $index => $evt ) {
+					if ( $evt['a'] == 'thrive_lightbox' && isset( $lb_id_map[ $evt['config']['l_id'] ] ) ) {
+						$this->page_events[ $index ]['config']['l_id'] = $lb_id_map[ $evt['config']['l_id'] ];
+					}
+				}
+				$this->meta( 'tve_page_events', $this->page_events, true );
+			}
+
+			$this->globals['lb_map'] = $lb_id_map;
+
+			$this->meta( 'tve_globals', $this->globals, true );
+			$this->meta( 'tve_updated_post', $post_content, true );
 		}
 
 		/**
 		 * Get the CSS text for the landing page or for a lightbox
 		 *
 		 * @param bool
+		 * @param string $lb_suffix
 		 *
 		 * @return string
 		 */
-		public function get_cloud_css_v2( $for_lightbox = false ) {
-			$suffix = $for_lightbox ? '_lightbox.css' : '.css';
+		public function get_cloud_css_v2( $for_lightbox = false, $lb_suffix = '' ) {
+			$suffix = $for_lightbox ? ( $lb_suffix . '_lightbox.css' ) : '.css';
 			$file   = tcb_get_cloud_base_path() . 'templates/css/' . $this->template . $suffix;
 			$css    = '';
 
@@ -713,6 +813,8 @@ if ( ! class_exists( 'TCB_Landing_Page' ) ) {
 			if ( ! $landing_page_template ) {
 				$this->template = '';
 				$this->meta_delete( 'tve_landing_page' );
+				//Delete Also The Setting To Disable Theme CSS
+				$this->meta_delete( 'tve_disable_theme_dependency' );
 
 				return $this;
 			}

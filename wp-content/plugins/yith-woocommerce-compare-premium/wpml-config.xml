@@ -8,5 +8,6 @@
         <key name="yith-woocompare-categories-filter-title" />
         <key name="yith-woocompare-share-title" />
         <key name="yith-woocompare-related-title" />
+        <key name="yith_woocompare_label_clear_all_table" />
     </admin-texts>
 </wpml-config>

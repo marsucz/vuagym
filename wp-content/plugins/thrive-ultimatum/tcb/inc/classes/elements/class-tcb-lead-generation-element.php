@@ -22,6 +22,15 @@ class TCB_Lead_Generation_Element extends TCB_Element_Abstract {
 	}
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'form';
+	}
+
+	/**
 	 * @return string
 	 */
 	public function icon() {

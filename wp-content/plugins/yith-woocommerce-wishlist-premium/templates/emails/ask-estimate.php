@@ -47,10 +47,29 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly ?>
 
 <?php if( ! empty( $additional_notes ) ): ?>
 
-	<h2><?php echo __( "\nAdditional info:\n" );?></h2>
+	<h2><?php _e( 'Additional info:', 'yith-woocommerce-wishlist' );?></h2>
 
 	<p>
 		<?php echo  $additional_notes . "\n"; ?>
+	</p>
+
+<?php endif; ?>
+
+<?php if( ! empty( $additional_data ) ): ?>
+
+	<h2><?php _e( 'Additional data:', 'yith-woocommerce-wishlist' ) ?></h2>
+
+	<p>
+		<?php foreach( $additional_data as $key => $value ): ?>
+
+			<?php
+				$key = strip_tags( ucwords( str_replace( array( '_', '-' ), ' ', $key ) ) );
+				$value = strip_tags( $value );
+			?>
+
+			<b><?php echo $key ?></b>: <?php echo $value ?><br/>
+
+		<?php endforeach; ?>
 	</p>
 
 <?php endif; ?>

@@ -88,7 +88,7 @@
 												<tr>
 													<td width="100" height="35" class="wpfc-condition-text" style="padding-left:10px;font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;font-size: 12px;">If REQUEST_URI</td>
 													<td class="" width="95">
-														<select name="wpfc-exclude-rule-prefix">
+														<select name="wpfc-exclude-rule-prefix" style="width: 98px !important;">
 															<option selected="" value=""></option>
 															<option value="homepage">Home Page</option>
 															<option value="category">Categories</option>
@@ -99,6 +99,7 @@
 										    				<option value="startwith">Starts With</option>
 										    				<option value="contain">Contains</option>
 										    				<option value="exact">Is Equal To</option>
+										    				<option value="googleanalytics">has Google Analytics Parameters</option>
 										    			</select>
 										    		</td>
 										    		<td width="300">
@@ -179,7 +180,7 @@
 				var clone_modal_id = "wpfc-modal-exclude-" + new Date().getTime();
 
 				clone_modal.find("select").change(function(e){
-					if(jQuery(this).val().match(/^(homepage|category|tag|post|page|attachment)$/)){
+					if(jQuery(this).val().match(/^(homepage|category|tag|post|page|attachment|googleanalytics)$/)){
 						clone_modal.find("input[name='wpfc-exclude-rule-content']").hide();
 						clone_modal.find("input[name='wpfc-exclude-rule-content']").val(jQuery(this).val());
 					}else{
@@ -188,7 +189,7 @@
 					}
 				});
 
-				if(e.prefix.match(/^(homepage|category|tag|post|page|attachment)$/)){
+				if(e.prefix.match(/^(homepage|category|tag|post|page|attachment|googleanalytics)$/)){
 					clone_modal.find("input[name='wpfc-exclude-rule-content']").hide();
 				}
 
@@ -282,6 +283,8 @@
 				title = "Pages";
 			}else if(prefix == "attachment"){
 				title = "Attachments";
+			}else if(prefix == "googleanalytics"){
+				title = "Google Analytics Parameters";
 			}
 
 			return title;
@@ -302,14 +305,14 @@
 				}
 
 				if(type == "page" || type == "css" || type == "js"){
-					if(prefix.match(/^(homepage|category|tag|post|page|attachment)$/)){
+					if(prefix.match(/^(homepage|category|tag|post|page|attachment|googleanalytics)$/)){
 						if(prefix == "homepage"){
 							return "The " + b_start + "homepage" + b_end + " has been excluded";
 						}else{
 							return "All" + " " + b_start + this.create_title(prefix).toLowerCase() + b_end + " " + "have been excluded";
 						}
 					}else{
-						return "<?php echo home_url();?>" + "/" + request_uri;
+						return "<?php echo preg_replace("/(https?\:\/\/[^\/]+).*/", "$1", site_url());?>" + "/" + request_uri;
 					}
 				}else if(type == "useragent"){
 					return "User-Agent: " + request_uri;
@@ -366,7 +369,7 @@
 
 
 				clone_modal.find("select").change(function(){
-					if(jQuery(this).val().match(/^(homepage|category|tag|post|page|attachment)$/)){
+					if(jQuery(this).val().match(/^(homepage|category|tag|post|page|attachment|googleanalytics)$/)){
 						clone_modal.find("input[name='wpfc-exclude-rule-content']").hide();
 						clone_modal.find("input[name='wpfc-exclude-rule-content']").val(jQuery(this).val());
 					}else{

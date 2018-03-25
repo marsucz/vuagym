@@ -21,6 +21,8 @@ class TD_NM_Trigger_Split_Test_Ends extends TD_NM_Trigger_Abstract {
 			$applicable = true;
 		} else if ( ! empty( $this->settings['tl'] ) && $this->in_list( $this->settings['tl'], $test_item->id ) ) {
 			$applicable = true;
+		} else if ( ! empty( $this->settings['tab'] ) && $this->in_list( $this->settings['tab'], $test_item->id ) ) {
+			$applicable = true;
 		}
 
 		return $applicable;
@@ -36,7 +38,7 @@ class TD_NM_Trigger_Split_Test_Ends extends TD_NM_Trigger_Abstract {
 
 		$applicable = parent::is_notification_applicable();
 
-		return $applicable && ( $this->_is_tl_applicable() || $this->_is_tho_applicable() || $this->_is_tqb_applicable() );
+		return $applicable && ( $this->_is_tl_applicable() || $this->_is_tho_applicable() || $this->_is_tqb_applicable() || $this->_is_tab_applicable() );
 	}
 
 	protected function _is_tl_applicable() {
@@ -48,7 +50,7 @@ class TD_NM_Trigger_Split_Test_Ends extends TD_NM_Trigger_Abstract {
 
 	protected function _is_tho_applicable() {
 
-		$plugin_active = is_plugin_active( 'thrive-ovation/thrive-headline-optimizer.php' );
+		$plugin_active = is_plugin_active( 'thrive-headline-optimizer/thrive-headline-optimizer.php' );
 
 		return $plugin_active && ! empty( $this->settings['settings']['tho'] );
 	}
@@ -58,6 +60,12 @@ class TD_NM_Trigger_Split_Test_Ends extends TD_NM_Trigger_Abstract {
 		$plugin_active = is_plugin_active( 'thrive-quiz-builder/thrive-quiz-builder.php' );
 
 		return $plugin_active && ! empty( $this->settings['settings']['tqb'] );
+	}
+
+	protected function _is_tab_applicable() {
+		$plugin_active = is_plugin_active( 'thrive-ab-page-testing/thrive-ab-page-testing.php' );
+
+		return $plugin_active && ! empty( $this->settings['settings']['tab'] );
 	}
 
 }

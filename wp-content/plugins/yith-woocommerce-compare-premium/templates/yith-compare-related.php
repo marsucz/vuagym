@@ -10,7 +10,7 @@
 global $product;
 
 ?>
-<div id="yith-woocompare-related" class="woocommerce" <?php if( $iframe ) echo 'data-iframe="1"' ?>>
+<div id="yith-woocompare-related" class="woocommerce" data-iframe="<?php echo $iframe ?>">
 	<h3 class="yith-woocompare-related-title"><?php echo $related_title ?></h3>
 	<div class="yith-woocompare-related-wrapper">
 		<ul class="related-products">

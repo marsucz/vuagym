@@ -317,7 +317,7 @@ class TCB_Admin_Ajax {
 
 				// Delete Template
 				unset( $templates[ $id ] );
-				update_option( 'tve_user_templates', array_values( $templates ) );
+				update_option( 'tve_user_templates', array_values( array_reverse( $templates ) ) );
 
 
 				return array( 'text' => __( 'The template was deleted!', 'thrive-cb' ) );

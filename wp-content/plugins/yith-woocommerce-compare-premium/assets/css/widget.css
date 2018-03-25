@@ -12,6 +12,8 @@
 .yith-woocompare-widget ul.products-list li .remove {
     position: absolute;
     left: 3px;
+    top: 50%;
+    margin-top: -0.6em;
     color: #ff0000;
     font-weight: 400;
     font-size: 1.2em;
@@ -28,8 +30,14 @@
     background-color: #ff0000;
     color: #ffffff;
 }
-
-.yith-woocompare-widget ul.products-list li .title {
+.yith-woocompare-widget ul.products-list li img {
+    max-width: 50px;
+    height: auto;
+    display: block;
+    vertical-align: middle;
+    float: left;
+}
+.yith-woocompare-widget ul.products-list li .product-info {
     cursor: pointer;
     text-transform: uppercase;
     font-size: 12px;
@@ -37,7 +45,19 @@
     display: block;
     outline: none;
 }
+.yith-woocompare-widget ul.products-list li .product-info:before,
+.yith-woocompare-widget ul.products-list li .product-info:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+.yith-woocompare-widget ul.products-list li .product-info span {
+    padding-left: 5px;
+    display: block;
+    overflow: hidden;
+}
 
+.yith-woocompare-widget a.compare-widget,
 .yith-woocompare-widget a.compare {
     float: right;
     float: right;
@@ -55,6 +75,7 @@
     background-color: #b2b2b2;
 }
 
+.yith-woocompare-widget a.compare-widget:hover,
 .yith-woocompare-widget a.compare:hover {
     color: #ffffff;
     background-color: #303030;

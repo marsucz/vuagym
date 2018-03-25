@@ -26,16 +26,28 @@ if( !class_exists( 'YITH_WCWL_Estimate_Email' ) ) {
         protected $manual = true;
 
 	    /**
-	     * Current wishlist, to be used to compose email
-	     * @var array
-	     */
-	    protected $wishlist = array();
-
-	    /**
 	     * Whether to send emails to requester too or not
 	     * @var string
 	     */
 	    protected $enable_cc = false;
+
+	    /**
+	     * Current wishlist, to be used to compose email
+	     * @var array
+	     */
+	    public $wishlist = array();
+
+	    /**
+	     * Additional notes to append to request email
+	     * @var string
+	     */
+	    public $additional_notes = '';
+
+	    /**
+	     * Additional informations send through POST (posted data)
+	     * @var array
+	     */
+	    public $additional_data = array();
 
         /**
          * Constructor method, used to return object of the class to WC
@@ -56,7 +68,7 @@ if( !class_exists( 'YITH_WCWL_Estimate_Email' ) ) {
             $this->template_plain 	= 'emails/plain/ask-estimate.php';
 
             // Triggers for this email
-            add_action( 'send_estimate_mail_notification', array( $this, 'trigger' ), 15, 3 );
+            add_action( 'send_estimate_mail_notification', array( $this, 'trigger' ), 15, 4 );
 
             // Call parent constructor
             parent::__construct();
@@ -74,13 +86,16 @@ if( !class_exists( 'YITH_WCWL_Estimate_Email' ) ) {
         /**
          * Method triggered to send email
          *
-         * @param int $wishlist_id Id of wishlist
+         * @param $wishlist_id int Id of wishlist
+         * @param $additional_notes string Additional notes added by customer
+         * @param $reply_email string Email address of the requester (only for unauthenticated users)
+         * @param $additional_data array Array of posted data
          *
          * @return void
          * @since 1.0
          * @author Antonio La Rocca <antonio.larocca@yithemes.com>
          */
-        public function trigger( $wishlist_id, $additional_notes, $reply_email ) {
+        public function trigger( $wishlist_id, $additional_notes, $reply_email, $additional_data ) {
             if ( ! empty( $wishlist_id ) ) {
                 $this->wishlist = YITH_WCWL()->get_wishlist_detail_by_token( $wishlist_id );
                 $wishlist_token = $wishlist_id;
@@ -106,7 +121,7 @@ if( !class_exists( 'YITH_WCWL_Estimate_Email' ) ) {
             if( $this->wishlist ) {
 	            $user = get_user_by( 'id', $this->wishlist['user_id'] );
 
-	            if ( isset( $user->first_name ) || isset( $user->first_name ) ) {
+	            if ( ! empty( $user->first_name ) || ! empty( $user->first_name ) ) {
 		            $this->wishlist['user_name'] = $user->first_name . " " . $user->last_name;
 	            } else {
 		            $this->wishlist['user_name'] = $user->user_login;
@@ -122,6 +137,7 @@ if( !class_exists( 'YITH_WCWL_Estimate_Email' ) ) {
             $this->wishlist['wishlist_items'] = YITH_WCWL()->get_products( $wishlist_token ? array( 'wishlist_token' => $wishlist_token ) : array() );
 
 	        $this->additional_notes = $additional_notes;
+	        $this->additional_data = apply_filters( 'yith_wcwl_estimate_additional_data', array(), $additional_data, $this );
 
             $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
         }
@@ -133,6 +149,8 @@ if( !class_exists( 'YITH_WCWL_Estimate_Email' ) ) {
          * @return string
          */
         function get_headers() {
+	        $headers = '';
+
 	        if( isset( $this->wishlist['user_email'] ) ) {
 		        $headers = "Reply-to: " . $this->wishlist['user_email'] . "\r\n";
 
@@ -159,6 +177,7 @@ if( !class_exists( 'YITH_WCWL_Estimate_Email' ) ) {
                 'email' => $this,
                 'wishlist_data' => $this->wishlist,
 	            'additional_notes' => $this->additional_notes,
+	            'additional_data' => $this->additional_data,
                 'email_heading' => $this->get_heading(),
                 'sent_to_admin' => true,
                 'plain_text'    => false
@@ -179,6 +198,7 @@ if( !class_exists( 'YITH_WCWL_Estimate_Email' ) ) {
                 'email' => $this,
                 'wishlist_data' => $this->wishlist,
                 'additional_notes' => $this->additional_notes,
+                'additional_data' => $this->additional_data,
                 'email_heading' => $this->get_heading(),
                 'sent_to_admin' => true,
                 'plain_text'    => true

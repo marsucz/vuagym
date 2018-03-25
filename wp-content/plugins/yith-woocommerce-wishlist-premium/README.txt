@@ -3,13 +3,35 @@
 Contributors: yithemes
 Tags: wishlist, woocommerce, products, themes, yit, e-commerce, shop
 Requires at least: 4.0
-Tested up to: 4.7.3
-Stable tag: 2.1.2
+Tested up to: 4.9.2
+Stable tag: 2.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Documentation: http://yithemes.com/docs-plugins/yith-woocommerce-wishlist
 
 == Changelog ==
+
+= 2.2.1 - Released: Jan, 31 - 2018 =
+
+* New: tested with WooCommerce 3.3.0
+* Fix: issue with Add to Wishlist shortcode when global $product not defined
+
+= 2.2.0 - Released: Jan, 11 - 2018 =
+
+* New: WooCommerce 3.2.6 compatibility
+* New: plugin-fw 3.0
+* New: added js compatibility to Infinite Scrolling
+* New: added "Last promotional email sent on" info, for admins
+* New: added option to export users that added a specific product to their wishlists, using csv format
+* New: added Swedish - SWEDEN translation (thanks to Suzanne)
+* New: added Dutch - NETHERLANDS translation
+* Tweak: improved wishlist-view template checks and params
+* Tweak: wishlist now registers (and shows) "date added" param for unauthenticated users too
+* Tweak: added check over product object, to avoid Fatal when printing Add to Wishlist shortcode
+* Fix: fixed security vulnerability, causing possible SQL Injections (huge thanks to John C. and Sucuri Vulnerability Research team)
+* Dev: added filter yith_wcwl_estimate_additional_data to let developers add custom data to print in Estimate Email template
+* Dev: added yith_wcwl_removing_from_wishlist / yith_wcwl_removed_from_wishlist hooks
+* Dev: added params to main triggers in wishlist js code
 
 = 2.1.2 - Released: May, 11 - 2017 =
 

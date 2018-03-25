@@ -17,6 +17,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php tcb_icon( 'trash', false, 'editor', 'no-blur' ); ?>
 		<?php tcb_icon( 'copy', false, 'editor', 'no-blur' ); ?>
 	</div>
+	<div id="tcb-el-group-editing-icons" style="display: none;">
+		<?php tcb_icon( 'lock-outline', false, 'editor', 'no-blur' ); ?>
+		<?php tcb_icon( 'lock-open-outline', false, 'editor', 'no-blur' ); ?>
+	</div>
 	<span id="tcb-el-name" class="no-blur"></span>
 
 	<div id="tcb-table-panel">
@@ -58,4 +62,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 	</div>
 	<img src="<?php echo tve_editor_css() ?>/images/drag-img.png" width="20" height="20" id="tcb-drag-img">
+
+	<div id="tve-fr-toolbar"></div>
 </div>

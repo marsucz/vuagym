@@ -19,6 +19,16 @@ class TCB_TOC_Element extends TCB_Element_Abstract {
 	}
 
 	/**
+	 * Get element alternate
+	 *
+	 * @return string
+	 */
+	public function alternate() {
+		return 'index,content';
+	}
+
+
+	/**
 	 * @return string
 	 */
 	public function icon() {

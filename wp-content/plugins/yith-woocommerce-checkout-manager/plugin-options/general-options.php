@@ -58,11 +58,31 @@ $general = array(
 		),
 
 		array(
+			'title'   => __( 'Time format', 'yith-woocommerce-checkout-manager' ),
+			'desc'    => __( 'Choose the time format for time fields.', 'yith-woocommerce-checkout-manager' ),
+			'type'    => 'select',
+			'options' => array(
+				'12'  => __( 'Meridian (AM/PM)', 'yith-woocommerce-checkout-manager' ),
+				'24'  => __( '24 hour clock', 'yith-woocommerce-checkout-manager' ),
+			),
+			'default' => '12',
+			'id'      => 'ywccp-time-format-datepicker'
+		),
+
+		array(
 			'title'     => __( 'Overwrite formatted addresses', 'yith-woocommerce-checkout-manager' ),
 			'desc'      => __( 'Choose to overwrite formatted addresses with the plugin ordering or with the one applied by WooCommerce.', 'yith-woocommerce-checkout-manager' ),
 			'type'      => 'checkbox',
-			'default'   => 'yes',
+			'default'   => 'no',
 			'id'        => 'ywccp-override-formatted-addresses'
+		),
+
+		array(
+			'title'     => __( 'Show field label', 'yith-woocommerce-checkout-manager' ),
+			'desc'      => __( 'Choose to show or hide the field label for the formatted addresses.', 'yith-woocommerce-checkout-manager' ),
+			'type'      => 'checkbox',
+			'default'   => 'yes',
+			'id'        => 'ywccp-show-label-formatted-addresses'
 		),
 
 		array(

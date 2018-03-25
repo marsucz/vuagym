@@ -196,6 +196,44 @@ class TCB_Lightbox extends TCB_Post {
 
 		return $lightbox_id;
 	}
+
+	/**
+	 * Updates a Thrive Lightbox
+	 *
+	 * @param int $lightbox_id local lightbox post id
+	 * @param string $title lightbox title
+	 * @param string $tcb_content
+	 * @param array $tve_globals tve_globals array to save for the lightbox
+	 * @param array $extra_meta_data array of key => value pairs, each will be saved in a meta field for the lightbox
+	 *
+	 * @return int the saved lightbox id
+	 */
+	public static function update( $lightbox_id, $title = '', $tcb_content = '', $tve_globals = array(), $extra_meta_data = array() ) {
+
+		/* just to make sure that our content filter does not get applied when inserting a (possible) new lightbox */
+		$GLOBALS['TVE_CONTENT_SKIP_ONCE'] = true;
+
+		$post_data = array(
+			'post_content' => '',
+			'post_title'   => $title,
+			'post_status'  => 'publish',
+			'post_type'    => 'tcb_lightbox',
+			'ID'           => $lightbox_id,
+		);
+
+		wp_update_post( $post_data );
+
+		foreach ( $extra_meta_data as $meta_key => $meta_value ) {
+			update_post_meta( $lightbox_id, $meta_key, $meta_value );
+		}
+
+		update_post_meta( $lightbox_id, 'tve_updated_post', $tcb_content );
+		update_post_meta( $lightbox_id, 'tve_globals', $tve_globals );
+
+		unset( $GLOBALS['TVE_CONTENT_SKIP_ONCE'] );
+
+		return $lightbox_id;
+	}
 }
 
 /**

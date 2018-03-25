@@ -465,6 +465,10 @@ abstract class Thrive_Dash_List_Connection_Abstract {
 
 		$transient = 'tve_api_data_' . $this->getKey();
 
+		if ( empty( $force ) && defined( 'TVE_DEBUG' ) && TVE_DEBUG ) {
+			$force = true;
+		}
+
 		if ( ! empty( $force ) || false === ( $data = get_transient( $transient ) ) ) {
 			$data = array(
 				'lists'          => $this->getLists( false ),

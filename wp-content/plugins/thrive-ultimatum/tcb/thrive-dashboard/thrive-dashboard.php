@@ -24,6 +24,7 @@ require_once TVE_DASH_PATH . '/inc/plugin-updates/plugin-update-checker.php';
 require_once TVE_DASH_PATH . '/inc/notification-manager/class-td-nm.php';
 require_once TVE_DASH_PATH . '/inc/db-manager/class-td-db-migration.php';
 require_once TVE_DASH_PATH . '/inc/db-manager/class-td-db-manager.php';
+require_once TVE_DASH_PATH . '/inc/script-manager/class-tvd-sm.php';
 
 if ( is_admin() ) {
 	$features = tve_dash_get_features();

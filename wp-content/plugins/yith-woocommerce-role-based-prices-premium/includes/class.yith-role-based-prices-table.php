@@ -159,6 +159,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Table' ) ) {
 						$rule_name  = __( 'Product Category', 'yith-woocommerce-role-based-prices' );
 						$categories = get_post_meta( $item, '_ywcrbp_category_product', true );
 						$cat_list   = $this->get_category_list( $categories );
+						$cat_list = empty( $cat_list ) ? '': $cat_list;
 						$rule_name  = sprintf( '%s<br/>%s', $rule_name, $cat_list );
 
 					} else {

@@ -56,27 +56,24 @@ if ( ! class_exists( 'YITH_Pre_Order_Frontend_Premium' ) ) {
 				add_filter( 'woocommerce_get_stock_html', array( $this, 'show_date_on_single_product' ), 10, 3 );
 				add_filter( 'woocommerce_product_get_price', array( $this, 'edit_price' ), 10, 2 );
 				add_filter( 'woocommerce_product_variation_get_price', array( $this, 'edit_price' ), 10, 2 );
-				add_filter( 'woocommerce_product_get_stock_status', array( $this, 'check_stock_status' ), 10, 2 );
-				add_filter( 'woocommerce_product_get_stock_quantity', array( $this, 'check_stock_quantity' ), 10, 2 );
-				add_filter( 'woocommerce_product_variation_get_stock_status', array( $this, 'check_stock_status' ), 10, 2 );
-				add_filter( 'woocommerce_product_variation_get_stock_quantity', array( $this, 'check_stock_quantity' ), 10, 2 );
+				add_filter( 'woocommerce_product_get_sale_price', array( $this, 'empty_sale_price' ), 10, 2 );
+				add_filter( 'woocommerce_product_variation_get_sale_price', array( $this, 'empty_sale_price' ), 10, 2 );
+				add_filter( 'woocommerce_product_is_on_sale', array( $this, 'force_use_of_sale_price' ), 10, 2 );
 			}
-			add_filter( 'woocommerce_product_backorders_allowed', array( $this, 'allow_backorders' ), 10, 3 );
-			add_filter( 'woocommerce_product_is_in_stock', array( $this, 'force_in_stock_status' ), 10, 2 );
-			add_action( 'woocommerce_product_set_stock', array( $this, 'check_out_of_stock' ) );
-			add_action( 'woocommerce_variation_set_stock', array( $this, 'check_out_of_stock_variations' ) );
-			add_filter( 'woocommerce_email_classes', array( $this, 'register_email_classes' ) );
 			add_action( 'ywpo_add_order_item_meta', array( $this, 'add_for_sale_date_order_item_meta' ), 10, 2 );
 			add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'check_cart_mixing' ), 10, 4 );
 
 			// YITH Badge Management integration
-			add_filter( 'yith_wcbm_product_is_on_sale', array( $this, 'auto_badge_for_pre_order' ), 10, 2 );
 			add_filter( 'yith_wcbm_advanced_badge_info', array( $this, 'auto_badge_data' ), 10, 2 );
 
 			// YITH WooCommerce Product Countdown integration
 			add_filter( 'ywpc_timer_title', array( $this, 'product_countdown_label' ), 60, 3 );
 
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			// Flatsome fix for showing availability date on Quick View
+			add_action( 'wc_quick_view_before_single_product', array( $this, 'flatsome_fix' ), 5 );
+
+			add_shortcode( 'yith_pre_order_products', array( $this, 'pre_order_products_loop' ) );
+			add_action( 'yith_wcpo_pagination_nav', array( $this, 'pagination_nav' ) );
 		}
 
 		// Compatibility for themes which returns only 2 parameters of "woocommerce_stock_html" filter
@@ -248,9 +245,73 @@ if ( ! class_exists( 'YITH_Pre_Order_Frontend_Premium' ) ) {
 			$adjustment_amount = $pre_order->get_pre_order_adjustment_amount();
 
 			if ( 'yes' == $is_pre_order ) {
-				return $this->compute_price( $price, $price_adjustment, $manual_price, $adjustment_type, $adjustment_amount );
+				if ( ! get_current_user_id() ) {
+					switch ( get_option( 'yith_wcpo_guest_users_price', 'show_pre_order_price' ) ) {
+						case 'show_regular_price' :
+							return $product->get_regular_price();
+						case 'hidden_price' :
+							return '';
+					}
+				}
+			    if ( 'yes' == get_option( 'yith_wcpo_show_regular_price' ) && 'manual' == $price_adjustment && $manual_price != '0' ) {
+				    return $this->compute_price( $product->get_regular_price(), $price_adjustment, $manual_price, $adjustment_type, $adjustment_amount );
+			    } else {
+				    return $this->compute_price( $price, $price_adjustment, $manual_price, $adjustment_type, $adjustment_amount );
+			    }
 			}
 			return $price;
+		}
+
+		/**
+		 * @param $sale_price
+		 * @param $product
+		 *
+         * @since 1.3.2
+		 * @return string
+		 */
+		public function empty_sale_price( $sale_price, $product ) {
+			$pre_order    = new YITH_Pre_Order_Product( $product );
+            $is_pre_order = $pre_order->get_pre_order_status();
+
+			$price_adjustment  = $pre_order->get_pre_order_price_adjustment();
+			$manual_price      = $pre_order->get_pre_order_price();
+
+			if ( 'manual' == $price_adjustment && empty( $manual_price ) ) {
+				return $sale_price;
+            }
+
+			if ( 'yes' == $is_pre_order && 'yes' == get_option( 'yith_wcpo_show_regular_price' ) ) {
+				return '0';
+			}
+			return $sale_price;
+		}
+
+		/**
+		 * @param $on_sale
+		 * @param $product
+		 *
+         * @since 1.3.2
+		 * @return bool
+		 */
+		public function force_use_of_sale_price( $on_sale, $product ) {
+			$pre_order    = new YITH_Pre_Order_Product( $product );
+            $is_pre_order = $pre_order->get_pre_order_status();
+
+			$price_adjustment  = $pre_order->get_pre_order_price_adjustment();
+			$manual_price      = $pre_order->get_pre_order_price();
+
+			// If the option guest_users_price is set to show_regular_price, disable the use of Sale price for only see the Regular price without a strikethrough price
+			if ( 'yes' == $is_pre_order && ! get_current_user_id() && 'show_regular_price' == get_option( 'yith_wcpo_guest_users_price', 'show_pre_order_price' ) )
+				return false;
+
+			if ( 'manual' == $price_adjustment && empty( $manual_price ) ) {
+				return $on_sale;
+			}
+
+			if ( 'yes' == $is_pre_order && 'yes' == get_option( 'yith_wcpo_show_regular_price' ) ) {
+				$on_sale = true;
+			}
+			return $on_sale;
 		}
 
 		public function variable_price_range( $price, $variation, $product_variable ) {
@@ -266,6 +327,14 @@ if ( ! class_exists( 'YITH_Pre_Order_Frontend_Premium' ) ) {
 			$adjustment_amount = $pre_order->get_pre_order_adjustment_amount();
 
 			if ( 'yes' == $is_pre_order ) {
+				if ( ! get_current_user_id() ) {
+					switch ( get_option( 'yith_wcpo_guest_users_price', 'show_pre_order_price' ) ) {
+						case 'show_regular_price' :
+							return $variation->get_regular_price();
+						case 'hidden_price' :
+							return '';
+					}
+				}
 				return $this->compute_price( $price, $price_adjustment, $manual_price, $adjustment_type, $adjustment_amount );
 			}
 
@@ -305,124 +374,6 @@ if ( ! class_exists( 'YITH_Pre_Order_Frontend_Premium' ) ) {
 			}
 
 			return $price;
-		}
-
-		public function check_stock_status( $status, $product ) {
-			global $sitepress;
-			$id = yit_get_product_id( $product );
-
-			$product_id  = $sitepress ? yit_wpml_object_id( $id, 'product', true, $sitepress->get_default_language() ) : $id;
-			$pre_order   = new YITH_Pre_Order_Product( $product_id );
-			$is_pre_order = $pre_order->get_pre_order_status();
-
-			// Checks if the product is Pre-Order.
-			if ( 'yes' == $is_pre_order ) {
-				$status = version_compare( WC()->version, '3.0.0', '<' ) ? true : 'instock';
-			}
-			return $status;
-		}
-
-		public function check_stock_quantity( $quantity, $product ) {
-			global $sitepress;
-			$id = yit_get_product_id( $product );
-
-			$product_id  = $sitepress ? yit_wpml_object_id( $id, 'product', true, $sitepress->get_default_language() ) : $id;
-			$pre_order   = new YITH_Pre_Order_Product( $product_id );
-			$is_pre_order = $pre_order->get_pre_order_status();
-			$product_qty_in_cart = WC()->cart ? WC()->cart->get_cart_item_quantities() : '';
-
-			// Checks if the product is Pre-Order.
-			if ( 'yes' == $is_pre_order ) {
-				if ( ( is_checkout() || is_cart() ) && $product_qty_in_cart ) {
-					$quantity = $product_qty_in_cart[ $pre_order->product->get_stock_managed_by_id() ] + 1;
-				} elseif ( ! empty( $_REQUEST['quantity'] ) ) {
-					$quantity = $_REQUEST['quantity'] + 1;
-				} else {
-					$quantity = -1;
-				}
-			}
-			return $quantity;
-		}
-
-		public function check_out_of_stock( $product ) {
-			if ( 'simple' == $product->get_type() ) {
-				$this->check_out_of_stock_products( $product );
-			}
-		}
-
-		public function check_out_of_stock_variations( $product ) {
-			$this->check_out_of_stock_products( $product );
-		}
-
-		public function check_out_of_stock_products( $product ) {
-			$pre_order = new YITH_Pre_Order_Product( $product );
-			if ( 'outofstock' == yit_get_prop( $product, '_stock_status', true )
-			     && 'yes' == get_option( 'yith_wcpo_enable_pre_order_auto_outofstock_notification' )
-			     && 'yes' != $pre_order->get_pre_order_status()
-			) {
-				// Delete all possible post meta concerning pre-order
-				$pre_order->clear_pre_order_product();
-
-				$pre_order->set_pre_order_status( 'yes' );
-				// If changed, notify to admin
-				WC()->mailer();
-				do_action( 'yith_ywpo_out_of_stock', $pre_order->id );
-			}
-		}
-
-		function register_email_classes( $email_classes ) {
-			if ( 'yes' == get_option( 'yith_wcpo_enable_pre_order_auto_outofstock_notification', 'no' ) ) {
-				$email_classes['YITH_Pre_Order_Out_Of_Stock_Email'] = include( YITH_WCPO_PATH . 'includes/emails/class.yith-pre-order-out-of-stock-email.php' );
-			}
-
-			return $email_classes;
-		}
-
-		public function allow_backorders( $backorders, $product_id, $product = false ) {
-			global $sitepress;
-
-			if ( ! $product ) {
-				return false;
-			}
-
-			if ( 'yes' != get_option( 'yith_wcpo_enable_pre_order_auto_backorders' ) ) {
-				return $backorders;
-			}
-
-			$product_id = $sitepress ? yit_wpml_object_id( $product_id, 'product', true, $sitepress->get_default_language() ) : $product_id;
-			$pre_order  = new YITH_Pre_Order_Product( $product_id );
-
-			if ( 'yes' == $pre_order->get_pre_order_status() ) {
-				if ( ! $backorders ) {
-					return true;
-				}
-			}
-
-			return $backorders;
-		}
-
-		public function force_in_stock_status( $stock_status, $_product = false ) {
-			global $sitepress, $product;
-
-			if ( ! $_product ) {
-				$_product = $product;
-			}
-
-			if ( 'yes' != get_option( 'yith_wcpo_enable_pre_order_auto_backorders' ) ) {
-				return $stock_status;
-			}
-
-			$product_id = $_product->get_id();
-			$product_id = $sitepress ? yit_wpml_object_id( $product_id, 'product', true, $sitepress->get_default_language() ) : $product_id;
-			$pre_order  = new YITH_Pre_Order_Product( $product_id );
-
-			if ( 'yes' == $pre_order->get_pre_order_status() ) {
-				if ( ! $stock_status ) {
-					return true;
-				}
-			}
-
-			return $stock_status;
 		}
 
 		public function add_for_sale_date_order_item_meta( $item_id, $pre_order ) {
@@ -474,16 +425,6 @@ if ( ! class_exists( 'YITH_Pre_Order_Frontend_Premium' ) ) {
             return $has_pre_order_products;
         }
 
-        public function auto_badge_for_pre_order( $product_is_on_sale, $product ) {
-            if ( $product ) {
-                $product = new YITH_Pre_Order_Product( $product );
-                if ( 'yes' == $product->get_pre_order_status() && 'discount' == $product->get_pre_order_price_adjustment() ) {
-                    $product_is_on_sale = true;
-                }
-            }
-            return $product_is_on_sale;
-        }
-
         public function auto_badge_data( $data, $product ) {
             if ( ! $product ) {
             	return $data;
@@ -512,18 +453,151 @@ if ( ! class_exists( 'YITH_Pre_Order_Frontend_Premium' ) ) {
 		        }
 	        }
 
-
             return $data;
         }
 
-		public function product_countdown_label( $label, $a, $id ) {
-			$option =  get_option( 'yith_wcpo_countdown_label' );
-			if ( $option ) {
-				$label = $option;
+		public function product_countdown_label( $label, $a, $product_id ) {
+
+			$product          = wc_get_product( $product_id );
+			$is_preorder  = yit_get_prop( $product, '_ywpo_preorder' );
+
+			if ($is_preorder == 'yes' ){
+				$option =  get_option( 'yith_wcpo_countdown_label' );
+				if ( $option ) {
+					$label = $option;
+				}
 			}
+
 			return $label;
 		}
 
+		/*
+		 * Flatsome fix for showing availability date in Quick View
+		 *
+		 * @since 1.3.2
+		 */
+		public function flatsome_fix() {
+			?>
+            <script type="text/javascript">
+                jQuery( 'div.pre_order_single' ).each( function () {
+                    var unix_time = parseInt( jQuery( this ).data( 'time' ) );
+                    var date = new Date(0);
+                    date.setUTCSeconds( unix_time );
+                    var time = date.toLocaleTimeString();
+                    time = time.slice(0, -3);
+                    jQuery( this ).find( '.availability_date' ).text( date.toLocaleDateString() );
+                    jQuery( this ).find( '.availability_time' ).text( time );
+                });
+            </script>
+			<?php
+		}
+
+		/**
+		 * Shortcode for displaying Pre-Order products
+		 * @param $atts
+		 *
+		 * @return string
+		 */
+		public function pre_order_products_loop( $atts ) {
+			$atts = shortcode_atts( array(
+				'columns' => '4',
+				'orderby' => 'title',
+				'order'   => 'asc',
+                'posts_per_page' => 8
+			), $atts, 'products' );
+
+			$paged = ( get_query_var('paged') ) ? get_query_var('paged') : 1;
+
+			$query_args = array(
+				'post_type'           => array( 'product', 'product_variation' ),
+				'post_status'         => 'publish',
+				'ignore_sticky_posts' => 1,
+                'columns'             => $atts['columns'],
+				'orderby'             => $atts['orderby'],
+				'order'               => $atts['order'],
+				'posts_per_page'      => $atts['posts_per_page'],
+				'paged'               => $paged,
+				'meta_query' => array(
+					array(
+						'key' => '_ywpo_preorder',
+						'value' => 'yes',
+						'compare' => '='
+					)
+				)
+			);
+
+			wp_register_script( 'yith-wcpo-frontend-shop-loop', YITH_WCPO_ASSETS_JS_URL . yit_load_js_file( 'frontend-shop-loop.js' ), array( 'jquery' ), YITH_WCPO_VERSION, 'true' );
+			wp_enqueue_script( 'yith-wcpo-frontend-shop-loop' );
+
+			return self::product_loop( $query_args, $atts, 'yith_pre_order_products' );
+		}
+
+		/**
+		 * Loop over found products.
+		 * @param  array $query_args
+		 * @param  array $atts
+		 * @param  string $loop_name
+		 * @return string
+		 */
+		private static function product_loop( $query_args, $atts, $loop_name ) {
+			global $woocommerce_loop;
+
+			$products                    = new WP_Query( apply_filters( 'woocommerce_shortcode_products_query', $query_args, $atts, $loop_name ) );
+			$columns                     = absint( $atts['columns'] );
+			$woocommerce_loop['columns'] = $columns;
+			$woocommerce_loop['name']    = $loop_name;
+
+			ob_start();
+			if ( is_singular( 'product' ) ) :
+
+				while ( have_posts() ) : the_post();
+
+					wc_get_template_part( 'content', 'single-product' );
+
+				endwhile;
+			else :
+				if ( $products->have_posts() ) : ?>
+
+					<?php do_action( "woocommerce_shortcode_before_{$loop_name}_loop" ); ?>
+
+					<?php woocommerce_product_loop_start(); ?>
+
+					<?php while ( $products->have_posts() ) : $products->the_post(); ?>
+
+						<?php wc_get_template_part( 'content', 'product' ); ?>
+
+					<?php endwhile; // end of the loop. ?>
+
+					<?php woocommerce_product_loop_end(); ?>
+
+					<?php do_action( "woocommerce_shortcode_after_{$loop_name}_loop" ); ?>
+					<?php do_action( 'yith_wcpo_pagination_nav', $products->max_num_pages ); ?>
+
+				<?php elseif ( ! woocommerce_product_subcategories( array( 'before' => woocommerce_product_loop_start( false ), 'after' => woocommerce_product_loop_end( false ) ) ) ) : ?>
+
+					<?php do_action( 'woocommerce_no_products_found' ); ?>
+
+				<?php endif; ?>
+			<?php endif; ?>
+
+			<?php
+
+			woocommerce_reset_loop();
+			wp_reset_postdata();
+
+			return '<div class="woocommerce columns-' . $columns . '">' . ob_get_clean() . '</div>';
+		}
+
+		/**
+		 * Prints template for displaying navigation panel for pagination
+		 *
+		 * @param $max_num_pages
+		 */
+		public function pagination_nav( $max_num_pages ) {
+			ob_start();
+			wc_get_template( 'frontend/yith-pre-order-pagination-nav.php', array( 'max_num_pages' => $max_num_pages ), '', YITH_WCPO_WC_TEMPLATE_PATH );
+			echo ob_get_clean();
+		}
 
 		public function enqueue_scripts() {
 			parent::enqueue_scripts();
@@ -540,6 +614,20 @@ if ( ! class_exists( 'YITH_Pre_Order_Frontend_Premium' ) ) {
 				wp_register_script( 'yith-wcpo-frontend-my-account', YITH_WCPO_ASSETS_JS_URL . yit_load_js_file( 'frontend-my-account.js' ), array( 'jquery' ), YITH_WCPO_VERSION, 'true' );
 				wp_enqueue_script( 'yith-wcpo-frontend-my-account' );
 			}
+
+			// YITH WooCommerce Subscription compatibility //
+			if ( defined( 'YITH_YWSBS_VERSION' ) ) {
+				$params = array(
+					'add_to_cart_label' => get_option( 'ywsbs_add_to_cart_label' )
+				);
+			} else {
+				$params = array(
+					'add_to_cart_label' => get_option( 'ywsbs_add_to_cart_label' ),
+					'default_cart_label' => apply_filters( 'ywsbs_add_to_cart_default_label', __( 'Add to cart', 'woocommerce' ) )
+				);
+			}
+			wp_localize_script( 'yith_ywsbs_frontend', 'yith_ywsbs_frontend', $params );
+			/////////////////////////////////////////////////
 		}
 		
 	}

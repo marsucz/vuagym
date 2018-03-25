@@ -22,7 +22,7 @@ abstract class TCB_Event_Trigger_Abstract {
 
 	/**
 	 * should return the Event name
-	 * @return mixed
+	 * @return string
 	 */
 	public abstract function getName();
 

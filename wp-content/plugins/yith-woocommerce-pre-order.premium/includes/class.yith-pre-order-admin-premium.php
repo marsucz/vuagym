@@ -44,7 +44,6 @@ if (!class_exists('YITH_Pre_Order_Admin_Premium')) {
 			require_once( YITH_WCPO_PATH . 'includes/class.yith-pre-order-edit-product-page-premium.php' );
 			parent::__construct();
 
-			add_filter( 'woocommerce_email_classes', array( $this, 'register_email_classes' ) );
 			add_filter( 'woocommerce_locate_core_template', array( $this, 'locate_core_template' ), 10, 3 );
 			add_filter( 'woocommerce_email_actions', array( $this, 'add_for_sale_date_changed_trigger_action' ) );
 			add_filter( 'manage_edit-shop_order_columns',  array( $this, 'add_pre_order_column' ) );
@@ -52,46 +51,10 @@ if (!class_exists('YITH_Pre_Order_Admin_Premium')) {
 			add_action( 'manage_shop_order_posts_custom_column', array( $this, 'add_pre_order_column_content_orders' ), 10, 2 );
 			add_action( 'manage_product_posts_custom_column', array( $this, 'add_pre_order_column_content_products' ), 10, 2 );
 			add_filter( 'yith_wcpo_settings_options', array( $this, 'premium_settings_options' ) );
-			add_action( 'yith_ywpo_pre_order_status_changed', array($this, 'manage_pre_order_status_change'), 10, 3);
-		}
-
-		public function manage_pre_order_status_change( $id, $status, $old_status ) {
-			/** Manage a product that loose its pre-order status */
-			if ( ( 'yes' == $old_status ) && ( 'no' == $status ) )  {
-				$product = wc_get_product( $id );
-				$args = array(
-					'post_type'   => wc_get_order_types(),
-					'post_status' => array( 'wc-processing', 'wc-completed' ),
-					'numberposts' => - 1,
-					'fields'      => 'ids',
-					'meta_key'    => '_order_has_preorder',
-					'meta_value'  => 'yes'
-				);
-				$order_ids = get_posts( $args );
-			}
-
 		}
 
 		public function instantiate_edit_product_page() {
 			return $this->_edit_product_page = new YITH_Pre_Order_Edit_Product_Page_Premium();
-		}
-
-
-
-		function register_email_classes( $email_classes )
-		{
-			$email_classes['YITH_Pre_Order_For_Sale_Date_Changed_Email'] = include( YITH_WCPO_PATH . 'includes/emails/class.yith-pre-order-for-sale-date-changed-email.php' );
-			if ( 'yes' == get_option( 'yith_wcpo_enable_pre_order_notification', 'no' ) ) {
-				$email_classes['YITH_Pre_Order_Date_End_Email'] = include( YITH_WCPO_PATH . 'includes/emails/class.yith-pre-order-date-end-email.php' );
-			}
-			if ( 'yes' == get_option( 'yith_wcpo_enable_pre_order_notification_for_sale', 'no' ) ) {
-				$email_classes['YITH_Pre_Order_Is_For_Sale_Email'] = include( YITH_WCPO_PATH . 'includes/emails/class.yith-pre-order-is-for-sale-email.php' );
-			}
-			if ( 'yes' == get_option( 'yith_wcpo_enable_pre_order_auto_outofstock_notification', 'no' ) ) {
-				$email_classes['YITH_Pre_Order_Out_Of_Stock_Email'] = include( YITH_WCPO_PATH . 'includes/emails/class.yith-pre-order-out-of-stock-email.php' );
-			}
-			return $email_classes;
-
 		}
 
 		/**
@@ -104,8 +67,7 @@ if (!class_exists('YITH_Pre_Order_Admin_Premium')) {
 		 * @return array Vendor capabilities
 		 * @since  1.0
 		 */
-		public function locate_core_template( $core_file, $template, $template_base )
-		{
+		public function locate_core_template( $core_file, $template, $template_base ) {
 			$custom_template = array(
 				//HTML Email
 				'emails/pre-order-date-changed.php',
@@ -126,8 +88,7 @@ if (!class_exists('YITH_Pre_Order_Admin_Premium')) {
 			return $core_file;
 		}
 
-		public function add_for_sale_date_changed_trigger_action($actions)
-		{
+		public function add_for_sale_date_changed_trigger_action($actions) {
 			$actions[] = 'yith_for_sale_date';
 			return $actions;
 		}
@@ -311,30 +272,24 @@ if (!class_exists('YITH_Pre_Order_Admin_Premium')) {
 				'title'   => _x( 'Remove Pre-Order status when the release date passes', 'Admin option: Automatic purchasable Pre-order products',
                     'yith-woocommerce-pre-order' ),
 				'type'    => 'checkbox',
-				'desc'    => _x( 'By enabling this option, the Pre-Order status is removed as soon as the Pre-Order date is
-				passed. If not checked, you will have to remove the Pre-Order status first.', 'Admin option description: Automatic
+				'desc'    => _x( 'By enabling this option, the Pre-Order status is removed as soon as the Pre-Order date is passed. If not checked, you will have to remove the Pre-Order status first.', 'Admin option description: Automatic
 				purchasable Pre-order products', 'yith-woocommerce-pre-order' ),
 				'id'      => 'yith_wcpo_enable_pre_order_purchasable',
 				'default' => 'yes'
 			);
 			$settings['option2'] = array(
-				'title'   => _x( 'When products go out of stock, turn them to Pre-Order', 'Admin option: When products get
-				Out-of-Stock status
-				turn into Pre-Order', 'yith-woocommerce-pre-order' ),
+				'title'   => __( 'Automatic Pre-Order status', 'yith-woocommerce-pre-order' ),
 				'type'    => 'checkbox',
-				'desc'    => __( 'By enabling this option, products that go out of stock will automatically turn into Pre-Order status and the admin
-				will receive an e-mail. To be purchased, they require a stock quantity (if the stock is managed). Set the status \'In stock\' or
-				enable the option below "Force \'Allow Backorders\' and \'In stock\' status".', 'yith-woocommerce-pre-order' ),
+				'desc'    => __( 'By enabling this option, products currently out of stock automatically acquire the Pre-Order status and the admin receives an email. When products are in stock again, they will automatically lose the Pre-Order status. If this option is enabled, changing the Pre-Order status manually will be disabled.', 'yith-woocommerce-pre-order' ),
 				'id'      => 'yith_wcpo_enable_pre_order_auto_outofstock_notification',
 				'default' => 'no'
 			);
 			$settings['option3'] = array(
-				'title'   => _x( 'Force \'Allow Backorders\' and \'In stock\' status', 'Admin option: Force enabling Allow Backorders option and In Stock status.', 'yith-woocommerce-pre-order' ),
+				'title'   => __( 'Allow sales of out of stock products', 'yith-woocommerce-pre-order' ),
 				'type'    => 'checkbox',
-				'desc'    => __( 'By enabling this option, Pre-Order products can always be purchased. They will be set to \'In Stock\'
-				automatically and back orders will be enabled. This only works for products that allow stock management.',
+				'desc'    => __( 'By enabling this option, Pre-Order products with no stock can be purchased. (Requires WooCommerce 3.0 or higher)',
                     'yith-woocommerce-pre-order' ),
-				'id'      => 'yith_wcpo_enable_pre_order_auto_backorders',
+				'id'      => 'yith_wcpo_allow_out_of_stock_selling',
 				'default' => 'no'
 			);
 			$settings['option4'] = array(
@@ -353,6 +308,25 @@ if (!class_exists('YITH_Pre_Order_Admin_Premium')) {
 				'default' => 'false'
 			);
 			$settings['option6'] = array(
+				'title'   => __( 'Show Regular price crossed out', 'yith-woocommerce-pre-order' ),
+				'type'    => 'checkbox',
+				'desc'    => __( 'Whether to show the Regular price (crossed out) next to the Pre-Order price or Pre-Order price only. If this option is enabled, the Pre-Order price will replace the Sale price, if available. (Requires WooCommerce 3.0 or higher)', 'yith-woocommerce-pre-order' ),
+				'id'      => 'yith_wcpo_show_regular_price',
+				'default' => 'yes'
+			);
+			$settings['option7'] = array(
+				'title'   => __( 'Pre-Order price for guest users', 'yith-woocommerce-pre-order' ),
+				'type'    => 'select',
+				'desc'    => __( 'Select what guest users can see', 'yith-woocommerce-pre-order' ),
+				'options' => array(
+					'show_pre_order_price' => __( 'Show Pre-Order price', 'yith-woocommerce-pre-order' ),
+					'show_regular_price'   => __( 'Show Regular price', 'yith-woocommerce-pre-order' ),
+					'hidden_price'         => __( 'Hide price', 'yith-woocommerce-pre-order' )
+				),
+                'css'     => 'height: 35px;',
+				'id'      => 'yith_wcpo_guest_users_price',
+			);
+			$settings['option8'] = array(
 				'title'   => _x( 'Default availability date text', 'Admin option: customize Add to Cart label', 'yith-woocommerce-pre-order' ),
 				'type'    => 'text',
 				'desc'    => _x( 'Use {availability_date} and {availability_time} to show when to remove the Pre-Order status. By leaving it
@@ -361,14 +335,14 @@ if (!class_exists('YITH_Pre_Order_Admin_Premium')) {
 				'id'      => 'yith_wcpo_default_availability_date_label',
 				'default' => _x( 'Available on: {availability_date} at {availability_time}', 'Default message for availability date', 'yith-woocommerce-pre-order' )
 			);
-			$settings['option7'] = array(
+			$settings['option9'] = array(
 				'title'   => _x( 'No date message', 'Admin option: customize Add to Cart label', 'yith-woocommerce-pre-order' ),
 				'type'    => 'text',
 				'desc'    => _x( 'Default message to be shown when no date is set on a Pre-Order product.', 'Admin option description: Default no date message', 'yith-woocommerce-pre-order' ),
 				'id'      => 'yith_wcpo_no_date_label',
 				'default' => _x( 'Coming soon...', 'Default message when no date is set', 'yith-woocommerce-pre-order' )
 			);
-			$settings['option8'] = array(
+			$settings['option10'] = array(
 				'title'   => _x( 'Color on shop page', 'Admin option: customize color', 'yith-woocommerce-pre-order' ),
 				'type'    => 'color',
 				'desc'    => __( 'Change the color of the \'availability date\' and \'no date\' messages on the shop page.',
@@ -376,27 +350,29 @@ if (!class_exists('YITH_Pre_Order_Admin_Premium')) {
 				'id'      => 'yith_wcpo_availability_date_color_loop',
 				'default' => '#b20015'
 			);
-			$settings['option9'] = array(
+			$settings['option11'] = array(
 				'title'   => _x( 'Color on single product page', 'Admin option: customize color', 'yith-woocommerce-pre-order' ),
 				'type'    => 'color',
 				'desc'    => __( 'Change the color of the \'availability date\' and \'no date\' messages on the single product page.', 'yith-woocommerce-pre-order' ),
 				'id'      => 'yith_wcpo_availability_date_color_single_product',
 				'default' => '#a46497'
 			);
-			$settings['option10'] = array(
+			$settings['option12'] = array(
 				'title'   => _x( 'Color on cart page', 'Admin option: customize color', 'yith-woocommerce-pre-order' ),
 				'type'    => 'color',
 				'desc'    => __( 'Change the color of the \'availability date\' and \'no date\' messages on the cart page.', 'yith-woocommerce-pre-order' ),
 				'id'      => 'yith_wcpo_availability_date_color_cart',
 				'default' => '#a46497'
 			);
-			$settings['option11'] = array(
+			$settings['option13'] = array(
 				'title'   => _x( 'Label for countdown', 'Admin option: countdown label', 'yith-woocommerce-pre-order' ),
 				'type'    => 'text',
 				'desc'    => __( 'The label which will be showed next to the countdown timer. YITH WooCommerce Product Countdown is required', 'yith-woocommerce-pre-order' ),
 				'id'      => 'yith_wcpo_countdown_label',
 				'default' => __( 'Available in', 'yith-woocommerce-pre-order' )
 			);
+
+
 
 			$notifications_options = array(
 

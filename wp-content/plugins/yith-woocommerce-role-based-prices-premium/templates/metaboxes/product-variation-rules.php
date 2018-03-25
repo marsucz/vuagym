@@ -25,6 +25,7 @@ $how_apply = empty( $how_apply )? 'only_this' : $how_apply;
             <?php endforeach; ?>
         </select>
         <button type="button" class="button add_variation_price_rule"><?php _e('Add', 'yith-woocommerce-role-based-prices'); ?></button>
+        <span class="clear"></span>
     </p>
     <p class="form-row form-row-full">
          <span class="only_this" style="float:left;margin-right: 25px;">

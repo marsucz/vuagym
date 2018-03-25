@@ -156,12 +156,14 @@ class Thrive_Dash_List_Connection_KlickTipp extends Thrive_Dash_List_Connection_
 
 		list( $first_name, $last_name ) = $this->_getNameParts( $arguments['name'] );
 
-		if ( empty( $first_name ) ) {
-			$first_name = " ";
+		$fields = array();
+
+		if ( ! empty( $first_name ) ) {
+			$fields['fieldFirstName'] = $first_name;
 		}
 
-		if ( empty( $last_name ) ) {
-			$last_name = " ";
+		if ( ! empty( $last_name ) ) {
+			$fields['fieldLastName'] = $last_name;
 		}
 
 		try {
@@ -169,10 +171,7 @@ class Thrive_Dash_List_Connection_KlickTipp extends Thrive_Dash_List_Connection_
 				$arguments['email'],
 				$list_identifier,
 				$arguments['tagid'],
-				array(
-					'fieldFirstName' => $first_name,
-					'fieldLastName'  => $last_name
-				)
+				! empty( $fields ) ? $fields : ''
 			);
 			/**
 			 * get redirect url if needed

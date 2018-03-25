@@ -25,8 +25,8 @@ class Thrive_Dash_Api_Sendinblue {
 
 		switch ( $method ) {
 			case 'GET':
-				$input = json_decode($input);
-				$fn = 'tve_dash_api_remote_get';
+				$input = '';
+				$fn    = 'tve_dash_api_remote_get';
 				break;
 			default:
 

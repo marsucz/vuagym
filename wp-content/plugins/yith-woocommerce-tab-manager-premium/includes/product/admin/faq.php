@@ -2,8 +2,12 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+global $product_object;
+$product_id = yit_get_product_id( $product_object );
+$tab_id = $tab->ID;
 ?>
-<div id="<?php echo $tab;?>_tab" class="panel woocommerce_options_panel">
+<div id="<?php echo $tab_id;?>_tab" class="panel woocommerce_options_panel">
     <div class="custom_tab_options" >
         <div class="form-field downloadable_files" style="padding:10px;">
             <table class="widefat">
@@ -17,7 +21,7 @@ if (!defined('ABSPATH')) {
                     </thead>
                     <tbody>
                     <?php
-                    $faqs = get_post_meta( $post->ID, $tab. '_custom_list_faqs', true );
+                    $faqs = get_post_meta( $product_id, $tab_id. '_custom_list_faqs', true );
                     if ( $faqs ) {
                         foreach ( $faqs as $key => $faq ) {
                             include('html-tab-faq.php');

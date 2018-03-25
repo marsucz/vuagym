@@ -2,7 +2,7 @@
 /*
 Plugin Name: Thrive Ultimatum
 Plugin URI: https://thrivethemes.com
-Version: 2.0.15
+Version: 2.0.28
 Author: <a href="https://thrivethemes.com">Thrive Themes</a>
 Description: The ultimate scarcity plugin for Wordpress
 Text Domain: thrive-ult
