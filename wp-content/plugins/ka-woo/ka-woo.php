@@ -47,6 +47,7 @@ function function_ka_woo_tools_page() {
 function kawoo_pdate_default_manager_tabs_options() {
     update_option('kawoo_show_type', 1);
     update_option('kawoo_number_of_products', MYPOS_PER_PAGE);
+    update_option('kawoo_image_link', '');
 }
 
 function function_manager_tabs_page() {
@@ -65,9 +66,9 @@ function function_manager_tabs_page() {
     }
     
     if (isset($_POST['kawoo_show_type'])) {
-        
         update_option('kawoo_show_type', $_POST['kawoo_show_type']);
         update_option('kawoo_number_of_products', $_POST['kawoo_number_of_products']);
+        update_option('kawoo_image_link', $_POST['kawoo_image_link']);
     }
 
     if (empty($_POST) && !isset($_GET['paged'])) {
@@ -76,6 +77,7 @@ function function_manager_tabs_page() {
     
     $show_type = get_option('kawoo_show_type');
     $show_products = get_option('kawoo_number_of_products');
+    $image_link = get_option('kawoo_image_link');
     
     echo '<h2 class="nav-tab-wrapper">
             <a href="?page=mypos-sync" class="nav-tab ' . ($active_tab == "" ? "nav-tab-active" : "") . '">Welcome</a>
@@ -96,6 +98,8 @@ function function_manager_tabs_page() {
                             </select>
                             <label id="kawoo_product_numbers_label"> Số lượng SP hiển thị </label>
                             <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
+                            <label id="image_link_label"> Link Ảnh </label>
+                            <input type="text" id="kawoo_image_link" name="kawoo_image_link" value="' . $image_link . '" required>
                         <input type="submit" class="button" value="Áp dụng">
                     </form>
                     </div>';
@@ -104,7 +108,7 @@ function function_manager_tabs_page() {
                 
             } else {
                 echo '<form method="POST" id="product-image-manager-list">';
-                $myListTable = new Kawoo_Product_Image_List($show_type, $show_products);
+                $myListTable = new Kawoo_Product_Image_List($show_type, $show_products, $image_link);
                 $myListTable->prepare_items();
                 $myListTable->display();
                 echo '</form>';
@@ -113,31 +117,23 @@ function function_manager_tabs_page() {
             
         case 'product_category_manager':
             
-//            $show_type = get_option('sync_by_web_show_type');
-//            $show_products = get_option('sync_by_web_products');
-//            
-//            echo '  <div class="wrap">
-//                    <form id="sync-by-web-form" method="POST">
-//                            <label>Bộ lọc </label>
-//                            <select id="sync_by_web_show_type" name="sync_by_web_show_type">
-//                                <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Chỉ hiển thị sản phẩm không đồng bộ</option>
-//                                <option value="0"' . ($show_type == 0 ? 'selected' : '') . '>Hiển thị tất cả sản phẩm</option>
-//                            </select>
-//                            <label id="sync_by_web_products_label"> Số lượng SP </label>
-//                            <input type="number" id="sync_by_web_products" name="sync_by_web_products" value="' . $show_products . '" min="1" required>
-//                        <input type="submit" class="button" value="Áp dụng">
-//                    </form>
-//                    </div>';
-//            
-//            if (empty($_POST) && !isset($_GET['paged'])) {
-//                
-//            } else {
-//                echo '<form method="POST" id="product-image-manager">';
-//                $myListTable = new Kawoo_Product_Image_List($show_type, $show_products);
-//                $myListTable->prepare_items();
-//                $myListTable->display();
-//                echo '</form>';
-//            }
+            echo '  <div class="wrap">
+                    <form id="product-image-manager-form" method="POST">
+                            <label id="kawoo_product_numbers_label"> Số lượng SP hiển thị </label>
+                            <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
+                        <input type="submit" class="button" value="Áp dụng">
+                    </form>
+                    </div>';
+            
+            if (empty($_POST) && !isset($_GET['paged'])) {
+                
+            } else {
+                echo '<form method="POST" id="product-category-manager-list">';
+                $myListTable = new Kawoo_Product_Category_List($show_products);
+                $myListTable->prepare_items();
+                $myListTable->display();
+                echo '</form>';
+            }
             break;
             
         default:
@@ -155,8 +151,11 @@ function function_manager_tabs_page() {
 }
 
 function function_kawoo_testing_page() {
-    echo has_post_thumbnail(6553);
-    echo has_post_thumbnail(6553);
+//    echo has_post_thumbnail(6553);
+    
+    echo wp_get_attachment_url(get_post_thumbnail_id(6553));
+    echo wp_get_attachment_url(get_post_thumbnail_id(8580));
+    
 }
 
 ?>
