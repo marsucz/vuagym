@@ -150,12 +150,16 @@ function function_manager_tabs_page() {
     
 }
 
+
+
 function function_kawoo_testing_page() {
-//    echo has_post_thumbnail(6553);
-    
-    echo wp_get_attachment_url(get_post_thumbnail_id(6553));
-    echo wp_get_attachment_url(get_post_thumbnail_id(8580));
-    
+    $args = array('hide_empty'=> 0,
+    'taxonomy'=> 'product_cat',
+    'hierarchical'=>1,
+    'echo'=>0);
+
+$cats = wp_category_checklist($args);
+echo $cats;
 }
 
 ?>

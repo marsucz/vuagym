@@ -178,7 +178,7 @@ function ja_ajax_check_quantity_checkout(){
                 $product_quantity = $product['quantity'];
                 
                 $kiotviet_api = new KiotViet_API();
-                $max_quantity = $kiotviet_api->get_product_quantity_by_ProductSKU($product_sku);
+                $max_quantity = $kiotviet_api->get_product_quantity_by_ProductSKU($product_sku, $wc_product->get_id());
                 
                 if ($product_quantity > $max_quantity) {
                     $form_submit = false;

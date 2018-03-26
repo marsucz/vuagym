@@ -113,6 +113,11 @@ class Kawoo_Product_Category_List extends WP_List_Table {
     public function get_sortable_columns() {
         return array();
     }
+    
+    private function get_product_category_by_id( $category_id ) {
+        $term = get_term_by( 'id', $category_id, 'product_cat', 'ARRAY_A' );
+        return $term['name'];
+    }
 
     public function column_default($item, $column_name) {
         $r = '';
@@ -135,7 +140,9 @@ class Kawoo_Product_Category_List extends WP_List_Table {
 
         $woo_product['id'] = $product->get_id();
         $woo_product['name'] = mypos_get_variation_title($product);
-        $woo_product['category'] = $product->get_category_ids();
+        
+
+        
 
         switch ($column_name) {
             case 'id':
@@ -149,7 +156,16 @@ class Kawoo_Product_Category_List extends WP_List_Table {
                 $r = $woo_product['name'];
                 break;
             case 'category':
-                $r = json_encode($product->get_category_ids());
+                $categories = $product->get_category_ids();
+                $category_name = '';
+                if ($categories) {
+                    foreach ($categories as $cate) {
+                        $category_obj = $this->get_product_category_by_id($cate);
+                        $category_name .= $category_obj . ' ';
+                    }
+                }
+                $r = $category_name;
+                break;
             case 'options':
                 
                 break;
