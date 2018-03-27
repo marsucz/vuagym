@@ -30,6 +30,12 @@ and open the template in the editor.
     color: black !important;
 }
 
+.select2-container {
+    margin: 0 2px 0 2px;
+    min-width: 300px;
+    max-width: 600px;
+}
+
 .btn {
   display: inline-block;
   padding: 6px 12px;

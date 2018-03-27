@@ -54,8 +54,6 @@ function function_manager_tabs_page() {
     
     set_time_limit(600);
     
-    kawoo_load_assets_tablist();
-    
     echo '<div class="wrap">
         <h2>Quản lý Woocommerce</h2>';
         
@@ -65,19 +63,18 @@ function function_manager_tabs_page() {
         $active_tab = $_GET['tab'];
     }
     
-    if (isset($_POST['kawoo_show_type'])) {
+    if (isset($_POST['kawoo_number_of_products'])) {
+        
         update_option('kawoo_show_type', $_POST['kawoo_show_type']);
         update_option('kawoo_number_of_products', $_POST['kawoo_number_of_products']);
         update_option('kawoo_image_link', $_POST['kawoo_image_link']);
+        
+        update_option('kawoo_selected_categories', isset($_POST['kawoo_selected_categories']) ? $_POST['kawoo_selected_categories']: '');
     }
 
     if (empty($_POST) && !isset($_GET['paged'])) {
         kawoo_pdate_default_manager_tabs_options();
     }
-    
-    $show_type = get_option('kawoo_show_type');
-    $show_products = get_option('kawoo_number_of_products');
-    $image_link = get_option('kawoo_image_link');
     
     echo '<h2 class="nav-tab-wrapper">
             <a href="?page=mypos-sync" class="nav-tab ' . ($active_tab == "" ? "nav-tab-active" : "") . '">Welcome</a>
@@ -85,9 +82,16 @@ function function_manager_tabs_page() {
             <a href="?page=kawoo-manager-tabs&tab=product_category_manager" class="nav-tab ' . ($active_tab == "product_category_manager" ? "nav-tab-active" : "") . '">Quản lý danh mục sản phẩm</a>
          </h2>';
     
+    $show_type = get_option('kawoo_show_type');
+    $show_products = get_option('kawoo_number_of_products');
+    
     switch ($active_tab) {
         
         case 'product_picture_manager': // Hien thi cac san pham khong co anh
+            
+            kawoo_load_assets_tab_picture();
+            
+            $image_link = get_option('kawoo_image_link');
             
             echo '  <div class="wrap">
                     <form id="product-image-manager-form" method="POST">
@@ -116,11 +120,32 @@ function function_manager_tabs_page() {
             break;
             
         case 'product_category_manager':
+            kawoo_load_assets_tab_category();
+            
+            $selected_categories = get_option('kawoo_selected_categories');
+            
+            $args = array(
+                'hide_empty' => 0,
+                'taxonomy'=> 'product_cat',
+                'hierarchical' => 1,
+                'echo' => 0,
+                'name' => 'kawoo_selected_categories[]',
+                'id' => 'kawoo_selected_categories'
+                );
+
+            $cats = wp_dropdown_categories($args);
             
             echo '  <div class="wrap">
                     <form id="product-image-manager-form" method="POST">
+                            <label>Bộ lọc </label>
+                            <select id="kawoo_show_type" name="kawoo_show_type">
+                                <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Sản phẩm chỉ thuộc danh mục</option>
+                                <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Sản phẩm thuộc danh mục</option>
+                            </select>
                             <label id="kawoo_product_numbers_label"> Số lượng SP hiển thị </label>
                             <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
+                            <label id="kawoo_selected_categories_label"> Danh mục </label>
+                            '. $cats . '
                         <input type="submit" class="button" value="Áp dụng">
                     </form>
                     </div>';
@@ -129,7 +154,7 @@ function function_manager_tabs_page() {
                 
             } else {
                 echo '<form method="POST" id="product-category-manager-list">';
-                $myListTable = new Kawoo_Product_Category_List($show_products);
+                $myListTable = new Kawoo_Product_Category_List($show_type, $show_products, $selected_categories);
                 $myListTable->prepare_items();
                 $myListTable->display();
                 echo '</form>';

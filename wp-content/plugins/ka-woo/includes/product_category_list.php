@@ -15,16 +15,18 @@ if( ! class_exists( 'WP_List_Table' ) ) {
 class Kawoo_Product_Category_List extends WP_List_Table {
 
 //    private $dbModel;
-//    private $show_type = 1;
+    private $show_type = 1;
     private $show_products_per_page = 10;
+    private $selected_categories = [];
 
-    function __construct($show_products = 10) {
+    function __construct($show_type = 1, $show_products = 10, $selected_categories = []) {
         $args = array();
         parent::__construct($args);
 //        $this->dbModel = new DbModel();
-//        $this->show_type = $show_type;
+        $this->show_type = $show_type;
         $this->show_products_per_page = $show_products;
 //        $this->image_link = $image_link;
+        $this->selected_categories = $selected_categories;
     }
     
     public function prepare_items()
@@ -36,10 +38,6 @@ class Kawoo_Product_Category_List extends WP_List_Table {
         $perPage = $this->show_products_per_page;
         $currentPage = $this->get_pagenum();
         $list_product = array();
-
-//        switch ($this->show_type) {
-//
-//            case 1: // Hien thi cac san pham chua co "Anh san pham"
 
         $perPage = 50;
         $currentPage = 0;
@@ -66,10 +64,38 @@ class Kawoo_Product_Category_List extends WP_List_Table {
                 if ($theid) {
                     $product = wc_get_product($theid);
                     $categories = $product->get_category_ids();
-                    if (count($categories) == 1) {
-                        $list_product[] = $theid;
-                        $count_product++;
+                    
+                    switch ($this->show_type) {
+                        case 1: // San pham chi thuoc danh muc
+                            if (count($categories) == 1) {
+                                if (!empty($this->selected_categories)) {
+                                    foreach ($this->selected_categories as $selected_cate) {
+                                        if ($categories[0] == $selected_cate) {
+                                            $list_product[] = $theid;
+                                            $count_product++;
+                                        }
+                                    }
+                                } else {
+                                    $list_product[] = $theid;
+                                    $count_product++;
+                                }
+                            }
+                            break;
+                        case 2: // San pham thuoc danh muc
+                            if (!empty($this->selected_categories)) {
+                                foreach ($this->selected_categories as $selected_cate) {
+                                    if ($categories[0] == $selected_cate) {
+                                        $list_product[] = $theid;
+                                        $count_product++;
+                                    }
+                                }
+                            } else {
+                                $list_product[] = $theid;
+                                $count_product++;
+                            }
+                            break;
                     }
+                    
                 }
 
                 if ($count_product >= $show_products) {
@@ -159,10 +185,11 @@ class Kawoo_Product_Category_List extends WP_List_Table {
                 $categories = $product->get_category_ids();
                 $category_name = '';
                 if ($categories) {
+                    $category_obj = [];
                     foreach ($categories as $cate) {
-                        $category_obj = $this->get_product_category_by_id($cate);
-                        $category_name .= $category_obj . ' ';
+                        $category_obj[] = $this->get_product_category_by_id($cate);
                     }
+                    $category_name = implode(', ', $category_obj);
                 }
                 $r = $category_name;
                 break;
