@@ -107,7 +107,20 @@
             $(this).parent().find('input.sv-image-value').val('');
             return false;
         });
-
+        
+        // Tuan Dev
+        $('body').on('click', function() {
+            $('.wp-color-result').each(function() {
+                    $(this).closest('.type-colorpicker').css('height', '');
+            });
+        });
+        $('.wp-color-result').on('click', function() {
+            if ($(this).attr('aria-expanded') === 'true') {
+                $(this).closest('.type-colorpicker').css('height', '300px');
+            } else {
+                $(this).closest('.type-colorpicker').css('height', '');
+            }
+        });
 
         $('.sv-button-upload-img').on("click",function(options){
             var default_options = {

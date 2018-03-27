@@ -8,6 +8,16 @@
 $main_color = s7upf_get_value_by_id('main_color');
 $body_bg = s7upf_get_value_by_id('body_bg');
 $data_attr = s7upf_get_option('woo_attr_background');
+
+// Khoa Anh custom color options
+$clr_title_text = s7upf_get_value_by_id('kacolor_title_text');
+$clr_title_bg = s7upf_get_value_by_id('kacolor_title_bg');
+$clr_addtocart_text = s7upf_get_value_by_id('kacolor_addtocart_text');
+$clr_addtocart_bg = s7upf_get_value_by_id('kacolor_addtocart_bg');
+$clr_addtocart_hovertext = s7upf_get_value_by_id('kacolor_addtocart_hovertext');
+$clr_addtocart_hoverbg = s7upf_get_value_by_id('kacolor_addtocart_hoverbg');
+$clr_border_attribute = s7upf_get_value_by_id('kacolor_border_attribute');
+
 ?>
 <?php
 $style = '';
@@ -288,6 +298,25 @@ if(is_array($typo_data) && !empty($typo_data)){
         $style .= '}';
         $style .= "\n";
     }
+}
+
+if (!empty($clr_title_text)) {
+    $style .= '.title-side { color: '.$clr_title_text.' !important}'."\n";
+}
+if (!empty($clr_title_bg)) {
+    $style .= '.title-side { background-color: '.$clr_title_bg.' !important}'."\n";
+}
+if (!empty($clr_addtocart_text)) {
+    $style .= '.single_add_to_cart_button { color: '.$clr_addtocart_text.' !important}'."\n";
+}
+if (!empty($clr_addtocart_bg)) {
+    $style .= '.single_add_to_cart_button { background-color: '.$clr_addtocart_bg.' !important}'."\n";
+}
+if (!empty($clr_addtocart_hovertext)) {
+    $style .= '.single_add_to_cart_button:hover { color: '.$clr_addtocart_hovertext.' !important}'."\n";
+}
+if (!empty($clr_addtocart_hoverbg)) {
+    $style .= '.single_add_to_cart_button:hover { background-color: '.$clr_addtocart_hoverbg.' !important}'."\n";
 }
 /*****END TYPOGRAPHY*****/
 if(!empty($style)) print $style;

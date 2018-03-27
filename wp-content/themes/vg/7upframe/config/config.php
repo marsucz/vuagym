@@ -897,6 +897,50 @@ if(!function_exists('s7upf_set_theme_config')){
                                                         )
                                                     ));
             array_push($s7upf_config['theme-option']['settings'],array(
+                                                        'id'          => 'kacolor_title_text',
+                                                        'label'       => esc_html__('Màu chữ Title','kuteshop'),
+                                                        'type'        => 'colorpicker',
+                                                        'section'     => 'option_product',
+//                                                        'std'         => '#fff',
+                                                    ),array(
+                                                        'id'          => 'kacolor_title_bg',
+                                                        'label'       => esc_html__('Màu nền Title','kuteshop'),
+                                                        'type'        => 'colorpicker',
+                                                        'section'     => 'option_product',
+//                                                        'std'         => '#059',
+                                                    ),array(
+                                                        'id'          => 'kacolor_addtocart_text',
+                                                        'label'       => esc_html__('Màu chữ Add-to-cart','kuteshop'),
+                                                        'type'        => 'colorpicker',
+                                                        'section'     => 'option_product',
+//                                                        'std'         => '#fff',
+                                                    ),array(
+                                                        'id'          => 'kacolor_addtocart_bg',
+                                                        'label'       => esc_html__('Màu nền Add-to-cart','kuteshop'),
+                                                        'type'        => 'colorpicker',
+                                                        'section'     => 'option_product',
+//                                                        'std'         => '#079c3a',
+                                                    ),array(
+                                                        'id'          => 'kacolor_addtocart_hovertext',
+                                                        'label'       => esc_html__('Màu chữ Add-to-cart (khi hover)','kuteshop'),
+                                                        'type'        => 'colorpicker',
+                                                        'section'     => 'option_product',
+//                                                        'std'         => '#fff',
+                                                    ),array(
+                                                        'id'          => 'kacolor_addtocart_hoverbg',
+                                                        'label'       => esc_html__('Màu nền Add-to-cart (khi hover)','kuteshop'),
+                                                        'type'        => 'colorpicker',
+                                                        'section'     => 'option_product',
+//                                                        'std'         => '#005599',
+                                                    ),array(
+                                                        'id'          => 'kacolor_border_attribute',
+                                                        'label'       => esc_html__('Màu border thuộc tính','kuteshop'),
+                                                        'type'        => 'colorpicker',
+                                                        'section'     => 'option_product',
+//                                                        'std'         => '#059',
+                                                    )
+                                            );
+            array_push($s7upf_config['theme-option']['settings'],array(
                                                         'id'          => 'sv_sidebar_position_woo_single',
                                                         'label'       => esc_html__('Sidebar Position WooCommerce Single','kuteshop'),
                                                         'type'        => 'select',
