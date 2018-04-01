@@ -28,6 +28,12 @@ function get_sku_store_phu($sku) {
     return $new_key;
 }
 
+function get_sku_store_main($sku) {
+    $prefix = 'SP';
+    $new_key = substr_replace($sku, $prefix, 0, 2);
+    return $new_key;
+}
+
 function delete_post_cache($product_id) {
     
     if (!$product_id) {

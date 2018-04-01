@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('DB_KIOTVIET_PRODUCTS')) {
-    define('DB_KIOTVIET_PRODUCTS', 'vgd_kiotviet_products');
+    define('DB_KIOTVIET_PRODUCTS', 'vg_kiotviet_products');
 }
 
 function kiotviet_product_create_db() {

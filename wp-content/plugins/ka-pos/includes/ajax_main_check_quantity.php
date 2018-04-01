@@ -62,6 +62,7 @@ function ja_ajax_check_quantity_cart(){
             
             $store = $product_data->get_meta('_mypos_other_store', true);
             if ($store && $store == 'yes') {
+                $product_sku = get_sku_store_main($product_sku);
                 $kiotviet_api = new KiotViet_API(2);
             } else {
                 $kiotviet_api = new KiotViet_API();
@@ -185,6 +186,7 @@ function ja_ajax_check_quantity_checkout(){
                 
                 $store = $wc_product->get_meta('_mypos_other_store', true);
                 if ($store && $store == 'yes') {
+                    $product_sku = get_sku_store_main($product_sku);
                     $kiotviet_api = new KiotViet_API(2);
                 } else {
                     $kiotviet_api = new KiotViet_API();
@@ -244,6 +246,7 @@ function ja_ajax_mypos_update_cart() {
         
         $store = $product_data->get_meta('_mypos_other_store', true);
         if ($store && $store == 'yes') {
+            $product_sku = get_sku_store_main($product_sku);
             $kiotviet_api = new KiotViet_API(2);
         } else {
             $kiotviet_api = new KiotViet_API();

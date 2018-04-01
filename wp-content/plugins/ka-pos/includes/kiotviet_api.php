@@ -185,7 +185,7 @@ class KiotViet_API {
 
         set_time_limit(0);
 
-        $dbModel = new DbModel();
+        $dbModel = new DbModel($this->store);
 
         $url = 'https://public.kiotapi.com/products';
 
@@ -238,7 +238,7 @@ class KiotViet_API {
 
         set_time_limit(0);
 
-        $dbModel = new DbModel();
+        $dbModel = new DbModel($this->store);
 
         $url = 'https://public.kiotapi.com/products';
 
@@ -259,7 +259,7 @@ class KiotViet_API {
 
         set_time_limit(300);
 
-        $dbModel = new DbModel();
+        $dbModel = new DbModel($this->store);
 
         $url = 'https://public.kiotapi.com/products';
 
@@ -297,7 +297,7 @@ class KiotViet_API {
 
         set_time_limit(300);
 
-        $dbModel = new DbModel();
+        $dbModel = new DbModel($this->store);
 
         $url = 'https://public.kiotapi.com/products';
 
@@ -328,20 +328,6 @@ class KiotViet_API {
             $all_products = $this->runRequests($url_array);
         }
         
-        if ($this->store == 1) {
-            return $all_products;
-        } else {
-            if (count($all_products) > 0) {
-                $new_return = array();
-                $prefix = get_option('kiotviet2_prefix');
-                foreach ($all_products as $key => $product_id) {
-                    $new_key = substr_replace($key, $prefix, 0, 2);
-                    $new_return[$new_key] = $product_id;
-                }
-                
-                return $new_return;
-            }
-        }
         return $all_products;
     }
     
@@ -389,7 +375,7 @@ class KiotViet_API {
             $paged = $paged - 1;
         }
         
-        $dbModel = new DbModel();
+        $dbModel = new DbModel($this->store);
 
         $url = 'https://public.kiotapi.com/products';
 

@@ -9,7 +9,7 @@
  * Author URI: http://vuagym.com
  * License: GPL2
  * Created On: 24-01-2018
- * Updated On: 22-03-2018
+ * Updated On: 02-4-2018
  */
 // Define WC_PLUGIN_DIR.
 if (!defined('WC_PLUGIN_DIR')) {
@@ -88,7 +88,7 @@ function ka_pos_tools_admin_menu() {
     add_submenu_page('ka-pos-tools', __('KA POS'), __('KA POS'), 'edit_posts', 'ka-pos-tools');
     add_submenu_page('ka-pos-tools', __('Testing'), __('Testing'), 'manage_options', 'ka-pos-testing', 'function_testing_page');
     add_submenu_page('ka-pos-tools', __('Đồng bộ sản phẩm'), __('Đồng bộ sản phẩm'), 'edit_posts', 'mypos-sync', 'function_mypos_sync_page');
-    add_submenu_page('ka-pos-tools', __('Lấy Mã SP KiotViet'), __('Lấy Mã SP KiotViet'), 'manage_options', 'get-kiotviet-products', 'function_get_sku_kiotviet');
+    add_submenu_page('ka-pos-tools', __('Lấy Mã SP KiotViet'), __('Lấy Mã SP KiotViet'), 'edit_posts', 'get-kiotviet-products', 'function_get_sku_kiotviet');
 //    add_submenu_page('ka-pos-tools', __('Send SMS'), __('Send SMS'), 'manage_options', 'mypos-single-sms', 'send_single_sms_page');
     add_submenu_page('ka-pos-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'ka-pos-options', 'function_mypos_options_page');
 }
@@ -157,6 +157,7 @@ function function_mypos_options_page() {
         update_option('kiotviet_client_secret', $_POST['kiotviet-client-secret']);
         
         update_option('kiotviet2_name', $_POST['kiotviet2-name']);
+        update_option('kiotviet2_prefix', $_POST['kiotviet2-prefix']);
         update_option('kiotviet2_retailer', $_POST['kiotviet2-retailer']);
         update_option('kiotviet2_client_id', $_POST['kiotviet2-client-id']);
         update_option('kiotviet2_client_secret', $_POST['kiotviet2-client-secret']);
@@ -325,6 +326,11 @@ function function_get_sku_kiotviet() {
     $kv_api = new KiotViet_API(1);
     $kv2_api = new KiotViet_API(2);
     
+    $remove = true;
+    if (current_user_can('administrator')) {
+        $remove = false;
+    }
+    
     echo '<div class="wrap">';
     echo '<div class="row">
                 <div class="col-lg-6">
@@ -336,36 +342,46 @@ function function_get_sku_kiotviet() {
                         <div class="panel-body">';
     
     if (isset($_POST['process_updateAllProducts'])) {
-        $count_insert = 0;
-        $count_update = 0;
-        
-//        $count = $kv_api->get_all_product_sku();
-//        if ($count) {
-//            $count_insert += $count['count_insert'];
-//            $count_update += $count['count_update'];
-//        }
-        
-        $count2 = $kv2_api->get_all_product_sku();
-        if ($count2) {
-            $count_insert += $count2['count_insert'];
-            $count_update += $count2['count_update'];
-        }
+       
+        $count = $kv_api->get_all_product_sku();
+        $store_name = get_option('kiotviet_name');
         
         if ($count['count_insert']) {
             echo '<div class="alert alert-success">
-                            <strong> Đã <b>thêm mới</b> ' . $count_insert . ' mã sản phẩm.</strong>
+                            <strong>' . $store_name . ': Đã <b>thêm mới</b> ' . $count['count_insert'] . ' mã sản phẩm.</strong>
                 </div>';
         } 
         
         if ($count['count_update']) {
             echo '<div class="alert alert-success">
-                            <strong> Đã <b>cập nhật</b> ' . $count_update . ' mã sản phẩm.</strong>
+                            <strong>' . $store_name . ': Đã <b>cập nhật</b> ' . $count['count_update'] . ' mã sản phẩm.</strong>
                 </div>';
         }
         
-        if (!$count_insert && !$count_update) {
+        if (!$count['count_insert'] && !$count['count_update']) {
             echo '<div class="alert alert-success">
-                            <strong>Quá trình hoàn tất. Các mã sản phẩm không có cập nhật mới.</strong>
+                            <strong>' . $store_name . ': Quá trình hoàn tất. Các mã sản phẩm không có cập nhật mới.</strong>
+                </div>';
+        } 
+        
+        $count = $kv2_api->get_all_product_sku();
+        $store_name = get_option('kiotviet2_name');
+        
+        if ($count['count_insert']) {
+            echo '<div class="alert alert-success">
+                            <strong>' . $store_name . ': Đã <b>thêm mới</b> ' . $count['count_insert'] . ' mã sản phẩm.</strong>
+                </div>';
+        } 
+        
+        if ($count['count_update']) {
+            echo '<div class="alert alert-success">
+                            <strong>' . $store_name . ': Đã <b>cập nhật</b> ' . $count['count_update'] . ' mã sản phẩm.</strong>
+                </div>';
+        }
+        
+        if (!$count['count_insert'] && !$count['count_update']) {
+            echo '<div class="alert alert-success">
+                            <strong>' . $store_name . ': Quá trình hoàn tất. Các mã sản phẩm không có cập nhật mới.</strong>
                 </div>';
         } 
         
@@ -394,14 +410,19 @@ function function_get_sku_kiotviet() {
                                 <input type="hidden" id="process_updateAllProducts" name="process_updateAllProducts">
                                 <button type="submit" class="btn btn-success btn-mypos-width">Cập nhật MÃ SẢN PHẨM</button>
                     </form>';
-    echo '          <form role="form" method="post" align="center">
+    if (!$remove) {
+        echo '      <form role="form" method="post" align="center">
                                 <input type="hidden" id="process_deleteAllProducts" name="process_deleteAllProducts">
                                 <button type="submit" class="btn btn-danger btn-mypos-width">Xóa hết MÃ SẢN PHẨM</button>
-                    </form>
-                    <div class="alert alert-warning" style="margin-top: 15px; margin-bottom: 0!important">
-                        - "<b>Cập nhật MÃ SẢN PHẨM</b>": Thêm mới và cập nhật khi có mã SP mới hoặc mã SP bị thay đổi trên KiotViet. <br/>
-                        - "<b>Xóa hết  MÃ SẢN PHẨM</b>": Xóa dữ liệu dùng để kết nối với Kiotviet để làm sạch dữ liệu. Vui lòng <b>Cập nhật</b> lại dữ liệu sau khi xóa.
-                    </div>';
+                    </form>';
+    }
+    
+    echo '          <div class="alert alert-warning" style="margin-top: 15px; margin-bottom: 0!important">
+                        - "<b>Cập nhật MÃ SẢN PHẨM</b>": Thêm mới và cập nhật khi có mã SP mới hoặc mã SP bị thay đổi trên KiotViet. <br/>';
+    if (!$remove) {
+        echo '              - "<b>Xóa hết  MÃ SẢN PHẨM</b>": Xóa dữ liệu dùng để kết nối với Kiotviet để làm sạch dữ liệu khi thay đổi kho trên KiotViet. Vui lòng <b>Cập nhật</b> lại dữ liệu sau khi xóa.';
+    }
+            echo '</div>';
     
     echo '</div></div></div></div>';
         echo '<div class="row"> 
@@ -542,14 +563,12 @@ function function_mypos_sync_page() {
             
         case 'sync_by_kiotviet':
             
-            $show_type = get_option('sync_by_web_show_type');
-            $show_products = get_option('sync_by_web_products');
             $store_id = get_option('mypos_sync_store');
             
             echo '  <div class="wrap">
                     <form id="sync-by-web-form" method="POST">
                             <label>Kho hàng </label>
-                            <select id="sync_store" name="sync_store">
+                            <select id="mypos_sync_store" name="mypos_sync_store">
                                 <option value="1"' . ($store_id == 1 ? 'selected' : '') . '>' . get_option('kiotviet_name') . '</option>
                                 <option value="2"' . ($store_id == 2 ? 'selected' : '') . '>' . get_option('kiotviet2_name') . '</option>
                             </select>
