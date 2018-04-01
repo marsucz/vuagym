@@ -25,15 +25,3 @@ function kiotviet_product_create_db() {
             dbDelta($sql);
     }
 }
-
-function mypos_hook_uninstall() {
-    register_uninstall_hook(__FILE__, 'mypos_tools_uninstall');
-}
-
-function mypos_tools_uninstall(){
-    global $wpdb;
-    $sql = 'DROP TABLE IF EXISTS ' . DB_KIOTVIET_PRODUCTS . ';';
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    dbDelta($sql);
-}
-

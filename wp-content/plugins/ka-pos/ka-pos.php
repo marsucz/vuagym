@@ -39,7 +39,6 @@ require_once('autoload.php');
 add_action('plugins_loaded', 'kiotviet_tools_plugin_init');
 
 register_activation_hook(__FILE__, 'kiotviet_product_create_db');
-register_activation_hook( __FILE__, 'mypos_hook_uninstall' );
 
 $loader = new loader();
 
