@@ -31,9 +31,9 @@ function mypos_hook_uninstall() {
 }
 
 function mypos_tools_uninstall(){
-    $dbModel = new DbModel();
-    $query = 'DROP TABLE IF EXISTS ' . DB_KIOTVIET_PRODUCTS . ';';
-    $result = $dbModel->query($query);
-    echo 'Uninstall: ' . $result;
+    global $wpdb;
+    $sql = 'DROP TABLE IF EXISTS ' . DB_KIOTVIET_PRODUCTS . ';';
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
 }
 
