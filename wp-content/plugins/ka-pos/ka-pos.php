@@ -27,10 +27,10 @@ if (!defined('KV_CLIENT_ID'))           define('KV_CLIENT_ID', '713f68d1-ecbb-4a
 if (!defined('KV_CLIENT_SECRET'))       define('KV_CLIENT_SECRET', '76137D87B075C1417B744E71FA636FF6C91A3E94');
 
 if (!defined('KV2_NAME'))               define('KV2_NAME', 'Kho Phụ');
-if (!defined('KV2_PREFIX'))             define('KV2_PREFIX', 'TP');
-if (!defined('KV2_RETAILER'))           define('KV2_RETAILER', 'vuagymtest2');
-if (!defined('KV2_CLIENT_ID'))          define('KV2_CLIENT_ID', '713f68d1-ecbb-4a27-8a2a-342f94bc16c1');
-if (!defined('KV2_CLIENT_SECRET'))      define('KV2_CLIENT_SECRET', '76137D87B075C1417B744E71FA636FF6C91A3E94');
+if (!defined('KV2_PREFIX'))             define('KV2_PREFIX', 'GG');
+if (!defined('KV2_RETAILER'))           define('KV2_RETAILER', 'testtuanshop');
+if (!defined('KV2_CLIENT_ID'))          define('KV2_CLIENT_ID', 'd9870bd1-8ed5-4c1b-97fc-9b066a0c90ab');
+if (!defined('KV2_CLIENT_SECRET'))      define('KV2_CLIENT_SECRET', '8E97AC6E72F218918E3D906874F981B32242ADC3');
 
 if (!defined('MYPOS_PER_PAGE')) define('MYPOS_PER_PAGE', 20);
 
@@ -334,30 +334,36 @@ function function_get_sku_kiotviet() {
                             <strong><font color="blue">Kết Nối Website với Mã Sản Phẩm trên KiotViet</font></strong>
                         </div>
                         <div class="panel-body">';
-                        
+    
     if (isset($_POST['process_updateAllProducts'])) {
+        $count_insert = 0;
+        $count_update = 0;
         
-        $count = $kv_api->get_all_product_sku();
+//        $count = $kv_api->get_all_product_sku();
+//        if ($count) {
+//            $count_insert += $count['count_insert'];
+//            $count_update += $count['count_update'];
+//        }
+        
         $count2 = $kv2_api->get_all_product_sku();
-        
         if ($count2) {
-            $count['count_insert'] += $count2['count_insert'];
-            $count['count_update'] += $count2['count_update'];
+            $count_insert += $count2['count_insert'];
+            $count_update += $count2['count_update'];
         }
         
         if ($count['count_insert']) {
             echo '<div class="alert alert-success">
-                            <strong> Đã <b>thêm mới</b> ' . $count['count_insert'] . ' mã sản phẩm.</strong>
+                            <strong> Đã <b>thêm mới</b> ' . $count_insert . ' mã sản phẩm.</strong>
                 </div>';
         } 
         
         if ($count['count_update']) {
             echo '<div class="alert alert-success">
-                            <strong> Đã <b>cập nhật</b> ' . $count['count_update'] . ' mã sản phẩm.</strong>
+                            <strong> Đã <b>cập nhật</b> ' . $count_update . ' mã sản phẩm.</strong>
                 </div>';
         }
         
-        if (!$count['count_insert'] && !$count['count_update']) {
+        if (!$count_insert && !$count_update) {
             echo '<div class="alert alert-success">
                             <strong>Quá trình hoàn tất. Các mã sản phẩm không có cập nhật mới.</strong>
                 </div>';
@@ -456,7 +462,9 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
-        $kv = new KiotViet_API();
+    $kv = new KiotViet_API(1);
+    echo $kv->get_access_token();
+    $kv = new KiotViet_API(2);
     echo $kv->get_access_token();
 }
 
