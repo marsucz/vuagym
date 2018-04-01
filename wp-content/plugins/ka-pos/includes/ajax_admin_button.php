@@ -184,7 +184,7 @@ function ja_ajax_mypos_update_webprice_by_kvprice() {
 add_action( 'wp_ajax_mypos_update_webprice_by_kvprice', 'ja_ajax_mypos_update_webprice_by_kvprice' );
 add_action( 'wp_ajax_nopriv_mypos_update_webprice_by_kvprice', 'ja_ajax_mypos_update_webprice_by_kvprice' );
 
-
+/*
 function ja_ajax_mypos_update_kvprice_by_webprice() {
     //Form Input Values
     $product_id     = intval($_POST['product_id']);
@@ -213,3 +213,4 @@ function ja_ajax_mypos_update_kvprice_by_webprice() {
 
 add_action( 'wp_ajax_mypos_update_kvprice_by_webprice', 'ja_ajax_mypos_update_kvprice_by_webprice' );
 add_action( 'wp_ajax_nopriv_mypos_update_kvprice_by_webprice', 'ja_ajax_mypos_update_kvprice_by_webprice' );
+ */

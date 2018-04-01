@@ -22,6 +22,12 @@ function write_logs($file_name, $text) {
     
 }
 
+function get_sku_store_phu($sku) {
+    $prefix = get_option('kiotviet2_prefix');
+    $new_key = substr_replace($sku, $prefix, 0, 2);
+    return $new_key;
+}
+
 function delete_post_cache($product_id) {
     
     if (!$product_id) {

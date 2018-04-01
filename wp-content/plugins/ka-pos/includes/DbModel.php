@@ -8,9 +8,11 @@
 class DbModel {
 
     private $link;
+    private $store;
 
-    public function __construct() {
+    public function __construct($store = 1) {
         $this->link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        $this->store = $store;
     }
     
     public function query($query) {
@@ -57,9 +59,10 @@ class DbModel {
 
     public function kiotviet_insert_product($product_id, $product_code) {
         
-        $query = '  INSERT INTO ' . DB_KIOTVIET_PRODUCTS . '(product_id, product_code, product_updated)
+        $query = '  INSERT INTO ' . DB_KIOTVIET_PRODUCTS . '(product_id, product_store, product_code, product_updated)
                         VALUES (
                         ' . $product_id . ',
+                        "' . $this->store . '",
                         "' . $product_code . '",
                         Now())';
         
@@ -75,6 +78,7 @@ class DbModel {
                     SET product_code = "' . $product_code . '",
                          product_updated = Now()
                     WHERE 
+                        product_store = ' . $this->store . ' AND
                         product_id = ' . $product_id . ';';
         
         $result = mysqli_query($this->link, $query);
@@ -86,6 +90,22 @@ class DbModel {
     public function kiotviet_get_count_all_products() {
         
         $query = '  SELECT * FROM ' . DB_KIOTVIET_PRODUCTS;
+        
+        $result = mysqli_query($this->link, $query);
+
+        if ($result) {
+            $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        } else {
+            $return = [];
+        }
+
+        return $return;
+        
+    }
+    
+    public function kiotviet_get_count_all_products_store() {
+        
+        $query = '  SELECT * FROM ' . DB_KIOTVIET_PRODUCTS . ' WHERE product_store = ' . $this->store;
         
         $result = mysqli_query($this->link, $query);
 
@@ -115,7 +135,7 @@ class DbModel {
     
     public function get_productInfo_byProductCode($product_code) {
         
-        $query = '  SELECT * FROM ' . DB_KIOTVIET_PRODUCTS . ' WHERE product_code = "' . $product_code . '"';
+        $query = '  SELECT * FROM ' . DB_KIOTVIET_PRODUCTS . ' WHERE product_store = ' . $this->store . ' AND product_code = "' . $product_code . '"';
         
         $result = mysqli_query($this->link, $query);
 
@@ -131,7 +151,7 @@ class DbModel {
     
     public function get_productInfo_byProductID($product_id) {
         
-        $query = '  SELECT * FROM ' . DB_KIOTVIET_PRODUCTS . ' WHERE product_id = "' . $product_id . '"';
+        $query = '  SELECT * FROM ' . DB_KIOTVIET_PRODUCTS . ' WHERE product_store = ' . $this->store . ' AND product_id = "' . $product_id . '"';
         
         $result = mysqli_query($this->link, $query);
 

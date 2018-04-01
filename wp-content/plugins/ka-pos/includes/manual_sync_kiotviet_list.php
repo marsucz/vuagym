@@ -18,15 +18,27 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
 //    private $kv_api;
     private $dbModel;
     private $kv_api;
+//    private $kv2_api;
+    private $store = 1;
+    private $store_name = '';
     private $show_type = 1;
     private $show_products_per_page = 10;
     private $list_kv_product = array();
     
-    function __construct($show_type, $show_products) {
+    function __construct($show_type, $show_products, $store = 1) {
         $args = array();
         parent::__construct($args);
-        $this->kv_api = new KiotViet_API();
-        $this->dbModel = new DbModel();
+        $this->store = $store;
+        if ($this->store == 1) {
+            $this->store_name = get_option('kiotviet_name');
+        } else {
+            $this->store_name = get_option('kiotviet2_name');
+        }
+        
+        
+        $this->kv_api = new KiotViet_API($this->store);
+//        $this->kv2_api = new KiotViet_API($this->store);
+        $this->dbModel = new DbModel($this->store);
         $this->show_type = $show_type;
         $this->show_products_per_page = $show_products;
     }
@@ -290,6 +302,7 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
             'edit'               => '<span class="dashicons dashicons-admin-generic"></span>',
             'kv'            => 'Cửa hàng (KiotViet)',
             'woo'           => 'Web (WordPress)',
+            'store'         => 'Kho hàng',
             'options'        => 'Tùy Chọn',
         );
         return $columns;
@@ -372,6 +385,9 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                 } else {
                     $r = '';
                 }
+                break;
+            case 'store':
+                $r = $this->store_name;
                 break;
             case 'options':
                 

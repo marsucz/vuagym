@@ -13,9 +13,10 @@ function kiotviet_product_create_db() {
     {
             $sql = 'CREATE TABLE ' . $db_name . ' (
                     `product_id` INT NOT NULL,
+                    `product_store` smallint(6) NOT NULL,
                     `product_code` VARCHAR(25) NOT NULL,
                     `product_updated` DATETIME NULL,
-                    PRIMARY KEY (`product_id`, `product_code`),
+                    PRIMARY KEY (`product_id`,`product_code`,`product_store`),
                     UNIQUE KEY `product_id_UNIQUE` (`product_id`),
                     UNIQUE KEY `product_code_UNIQUE` (`product_code`)
             )' . $charset_collate . ';';
@@ -25,14 +26,14 @@ function kiotviet_product_create_db() {
     }
 }
 
-//function marketing_tools_uninstall_activate(){
-//    register_uninstall_hook( __FILE__, 'marketing_tools_uninstall' );
-//}
-//register_activation_hook( __FILE__, 'marketing_tools_uninstall' );
-// 
-//function marketing_tools_uninstall_uninstall(){
-//    $dbModel = new DbModel();
-//    $query = 'DROP TABLE ' . DB_REDIRECTION . ';';
-//    $dbModel->query($query);
-//}
+function mypos_hook_uninstall() {
+    register_uninstall_hook(__FILE__, 'mypos_tools_uninstall');
+}
+
+function mypos_tools_uninstall(){
+    $dbModel = new DbModel();
+    $query = 'DROP TABLE IF EXISTS ' . DB_KIOTVIET_PRODUCTS . ';';
+    $result = $dbModel->query($query);
+    echo 'Uninstall: ' . $result;
+}
 

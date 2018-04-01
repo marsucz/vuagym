@@ -6,6 +6,7 @@
  * and open the template in the editor.
  */
 
+require_once 'includes/loader.php';
 require_once('includes/ajax_admin_button.php');
 require_once('includes/function_template.php');
 require_once('includes/DbModel.php');

@@ -18,14 +18,17 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 //    private $kv_api;
     private $dbModel;
     private $kv_api;
+    private $kv2_api;
     private $show_type = 1;
     private $show_products_per_page = 10;
     private $list_kv_product = array();
+    private $list_kv2_product = array();
 
     function __construct($show_type = 1, $show_products = 10) {
         $args = array();
         parent::__construct($args);
-        $this->kv_api = new KiotViet_API();
+        $this->kv_api = new KiotViet_API(1);
+        $this->kv_api = new KiotViet_API(2);
         $this->dbModel = new DbModel();
         $this->show_type = $show_type;
         $this->show_products_per_page = $show_products;
@@ -33,6 +36,15 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 
     public function get_kv_product_by_code($kv_code) {
         foreach ($this->list_kv_product as $kv_product) {
+            if ($kv_product['sku'] == $kv_code) {
+                return $kv_product;
+            }
+        }
+        return [];
+    }
+    
+    public function get_kv2_product_by_code($kv_code) {
+        foreach ($this->list_kv2_product as $kv_product) {
             if ($kv_product['sku'] == $kv_code) {
                 return $kv_product;
             }
@@ -55,6 +67,7 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 
         $list_product = array();
         $this->list_kv_product = $this->kv_api->get_all_products_multi();
+        $this->list_kv2_product = $this->kv2_api->get_all_products_multi();
 
         switch ($this->show_type) {
             case 0: // Hien thi tat ca cac san pham
@@ -208,7 +221,12 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 
                     // KiotViet Process
                     if ($sku) {
-                        $kv_product = $this->get_kv_product_by_code($sku);
+                        $store = get_post_meta($child['ID'], '_mypos_other_store', true);
+                        if ($store && $store == 'yes') {
+                            $kv_product = $this->get_kv2_product_by_code($sku);
+                        } else {
+                            $kv_product = $this->get_kv_product_by_code($sku);
+                        }
                     } else {
                         $kv_product = array();
                     }
@@ -229,7 +247,12 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 
             // KiotViet Process
             if ($sku) {
-                $kv_product = $this->get_kv_product_by_code($sku);
+                $store = get_post_meta($product_id, '_mypos_other_store', true);
+                if ($store && $store == 'yes') {
+                    $kv_product = $this->get_kv2_product_by_code($sku);
+                } else {
+                    $kv_product = $this->get_kv_product_by_code($sku);
+                }
             } else {
                 $kv_product = array();
             }
@@ -268,7 +291,12 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 
                     // KiotViet Process
                     if ($sku) {
-                        $kv_product = $this->get_kv_product_by_code($sku);
+                        $store = get_post_meta($child['ID'], '_mypos_other_store', true);
+                        if ($store && $store == 'yes') {
+                            $kv_product = $this->get_kv2_product_by_code($sku);
+                        } else {
+                            $kv_product = $this->get_kv_product_by_code($sku);
+                        }
                     } else {
                         $kv_product = array();
                     }
@@ -308,7 +336,12 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 
             // KiotViet Process
             if ($sku) {
-                $kv_product = $this->get_kv_product_by_code($sku);
+                $store = get_post_meta($product_id, '_mypos_other_store', true);
+                if ($store && $store == 'yes') {
+                    $kv_product = $this->get_kv2_product_by_code($sku);
+                } else {
+                    $kv_product = $this->get_kv_product_by_code($sku);
+                }
             } else {
                 $kv_product = array();
             }
@@ -369,7 +402,12 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 
                         // KiotViet Process
                         if ($sku) {
-                            $kv_product = $this->get_kv_product_by_code($sku);
+                            $store = get_post_meta($child['ID'], '_mypos_other_store', true);
+                            if ($store && $store == 'yes') {
+                                $kv_product = $this->get_kv2_product_by_code($sku);
+                            } else {
+                                $kv_product = $this->get_kv_product_by_code($sku);
+                            }
                         } else {
                             $kv_product = array();
                         }
@@ -393,7 +431,12 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
 
                 // KiotViet Process
                 if ($sku) {
-                    $kv_product = $this->get_kv_product_by_code($sku);
+                    $store = get_post_meta($product_id, '_mypos_other_store', true);
+                    if ($store && $store == 'yes') {
+                        $kv_product = $this->get_kv2_product_by_code($sku);
+                    } else {
+                        $kv_product = $this->get_kv_product_by_code($sku);
+                    }
                 } else {
                     $kv_product = array();
                 }
@@ -413,6 +456,7 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
             'edit' => '<span class="dashicons dashicons-admin-generic"></span>',
             'kv' => 'Cửa hàng (KiotViet)',
             'woo' => 'Web (WordPress)',
+            'store' => 'Kho hàng',
             'options' => 'Tùy Chọn',
         );
         return $columns;
@@ -513,6 +557,14 @@ class KiotViet_ManualSyncWeb_List extends WP_List_Table {
                 break;
             case 'kv':
                 $r = $kv_text;
+                break;
+            case 'store':
+                $store = get_post_meta($woo_product['id'], '_mypos_other_store', true);
+                if ($store && $store == 'yes') {
+                    $r = get_option('kiotviet2_name');
+                } else {
+                    $r = get_option('kiotviet_name');
+                }
                 break;
             case 'options':
 

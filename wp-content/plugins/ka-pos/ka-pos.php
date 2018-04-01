@@ -21,27 +21,27 @@ if (!defined('WC_PLUGIN_URL')) {
     define('WC_PLUGIN_URL', plugin_dir_url(__FILE__));
 }
 
-if (!defined('KV_RETAILER')) {
-    define('KV_RETAILER', 'vuagymtest2');
-}
+if (!defined('KV_NAME'))                define('KV_NAME', 'Kho Chính');
+if (!defined('KV_RETAILER'))            define('KV_RETAILER', 'vuagymtest2');
+if (!defined('KV_CLIENT_ID'))           define('KV_CLIENT_ID', '713f68d1-ecbb-4a27-8a2a-342f94bc16c1');
+if (!defined('KV_CLIENT_SECRET'))       define('KV_CLIENT_SECRET', '76137D87B075C1417B744E71FA636FF6C91A3E94');
 
-if (!defined('KV_CLIENT_ID')) {
-    define('KV_CLIENT_ID', '713f68d1-ecbb-4a27-8a2a-342f94bc16c1');
-}
+if (!defined('KV2_NAME'))               define('KV2_NAME', 'Kho Phụ');
+if (!defined('KV2_PREFIX'))             define('KV2_PREFIX', 'TP');
+if (!defined('KV2_RETAILER'))           define('KV2_RETAILER', 'vuagymtest2');
+if (!defined('KV2_CLIENT_ID'))          define('KV2_CLIENT_ID', '713f68d1-ecbb-4a27-8a2a-342f94bc16c1');
+if (!defined('KV2_CLIENT_SECRET'))      define('KV2_CLIENT_SECRET', '76137D87B075C1417B744E71FA636FF6C91A3E94');
 
-if (!defined('KV_CLIENT_SECRET')) {
-    define('KV_CLIENT_SECRET', '76137D87B075C1417B744E71FA636FF6C91A3E94');
-}
-
-if (!defined('MYPOS_PER_PAGE')) {
-    define('MYPOS_PER_PAGE', 20);
-}
+if (!defined('MYPOS_PER_PAGE')) define('MYPOS_PER_PAGE', 20);
 
 require_once('autoload.php');
 
 add_action('plugins_loaded', 'kiotviet_tools_plugin_init');
 
 register_activation_hook(__FILE__, 'kiotviet_product_create_db');
+register_activation_hook( __FILE__, 'mypos_hook_uninstall' );
+
+$loader = new loader();
 
 function kiotviet_tools_plugin_init() {
     
@@ -52,9 +52,17 @@ function kiotviet_tools_plugin_init() {
     add_action('admin_init', 'send_frame_options_header', 10, 0);
     
     // Connection String cua kiotviet
+    add_option('kiotviet_name', KV_NAME);
     add_option('kiotviet_retailer', KV_RETAILER);
     add_option('kiotviet_client_id', KV_CLIENT_ID);
     add_option('kiotviet_client_secret', KV_CLIENT_SECRET);
+    
+    // Connection String cua kiotviet Kho phụ
+    add_option('kiotviet2_name', KV2_NAME);
+    add_option('kiotviet2_prefix', KV2_PREFIX);
+    add_option('kiotviet2_retailer', KV2_RETAILER);
+    add_option('kiotviet2_client_id', KV2_CLIENT_ID);
+    add_option('kiotviet2_client_secret', KV2_CLIENT_SECRET);
     
     // Bat tat tung plugin
     add_option('mypos_add_to_cart', 1);
@@ -62,9 +70,9 @@ function kiotviet_tools_plugin_init() {
     add_option('mypos_checkout', 1);
     
     // So luong san pham toi da mac dinh khi loi / Pre-order
-    add_option('mypos_max_quantity', 50);
-    add_option('preorder_max_quantity', 75);
-    add_option('mypos_error_max_quantity', 100);
+    add_option('mypos_max_quantity', 3);
+    add_option('preorder_max_quantity', 3);
+    add_option('mypos_error_max_quantity', 3);
     
     // ID Danh muc sap co hang va hang moi ve
     add_option('mypos_category_sapcohang', 81);
@@ -82,7 +90,7 @@ function ka_pos_tools_admin_menu() {
     add_submenu_page('ka-pos-tools', __('Testing'), __('Testing'), 'manage_options', 'ka-pos-testing', 'function_testing_page');
     add_submenu_page('ka-pos-tools', __('Đồng bộ sản phẩm'), __('Đồng bộ sản phẩm'), 'edit_posts', 'mypos-sync', 'function_mypos_sync_page');
     add_submenu_page('ka-pos-tools', __('Lấy Mã SP KiotViet'), __('Lấy Mã SP KiotViet'), 'manage_options', 'get-kiotviet-products', 'function_get_sku_kiotviet');
-    add_submenu_page('ka-pos-tools', __('Send SMS'), __('Send SMS'), 'manage_options', 'mypos-single-sms', 'send_single_sms_page');
+//    add_submenu_page('ka-pos-tools', __('Send SMS'), __('Send SMS'), 'manage_options', 'mypos-single-sms', 'send_single_sms_page');
     add_submenu_page('ka-pos-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'ka-pos-options', 'function_mypos_options_page');
 }
 
@@ -144,10 +152,15 @@ function function_mypos_options_page() {
         update_option('preorder_max_quantity', $_POST['preorder-max-quantity']);
         update_option('mypos_error_max_quantity', $_POST['mypos-error-max-quantity']);
         
+        update_option('kiotviet_name', $_POST['kiotviet-name']);
         update_option('kiotviet_retailer', $_POST['kiotviet-retailer']);
         update_option('kiotviet_client_id', $_POST['kiotviet-client-id']);
         update_option('kiotviet_client_secret', $_POST['kiotviet-client-secret']);
-       
+        
+        update_option('kiotviet2_name', $_POST['kiotviet2-name']);
+        update_option('kiotviet2_retailer', $_POST['kiotviet2-retailer']);
+        update_option('kiotviet2_client_id', $_POST['kiotviet2-client-id']);
+        update_option('kiotviet2_client_secret', $_POST['kiotviet2-client-secret']);
     }
     
     load_assets_page_options();
@@ -204,6 +217,19 @@ function function_mypos_options_page() {
                                                     echo '</select>
                                                 </div>
                                             </div>
+                                            <h3>Tùy chỉnh số lượng sản phẩm</h3>
+                                            <div class="form-group">
+                                                <label>Số lượng SP Tối đa khi Pre-Order</label>
+                                                <input class="form-control" type="number" id="preorder-max-quantity" name="preorder-max-quantity" value="' . get_option('preorder_max_quantity') . '" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Số lượng SP Tối đa khi không tồn tại Mã SP</label>
+                                                <input class="form-control" type="number" id="mypos-max-quantity" name="mypos-max-quantity" value="' . get_option('mypos_max_quantity') . '" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Số lượng SP Tối đa khi đặt hàng lỗi (lỗi KiotViet API)</label>
+                                                <input class="form-control" type="number" id="mypos-error-max-quantity" name="mypos-error-max-quantity" value="' . get_option('mypos_error_max_quantity') . '" required>
+                                            </div>
                                             <h3>Các tùy chỉnh khác</h3>
                                             <div class="form-group">
                                                 <label>ID Danh mục: Sắp có hàng</label>
@@ -236,20 +262,12 @@ function function_mypos_options_page() {
                                                 </div>    
                                         </div>
                                         <div class="col-lg-6">
-                                            <h3>Tùy chỉnh số lượng sản phẩm</h3>
-                                            <div class="form-group">
-                                                <label>Số lượng SP Tối đa khi Pre-Order</label>
-                                                <input class="form-control" type="number" id="preorder-max-quantity" name="preorder-max-quantity" value="' . get_option('preorder_max_quantity') . '" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Số lượng SP Tối đa khi không tồn tại Mã SP</label>
-                                                <input class="form-control" type="number" id="mypos-max-quantity" name="mypos-max-quantity" value="' . get_option('mypos_max_quantity') . '" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Số lượng SP Tối đa khi đặt hàng lỗi (lỗi KiotViet API)</label>
-                                                <input class="form-control" type="number" id="mypos-error-max-quantity" name="mypos-error-max-quantity" value="' . get_option('mypos_error_max_quantity') . '" required>
-                                            </div>
+                                            
                                             <h3>Thiết lập kết nối KiotViet API</h3>
+                                            <div class="form-group">
+                                                <label>Tên Kho Hàng</label>
+                                                <input class="form-control" type="text" id="kiotviet-name" name="kiotviet-name" value="' . get_option('kiotviet_name') . '" required>
+                                            </div>
                                             <div class="form-group">
                                                 <label>KiotViet Retailer</label>
                                                 <input class="form-control" type="text" id="kiotviet-retailer" name="kiotviet-retailer" value="' . get_option('kiotviet_retailer') . '" required>
@@ -261,6 +279,27 @@ function function_mypos_options_page() {
                                             <div class="form-group">
                                                 <label>KiotViet Client Secret</label>
                                                 <input class="form-control" type="text" id="kiotviet-client-secret" name="kiotviet-client-secret" value="' . get_option('kiotviet_client_secret') . '" required>
+                                            </div>
+                                            <h3>Thiết lập kết nối KiotViet API Kho hàng phụ</h3>
+                                            <div class="form-group">
+                                                <label>Tên Kho Hàng</label>
+                                                <input class="form-control" type="text" id="kiotviet2-name" name="kiotviet2-name" value="' . get_option('kiotviet2_name') . '" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Prefix Kho Phụ</label>
+                                                <input class="form-control" type="text" id="kiotviet2-prefix" name="kiotviet2-prefix" value="' . get_option('kiotviet2_prefix') . '" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>KiotViet Retailer</label>
+                                                <input class="form-control" type="text" id="kiotviet2-retailer" name="kiotviet2-retailer" value="' . get_option('kiotviet2_retailer') . '" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>KiotViet Client ID</label>
+                                                <input class="form-control" type="text" id="kiotviet2-client-id" name="kiotviet2-client-id" value="' . get_option('kiotviet2_client_id') . '" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>KiotViet Client Secret</label>
+                                                <input class="form-control" type="text" id="kiotviet2-client-secret" name="kiotviet2-client-secret" value="' . get_option('kiotviet2_client_secret') . '" required>
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
@@ -284,7 +323,8 @@ function function_get_sku_kiotviet() {
     load_assets_match_sku();
     
     $dbModel = new DbModel();
-    $api = new KiotViet_API();
+    $kv_api = new KiotViet_API(1);
+    $kv2_api = new KiotViet_API(2);
     
     echo '<div class="wrap">';
     echo '<div class="row">
@@ -298,7 +338,13 @@ function function_get_sku_kiotviet() {
                         
     if (isset($_POST['process_updateAllProducts'])) {
         
-        $count = $api->get_all_product_sku();
+        $count = $kv_api->get_all_product_sku();
+        $count2 = $kv2_api->get_all_product_sku();
+        
+        if ($count2) {
+            $count['count_insert'] += $count2['count_insert'];
+            $count['count_update'] += $count2['count_update'];
+        }
         
         if ($count['count_insert']) {
             echo '<div class="alert alert-success">
@@ -374,6 +420,7 @@ function function_get_sku_kiotviet() {
                                    <th class="sorting_desc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" style="width: 5px;" aria-sort="descending" >STT</th>
                                    <th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" style="width: 5px;">ID Sản Phẩm</th>
                                    <th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" style="width: 5px;">Mã Sản Phẩm</th>
+                                   <th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" style="width: 5px;">Kho hàng</th>
                                    <th class="sorting" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" style="width: 5px;">Thời gian lấy Mã SP</th>
                                 </tr>
                              </thead>
@@ -388,6 +435,12 @@ function function_get_sku_kiotviet() {
             
             echo '<td id="product_id_' . $count . '">' . $product['product_id'] . '</td>';
             echo '<td id="product_code_' . $count . '">' . $product['product_code'] . '</td>';
+            if ($product['product_store'] == 1) {
+                $store_name = get_option('kiotviet_name');
+            } else {
+                $store_name = get_option('kiotviet2_name');
+            }
+            echo '<td id="product_store_' . $count . '">' . $store_name . '</td>';
             echo '<td id="product_updated_' . $count . '" >' . $product['product_updated'] . '</td>';
             echo '</tr>';
     }
@@ -411,6 +464,7 @@ function function_testing_page() {
 function update_default_manual_sync_options() {
     update_option('sync_by_web_show_type', 1);
     update_option('sync_by_web_products', MYPOS_PER_PAGE);
+    update_option('mypos_sync_store', 1);
 }
 
 function function_mypos_sync_page() {
@@ -432,9 +486,9 @@ function function_mypos_sync_page() {
     }
     
     if (isset($_POST['sync_by_web_show_type'])) {
-        
         update_option('sync_by_web_show_type', $_POST['sync_by_web_show_type']);
         update_option('sync_by_web_products', $_POST['sync_by_web_products']);
+        update_option('mypos_sync_store', $_POST['mypos_sync_store']);
     }
 
     if (empty($_POST) && !isset($_GET['paged'])) {
@@ -483,9 +537,15 @@ function function_mypos_sync_page() {
             
             $show_type = get_option('sync_by_web_show_type');
             $show_products = get_option('sync_by_web_products');
+            $store_id = get_option('mypos_sync_store');
             
             echo '  <div class="wrap">
                     <form id="sync-by-web-form" method="POST">
+                            <label>Kho hàng </label>
+                            <select id="sync_store" name="sync_store">
+                                <option value="1"' . ($store_id == 1 ? 'selected' : '') . '>' . get_option('kiotviet_name') . '</option>
+                                <option value="2"' . ($store_id == 2 ? 'selected' : '') . '>' . get_option('kiotviet2_name') . '</option>
+                            </select>
                             <label>Bộ lọc </label>
                             <select id="sync_by_web_show_type" name="sync_by_web_show_type">
                                 <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Chỉ hiển thị sản phẩm không đồng bộ</option>
@@ -501,7 +561,7 @@ function function_mypos_sync_page() {
                 
             } else {
                 echo '<form method="POST" id="sync-by-kv-list">';
-                $myListTable = new KiotViet_ManualSyncKiotViet_List($show_type, $show_products);
+                $myListTable = new KiotViet_ManualSyncKiotViet_List($show_type, $show_products, $store_id);
                 $myListTable->prepare_items();
                 $myListTable->display();
                 echo '</form>';

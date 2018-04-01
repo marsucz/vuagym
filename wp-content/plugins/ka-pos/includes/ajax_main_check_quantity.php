@@ -60,7 +60,13 @@ function ja_ajax_check_quantity_cart(){
             $product_sku = $product_data->get_sku();
             $product_name = $product_data->get_name();
             
-            $kiotviet_api = new KiotViet_API();
+            $store = $product_data->get_meta('_mypos_other_store', true);
+            if ($store && $store == 'yes') {
+                $kiotviet_api = new KiotViet_API(2);
+            } else {
+                $kiotviet_api = new KiotViet_API();
+            }
+            
             $max_quantity = $kiotviet_api->get_product_quantity_by_ProductSKU($product_sku, $item_id);
             
             $return['status'] = 0;
@@ -177,7 +183,13 @@ function ja_ajax_check_quantity_checkout(){
                 $product_name = $wc_product->get_name();
                 $product_quantity = $product['quantity'];
                 
-                $kiotviet_api = new KiotViet_API();
+                $store = $wc_product->get_meta('_mypos_other_store', true);
+                if ($store && $store == 'yes') {
+                    $kiotviet_api = new KiotViet_API(2);
+                } else {
+                    $kiotviet_api = new KiotViet_API();
+                }
+                
                 $max_quantity = $kiotviet_api->get_product_quantity_by_ProductSKU($product_sku, $wc_product->get_id());
                 
                 if ($product_quantity > $max_quantity) {
@@ -229,7 +241,14 @@ function ja_ajax_mypos_update_cart() {
     $product_name = $product_data->get_name();
     
     if ($cart_maxQuantity < 0) {
-        $kiotviet_api = new KiotViet_API();
+        
+        $store = $product_data->get_meta('_mypos_other_store', true);
+        if ($store && $store == 'yes') {
+            $kiotviet_api = new KiotViet_API(2);
+        } else {
+            $kiotviet_api = new KiotViet_API();
+        }
+        
         $max_quantity = $kiotviet_api->get_product_quantity_by_ProductSKU($product_sku, $item_id);
     } else {
         $max_quantity = $cart_maxQuantity;

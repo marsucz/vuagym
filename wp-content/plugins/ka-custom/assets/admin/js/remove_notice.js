@@ -14,5 +14,7 @@ jQuery(document).ready(function($) {
     
     // An thong bao update plugin
 //    $('#setting-error-tgmpa').remove();
+
+    $('#product-type').width('180px');
 });
 

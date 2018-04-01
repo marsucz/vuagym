@@ -14,12 +14,37 @@ class KiotViet_API {
     private $count_error = 0;
     private $stop = false;       
     private $kiotviet_retailer = '';
+    private $kiotviet_client_id = '';
+    private $kiotviet_client_secret = '';
+    private $store = 1;
     
-    function __construct() {
+    function __construct($store = 1) {
         date_default_timezone_set('Asia/Ho_Chi_Minh');
-        $this->kiotviet_retailer = get_option('kiotviet_retailer');
+        $this->store = $store;
+        if ($store == 1) {
+            $this->kiotviet_retailer = get_option('kiotviet_retailer');
+            $this->kiotviet_client_id = get_option('kiotviet_client_id');
+            $this->kiotviet_client_secret = get_option('kiotviet_client_secret');
+            
+        } else {
+            $this->kiotviet_retailer = get_option('kiotviet2_retailer');
+            $this->kiotviet_client_id = get_option('kiotviet2_client_id');
+            $this->kiotviet_client_secret = get_option('kiotviet2_client_secret');
+        }
     }
     
+    public function change_store($store = 1) {
+        if ($store == 1) {
+            $this->kiotviet_retailer = get_option('kiotviet_retailer');
+            $this->kiotviet_client_id = get_option('kiotviet_client_id');
+            $this->kiotviet_client_secret = get_option('kiotviet_client_secret');
+        } else {
+            $this->kiotviet_retailer = get_option('kiotviet2_retailer');
+            $this->kiotviet_client_id = get_option('kiotviet2_client_id');
+            $this->kiotviet_client_secret = get_option('kiotviet2_client_secret');
+        }
+    }
+
     public function check_process_stop($error_details = '') {
         if ($this->stop) {
             echo "<br/><span style='font-weight: bold; color: red;'>Xuất hiện lỗi khi kết nối tới API. Dừng quá trình!";
@@ -33,7 +58,7 @@ class KiotViet_API {
     
     public function get_product_info_by_productSKU($product_sku = '') {
         
-        $dbModel = new DbModel();
+        $dbModel = new DbModel($this->store);
         $single_product = array();
         
         if (!empty($product_sku)) {
@@ -71,7 +96,7 @@ class KiotViet_API {
     }
     
     public function get_product_quantity_by_ProductSKU($product_sku, $item_id = 0) {
-        $dbModel = new DbModel();
+        $dbModel = new DbModel($this->store);
         
         if (!empty($product_sku)) {
             $product = $dbModel->get_productInfo_byProductCode($product_sku);
@@ -303,6 +328,20 @@ class KiotViet_API {
             $all_products = $this->runRequests($url_array);
         }
         
+        if ($this->store == 1) {
+            return $all_products;
+        } else {
+            if (count($all_products) > 0) {
+                $new_return = array();
+                $prefix = get_option('kiotviet2_prefix');
+                foreach ($all_products as $key => $product_id) {
+                    $new_key = substr_replace($key, $prefix, 0, 2);
+                    $new_return[$new_key] = $product_id;
+                }
+                
+                return $new_return;
+            }
+        }
         return $all_products;
     }
     
@@ -569,8 +608,8 @@ class KiotViet_API {
         $data = array(
             'scopes' => 'PublicApi.Access',
             'grant_type' => 'client_credentials',
-            'client_id' => get_option('kiotviet_client_id'),
-            'client_secret' => get_option('kiotviet_client_secret')
+            'client_id' => $this->kiotviet_client_id,
+            'client_secret' => $this->kiotviet_client_secret
         );
 
         $post_string = http_build_query($data, '', '&');
