@@ -80,6 +80,7 @@ function function_manager_tabs_page() {
             <a href="?page=mypos-sync" class="nav-tab ' . ($active_tab == "" ? "nav-tab-active" : "") . '">Welcome</a>
             <a href="?page=kawoo-manager-tabs&tab=product_picture_manager" class="nav-tab ' . ($active_tab == "product_picture_manager" ? "nav-tab-active" : "") . '">Quản lý ảnh sản phẩm</a>
             <a href="?page=kawoo-manager-tabs&tab=product_category_manager" class="nav-tab ' . ($active_tab == "product_category_manager" ? "nav-tab-active" : "") . '">Quản lý danh mục sản phẩm</a>
+            <a href="?page=kawoo-manager-tabs&tab=product_price_manager" class="nav-tab ' . ($active_tab == "product_price_manager" ? "nav-tab-active" : "") . '">Quản lý giá sản phẩm</a>
          </h2>';
     
     $show_type = get_option('kawoo_show_type');
@@ -160,7 +161,26 @@ function function_manager_tabs_page() {
                 echo '</form>';
             }
             break;
+        case 'product_price_manager':
+            kawoo_load_assets_tab_price();
+            echo '  <div class="wrap">
+                    <form id="product-image-manager-form" method="POST">
+                            <label id="kawoo_product_numbers_label"> Số lượng SP hiển thị </label>
+                            <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
+                        <input type="submit" class="button" value="Áp dụng">
+                    </form>
+                    </div>';
             
+            if (empty($_POST) && !isset($_GET['paged'])) {
+                
+            } else {
+                echo '<form method="POST" id="product-category-manager-list">';
+                $myListTable = new Kawoo_Product_Price_List($show_type, $show_products, $selected_categories);
+                $myListTable->prepare_items();
+                $myListTable->display();
+                echo '</form>';
+            }
+            break;
         default:
             echo '<div class="wrap">
                     <span>Vui lòng chọn các TAB chức năng.</span>
