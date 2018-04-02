@@ -198,10 +198,10 @@ class Kawoo_Product_Price_List extends WP_List_Table {
                 break;
             case 'regular_price':
                 $regular_price = $product->get_regular_price();
-                $r = $regular_price;
+                $r = '<b>' . kiotViet_formatted_price($regular_price) . '</b>';
                 break;
             case 'price-options':
-                $r = '  <button id="set_regular_to_sale_price_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-danger" title="Cập nhật giá gốc thành sale cho sản phẩm này" onclick="set_regular_to_sale_price('. $woo_product['id'] .');"><i class="fa fa-tasks"></i> Chuyển giá gốc thành giá sale</button>';
+                $r = '  <button id="get_price_popup_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-danger" title="Cập nhật giá gốc thành sale cho sản phẩm này" onclick="get_price_popup('. $woo_product['id'] .');"><i class="fa fa-tasks"></i> Chuyển giá gốc thành giá sale</button>';
                 break;
             default:
                 return print_r($item, true);

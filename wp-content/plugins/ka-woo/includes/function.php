@@ -22,6 +22,45 @@ function kawoo_write_logs($file_name, $text) {
     
 }
 
+if ( ! function_exists( 'kiotViet_formatted_price' ) ) {
+    function kiotViet_formatted_price($price){
+            if(!$price) {
+                return '0 ₫';
+            }
+
+            $thous_sep = wc_get_price_thousand_separator();
+            $dec_sep   = wc_get_price_decimal_separator();
+            $decimals  = wc_get_price_decimals();
+            $price 	   = number_format( $price, $decimals, $dec_sep, $thous_sep );
+
+            $format   = get_option( 'woocommerce_currency_pos' );
+            $csymbol  = get_woocommerce_currency_symbol();
+
+            switch ($format) {
+                    case 'left':
+                            $fm_price = $csymbol.$price;
+                            break;
+
+                    case 'left_space':
+                            $fm_price = $csymbol.' '.$price;
+                            break;
+
+                    case 'right':
+                            $fm_price = $price.$csymbol;
+                            break;
+
+                    case 'right_space':
+                            $fm_price = $price.' '.$csymbol;
+                            break;
+
+                    default:
+                            $fm_price = $csymbol.$price;
+                            break;
+            }
+            return $fm_price;
+    }
+}
+
 if ( ! function_exists( 'mypos_get_variation_title' ) ) {
     function mypos_get_variation_title($product) {
         
