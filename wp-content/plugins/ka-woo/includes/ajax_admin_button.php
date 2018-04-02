@@ -76,6 +76,7 @@ function ja_ajax_kawoo_set_prices() {
     
     $return[] = update_post_meta( $product_id, '_regular_price', $regular );
     $return[] = update_post_meta( $product_id, '_sale_price', $sale );
+    $return['deleted'] = delete_post_cache($product_id);
     
     wp_send_json_success( $return );
 }

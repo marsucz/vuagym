@@ -22,6 +22,35 @@ function kawoo_write_logs($file_name, $text) {
     
 }
 
+if ( ! function_exists( 'delete_post_cache' ) ) {
+    function delete_post_cache($product_id) {
+
+        if (!$product_id) {
+            return false;
+        }
+
+        if (class_exists('WpFastestCache')) {
+            $product = wc_get_product( $product_id );
+
+            if ($product->is_type( 'variation' )) {
+                $base_product_id = $product->get_parent_id();
+            } elseif ($product->is_type( 'simple' )) {
+                $base_product_id = $product_id;
+            } else {
+                $base_product_id = $product_id;
+            }
+
+            $wp_fast_cache = new WpFastestCache();
+            $wp_fast_cache->singleDeleteCache(false, $base_product_id);
+
+            return true;
+        } else {
+            return false;
+        }
+
+        return false;
+    }
+}
 if ( ! function_exists( 'kiotViet_formatted_price' ) ) {
     function kiotViet_formatted_price($price){
             if(!$price) {
