@@ -35,7 +35,7 @@ function ka_woo_tools_admin_menu() {
     add_menu_page('KA WOO', 'KA WOO', 'manage_options', 'ka-woo-tools', 'function_ka_woo_tools_page', 'dashicons-admin-multisite', 4);
 //    add_submenu_page('ka-woo-tools', __('KA WOO'), __('KA WOO'), 'edit_posts', 'ka-woo-options');
     add_submenu_page('ka-woo-tools', __('Manager Tabs'), __('Manager Tabs'), 'manage_options', 'kawoo-manager-tabs', 'function_manager_tabs_page');
-    add_submenu_page('ka-woo-tools', __('Testing'), __('Testing'), 'manage_options', 'ka-woo-testing', 'function_kawoo_testing_page');
+//    add_submenu_page('ka-woo-tools', __('Testing'), __('Testing'), 'manage_options', 'ka-woo-testing', 'function_kawoo_testing_page');
 }
 
 function function_ka_woo_tools_page() {
@@ -77,12 +77,12 @@ function function_manager_tabs_page() {
     }
     
     echo '<h2 class="nav-tab-wrapper">
-            <a href="?page=mypos-sync" class="nav-tab ' . ($active_tab == "" ? "nav-tab-active" : "") . '">Welcome</a>
+            <a href="?page=kawoo-manager-tabs" class="nav-tab ' . ($active_tab == "" ? "nav-tab-active" : "") . '">Welcome</a>
             <a href="?page=kawoo-manager-tabs&tab=product_picture_manager" class="nav-tab ' . ($active_tab == "product_picture_manager" ? "nav-tab-active" : "") . '">Quản lý ảnh sản phẩm</a>
             <a href="?page=kawoo-manager-tabs&tab=product_category_manager" class="nav-tab ' . ($active_tab == "product_category_manager" ? "nav-tab-active" : "") . '">Quản lý danh mục sản phẩm</a>
             <a href="?page=kawoo-manager-tabs&tab=product_price_manager" class="nav-tab ' . ($active_tab == "product_price_manager" ? "nav-tab-active" : "") . '">Quản lý giá sản phẩm</a>
          </h2>';
-    
+         
     $show_type = get_option('kawoo_show_type');
     $show_products = get_option('kawoo_number_of_products');
     
