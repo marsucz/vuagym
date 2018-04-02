@@ -19,10 +19,11 @@ and open the template in the editor.
 }
 
 .wp-list-table .column-id { width: 5%; }
-.wp-list-table .column-edit { width: 10%; }
+.wp-list-table .column-edit { width: 7%; }
 .wp-list-table .column-options { width: 20%; }
+.wp-list-table .column-store { width: 10%; }
 .wp-list-table .column-regular_price { width: 10%; }
-.wp-list-table .column-price-options { width: 30%; }
+.wp-list-table .column-price-options { width: 25%; }
 
 .wp-list-table td {
     border-bottom: 2px solid #9c9c9c;

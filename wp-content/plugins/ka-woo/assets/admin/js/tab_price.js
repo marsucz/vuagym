@@ -38,8 +38,8 @@ jQuery(document).ready(function($) {
         var new_regular = parseInt($('#new_regular').val());
         var new_sale = parseInt($('#new_sale').val());
         
-        if (new_regular >= new_sale) {
-            $('.modal-body').prepend('<div id="setPriceAlert" class="alert alert-danger">Giá gốc phải thấp hơn giá sale.</div>');
+        if (new_regular <= new_sale) {
+            $('.modal-body').prepend('<div id="setPriceAlert" class="alert alert-danger">Giá gốc phải lớn hơn giá sale.</div>');
             return;
         }
         
