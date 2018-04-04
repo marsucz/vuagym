@@ -52,6 +52,8 @@ if(!function_exists('s7upf_product_main_detai')){
                     }
                 }
             }
+        } else {
+            $ka_show_general_price = true;
         }
         $thumb_html =   '<div class="detail-gallery">
                             <div class="mid">
