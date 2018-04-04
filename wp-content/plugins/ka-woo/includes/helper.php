@@ -46,6 +46,18 @@ function kawoo_load_assets_tab_price() {
     );
 }
 
+function kawoo_load_assets_tab_search() {
+    wp_enqueue_script(
+		'global',
+		KAWOO_PLUGIN_URL . 'assets/admin/js/tab_search.js',
+		array( 'jquery' ),
+		'1.0.0',
+		true
+    );
+    
+    kawoo_load_assets_common_tab();
+}
+
 function kawoo_load_assets_common_tab() {
     // JS
     wp_register_script('prefix_jquery', KAWOO_PLUGIN_URL . 'assets/admin/lib/jquery-3.3.1.min.js');

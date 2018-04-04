@@ -44,10 +44,11 @@ function function_ka_woo_tools_page() {
             </div>';
 }
 
-function kawoo_pdate_default_manager_tabs_options() {
+function kawoo_update_default_manager_tabs_options() {
     update_option('kawoo_show_type', 1);
     update_option('kawoo_number_of_products', MYPOS_PER_PAGE);
     update_option('kawoo_image_link', '');
+    update_option('kawoo_selected_text', '');
 }
 
 function function_manager_tabs_page() {
@@ -70,10 +71,11 @@ function function_manager_tabs_page() {
         update_option('kawoo_image_link', $_POST['kawoo_image_link']);
         
         update_option('kawoo_selected_categories', isset($_POST['kawoo_selected_categories']) ? $_POST['kawoo_selected_categories']: '');
+        update_option('kawoo_selected_text', isset($_POST['kawoo_finding_code_text']) ? $_POST['kawoo_finding_code_text']: '');
     }
 
     if (empty($_POST) && !isset($_GET['paged'])) {
-        kawoo_pdate_default_manager_tabs_options();
+        kawoo_update_default_manager_tabs_options();
     }
     
     echo '<h2 class="nav-tab-wrapper">
@@ -81,6 +83,7 @@ function function_manager_tabs_page() {
             <a href="?page=kawoo-manager-tabs&tab=product_picture_manager" class="nav-tab ' . ($active_tab == "product_picture_manager" ? "nav-tab-active" : "") . '">Quản lý ảnh sản phẩm</a>
             <a href="?page=kawoo-manager-tabs&tab=product_category_manager" class="nav-tab ' . ($active_tab == "product_category_manager" ? "nav-tab-active" : "") . '">Quản lý danh mục sản phẩm</a>
             <a href="?page=kawoo-manager-tabs&tab=product_price_manager" class="nav-tab ' . ($active_tab == "product_price_manager" ? "nav-tab-active" : "") . '">Quản lý giá sản phẩm</a>
+            <a href="?page=kawoo-manager-tabs&tab=product_search_manager" class="nav-tab ' . ($active_tab == "product_search_manager" ? "nav-tab-active" : "") . '">Tìm kiếm và Quản lý kho phụ</a>
          </h2>';
          
     $show_type = get_option('kawoo_show_type');
@@ -96,14 +99,14 @@ function function_manager_tabs_page() {
             
             echo '  <div class="wrap">
                     <form id="product-image-manager-form" method="POST">
-                            <label>Bộ lọc </label>
+                            <label>Bộ lọc &nbsp</label>
                             <select id="kawoo_show_type" name="kawoo_show_type">
                                 <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Chưa có "Ảnh sản phẩm"</option>
                                 <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Dùng link ảnh ...</option>
                             </select>
-                            <label id="kawoo_product_numbers_label"> Số lượng SP hiển thị </label>
+                            <label id="kawoo_product_numbers_label">Số lượng SP hiển thị &nbsp</label>
                             <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
-                            <label id="image_link_label"> Link Ảnh </label>
+                            <label id="image_link_label">Link Ảnh &nbsp</label>
                             <input type="text" id="kawoo_image_link" name="kawoo_image_link" value="' . $image_link . '" required>
                         <input type="submit" class="button" value="Áp dụng">
                     </form>
@@ -138,14 +141,14 @@ function function_manager_tabs_page() {
             
             echo '  <div class="wrap">
                     <form id="product-image-manager-form" method="POST">
-                            <label>Bộ lọc </label>
+                            <label>Bộ lọc &nbsp</label>
                             <select id="kawoo_show_type" name="kawoo_show_type">
                                 <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Sản phẩm chỉ thuộc danh mục</option>
                                 <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Sản phẩm thuộc danh mục</option>
                             </select>
-                            <label id="kawoo_product_numbers_label"> Số lượng SP hiển thị </label>
+                            <label id="kawoo_product_numbers_label">Số lượng SP hiển thị &nbsp</label>
                             <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
-                            <label id="kawoo_selected_categories_label"> Danh mục </label>
+                            <label id="kawoo_selected_categories_label">Danh mục &nbsp</label>
                             '. $cats . '
                         <input type="submit" class="button" value="Áp dụng">
                     </form>
@@ -165,11 +168,11 @@ function function_manager_tabs_page() {
             kawoo_load_assets_tab_price();
             echo '  <div class="wrap">
                     <form id="product-image-manager-form" method="POST">
-                            <label>Bộ lọc </label>
+                            <label>Bộ lọc &nbsp</label>
                             <select id="kawoo_show_type" name="kawoo_show_type">
                                 <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Hiện sản phẩm chưa có giá sale</option>
                             </select>
-                            <label id="kawoo_product_numbers_label"> Số lượng SP hiển thị </label>
+                            <label id="kawoo_product_numbers_label">Số lượng SP hiển thị &nbsp</label>
                             <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
                         <input type="submit" class="button" value="Áp dụng">
                     </form>
@@ -178,8 +181,39 @@ function function_manager_tabs_page() {
             if (empty($_POST) && !isset($_GET['paged'])) {
                 
             } else {
-                echo '<form method="POST" id="product-category-manager-list">';
+                echo '<form method="POST" id="product-price-manager-list">';
                 $myListTable = new Kawoo_Product_Price_List($show_type, $show_products, $selected_categories);
+                $myListTable->prepare_items();
+                $myListTable->display();
+                echo '</form>';
+            }
+            break;
+        case 'product_search_manager': // Tim kiem va hien cac san pham thuoc kho phu
+            
+            kawoo_load_assets_tab_search();
+            
+            $finding_product_code = get_option('kawoo_selected_text');
+            
+            echo '  <div class="wrap">
+                    <form id="product-image-manager-form" method="POST">
+                            <label>Bộ lọc &nbsp</label>
+                            <select id="kawoo_show_type" name="kawoo_show_type">
+                                <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Tìm kiếm theo Mã sản phẩm</option>
+                                <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Hiện tất cả sản phẩm kho phụ</option>
+                            </select>
+                            <label id="kawoo_product_numbers_label">Số lượng SP hiển thị &nbsp</label>
+                            <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
+                            <label id="kawoo_finding_code_label">Mã sản phẩm &nbsp</label>
+                            <input type="text" id="kawoo_finding_code_text" name="kawoo_finding_code_text" value="' . $finding_product_code . '" required>
+                        <input type="submit" class="button" value="Áp dụng">
+                    </form>
+                    </div>';
+            
+            if (empty($_POST) && !isset($_GET['paged'])) {
+                
+            } else {
+                echo '<form method="POST" id="product-search-manager-list">';
+                $myListTable = new Kawoo_Product_Search_List($show_type, $show_products, $finding_product_code);
                 $myListTable->prepare_items();
                 $myListTable->display();
                 echo '</form>';
@@ -190,7 +224,7 @@ function function_manager_tabs_page() {
                     <span>Vui lòng chọn các TAB chức năng.</span>
                   </div>';
                     
-            kawoo_pdate_default_manager_tabs_options();
+            kawoo_update_default_manager_tabs_options();
             break;
         
     }
