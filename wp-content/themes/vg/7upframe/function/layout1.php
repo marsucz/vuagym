@@ -135,7 +135,7 @@ if(!function_exists('s7upf_product_main_detai')){
 								</div>
 								<div class="col-md-7 col-sm-12 col-xs-12">
 									<div class="detail-info">
-										<h2 class="title-detail" style="color: #202020; font-size: 30px; border-left: 7px solid #059; padding: 0 0 0 .3em!important;">'.get_the_title().'</h2>
+										<h2 class="title-detail" style="color: #202020; font-size: 30px; padding: 0 0 0 .3em!important;">'.get_the_title().'</h2>
 										<a href="#reviews">'.s7upf_get_rating_html().'</a>
 										<div class="row" style="margin: 15px 0px 10px 0px;">
 											<span class="genuine">Đảm bảo chính hãng</span> '.$nha_san_xuat.'
@@ -226,7 +226,7 @@ if(!function_exists('s7upf_product_main_detai')){
 									</div>
 									<div class="col-md-7 col-sm-12 col-xs-12">
 										<div class="detail-info">
-											<h2 class="title-detail" style="color: #202020; font-size: 30px; border-left: 7px solid #059; padding: 0 0 0 .3em!important;">'.get_the_title().'</h2>
+											<h2 class="title-detail" style="color: #202020; font-size: 30px; padding: 0 0 0 .3em!important;">'.get_the_title().'</h2>
 											<a href="#reviews">'.s7upf_get_rating_html().'</a>
 											<div class="row" style="margin: 15px 0px 10px 0px;">
 												<span class="genuine">Đảm bảo chính hãng</span>'.$nha_san_xuat.'

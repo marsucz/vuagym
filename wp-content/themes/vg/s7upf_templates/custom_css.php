@@ -321,6 +321,8 @@ if (!empty($clr_addtocart_hoverbg)) {
 }
 if (!empty($clr_border_productname)) {
     $style .= '.title-detail { border-left: 7px solid ' . $clr_border_productname . '; !important}'."\n";
+} else {
+    $style .= '.title-detail { border-left: 7px solid #059; }'."\n";
 }
 /*****END TYPOGRAPHY*****/
 if(!empty($style)) print $style;
