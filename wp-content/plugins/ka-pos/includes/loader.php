@@ -6,8 +6,12 @@
  * @author Tartarus
  */
 class loader {
+    private $kho_phu = '';
     
     public function __construct() {
+        
+        $this->kho_phu = get_option('kiotviet2_name') ? "Kho '" . get_option('kiotviet2_name') . "'" : "Kho phụ";
+        
         add_filter( 'product_type_options', array( $this, 'mypos_other_store_checkbox' ), 6 );
         add_action( 'woocommerce_variation_options', array( $this, 'add_other_store_variable_checkbox' ), 11, 4 );
         add_action( 'woocommerce_process_product_meta', array( $this, 'mypos_update_settings' ));
@@ -21,6 +25,8 @@ class loader {
         if ('product' == $current_screen->id || 'edit-shop_order' == $current_screen->id || 'edit-product' == $current_screen->id) {
             wp_register_script('mypos_other_store', WC_PLUGIN_URL . 'assets/admin/js/edit-product-page.js');
             wp_enqueue_script('mypos_other_store');
+            wp_register_style('mypos_other_store', WC_PLUGIN_URL . 'assets/admin/css/styles.css');
+            wp_enqueue_style('mypos_other_store');
         }
     }
 
@@ -32,8 +38,8 @@ class loader {
         $other_store_checkbox = array(
                 'mypos_otherstore' => array(
                         'id'            => '_mypos_other_store',
-                        'wrapper_class' => 'show_if_simple',
-                        'label'         => _x( 'Kho phụ', 'Hàng được chứa ở kho phụ.','mypos-other-store' ),
+                        'wrapper_class' => 'show_if_simple ka_display_block',
+                        'label'         => _x( $this->kho_phu, 'Hàng được chứa ở kho phụ.','mypos-other-store' ),
                         'description'   => __( 'Bật tùy chọn này nếu sản phẩm được chứa ở kho phụ.', 'mypos-other-store' ),
                         'default'       => $is_otherstore === 'yes' ? 'yes' : 'no'
                 )
@@ -55,7 +61,7 @@ class loader {
                 <input type="checkbox" class="checkbox variable_is_otherstore"
                            name="_mypos_other_store[<?php echo $loop; ?>]"
                         <?php checked( $is_otherstore, esc_attr( 'yes' ) ); ?> />
-                <?php _ex( 'Kho phụ', 'Hàng được chứa ở kho phụ.','mypos-other-store' ); ?>
+                <?php _ex( $this->kho_phu, 'Hàng được chứa ở kho phụ.','mypos-other-store' ); ?>
                 <?php echo wc_help_tip( __( 'Bật tùy chọn này nếu sản phẩm được chứa ở kho phụ.', 'mypos-other-store' ) ); ?>
         </label>
         <?php
