@@ -17,6 +17,7 @@ $clr_addtocart_bg = s7upf_get_value_by_id('kacolor_addtocart_bg');
 $clr_addtocart_hovertext = s7upf_get_value_by_id('kacolor_addtocart_hovertext');
 $clr_addtocart_hoverbg = s7upf_get_value_by_id('kacolor_addtocart_hoverbg');
 $clr_border_attribute = s7upf_get_value_by_id('kacolor_border_attribute');
+$clr_border_productname = s7upf_get_value_by_id('kacolor_border_productname');
 
 ?>
 <?php
@@ -317,6 +318,9 @@ if (!empty($clr_addtocart_hovertext)) {
 }
 if (!empty($clr_addtocart_hoverbg)) {
     $style .= '.single_add_to_cart_button:hover { background-color: '.$clr_addtocart_hoverbg.' !important}'."\n";
+}
+if (!empty($clr_border_productname)) {
+    $style .= '.title-detail { border-left: 7px solid ' . $clr_border_productname . '; !important}'."\n";
 }
 /*****END TYPOGRAPHY*****/
 if(!empty($style)) print $style;
