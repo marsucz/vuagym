@@ -58,6 +58,10 @@ function kawoo_load_assets_tab_search() {
     kawoo_load_assets_common_tab();
 }
 
+function kawoo_load_assets_tab_content() {
+    kawoo_load_assets_common_tab();
+}
+
 function kawoo_load_assets_common_tab() {
     // JS
     wp_register_script('prefix_jquery', KAWOO_PLUGIN_URL . 'assets/admin/lib/jquery-3.3.1.min.js');
