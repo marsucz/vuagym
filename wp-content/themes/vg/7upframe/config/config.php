@@ -897,6 +897,52 @@ if(!function_exists('s7upf_set_theme_config')){
                                                         )
                                                     ));
             array_push($s7upf_config['theme-option']['settings'],array(
+                                                        'id'          => 'kacolor_shoptitle_bold',
+                                                        'label'       => esc_html__('Kiểu chữ Title','kuteshop'),
+                                                        'type'        => 'select',
+                                                        'section'     => 'option_woo',
+                                                        'std'         => '1',
+                                                        'choices'     => array(
+                                                            array(
+                                                                'value'=>'0',
+                                                                'label'=>esc_html__('Thường','kuteshop'),
+                                                            ),
+                                                            array(
+                                                                'value'=>'1',
+                                                                'label'=>esc_html__('In đậm','kuteshop'),
+                                                            ),
+                                                        )
+                                                    ),array(
+                                                        'id'          => 'kacolor_shoptitle_text',
+                                                        'label'       => esc_html__('Màu chữ Title','kuteshop'),
+                                                        'type'        => 'text',
+                                                        'section'     => 'option_woo',
+//                                                        'std'         => '#fff',
+                                                    ),array(
+                                                        'id'          => 'kacolor_shoptitle_bg',
+                                                        'label'       => esc_html__('Màu nền Title','kuteshop'),
+                                                        'type'        => 'text',
+                                                        'section'     => 'option_woo',
+//                                                        'std'         => '#059',
+                                                    )
+                                            );
+            array_push($s7upf_config['theme-option']['settings'],array(
+                                                        'id'          => 'kacolor_title_bold',
+                                                        'label'       => esc_html__('Kiểu chữ Title','kuteshop'),
+                                                        'type'        => 'select',
+                                                        'section'     => 'option_product',
+                                                        'std'         => '0',
+                                                        'choices'     => array(
+                                                            array(
+                                                                'value'=>'0',
+                                                                'label'=>esc_html__('Thường','kuteshop'),
+                                                            ),
+                                                            array(
+                                                                'value'=>'1',
+                                                                'label'=>esc_html__('In đậm','kuteshop'),
+                                                            ),
+                                                        )
+                                                    ),array(
                                                         'id'          => 'kacolor_title_text',
                                                         'label'       => esc_html__('Màu chữ Title','kuteshop'),
                                                         'type'        => 'text',

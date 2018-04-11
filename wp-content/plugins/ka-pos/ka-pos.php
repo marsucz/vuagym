@@ -44,8 +44,8 @@ $loader = new loader();
 
 function kiotviet_tools_plugin_init() {
     
-    add_action('admin_menu', 'ka_pos_tools_admin_menu');
-    add_action('admin_menu', 'ka_pos_hide_admin_menu');
+    add_action('admin_menu', 'kapos_tools_admin_menu');
+    add_action('admin_menu', 'kapos_hide_admin_menu');
     
     add_action('login_init', 'send_frame_options_header', 10, 0);
     add_action('admin_init', 'send_frame_options_header', 10, 0);
@@ -83,7 +83,7 @@ function kiotviet_tools_plugin_init() {
     
 }
 
-function ka_pos_tools_admin_menu() {
+function kapos_tools_admin_menu() {
     add_menu_page('KA POS', 'KA POS', 'edit_posts', 'ka-pos-tools', 'function_kiotviet_tools_page', 'dashicons-admin-multisite', 4);
     add_submenu_page('ka-pos-tools', __('KA POS'), __('KA POS'), 'edit_posts', 'ka-pos-tools');
     add_submenu_page('ka-pos-tools', __('Testing'), __('Testing'), 'manage_options', 'ka-pos-testing', 'function_testing_page');
@@ -93,9 +93,16 @@ function ka_pos_tools_admin_menu() {
     add_submenu_page('ka-pos-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'ka-pos-options', 'function_mypos_options_page');
 }
 
-function ka_pos_hide_admin_menu() {
+function kapos_hide_admin_menu() {
     
-    if (current_user_can( 'administrator' )) return;
+    if ( kapos_check_permission() ) {
+        remove_menu_page( 'ka-pos-tools' );
+    }
+}
+
+function kapos_check_permission() {
+    
+    if (current_user_can( 'administrator' )) return false;
     
     $remove = true;
     $roles = get_option('mypos_roles');
@@ -108,13 +115,18 @@ function ka_pos_hide_admin_menu() {
         }
     }
     
-    if ( $remove ) {
-        remove_menu_page( 'ka-pos-tools' );
-    } 
+    return $remove;
+}
+
+function kapos_do_permission() {
+    if ( kapos_check_permission() ) {
+        exit("Sorry, you aren't allowed to access this page.");
+    }
 }
 
 function function_kiotviet_tools_page() {
     
+    kapos_do_permission();
     load_assets_common_admin();
     
     echo '<div class="wrap">
@@ -135,6 +147,8 @@ function function_kiotviet_tools_page() {
 }
 
 function function_mypos_options_page() {
+    
+    kapos_do_permission();
     
     if (isset($_POST['mypos-add-to-cart'])) {
         
@@ -318,6 +332,7 @@ function function_mypos_options_page() {
 
 function function_get_sku_kiotviet() {
     
+    kapos_do_permission();
     set_time_limit(1800);
     
     load_assets_match_sku();
@@ -497,9 +512,7 @@ function update_default_manual_sync_options() {
 
 function function_mypos_sync_page() {
     
-//    $time = microtime(TRUE);
-//    $mem = memory_get_usage();
-    
+    kapos_do_permission();
     set_time_limit(600);
     
     load_assets_manual_sync_table();
@@ -605,15 +618,6 @@ function function_mypos_sync_page() {
     }
     
     echo '</div>';
-    
-//    $system_used = array(
-//        'memory' => (memory_get_usage() - $mem) / (1024 * 1024),
-//        'seconds' => microtime(TRUE) - $time
-//    );
-//    
-//    echo '<pre>';
-//    print_r($system_used);
-//    echo '<pre>';
     
 }
 

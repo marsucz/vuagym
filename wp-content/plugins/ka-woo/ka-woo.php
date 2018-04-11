@@ -27,18 +27,52 @@ add_action('plugins_loaded', 'ka_woo_tools_plugin_init');
 
 function ka_woo_tools_plugin_init() {
     add_action('admin_menu', 'ka_woo_tools_admin_menu');
+    add_action('admin_menu', 'ka_woo_hide_admin_menu');
     add_action('login_init', 'send_frame_options_header', 10, 0);
     add_action('admin_init', 'send_frame_options_header', 10, 0);
 }
 
 function ka_woo_tools_admin_menu() {
-    add_menu_page('KA WOO', 'KA WOO', 'manage_options', 'ka-woo-tools', 'function_ka_woo_tools_page', 'dashicons-admin-multisite', 4);
+    add_menu_page('KA WOO', 'KA WOO', 'edit_posts', 'ka-woo-tools', 'function_ka_woo_tools_page', 'dashicons-admin-multisite', 4);
 //    add_submenu_page('ka-woo-tools', __('KA WOO'), __('KA WOO'), 'edit_posts', 'ka-woo-options');
-    add_submenu_page('ka-woo-tools', __('Manager Tabs'), __('Manager Tabs'), 'manage_options', 'kawoo-manager-tabs', 'function_manager_tabs_page');
+    add_submenu_page('ka-woo-tools', __('Manager Tabs'), __('Manager Tabs'), 'edit_posts', 'kawoo-manager-tabs', 'function_manager_tabs_page');
 //    add_submenu_page('ka-woo-tools', __('Testing'), __('Testing'), 'manage_options', 'ka-woo-testing', 'function_kawoo_testing_page');
+    add_submenu_page('ka-woo-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'ka-woo-options', 'function_kawoo_options_page');
+}
+
+function ka_woo_hide_admin_menu() {
+    
+    if ( kawoo_check_permission() ) {
+        remove_menu_page( 'ka-woo-tools' );
+    }
+}
+
+function kawoo_check_permission() {
+    
+    if (current_user_can( 'administrator' )) return false;
+    
+    $remove = true;
+    $roles = get_option('kawoo_roles');
+    if ($roles) {
+        foreach ($roles as $role) {
+            if (current_user_can($role)) {
+                $remove = false;
+                break;
+            }
+        }
+    }
+    
+    return $remove;
+}
+
+function kawoo_do_permission() {
+    if ( kawoo_check_permission() ) {
+        exit("Sorry, you aren't allowed to access this page.");
+    }
 }
 
 function function_ka_woo_tools_page() {
+    kawoo_do_permission();
     echo '<div class="wrap">
             <b>KA WOO Tools for Woocommerce:</b> Công cụ để tùy chỉnh các chức năng của WooCommerce
             </div>';
@@ -53,6 +87,7 @@ function kawoo_update_default_manager_tabs_options() {
 
 function function_manager_tabs_page() {
     
+    kawoo_do_permission();
     set_time_limit(600);
     
     echo '<div class="wrap">
@@ -233,7 +268,60 @@ function function_manager_tabs_page() {
     
 }
 
-
+function function_kawoo_options_page() {
+    
+    if (isset($_POST['kawoo-roles'])) {
+        update_option('kawoo_roles', $_POST['kawoo-roles']);
+    }
+    
+    kawoo_load_assets_common_admin();
+    
+    echo '<div class="wrap"><div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Cài Đặt KA WOO Tools
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <form role="form" method="POST">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Các User Roles có thể dùng "KA WOO Tools"</label>';
+    global $wp_roles;
+    echo '<select multiple id="kawoo-roles" name="kawoo-roles[]" class="form-control">';
+    
+    $mypos_roles = get_option('kawoo_roles');
+    
+    foreach ( $wp_roles->roles as $key=>$value ) {
+        if ($key == 'administrator') continue;
+        $selected = '';
+        foreach ($mypos_roles as $role) {
+            if ($role == $key) {
+                $selected = 'selected';
+                break;
+            }
+        }
+        echo '<option value="' . $key .'" ' . $selected . '>' . $value['name'] . '</option>';
+    }
+    echo '</select>';   
+                                            echo '<p class="help-block">Sử dụng Ctrl để chọn cùng lúc nhiều roles.</p>
+                                                </div>    
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <button type="submit" class="btn btn-primary">Lưu Cài Đặt</button>
+                                            <button type="reset" class="btn btn-default">Nhập Lại</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>';
+}
 
 function function_kawoo_testing_page() {
     $args = array('hide_empty'=> 0,

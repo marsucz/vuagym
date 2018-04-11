@@ -10,6 +10,7 @@ $body_bg = s7upf_get_value_by_id('body_bg');
 $data_attr = s7upf_get_option('woo_attr_background');
 
 // Khoa Anh custom color options
+$clr_title_bold = s7upf_get_value_by_id('kacolor_title_bold');
 $clr_title_text = s7upf_get_value_by_id('kacolor_title_text');
 $clr_title_bg = s7upf_get_value_by_id('kacolor_title_bg');
 $clr_addtocart_text = s7upf_get_value_by_id('kacolor_addtocart_text');
@@ -18,6 +19,10 @@ $clr_addtocart_hovertext = s7upf_get_value_by_id('kacolor_addtocart_hovertext');
 $clr_addtocart_hoverbg = s7upf_get_value_by_id('kacolor_addtocart_hoverbg');
 $clr_border_attribute = s7upf_get_value_by_id('kacolor_border_attribute');
 $clr_border_productname = s7upf_get_value_by_id('kacolor_border_productname');
+// Shop settings
+$sclr_title_bold = s7upf_get_value_by_id('kacolor_shoptitle_bold');
+$sclr_title_text = s7upf_get_value_by_id('kacolor_shoptitle_text');
+$sclr_title_bg = s7upf_get_value_by_id('kacolor_shoptitle_bg');
 
 ?>
 <?php
@@ -300,7 +305,10 @@ if(is_array($typo_data) && !empty($typo_data)){
         $style .= "\n";
     }
 }
-
+// ThemeOptions -> Product Settings
+if ($clr_title_bold == '1') {
+    $style .= '.title-side { font-weight: bold !important}'."\n";
+}
 if (!empty($clr_title_text)) {
     $style .= '.title-side { color: '.$clr_title_text.' !important}'."\n";
 }
@@ -319,11 +327,31 @@ if (!empty($clr_addtocart_hovertext)) {
 if (!empty($clr_addtocart_hoverbg)) {
     $style .= '.single_add_to_cart_button:hover { background-color: '.$clr_addtocart_hoverbg.' !important}'."\n";
 }
+if (!empty($clr_border_attribute)) {
+    $style .= '.list-filter a.active { border-color: '.$clr_border_attribute.' !important}'."\n";
+}
 if (!empty($clr_border_productname)) {
     $style .= '.title-detail { border-left: 7px solid ' . $clr_border_productname . '; !important}'."\n";
 } else {
     $style .= '.title-detail { border-left: 7px solid #059; }'."\n";
 }
+
+// Shop Settings
+if ($sclr_title_bold == '0') {
+    $style .= '.widget .widget-title { font-weight: unset !important}'."\n";
+} 
+
+//    $style .= '.widget .widget-title { font-weight: unset !important}'."\n";
+
+if (!empty($sclr_title_text)) {
+    $style .= '.widget .widget-title { color: '.$sclr_title_text.' !important}'."\n";
+}
+
+if (!empty($sclr_title_bg)) {
+    $style .= '.widget .widget-title { background-color: '.$sclr_title_bg.' !important}'."\n";
+}
+
+// ThemeOptions -> Shop Settings
 /*****END TYPOGRAPHY*****/
 if(!empty($style)) print $style;
 ?>
