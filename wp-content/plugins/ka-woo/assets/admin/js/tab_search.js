@@ -11,8 +11,8 @@ jQuery(document).ready(function($) {
     show_type_change();
     $('#kawoo_show_type').on('change', function() {
         show_type_change();
-    });
-    
+});
+
     function show_type_change() {
         if ($('#kawoo_show_type').val() == 1) {
             $('#kawoo_finding_code_text').show();

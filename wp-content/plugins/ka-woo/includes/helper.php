@@ -59,6 +59,14 @@ function kawoo_load_assets_tab_search() {
 }
 
 function kawoo_load_assets_tab_content() {
+    wp_enqueue_script(
+		'global',
+		KAWOO_PLUGIN_URL . 'assets/admin/js/tab_content.js',
+		array( 'jquery' ),
+		'1.0.0',
+		true
+    );
+    
     kawoo_load_assets_common_tab();
 }
 

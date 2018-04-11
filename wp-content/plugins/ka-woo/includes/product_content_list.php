@@ -60,14 +60,13 @@ class Kawoo_Product_Content_List extends WP_List_Table {
                     while ( $loop->have_posts() ) : $loop->the_post();
 
                         $theid = get_the_ID();
-                        $post = $loop->the_post();
                         
-                        $content = get_the_excerpt();
+                        $post_temp = get_post($theid);
                         
-                        if (empty($content) || $content == '') {
+                        if ($post_temp && empty($post_temp->post_excerpt)) {
                             $list_product[] = $theid;
                             $count_product++;
-                        }
+                        } 
 
                         if ($count_product >= $show_products) {
                             break;
@@ -104,14 +103,13 @@ class Kawoo_Product_Content_List extends WP_List_Table {
                     while ( $loop->have_posts() ) : $loop->the_post();
 
                         $theid = get_the_ID();
-                        $post = $loop->the_post();
                         
-                        $content = get_the_content();
+                        $post_temp = get_post($theid);
                         
-                        if (empty($content) || $content == '') {
+                        if ($post_temp && empty($post_temp->post_content)) {
                             $list_product[] = $theid;
                             $count_product++;
-                        }
+                        } 
 
                         if ($count_product >= $show_products) {
                             break;

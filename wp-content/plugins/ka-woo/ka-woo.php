@@ -260,7 +260,7 @@ function function_manager_tabs_page() {
             kawoo_load_assets_tab_content();
             
             echo '  <div class="wrap">
-                    <form id="product-image-manager-form" method="POST">
+                    <form id="product-content-manager-form" method="POST">
                             <label>Bộ lọc &nbsp</label>
                             <select id="kawoo_show_type" name="kawoo_show_type">
                                 <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Sản phẩm chưa có mô tả ngắn</option>
