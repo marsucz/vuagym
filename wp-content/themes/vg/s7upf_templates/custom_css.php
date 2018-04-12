@@ -329,6 +329,7 @@ if (!empty($clr_addtocart_hoverbg)) {
 }
 if (!empty($clr_border_attribute)) {
     $style .= '.list-filter a.active { border-color: '.$clr_border_attribute.' !important}'."\n";
+    $style .= '.list-filter li a:hover { border-color: '.$clr_border_attribute.' !important}'."\n";
 }
 if (!empty($clr_border_productname)) {
     $style .= '.title-detail { border-left: 7px solid ' . $clr_border_productname . '; !important}'."\n";
