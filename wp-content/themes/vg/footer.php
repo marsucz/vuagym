@@ -35,7 +35,7 @@
 	    </div>
 
 <!-- Contact Widget (Chat FB, Chat Zalo, Goi Hotline giông orchard.vn -->
-<div class="online-support">
+<!--<div class="online-support">
     <div class="dropup force-open">
         <ul class="dropdown-2-menu dropdown-2-menu-right dropdown-2--support">
             <li>
@@ -61,7 +61,22 @@
             </li>
         </ul>
     </div>
+</div>-->
+
+<div id="chatchat">
+	<ul>
+		<li><a><i class="fa fa-map-marker" aria-hidden="true" style="margin-left:5px"></i> <span>Chỉ đường</span></a>
+			<ul>
+                            <li><a><i class="fa fa-map-marker" aria-hidden="true" style="margin-left:5px"></i> <span>Chỉ đường</span></a></li> 
+                            <li><a href="tel:1900066638"><i class="fa fa-whatsapp" style="margin-left:3px" aria-hidden="true"></i> <span>GỌI (FREE)</span></a></li>
+                            <li><a target="_blank" href="https://m.me/www.fb.com/thegioilongmigantrong"><i class="fa fa-commenting-o" aria-hidden="true"></i><span>INBOX FB</span></a></li>
+			</ul> 
+		</li> 
+		<li><a href="tel:1900066638"><i class="icon-icon-chat" style="margin-left:3px" aria-hidden="true"></i> <span>GỌI (FREE)</span></a></li>
+		<li><a target="_blank" href="https://m.me/www.fb.com/thegioilongmigantrong"><i class="fa fa-commenting-o" aria-hidden="true"></i><span>INBOX FB</span></a></li>
+	</ul>
 </div>
+
 	<div id="boxes"></div>
         
 	<?php wp_footer(); ?>

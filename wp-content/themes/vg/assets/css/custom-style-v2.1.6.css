@@ -42,6 +42,160 @@
     animation: spin 2s infinite linear;
 }
 
+/* Contact Widget */
+
+.icon-icon-phone {
+    display: inline-block;
+    background-image: url(images/call-phone.png);
+    background-size: 100%;
+    width: 24px;
+    height: 24px;
+}
+.icon-icon-chat {
+    display: inline-block;
+    background-image: url(images/chat.png);
+    background-size: 100%;
+    width: 20px;
+    height: 20px;
+}
+
+.icon-icon-zalo {
+    display: inline-block;
+    background-image: url(images/zalo.png);
+    background-size: 100%;
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+}
+
+#chatchat * {
+     margin: 0px;
+     padding: 0px;
+     outline: none;
+}
+ #chatchat ul {
+     list-style: none;
+}
+ #chatchat{
+     width:162px;
+    position:fixed;
+    bottom:1px;
+    right:21px;
+     background:#fff;
+    border: 1px solid #ccc;
+     border: 1px solid rgba(0, 0, 0, 0.2);
+     -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+     border-radius: 6px;
+     -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+     -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+     -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+     background-clip: padding-box;
+    min-height:100px;
+    height:auto;
+     z-index: 99999;
+}
+ #chatchat ul{
+    margin:0px;
+    padding:0px;
+    list-style-type:none;
+}
+ #chatchat ul li{
+    width:100%;
+    padding-left:6%;
+     padding-right: 6%;
+    float:left;
+    height:auto;
+    padding-top:9px;
+    padding-bottom:9px;
+    position:relative
+}
+ #chatchat ul li:hover{
+    background:#4f4f4f
+}
+ #chatchat ul li:hover a{
+    color:#fff
+}
+ #chatchat ul li:hover a i{
+    color:#fff
+}
+ #chatchat ul li:hover a span{
+    color:#fff
+}
+ #chatchat ul li ul{
+    padding:0px;
+    margin:0px;
+     display:none;
+    position:absolute;
+    bottom:40px;
+    right:0px;
+     background:#fff;
+    border: 1px solid #ccc;
+     border: 1px solid rgba(0, 0, 0, 0.2);
+     -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+     border-radius: 6px;
+     -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+     -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+     -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+     background-clip: padding-box;
+    width:210px
+}
+ #chatchat ul li:hover ul li{
+    background:#fff
+}
+ #chatchat ul li:hover ul li a{
+    color:#4f4f4f
+}
+ #chatchat ul li:hover ul li a i{
+    color:#4f4f4f
+}
+ #chatchat ul li:hover ul li a span{
+    color:#4f4f4f
+}
+ #chatchat ul li ul li:hover {
+    background:#4f4f4f
+}
+ #chatchat ul li ul li:hover a{
+    color:#fff
+}
+ #chatchat ul li ul li:hover a i{
+    color:#fff
+}
+ #chatchat ul li ul li:hover a span{
+    color:#fff
+}
+ #chatchat ul li:hover ul{
+    display:block
+}
+ #chatchat ul li a i{
+    float:left;
+    margin-left:1px;
+    margin-top:2px;
+    font-size:21px;
+}
+ #chatchat ul li a{
+    float:left;
+    color:#333333;
+    font-size:14px;
+    width:100%;
+    cursor: pointer;
+}
+ #chatchat ul li a span{
+    color:#333333;
+    float:right;
+    text-transform:uppercase;
+    width:110px;
+    text-align:left
+}
+
+
+/* End */
+
 @-moz-keyframes spin {
     0% { 
         -moz-transform: rotate(0deg); 
@@ -2953,24 +3107,40 @@ button.single_add_to_cart_button {
 }
 
 @media only screen and (min-width : 1px) and (max-width : 1100px) {
-    .online-support {
+    #chatchat {
         width: 100% !important;
         height: auto !important;
         right: 0px !important;
         bottom: 0px;
         min-height: inherit !important;
     }
-
-    .online-support ul li ul li {
-        width: 94% !important;
+    #chatchat ul li ul li {
+        width: 100% !important;
         padding: 5px 20px;
     }
-    .online-support ul li{width: 33.3% !important;text-align: center;padding-left: 0;}
-    .online-support ul li ul{left: 0px !important;width: 300px !important;}
-    #designby1{margin-bottom: 62px;}
-    .online-support ul li a,.online-support ul li a span{text-align: center;}
-    .online-support ul li a i{float: none !important;margin: 0 !important;}
-    .online-support ul li a span{width: 100%;}
+    #chatchat ul li{
+        width: 33.3% !important;
+        text-align: center;
+        padding-left: 0;
+    }
+    #chatchat ul li ul{
+        left: 0px !important;
+        width: 300px !important;
+    }
+    #designby1{
+        margin-bottom: 62px;
+    }
+    #chatchat ul li a,#chatchat ul li a span{
+        text-align: center;
+    }
+    #chatchat ul li a i{
+        float: none !important;
+        margin: 0 !important;
+    }
+    #chatchat>ul>li>a>span{
+        width: 100%;
+    }
+    
 }
 
 @media (max-width: 990px){
@@ -3868,112 +4038,8 @@ button.single_add_to_cart_button {
 /* End */
 
 /* Khoa Anh Contact Widget */
-.radius.scroll-top.active {
-    right: 4px !important;
-}
-.radius.scroll-top {
-    bottom: 100px !important;
-}
-.online-support {
-    display: block;
-    position: fixed;
-    right: 8px;
-    bottom: 0px;
-    z-index: 999;
-}
-.online-support .dropup>.dropdown-2-menu.dropdown-2-menu-right {
-    left: auto !important;
-    right: 0 !important;
-}
-.online-support .dropup.force-open>.dropdown-2-menu {
-    display: block !important;
-}
-.dropup .dropdown-2-menu, .navbar-fixed-bottom .dropdown-2 .dropdown-2-menu {
-    top: auto;
-    bottom: 100%;
-    margin-bottom: 0px;
-}
-.dropdown-2-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    display: none;
-    float: left;
-    min-width: 140px;
-    padding: 5px 0;
-    margin: 2px 0 0;
-    list-style: none;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border: 1px solid rgba(0,0,0,.2);
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
-    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-    -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-    box-shadow: 0 5px 10px rgba(0,0,0,.2);
-    -webkit-background-clip: padding-box;
-    -moz-background-clip: padding;
-    background-clip: padding-box;
-}
-.online-support .dropdown-2-menu li a {
-    padding: 3px 10px 3px 10px;
-    text-align: left;
-    min-height: 18px;
-    line-height: 18px;
-    font-size: 13px;
-}
-.dropdown-2-menu li>a {
-    display: block;
-    padding: 3px 20px;
-    clear: both;
-    font-weight: normal;
-    line-height: 20px;
-    color: #333;
-    white-space: nowrap;
-}
-.online-support .dropdown-2-menu li a i {
-    vertical-align: middle;
-    margin-right: 8px;
-}
-i[class^=icon-] {
-    display: inline-block;
-    text-align: center;
-}
-.online-support .dropdown-2-menu li>a:hover, .online-support .dropdown-2-menu li>a:focus, .online-support .dropdown-2-submenu:hover>a {
-    color: #fff;
-    text-decoration: none;
-    background-color: #059 !important;
-    background-image: -moz-linear-gradient(top,#08c,#0077b3);
-    background-image: -webkit-gradient(linear,0 0,0 100%,from(#08c),to(#0077b3));
-    background-image: -webkit-linear-gradient(top,#08c,#0077b3);
-    background-image: -o-linear-gradient(top,#08c,#0077b3);
-    background-image: linear-gradient(to bottom,#08c,#0077b3);
-    background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc',endColorstr='#ff0077b3',GradientType=0);
-}
-.icon-icon-phone {
-    background-image: url(images/call-phone.png);
-    background-size: 100%;
-    width: 24px;
-    height: 24px;
-    margin-left: -4px;
-}
-.icon-icon-chat {
-    background-image: url(images/chat.png);
-    background-size: 100%;
-    width: 20px;
-    height: 20px;
-}
 
-.icon-icon-zalo {
-    background-image: url(images/zalo.png);
-    background-size: 100%;
-    width: 18px;
-    height: 18px;
-    border-radius: 5px;
-}
+
 
 /* End */
 
@@ -3999,102 +4065,3 @@ i[class^=icon-] {
 }
 /* End */
 
-/* Contact Widget */
-.online-support ul{
-/*    margin:0px;
-    padding:0px;
-     list-style-type:none;*/
-}
- .online-support ul li{
-    width:94%;
-    padding-left:6%;
-     float:left;
-    height:auto;
-    padding-top:9px;
-    padding-bottom:9px;
-    position:relative
-}
-/* .online-support ul li:hover{
-    background:#4f4f4f
-}
- .online-support ul li:hover a{
-    color:#fff
-}
- .online-support ul li:hover a i{
-    color:#fff
-}
- .online-support ul li:hover a span{
-    color:#fff
-}*/
- .online-support ul li ul{
-    padding:0px;
-    margin:0px;
-     display:none;
-    position:absolute;
-    bottom:40px;
-    right:0px;
-     background:#fff;
-    border: 1px solid #ccc;
-     border: 1px solid rgba(0, 0, 0, 0.2);
-     -webkit-border-radius: 6px;
-     -moz-border-radius: 6px;
-     border-radius: 6px;
-     -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-     -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-     -webkit-background-clip: padding-box;
-     -moz-background-clip: padding;
-     background-clip: padding-box;
-    width:210px
-}
-/* .online-support ul li:hover ul li{
-    background:#fff
-}
- .online-support ul li:hover ul li a{
-    color:#4f4f4f
-}
- .online-support ul li:hover ul li a i{
-    color:#4f4f4f
-}
- .online-support ul li:hover ul li a span{
-    color:#4f4f4f
-}
- .online-support ul li ul li:hover {
-    background:#4f4f4f
-}
- .online-support ul li ul li:hover a{
-    color:#fff
-}
- .online-support ul li ul li:hover a i{
-    color:#fff
-}
- .online-support ul li ul li:hover a span{
-    color:#fff
-}*/
- .online-support ul li:hover ul{
-    display:block
-}
- .online-support ul li a i{
-    float:left;
-    margin-left:1px;
-    margin-top:2px;
-    font-size:21px;
-}
- .online-support ul li a{
-    float:left;
-    color:#333333;
-    /*font-family: 'Conv_SFUFuturaRegular';*/
-    font-size:14px;
-    width:100%;
-    cursor: pointer;
-}
- .online-support ul li a span{
-    color:#333333;
-    float:right;
-    text-transform:uppercase;
-    width:108px;
-    text-align:left
-}
-
-
-/* End */
