@@ -49,9 +49,9 @@ class Kawoo_Product_Category_List extends WP_List_Table {
         while ($count_product < $show_products) {
 
             $currentPage++;
-
+            
             $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage ) );
-
+            
             if (!$loop->post_count || $loop->post_count == 0) {
                 break;
             }
@@ -83,10 +83,14 @@ class Kawoo_Product_Category_List extends WP_List_Table {
                             break;
                         case 2: // San pham thuoc danh muc
                             if (!empty($this->selected_categories)) {
-                                foreach ($this->selected_categories as $selected_cate) {
-                                    if ($categories[0] == $selected_cate) {
-                                        $list_product[] = $theid;
-                                        $count_product++;
+                                if (!empty($categories)) {
+                                    foreach ($this->selected_categories as $selected_cate) {
+                                        foreach ($categories as $cat) {
+                                            if ($cat == $selected_cate) {
+                                                $list_product[] = $theid;
+                                                $count_product++;
+                                            }
+                                        }
                                     }
                                 }
                             } else {
@@ -167,9 +171,6 @@ class Kawoo_Product_Category_List extends WP_List_Table {
         $woo_product['id'] = $product->get_id();
         $woo_product['name'] = mypos_get_variation_title($product);
         
-
-        
-
         switch ($column_name) {
             case 'id':
                 $r = $product_id;

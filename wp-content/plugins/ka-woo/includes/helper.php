@@ -59,6 +59,7 @@ function kawoo_load_assets_tab_search() {
 }
 
 function kawoo_load_assets_tab_content() {
+    enqueue_select2_jquery();
     wp_enqueue_script(
 		'global',
 		KAWOO_PLUGIN_URL . 'assets/admin/js/tab_content.js',

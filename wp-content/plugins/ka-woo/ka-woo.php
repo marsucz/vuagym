@@ -36,7 +36,7 @@ function ka_woo_tools_admin_menu() {
     add_menu_page('KA WOO', 'KA WOO', 'edit_posts', 'ka-woo-tools', 'function_ka_woo_tools_page', 'dashicons-admin-multisite', 4);
 //    add_submenu_page('ka-woo-tools', __('KA WOO'), __('KA WOO'), 'edit_posts', 'ka-woo-options');
     add_submenu_page('ka-woo-tools', __('Manager Tabs'), __('Manager Tabs'), 'edit_posts', 'kawoo-manager-tabs', 'function_manager_tabs_page');
-//    add_submenu_page('ka-woo-tools', __('Testing'), __('Testing'), 'manage_options', 'ka-woo-testing', 'function_kawoo_testing_page');
+    add_submenu_page('ka-woo-tools', __('Testing'), __('Testing'), 'manage_options', 'ka-woo-testing', 'function_kawoo_testing_page');
     add_submenu_page('ka-woo-tools', __('Cài Đặt'), __('Cài Đặt'), 'manage_options', 'ka-woo-options', 'function_kawoo_options_page');
 }
 
@@ -159,7 +159,7 @@ function function_manager_tabs_page() {
             }
             break;
             
-        case 'product_category_manager':
+        case 'product_category_manager':    // Tab quan ly danh muc
             kawoo_load_assets_tab_category();
             
             $selected_categories = get_option('kawoo_selected_categories');
@@ -259,16 +259,53 @@ function function_manager_tabs_page() {
             
             kawoo_load_assets_tab_content();
             
+            $selected_categories = get_option('kawoo_selected_categories');
+            $finding_product_code = get_option('kawoo_selected_text');
+            
+            $args = array(
+                'hide_empty' => 0,
+                'taxonomy'=> 'product_cat',
+                'hierarchical' => 1,
+                'echo' => 0,
+                'name' => 'kawoo_selected_categories[]',
+                'id' => 'kawoo_selected_categories',
+                'show_option_all' => 'Tất cả danh mục',
+                );
+
+            $cats = wp_dropdown_categories($args);
+            
+            $tab_args = array(
+                'post_type' => 'ywtm_tab',
+                'post_status' => 'publish',
+                'posts_per_page' => -1
+            );
+            
+            $tab_list = get_posts($tab_args);
+            
+            $tab_list_view = '';
+            foreach ($tab_list as $tab) {
+                $tab_list_view .= '<option value="' . $tab->ID . '"' . ($show_type == $tab->ID ? 'selected' : '') . '>' . $tab->post_title . '</option>';
+            }
+            
             echo '  <div class="wrap">
                     <form id="product-content-manager-form" method="POST">
-                            <label>Bộ lọc &nbsp</label>
+                    <div class="tablenav top">
+                            <label id="kawoo_selected_categories_label">SP thuộc danh mục &nbsp</label>
+                            '. $cats . '
+                            <label> &nbsp mà &nbsp</label>
                             <select id="kawoo_show_type" name="kawoo_show_type">
-                                <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Sản phẩm chưa có mô tả ngắn</option>
-                                <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Sản phẩm chưa có mô tả</option>
+                                <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Sản phẩm có mô tả ngắn</option>
+                                <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Sản phẩm có mô tả</option>
+                                    ' . $tab_list_view . '
                             </select>
+                            <label id="kawoo_finding_code_label">&nbsp có nội dung &nbsp</label>
+                            <input style="width: 260px" type="text" id="kawoo_finding_code_text" name="kawoo_finding_code_text" value="' . $finding_product_code . '" placeholder="Bỏ trống nếu rỗng hoặc ít hơn 3 ký tự">
+                        <div class="tablenav top">
                             <label id="kawoo_product_numbers_label">Số lượng SP hiển thị &nbsp</label>
                             <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
-                        <input type="submit" class="button" value="Áp dụng">
+                            <input type="submit" class="button" value="Áp dụng">
+                        </div>
+                     </div>
                     </form>
                     </div>';
             
@@ -276,7 +313,7 @@ function function_manager_tabs_page() {
                 
             } else {
                 echo '<form method="POST" id="product-content-manager-list">';
-                $myListTable = new Kawoo_Product_Content_List($show_type, $show_products);
+                $myListTable = new Kawoo_Product_Content_List($show_type, $show_products, $selected_categories, $finding_product_code);
                 $myListTable->prepare_items();
                 $myListTable->display();
                 echo '</form>';
@@ -352,13 +389,12 @@ function function_kawoo_options_page() {
 }
 
 function function_kawoo_testing_page() {
-    $args = array('hide_empty'=> 0,
-    'taxonomy'=> 'product_cat',
-    'hierarchical'=>1,
-    'echo'=>0);
-
-$cats = wp_category_checklist($args);
-echo $cats;
+    $product = wc_get_product(3581);
+    $gds = $product->get_category_ids();
+    echo '<pre>';
+    print_r($gds);
+    echo '<pre>';
+    exit;
 }
 
 ?>

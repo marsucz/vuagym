@@ -8,5 +8,14 @@ jQuery(document).ready(function($) {
         }
     });
     
+    console.log("JS Loaded");
+    
+    $('#kawoo_selected_categories').attr('multiple','multiple');
+    $('#kawoo_selected_categories').select2({
+        placeholder: 'Chọn danh mục ...'
+    });
+    
+    $('#kawoo_selected_categories').val('').trigger('change');
+    
 });
 
