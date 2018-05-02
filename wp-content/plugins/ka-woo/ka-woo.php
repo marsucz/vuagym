@@ -178,9 +178,10 @@ function function_manager_tabs_page() {
             echo '  <div class="wrap">
                     <form id="product-image-manager-form" method="POST">
                             <label>Bộ lọc &nbsp</label>
-                            <select id="kawoo_show_type" name="kawoo_show_type">
+                            <select id="kawoo_show_type" name="kawoo_show_type" style="width: 19%">
                                 <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Sản phẩm chỉ thuộc danh mục</option>
                                 <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Sản phẩm thuộc danh mục</option>
+                                <option value="3"' . ($show_type == 3 ? 'selected' : '') . '>Sản phẩm thuộc danh mục con mà không thuộc danh mục cha</option>
                             </select>
                             <label id="kawoo_product_numbers_label">Số lượng SP hiển thị &nbsp</label>
                             <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
@@ -389,12 +390,33 @@ function function_kawoo_options_page() {
 }
 
 function function_kawoo_testing_page() {
-    $product = wc_get_product(3581);
-    $gds = $product->get_category_ids();
-    echo '<pre>';
-    print_r($gds);
-    echo '<pre>';
-    exit;
+    
+//    $content = new Kawoo_Product_Content_List();
+    
+//    $product = wc_get_product(6553);
+    $theid = 6553;
+
+    $product = wc_get_product($theid);
+    $categories = $product->get_category_ids();
+
+    $check_cat = true;
+    if ($categories) {
+        foreach ($categories as $cate) {
+            $parents = get_ancestors($cate, 'product_cat');
+            foreach ($parents as $cat_parent) {
+                if (in_array($cat_parent, array_values($this->selected_categories))) {
+                } else {
+                    $check_cat = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!$check_cat) {
+        $list_product[] = $theid;
+        $count_product++;
+    }
 }
 
 ?>

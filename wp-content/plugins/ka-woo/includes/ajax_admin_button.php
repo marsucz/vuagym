@@ -83,3 +83,49 @@ function ja_ajax_kawoo_set_prices() {
 
 add_action( 'wp_ajax_kawoo_set_prices', 'ja_ajax_kawoo_set_prices' );
 add_action( 'wp_ajax_nopriv_kawoo_set_prices', 'ja_ajax_kawoo_set_prices' );
+
+function ja_ajax_kawoo_set_categories() {
+    //Form Input Values
+    $product_id     = intval($_POST['product_id']);
+    
+    //If empty return error
+    if(!$product_id){
+        wp_send_json(array('error' => __('Missing Product ID!')));
+    }
+		
+    $product = wc_get_product($product_id);
+    
+    $categories = $product->get_category_ids();
+    
+    if ($categories) {
+        $new_categories = $categories;
+    
+        foreach ($categories as $cate) {
+            $parents = get_ancestors($cate, 'product_cat');
+            foreach ($parents as $cat_parent) {
+                if (in_array($cat_parent, $categories)) {
+                } else {
+                    $new_categories[] = $cat_parent;
+                }
+            }
+        }
+
+        $product->set_category_ids($new_categories);
+
+        $result = $product->save();
+
+        if ($result) {
+            $return['status'] = true;
+            $return['deleted'] = delete_post_cache($product_id);
+        } else {
+            $return['status'] = false;
+        }
+    } else {
+        $return['status'] = false;
+    }
+    
+    wp_send_json_success( $return );
+}
+
+add_action( 'wp_ajax_kawoo_set_categories', 'ja_ajax_kawoo_set_categories' );
+add_action( 'wp_ajax_nopriv_kawoo_set_categories', 'ja_ajax_kawoo_set_categories' );
