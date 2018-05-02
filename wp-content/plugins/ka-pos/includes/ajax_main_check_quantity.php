@@ -105,6 +105,7 @@ function ja_ajax_check_quantity_cart(){
                     // Set Product Item is out of stock
                     $product_data->set_stock_status('outofstock');
                     $product_data->save();
+                    $return['deleted'] = delete_post_cache($product_id);
                 } else {
 //                    if ($mark_red) {
 //                        $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $return['current_quantity'] . ' sản phẩm</b> này trong giỏ hàng. Bạn vui lòng cập nhật số lượng tại <a href="' . wc_get_cart_url() . '" class="mypos-alert-link">Giỏ Hàng</a>.</span>';
