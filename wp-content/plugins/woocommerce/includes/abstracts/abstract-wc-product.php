@@ -1445,7 +1445,7 @@ class WC_Product extends WC_Abstract_Legacy_Product {
 		if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) && ! $this->is_in_stock() ) {
 			$visible = false;
 		}
-
+                
 		return apply_filters( 'woocommerce_product_is_visible', $visible, $this->get_id() );
 	}
 

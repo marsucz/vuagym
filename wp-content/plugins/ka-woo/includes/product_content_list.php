@@ -277,7 +277,7 @@ class Kawoo_Product_Content_List extends WP_List_Table {
         return array();
     }
     
-    private function get_product_category_by_id( $category_id ) {
+    public function get_product_category_by_id( $category_id ) {
         $term = get_term_by( 'id', $category_id, 'product_cat', 'ARRAY_A' );
         return $term['name'];
     }

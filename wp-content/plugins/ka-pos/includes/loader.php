@@ -17,8 +17,20 @@ class loader {
         add_action( 'woocommerce_process_product_meta', array( $this, 'mypos_update_settings' ));
         add_action( 'woocommerce_save_product_variation', array( $this, 'mypos_save_variable_fields' ), 10, 2 );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+        
+        add_filter( 'product_type_options', array( $this, 'mypos_show_always_checkbox' ), 6 );
+        add_filter( 'woocommerce_product_is_visible', array( $this, 'kawoo_show_always'), 10, 2 );
     }
     
+    public function kawoo_show_always( $is_visible, $id ) {
+        
+        $show_always_status = get_post_meta($id, '_mypos_show_always', true);
+        if ($show_always_status && $show_always_status == 'yes') {
+            $is_visible = true;
+        }
+        return $is_visible;
+    }
+
     public function enqueue_scripts($hook_suffix) {
         $current_screen = get_current_screen();
 
@@ -53,6 +65,30 @@ class loader {
         $status = get_post_meta($post_id, '_mypos_other_store', true);
         return $status;
     }
+    
+    public function mypos_show_always_checkbox( $product_type_options ) {
+        
+        global $post; 
+        $is_showalways = $this->get_show_always_status($post->ID);
+        
+        $other_store_checkbox = array(
+                'mypos_show_always' => array(
+                        'id'            => '_mypos_show_always',
+                        'wrapper_class' => 'ka_display_block',
+                        'label'         => __( 'Luôn hiện sản phẩm', 'Luôn hiện sản phẩm.','mypos-show-always' ),
+                        'description'   => __( 'Bật tùy chọn này nếu muốn sản phẩm luôn hiện ở catalog khi hết hàng.', 'mypos-show-always' ),
+                        'default'       => $is_showalways === 'yes' ? 'yes' : 'no'
+                )
+        );
+
+        return array_merge( $product_type_options, $other_store_checkbox );
+
+    }
+    
+    public function get_show_always_status($post_id) {
+        $status = get_post_meta($post_id, '_mypos_show_always', true);
+        return $status;
+    }
 
     public function add_other_store_variable_checkbox( $loop, $variation_data, $variation ) {
         $is_otherstore = $this->get_store_other_status($variation->ID);
@@ -69,13 +105,14 @@ class loader {
 
     public function mypos_update_settings( $post_id ) {
             $is_other_store = isset( $_POST['_mypos_other_store'] ) && ! is_array( $_POST['_mypos_other_store'] ) ? 'yes' : 'no';
-//            add_post_meta($post_id, '_mypos_other_store', $is_other_store);
             update_post_meta($post_id, '_mypos_other_store', $is_other_store);
+            
+            $is_show_always = isset( $_POST['_mypos_show_always'] ) && ! is_array( $_POST['_mypos_show_always'] ) ? 'yes' : 'no';
+            update_post_meta($post_id, '_mypos_show_always', $is_show_always);
     }
 
     public function mypos_save_variable_fields( $post_id, $_i ) {
             $is_other_store = isset( $_POST['_mypos_other_store'][ $_i ] ) ? 'yes' : 'no';
-//            add_post_meta($post_id, '_mypos_other_store', $is_other_store);
             update_post_meta($post_id, '_mypos_other_store', $is_other_store);
     }
 }

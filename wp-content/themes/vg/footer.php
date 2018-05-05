@@ -82,3 +82,10 @@
 	<?php wp_footer(); ?>
 </body>
 </html>
+
+<?php
+   global $wpdb;
+   echo "<pre>";
+   print_r($wpdb->queries);
+   echo "</pre>";
+?>
