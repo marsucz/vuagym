@@ -44,6 +44,18 @@ jQuery(document).ready(function($) {
                 
                 $('.alert-box').fadeIn();
                 $('#addToCartModal').modal('show');
+                
+                console.log(response.data.fragments);
+                
+                if (response.data.fragments !== '') {
+                    var cart_content = response.data.fragments['widget_shopping_cart_content'];
+                    $('.mini-cart-main-content').html(cart_content);
+                    $('.widget_shopping_cart_content').html(cart_content);
+                    var count_item = cart_content.split("<li").length;
+                    $('.cart-item-count').html(count_item-1);
+                    var price = $('.content-mini-cart').find('.mini-cart-total').find('.total-price').html();
+                    $('.total-mini-cart-price').html(price);
+                }
             },
             error: function(response) {
                 atc_btn.find('.xoo-wsc-icon-atc').attr('class','xoo-wsc-icon-checkmark xoo-wsc-icon-atc');

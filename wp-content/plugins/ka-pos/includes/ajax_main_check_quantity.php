@@ -143,6 +143,15 @@ function ja_ajax_check_quantity_cart(){
                     
             }
             
+            if ($return['status'] == 2) {
+                ob_start();
+                woocommerce_mini_cart();
+                $mini_cart = ob_get_clean();
+                $return['fragments'] = apply_filters( 'woocommerce_add_to_cart_fragments', array('widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>'));
+            } else {
+                $return['fragments'] = '';
+            }  
+            
             wp_send_json_success( $return );
             
         } catch ( Exception $e ) {

@@ -79,6 +79,22 @@ if(class_exists("woocommerce")){
                                 </div>';
                     break;
                 
+                case 'mini-cart-ms':
+                    $header_cart_html = '<a class="mini-cart-link" href="'.esc_url(wc_get_cart_url()).'">
+                                            <span class="mini-cart-icon"><img style="width: 1em; height: 1em; max-width: 100%; " src="'.esc_url(get_template_directory_uri().'/assets/css/images/theme/store-cart.png').'" alt=""></span>
+                                            <span class="mini-cart-number radius cart-item-count">0</span>
+                                            <span class="text">'.esc_html__("My Cart","kuteshop").'</span>
+                                        </a>';
+                    $html .=    '<div class="mini-cart-box '.$style.'">
+                                    '.$header_cart_html.'
+                                    <div class="mini-cart-content content-mini-cart">                                    
+                                        <div class="mini-cart-main-content">'.s7upf_mini_cart().'</div>                    
+                                        <input class="num-decimal" type="hidden" value="'.get_option("woocommerce_price_num_decimals").'">
+                                        <input class="get-currency" type="hidden" value=".'.get_option("woocommerce_currency").'">
+                                    </div>
+                                </div>';
+                    break;
+                
                 default:
                     $header_cart_html = '<a class="mini-cart-link" href="'.esc_url(wc_get_cart_url()).'">
                                             <span class="mini-cart-icon"><i class="fa fa-shopping-basket" aria-hidden="true"></i></span>
@@ -117,6 +133,7 @@ if(class_exists("woocommerce")){
                     esc_html__("Home 10",'kuteshop')   => 'mini-cart10',
                     esc_html__("Home 17",'kuteshop')   => 'mini-cart17',
                     esc_html__("Home 18",'kuteshop')   => 'mini-cart18',
+                    esc_html__("Ka MS",'kuteshop')   => 'mini-cart-ms',
                     )
             ),            
         )
