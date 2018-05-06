@@ -29,7 +29,7 @@ if(class_exists("woocommerce")){
                             </div>
                         </div>';
             } else {
-                $html = '<div class="ka-user"><strong><a href="' . esc_url(home_url('/tai-khoan')) . '" title="Đăng nhập">Đăng nhập</a> | <a href="' . esc_url(home_url('/tai-khoan')) . '" title="Đăng ký">Đăng ký</a></strong></div>';
+                $html = '<div class="user-cp"><div class="ka-user"><strong><a href="' . esc_url(home_url('/tai-khoan')) . '" title="Đăng nhập">Đăng nhập</a> | <a href="' . esc_url(home_url('/tai-khoan')) . '" title="Đăng ký">Đăng ký</a></strong></div></div>';
             }
             return $html;
         }
