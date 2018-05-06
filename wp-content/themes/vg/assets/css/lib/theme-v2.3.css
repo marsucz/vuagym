@@ -936,7 +936,7 @@ li.menu-item-has-children:hover > .sub-menu {
   display: inline-block;
 }
 .mini-cart-box:hover .mini-cart-content {
-  margin-top: 5px;
+  margin-top: -4px;
   opacity: 1;
   visibility: visible;
 }
@@ -953,8 +953,10 @@ li.menu-item-has-children:hover > .sub-menu {
   position: absolute;
   right: 0;
   top: 100%;
-  transition: all 0s ease-out 0s;
-  -webkit-transition: all 0s ease-out 0s;
+  /*transition: all 0.2s ease-out 0s;*/
+  /*-webkit-transition: all 0.2s ease-out 0s;*/
+  transition-delay: 0.2s;
+  transition: visibility 0s;
   visibility: hidden;
   width: 290px;
   z-index: 9999;
