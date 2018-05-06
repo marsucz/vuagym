@@ -406,7 +406,8 @@ function function_kawoo_testing_page() {
     echo "</pre>";
 }
 
-add_action('pre_get_posts', 'kawoo_hide_out_of_stock_products');
+//Fuck this line
+//add_action('pre_get_posts', 'kawoo_hide_out_of_stock_products');
 
 function kawoo_hide_out_of_stock_products($q) {
 
