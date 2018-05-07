@@ -84,9 +84,9 @@
     padding-top: 20px;
 }
 
-.user-cp:hover .tooltip-cp, .user-cp .tooltip-cp:hover::after {
+.user-cp:hover .tooltip-cp {
     visibility: visible;
-    opacity:1;
+    opacity: 1;
 }
 
 .tooltip-title {
