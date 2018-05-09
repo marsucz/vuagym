@@ -10,8 +10,12 @@ if(class_exists("woocommerce")){
             
             if (is_user_logged_in()) {
                 $html = '<div class="user-cp">
-                                <div class="ka-user"><strong><i class="fa fa-user">&nbsp; </i><a href="' . esc_url(home_url('/tai-khoan')) . '"> ' . $current_user->display_name . '</a></strong></div>';
-                $html .= '  <div class="tooltip-cp" id="cp_tooltip_text" style="top: 50px; right: 10px;">
+                            <div class="ka-user">
+                                <strong>
+                                    <i class="fa fa-user">&nbsp; </i>
+                                    <a href="' . esc_url(home_url('/tai-khoan')) . '"> ' . $current_user->display_name . '</a>
+                                </strong>';
+                $html .= '  <div class="tooltip-cp" id="cp_tooltip_text">
                                 <ul style="margin-top: 20px">
                                     <div class="tooltip-up"></div>
                                     <li onclick="location.href=\''.home_url('/tai-khoan') .'\';">
@@ -27,7 +31,7 @@ if(class_exists("woocommerce")){
                                         <a href="#">Đăng xuất</a>
                                     </li>
                                 </ul>
-                            </div>
+                            </div></div>
                         </div>';
             } else {
                 $html = '<div class="user-cp"><div class="ka-user"><strong><a href="' . esc_url(home_url('/tai-khoan')) . '" title="Đăng nhập">Đăng nhập</a> | <a href="' . esc_url(home_url('/tai-khoan')) . '" title="Đăng ký">Đăng ký</a></strong></div></div>';

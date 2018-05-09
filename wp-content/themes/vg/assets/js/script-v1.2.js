@@ -738,14 +738,6 @@
 
 	$(window).load(function(){
             
-                jQuery(".ka-user").hover(function(){
-        
-                    var x = $(this).offset().left - 130;
-                    var y = $(this).offset().top + 10;
-                    $('#cp_tooltip_text').css({top: y, left: x});
-                    
-                });
-
 		/* fix_custom_section_item_height(); */
 		detail_gallery();
 		s7upf_owl_slider();

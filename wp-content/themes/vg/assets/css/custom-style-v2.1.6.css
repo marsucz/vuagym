@@ -31,13 +31,16 @@
 }
 
 .ka-user {
-    color: #fff;
     margin-top: 10px;
     float: right;
 }
 
-.ka-user a{
+.ka-user strong a{
     color: #fff;
+}
+
+.user-cp li a{
+    color: #000;
 }
 
 .user-cp li:hover a{
@@ -46,20 +49,23 @@
 }
 
 .user-cp {
-    display: block;
     color: #fff;
+    position: relative;
+    z-index: 99;
+    display: inline-block;
+    float: right;
 }
 
 .user-cp .tooltip-cp {
-    visibility: hidden;
     width: 200px;
-    max-width: 90%;
     color: black;
     text-align: center;
     padding: 0;
-    position: fixed;
+    position: absolute;
     z-index: 999;
-    opacity:0;
+    opacity: 0;
+    right: -10px;
+    top: 80%;
 }
 
 .user-cp .tooltip-cp ul {
