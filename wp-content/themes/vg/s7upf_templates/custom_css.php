@@ -352,6 +352,18 @@ if (!empty($sclr_title_bg)) {
     $style .= '.widget .widget-title { background-color: '.$sclr_title_bg.' !important}'."\n";
 }
 
+if (!empty($main_color)) {
+    $style .= '.user-cp li:hover a{
+                    color: ' . $main_color . ';
+                    font-weight: bold;
+                }'."\n";
+} else {
+    $style .= '.user-cp li:hover a{
+                    color: #005599;
+                    font-weight: bold;
+                }'."\n";
+}
+
 // ThemeOptions -> Shop Settings
 /*****END TYPOGRAPHY*****/
 if(!empty($style)) print $style;

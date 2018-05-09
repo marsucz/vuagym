@@ -43,11 +43,6 @@
     color: #000;
 }
 
-.user-cp li:hover a{
-    color: #005599;
-    font-weight: bold;
-}
-
 .user-cp {
     color: #fff;
     position: relative;
@@ -57,13 +52,13 @@
 }
 
 .user-cp .tooltip-cp {
+    visibility: hidden;
     width: 200px;
     color: black;
     text-align: center;
     padding: 0;
     position: absolute;
     z-index: 999;
-    opacity: 0;
     right: -10px;
     top: 80%;
 }
@@ -76,7 +71,7 @@
 }
 
 .user-cp .tooltip-cp, .user-cp .tooltip-cp a {
-    transition-delay: 0.2s;
+    transition-delay: 0s;
     transition: visibility 0s;
 }
 
@@ -93,7 +88,6 @@
 
 .user-cp:hover .tooltip-cp {
     visibility: visible;
-    opacity: 1;
 }
 
 .tooltip-title {
