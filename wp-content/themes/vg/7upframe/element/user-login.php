@@ -11,19 +11,20 @@ if(class_exists("woocommerce")){
             if (is_user_logged_in()) {
                 $html = '<div class="user-cp">
                                 <div class="ka-user"><strong><i class="fa fa-user">&nbsp; </i><a href="' . esc_url(home_url('/tai-khoan')) . '"> ' . $current_user->display_name . '</a></strong></div>';
-                $html .= '  <div class="tooltip-cp" id="cp_tooltip_text" style="top: 75px; right: 22px;">
-                                <ul>
-                                    <li>
-                                        <a href="' . esc_url(home_url('/tai-khoan')) . '">Thông tin tài khoản</a>
+                $html .= '  <div class="tooltip-cp" id="cp_tooltip_text" style="top: 60px; right: 10px;">
+                                <ul style="margin-top: 20px">
+                                    <div class="tooltip-up"></div>
+                                    <li onclick="location.href=\''.home_url('/tai-khoan') .'\';">
+                                        <a href="#">Thông tin tài khoản</a>
                                     </li>
-                                    <li>
-                                        <a href="'.esc_url(home_url('/tai-khoan/orders')).'">Đơn hàng</a>
+                                    <li onclick="location.href=\''.home_url('/tai-khoan/orders') .'\';">
+                                        <a href="#">Đơn hàng</a>
                                     </li>
-                                    <li>
-                                        <a href="'.esc_url(wc_get_cart_url()).'">Giỏ hàng</a>
+                                    <li onclick="location.href=\''.wc_get_cart_url().'\';">
+                                        <a href="#">Giỏ hàng</a>
                                     </li>
-                                    <li>
-                                        <a href="' . wp_logout_url(get_permalink()) . '">Đăng xuất</a>
+                                    <li onclick="location.href=\''.wp_logout_url(get_permalink()).'\';">
+                                        <a href="#">Đăng xuất</a>
                                     </li>
                                 </ul>
                             </div>
