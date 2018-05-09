@@ -115,18 +115,18 @@
     cursor: pointer;
 }
 
+.ka-user {
+    cursor: pointer;
+}
+
+.ka-user a:hover {
+    color: white;
+}
+
 #cp_tooltip_text ul li:hover{
     background: rgba(216, 214, 214, 0.36);
 }
-/*#cp_tooltip_text ul li:hover a{
-    color:#fff
-}
-#cp_tooltip_text ul li:hover a i{
-    color:#fff
-}
-#cp_tooltip_text ul li:hover a span{
-    color:#fff;
-}*/
+
 /* End */
 
 /*add style*/
