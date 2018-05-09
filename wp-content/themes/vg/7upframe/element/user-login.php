@@ -11,7 +11,7 @@ if(class_exists("woocommerce")){
             if (is_user_logged_in()) {
                 $html = '<div class="user-cp">
                                 <div class="ka-user"><strong><i class="fa fa-user">&nbsp; </i><a href="' . esc_url(home_url('/tai-khoan')) . '"> ' . $current_user->display_name . '</a></strong></div>';
-                $html .= '  <div class="tooltip-cp" id="cp_tooltip_text" style="top: 60px; right: 10px;">
+                $html .= '  <div class="tooltip-cp" id="cp_tooltip_text" style="top: 50px; right: 10px;">
                                 <ul style="margin-top: 20px">
                                     <div class="tooltip-up"></div>
                                     <li onclick="location.href=\''.home_url('/tai-khoan') .'\';">
