@@ -4,7 +4,7 @@
     min-height: 330px;
 }
 
-span.ywcrbp_sale_price {
+span.ywcrbp_sale_price, span.ywcrbp_regular_price {
     display: block;
 }
 
