@@ -58,6 +58,7 @@ span.ywcrbp_sale_price {
     z-index: 99;
     display: inline-block;
     float: right;
+    padding-left: 10px;
 }
 
 .user-cp .tooltip-cp {
@@ -69,7 +70,6 @@ span.ywcrbp_sale_price {
     position: absolute;
     z-index: 999;
     right: -10px;
-    top: 80%;
 }
 
 .user-cp .tooltip-cp ul {
@@ -87,12 +87,16 @@ span.ywcrbp_sale_price {
 .user-cp .tooltip-up {
     content: "";
     position: absolute;
-    bottom: 88%;
     left: 77%;
-    border-width: 15px;
+    top: -1em;
+    border-width: 17px;
     border-style: solid;
     border-color: transparent transparent white transparent;
-    padding-top: 20px;
+    z-index: 999;
+}
+
+.tooltip-cp:hover {
+    visibility: visible;
 }
 
 .user-cp:hover .tooltip-cp {

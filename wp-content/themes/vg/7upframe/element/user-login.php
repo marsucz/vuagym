@@ -15,9 +15,10 @@ if(class_exists("woocommerce")){
                                     <i class="fa fa-user">&nbsp; </i>
                                     <a href="' . esc_url(home_url('/tai-khoan')) . '"> ' . $current_user->display_name . '</a>
                                 </strong>';
-                $html .= '  <div class="tooltip-cp" id="cp_tooltip_text">
-                                <ul style="margin-top: 20px">
-                                    <div class="tooltip-up"></div>
+                $html .= '  <div class="tooltip-cp" id="cp_tooltip_text" style="display: block; margin-top: -10px">
+                                <div style="height: 20px"></div>
+                                <div class="tooltip-up"></div>
+                                <ul>
                                     <li onclick="location.href=\''.home_url('/tai-khoan') .'\';">
                                         <a href="#">Thông tin tài khoản</a>
                                     </li>
