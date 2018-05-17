@@ -193,6 +193,7 @@ if(!function_exists('s7upf_product_main_detai')){
 											<div style="margin: 10px 5px 5px 5px;">';
 												$tab = $tabs['ywtm_5779'];
 												call_user_func( $tab['callback'], 'ywtm_5779', $tab );
+			echo								'<center><font size="2">(Thành phần có thể khác đôi chút giữa các mùi vị khác nhau hoặc do NSX cải tiến công thức)</font></center>';		
 			echo                    		'</div>
 									</div>';
 							}
