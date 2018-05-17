@@ -1166,8 +1166,8 @@ li.menu-item-has-children:hover > .sub-menu {
   opacity: 0;
   padding: 0;
   position: absolute;
-  transition: all 0.5s ease-out 0s;
-  -webkit-transition: all 0.5s ease-out 0s;
+  transition: all 0s ease-out 0s;
+  -webkit-transition: all 0s ease-out 0s;
   visibility: hidden;
   width: 200px;
   z-index: 999;
@@ -1191,8 +1191,8 @@ li.menu-item-has-children:hover > .sub-menu {
   padding: 10px 0;
   text-transform: capitalize;
   position: relative;
-  transition: all 0.5s ease-out 0s;
-  -webkit-transition: all 0.5s ease-out 0s;
+  transition: all 0s ease-out 0s;
+  -webkit-transition: all 0s ease-out 0s;
 }
 .main-nav > ul > li.menu-item-has-children li.menu-item-has-children > .sub-menu {
   left: 100%;
@@ -10692,7 +10692,7 @@ a.protect-icon:hover {
 }
 .main-nav.main-nav11 > ul > li > a {
   color: #fff;
-  font-weight: 700;
+  font-weight: 700 !important;
   padding: 10px 20px;
 }
 .main-nav.main-nav11 > ul > li {

@@ -1937,8 +1937,7 @@ body{
 .main-nav > ul li.has-mega-menu > .sub-menu{
     box-shadow: 0 5px 5px 0 rgba(0,0,0,.1);
     left: 0;
-    padding: 20px 5px;
-    top: 100%;
+    padding: 0px 5px 20px 0px;
     width: 985px;
     max-width: 100%;
 }
@@ -1953,14 +1952,14 @@ body{
 }
 /*fix megamenu*/
 .main-nav .has-mega-menu > .sub-menu > li{
-    padding: 0 15px;
+    padding: 20px 15px 0px 15px;
 }
 .main-nav .has-mega-menu > .sub-menu > li:not(.menu-item-has-children) > a{
     display: none;
 }
 .main-nav .has-mega-menu > .sub-menu > li > a{
     color: #202020;
-    margin: 0 0 15px;
+    margin: 0px;
     text-transform: inherit;
     font-size: 18px;
     border-bottom: 0;
@@ -1979,7 +1978,7 @@ body{
     visibility: inherit;
 }
 .main-nav .has-mega-menu > .sub-menu > li > .sub-menu > li a{
-    padding: 10px 0;
+    padding: 5px 0;
     border-bottom: 0;
 }
 .main-nav .has-mega-menu > .sub-menu > li > .sub-menu > li{
