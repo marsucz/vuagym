@@ -1,4 +1,13 @@
 /*Tuan Dev CSS*/
+
+.list-2-item {
+    min-height: 330px;
+}
+
+span.ywcrbp_sale_price {
+    display: block;
+}
+
 .mini-cart-ms .mini-cart-link .mini-cart-number {
     right: unset;
 }
