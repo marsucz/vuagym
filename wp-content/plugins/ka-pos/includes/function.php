@@ -168,3 +168,44 @@ if ( ! function_exists( 'mypos_attribute_slug_to_title' ) ) {
             return $value;
     }
 }
+
+function build_list_attribute_taxonomies($selected = "") {
+    $dbModel = new DbModel();
+    $terms = $dbModel->get_attribute_taxonomies();
+    
+    $html = '<option value="0">Chưa chọn</option>';
+    foreach ($terms as $term) {
+        if ($term['attribute_name'] == $selected) {
+            $html .= '<option value="' . $term['attribute_name'] . '" selected>' . $term['attribute_label'] . '</option>';
+        } else {
+            $html .= '<option value="' . $term['attribute_name'] . '">' . $term['attribute_label'] . '</option>';
+        }
+    }
+    
+    return $html;
+}
+
+function build_list_attribute_dang_cap_nhat($selected = "", $default = "") {
+    
+    $tt_hansudung = get_option('mypos_tt_han_su_dung');
+    if (!$tt_hansudung) {
+        $tt_hansudung = 'han-su-dung';
+    }
+    
+    $tt_hansudung = "pa_" . $tt_hansudung;
+    
+    $terms = get_terms(array('taxonomy' => $tt_hansudung, 'hide_empty' => false));
+    
+    if (!$selected) $selected = trim($default);
+    
+    $html = '<option value="0">Chưa chọn</option>';
+    foreach ($terms as $term) {
+        if ($term->term_id == $selected) {
+            $html .= '<option value="' . $term->term_id . '" selected>' . $term->name . '</option>';
+        } else {
+            $html .= '<option value="' . $term->term_id . '">' . $term->name . '</option>';
+        }
+    }
+    
+    return $html;
+}

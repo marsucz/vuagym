@@ -13,6 +13,7 @@ class DbModel {
 
     public function __construct($store = 1) {
         $this->link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        mysqli_set_charset($this->link, "utf8");
         $this->store = $store;
         global $wpdb;
         $this->prefix = $wpdb->base_prefix;
@@ -166,6 +167,21 @@ class DbModel {
 
         return $return;
         
+    }
+    
+    public function get_attribute_taxonomies() {
+        
+        $query = "SELECT * FROM {$this->prefix}woocommerce_attribute_taxonomies";
+        
+        $result = mysqli_query($this->link, $query);
+
+        if ($result) {
+            $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        } else {
+            $return = [];
+        }
+
+        return $return;
     }
 }
 

@@ -175,6 +175,10 @@ function function_mypos_options_page() {
         update_option('kiotviet2_retailer', $_POST['kiotviet2-retailer']);
         update_option('kiotviet2_client_id', $_POST['kiotviet2-client-id']);
         update_option('kiotviet2_client_secret', $_POST['kiotviet2-client-secret']);
+        
+        update_option('mypos_tt_han_su_dung', $_POST['mypos-tt-han-su-dung']);
+        update_option('mypos_tt_dang_cap_nhat', $_POST['mypos-tt-dang-cap-nhat']);
+        update_option('mypos_tt_none', $_POST['mypos-tt-none']);
     }
     
     load_assets_page_options();
@@ -276,7 +280,27 @@ function function_mypos_options_page() {
                                                 </div>    
                                         </div>
                                         <div class="col-lg-6">
-                                            
+                                            <h3>Thuộc tính Hạn sử dụng</h3>
+                                                <div class="form-group">
+                                                    <label>Vui lòng chọn thuộc tính "Hạn sử dụng"</label>
+                                                    <select class="form-control" id="mypos-tt-han-su-dung" name="mypos-tt-han-su-dung" required>';
+                                                        echo build_list_attribute_taxonomies(get_option('mypos_tt_han_su_dung'));
+                                                    echo '</select>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                <label>Vui lòng chọn thuộc tính "Đang cập nhật"</label>
+                                                <select class="form-control" id="mypos-tt-dang-cap-nhat" name="mypos-tt-dang-cap-nhat" required>';
+                                                        echo build_list_attribute_dang_cap_nhat(get_option('mypos_tt_dang_cap_nhat'),'dang-cap-nhat');
+                                                echo '</select>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                <label>Vui lòng chọn thuộc tính "None"</label>
+                                                <select class="form-control" id="mypos-tt-none" name="mypos-tt-none" required>';
+                                                        echo build_list_attribute_dang_cap_nhat(get_option('mypos_tt_none'),'none');
+                                                echo '</select>
+                                                </div>
                                             <h3>Thiết lập kết nối KiotViet API</h3>
                                             <div class="form-group">
                                                 <label>Tên Kho Hàng</label>
@@ -498,10 +522,11 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
-    $kv = new KiotViet_API(1);
-    echo $kv->get_access_token();
-    $kv = new KiotViet_API(2);
-    echo $kv->get_access_token();
+    $terms = get_terms(array('taxonomy' => 'pa_han-su-dung', 'hide_empty' => false));
+    echo "<pre>";
+    print_r($terms);
+    echo "</pre>";
+    
 }
 
 function update_default_manual_sync_options() {
