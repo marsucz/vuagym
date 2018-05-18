@@ -20,20 +20,31 @@ function ja_ajax_mypos_update_product_instock() {
         $parent_product = wc_get_product($base_product_id);
         $parent_product->set_date_created(current_time('timestamp',7));
         $parent_product->set_date_modified(current_time('timestamp',7));
+        
+        $p_categories = $parent_product->get_category_ids();
+        foreach ($p_categories as $key => $ca) {
+            if ($ca == get_option('mypos_category_sapcohang')) { // Danh muc: Sap co hang
+                unset($p_categories[$key]);
+            }
+        }
+        $p_categories[] = get_option('mypos_category_hangmoive'); // Danh muc: Hang moi ve
+        $parent_product->set_category_ids($p_categories);
+        
         $parent_product->save();
+    } else {
+        $categories = $product->get_category_ids();
+        foreach ($categories as $key => $ca) {
+            if ($ca == get_option('mypos_category_sapcohang')) { // Danh muc: Sap co hang
+                unset($categories[$key]);
+            }
+        }
+        $categories[] = get_option('mypos_category_hangmoive'); // Danh muc: Hang moi ve
+        $product->set_category_ids($categories);
     }
     
     $product->set_date_created(current_time('timestamp',7));
     $product->set_date_modified(current_time('timestamp',7));
     
-    $categories = $product->get_category_ids();
-    foreach ($categories as $key => $ca) {
-        if ($ca == get_option('mypos_category_sapcohang')) { // Danh muc: Sap co hang
-            unset($categories[$key]);
-        }
-    }
-    $categories[] = get_option('mypos_category_hangmoive'); // Danh muc: Hang moi ve
-    $product->set_category_ids($categories);
     if ('private' === $product->get_status()) {
         $product->set_status('publish');
     }
@@ -75,6 +86,34 @@ function ja_ajax_mypos_update_product_outofstock() {
     $product->set_stock_status('outofstock');
 //    $product->set_date_created(current_time('timestamp',7));
 //    $product->set_date_modified(current_time('timestamp',7));
+    
+    if ($product->is_type( 'variation' )) {
+        $base_product_id = $product->get_parent_id();
+        $parent_product = wc_get_product($base_product_id);
+        $p_categories = $parent_product->get_category_ids();
+        foreach ($p_categories as $key => $ca) {
+            if ($ca == get_option('mypos_category_sapcohang') || $ca == get_option('mypos_category_hangmoive')) { // Danh muc: Sap co hang
+                unset($p_categories[$key]);
+            }
+        }
+        $parent_product->set_category_ids($p_categories);
+        
+        $parent_product->save();
+    } else {
+        $categories = $product->get_category_ids();
+        foreach ($categories as $key => $ca) {
+            if ($ca == get_option('mypos_category_sapcohang') || $ca == get_option('mypos_category_hangmoive')) { // Danh muc: Sap co hang
+                unset($p_categories[$key]);
+            }
+        }
+        $product->set_category_ids($categories);
+        
+        $attributes = $product->get_attributes();
+        $attr = &$attributes["pa_" . get_option('mypos_tt_han_su_dung')];
+        $attr->set_options(get_option('mypos_tt_dang_cap_nhat'));
+        $product->set_attributes($attributes);
+    }
+    
     $result = $product->save();
     
     if ($result) {
