@@ -21,6 +21,7 @@ if (!defined('EZ_CUSTOM_PLUGIN_URL')) {
 
 require_once 'includes/ez_custom_loader.php';
 require_once 'includes/function.php';
+require_once 'includes/featured_image.php';
 
 add_action('plugins_loaded', 'ez_custom_tools_plugin_init');
 add_action('admin_enqueue_scripts', 'ez_custom_load_remove_notice_js');
@@ -84,6 +85,7 @@ function function_ez_custom_tools_page() {
                                                 <ul>
                                                     <li> - Overwrite lại cách hiển thị giá khi sản phẩm hết hàng hoặc bị tắt.</li>
                                                     <li> - Overwrite lại cách hiển thị biến thể.</li>
+                                                    <li> - Featured image in post.</li>
                                                 </ul>
                                             </div>
                                             <button type="submit" class="btn btn-primary">Lưu Cài Đặt</button>
