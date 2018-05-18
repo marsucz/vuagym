@@ -60,6 +60,31 @@ class DbModel {
         }
         
     }
+    
+    public function check_preorder_by_parent_id($parent_id) {
+        
+        if (!$parent_id) return false;
+        
+        $query = "  SELECT *
+                    FROM db_vuagym.vg_postmeta
+                    WHERE post_id IN (  SELECT ID
+                                        FROM {$this->prefix}posts 
+                                        WHERE post_parent = {$parent_id}
+                                        AND post_type = 'product_variation')
+                    AND meta_key = '_ywpo_preorder'
+                    AND meta_value = 'yes'
+                    LIMIT 1";
+		
+        $result = mysqli_query($this->link, $query);
+        
+        $count = mysqli_num_rows($result);
+        
+        if ($count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public function kiotviet_insert_product($product_id, $product_code) {
         

@@ -523,21 +523,35 @@ function function_get_sku_kiotviet() {
 
 function function_testing_page() {
     
-    $product = wc_get_product(4660);
+    $product = wc_get_product(7113);
+    $child = $product->get_children();
     
-    $attrs = $product->get_attributes();
-    $attr = &$attrs["pa_" . get_option('mypos_tt_han_su_dung')];
-    $attr->set_options(get_option('mypos_tt_dang_cap_nhat'));
-    
-    $product->save();
-    
-    $product = wc_get_product(4660);
-    $attrs = $product->get_attributes();
+    $variations = $this->dbModel->get_children_ids(7113);
     
     echo "<pre>";
-    print_r($attrs);
+    print_r($child);
     echo "</pre>";
     exit;
+    
+//    7113
+    $pre_order = new YITH_Pre_Order_Product( 7113 );
+      
+    echo $pre_order->get_pre_order_status();
+    
+//    if ( 'yes' == $pre_order->get_pre_order_status() ) {
+//    $attrs = $product->get_attributes();
+//    $attr = &$attrs["pa_" . get_option('mypos_tt_han_su_dung')];
+//    $attr->set_options(get_option('mypos_tt_dang_cap_nhat'));
+//    
+//    $product->save();
+//    
+//    $product = wc_get_product(4660);
+//    $attrs = $product->get_attributes();
+//    
+//    echo "<pre>";
+//    print_r($attrs);
+//    echo "</pre>";
+//    exit;
     
 }
 
