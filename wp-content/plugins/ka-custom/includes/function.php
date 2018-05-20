@@ -116,6 +116,13 @@ if(!function_exists('tuandev_get_price_html')){
         $vip_min = $max_int;
         $vip_max = $min_int;
 
+        $regular_price_txt = get_option( 'ywcrbp_regular_price_txt' );
+        if ($regular_price_txt) $regular_price_txt .= " ";
+        $sale_price_txt = get_option( 'ywcrbp_sale_price_txt' );
+        if ($sale_price_txt) $sale_price_txt .= " ";
+        $your_price_txt = get_option( 'ywcrbp_your_price_txt' );
+        if ($your_price_txt) $your_price_txt .= " ";
+        
         if (class_exists('YITH_Role_Based_Prices_Product')) {
             $YITH_Role = YITH_Role_Based_Prices_Product();
         } else {
@@ -161,7 +168,7 @@ if(!function_exists('tuandev_get_price_html')){
             }
             
             if ($regular_min == $max_int || $regular_max == $min_int) {
-                $html_regular = '<span class="td-price">Giá bán: ' . kiotViet_formatted_price(0) . '</span>';
+                $html_regular = '<span class="td-price">' . kiotViet_formatted_price(0) . '</span>';
                 $html = '<div class="product-price">' . $html_regular . '</div>';
                 return $html;
             }
@@ -172,7 +179,7 @@ if(!function_exists('tuandev_get_price_html')){
                 $html_regular = kiotViet_formatted_price($regular_min) . ' - ' . kiotViet_formatted_price($regular_max);
             }
 
-            $html = '<span class="td-price">Giá bán: ' . $html_regular . '</span>';
+            $html = '<span class="td-price">' . $html_regular . '</span>';
 
             if ($sale_min == $max_int || $sale_max == $min_int) {
     //            return $html;
@@ -185,7 +192,7 @@ if(!function_exists('tuandev_get_price_html')){
                 } else {
                     $html_sale = kiotViet_formatted_price($sale_min) . ' - ' . kiotViet_formatted_price($sale_max);
                 }            
-                $html = '<span class="td-price-del" style="color: #888 !important;">Giá gốc: <del>' . $html_regular . '</del></span>
+                $html = '<span class="td-price-del" style="color: #888 !important;">' . $regular_price_txt . '<del>' . $html_regular . '</del></span>
                          <span class="td-price">Giá sale: ' . $html_sale . '</span>';
             }
 
@@ -202,12 +209,12 @@ if(!function_exists('tuandev_get_price_html')){
                 }  
 
                 if (empty($html_sale)) {
-                    $html = '<span class="td-price-del" style="color: #888 !important;">Giá gốc: <del>' . $html_regular . '</del></span>
-                             <span class="td-price">Giá VIP: ' . $html_vip . '</span>';
+                    $html = '<span class="td-price-del" style="color: #888 !important;">' . $regular_price_txt . '<del>' . $html_regular . '</del></span>
+                             <span class="td-price">' . $your_price_txt . $html_vip . '</span>';
                 } else {
-                    $html = '<span class="td-price-del" style="color: #888 !important;">Giá gốc: <del>' . $html_regular . '</del></span>
-                             <span class="td-price-del" style="color: #888 !important;">Giá sale: <del>' . $html_sale . '</del></span>
-                             <span class="td-price">Giá VIP: ' . $html_vip . '</span>';
+                    $html = '<span class="td-price-del" style="color: #888 !important;">' . $regular_price_txt . '<del>' . $html_regular . '</del></span>
+                             <span class="td-price-del" style="color: #888 !important;">' . $sale_price_txt . '<del>' . $html_sale . '</del></span>
+                             <span class="td-price">' . $your_price_txt . $html_vip . '</span>';
                 }
 
                 if (!is_null($YITH_Role)) {
@@ -219,24 +226,24 @@ if(!function_exists('tuandev_get_price_html')){
             // Simple product
             $temp_regular = $product->get_regular_price();
             if ($temp_regular === '') {
-                $html = '<span class="td-price">Giá bán: ' . kiotViet_formatted_price(0) . '</span>';
+                $html = '<span class="td-price">' . kiotViet_formatted_price(0) . '</span>';
                 $html = '<div class="product-price">' . $html . '</div>';
                 return $html;
             } else {
                 $html_regular = kiotViet_formatted_price($temp_regular);
             }
 
-            $html = '<span class="td-price">Giá bán: ' . $html_regular . '</span>';
+            $html = '<span class="td-price">' . $html_regular . '</span>';
 
             $temp_sale = $product->get_sale_price();
             if ($temp_sale !== '') {
                 $html_sale = kiotViet_formatted_price($temp_sale);
-                $html = '<span class="td-price-del" style="color: #888 !important;">Giá gốc: <del>' . $html_regular . '</del></span>
-                         <span class="td-price">Giá sale: ' . $html_sale .'</span>';
+                $html = '<span class="td-price-del" style="color: #888 !important;">' . $regular_price_txt . '<del>' . $html_regular . '</del></span>
+                         <span class="td-price">' . $sale_price_txt . $html_sale .'</span>';
             } else {
                 $html_sale = '';
     //            $html = $html_regular;
-                $html = '<span class="td-price">Giá gốc: ' . $html_regular . '</span>';
+                $html = '<span class="td-price">' . $regular_price_txt . $html_regular . '</span>';
             }
 
             if (!is_null($YITH_Role)) {
@@ -245,19 +252,19 @@ if(!function_exists('tuandev_get_price_html')){
                 if ($temp_vip !== 'no_price') {
                     $html_vip = kiotViet_formatted_price($temp_vip);
                     if (empty($html_sale)) {
-                        $html = '<span class="td-price-del" style="color: #888 !important;">Giá gốc: <del>' . $html_regular . '</del></span>
-                                 <span class="td-price">Giá VIP: ' . $html_vip . '</span>';
+                        $html = '<span class="td-price-del" style="color: #888 !important;">' . $regular_price_txt . '<del>' . $html_regular . '</del></span>
+                                 <span class="td-price">' . $your_price_txt . $html_vip . '</span>';
                     } else {
-                        $html = '<span class="td-price-del" style="color: #888 !important;">Giá gốc: <del>' . $html_regular . '</del></span>
-                                 <span class="td-price-del" style="color: #888 !important;">Giá sale: <del>' . $html_sale . '</del></span>
-                                 <span class="td-price">Giá VIP: ' . $html_vip . '</span>';
+                        $html = '<span class="td-price-del" style="color: #888 !important;">' . $regular_price_txt . '<del>' . $html_regular . '</del></span>
+                                 <span class="td-price-del" style="color: #888 !important;">' . $sale_price_txt . '<del>' . $html_sale . '</del></span>
+                                 <span class="td-price">' . $your_price_txt . $html_vip . '</span>';
                     }
                 }
             }
         }
 
         if (empty($html)) {
-            $html = '<span class="td-price">Giá bán: ' . kiotViet_formatted_price(0) . '</span>'; // TODO just for testing, Should be 0
+            $html = '<span class="td-price">' . kiotViet_formatted_price(0) . '</span>'; // TODO just for testing, Should be 0
         }
 
         $html = '<div class="product-price">' . $html . '</div>';
@@ -271,26 +278,7 @@ if(!function_exists('tuandev_process_get_min_price_html')){
     function tuandev_process_get_min_price_html($product) {
     
         if ( $product && $product->is_type( 'variable' )) {
-            if (!$product->has_child()) {
-                $html = tuandev_get_min_price_html($product);
-                return $html;
-            }
-            $go = true;
-            $childrens = $product->get_children();
-            foreach ($childrens as $child_id) {
-                $child = wc_get_product($child_id);
-                if ($child->get_stock_status() == 'instock') {
-                    $go = false;
-                    break;
-                }
-            }
-
-            if ($go) {
-                $html = tuandev_get_min_price_html($product);
-                return $html;
-            } else {
-                $html = $product->get_price_html();
-            }
+            $html = tuandev_get_min_price_html($product);
         } else {
             $html = $product->get_price_html();
         }
@@ -311,6 +299,13 @@ if(!function_exists('tuandev_get_min_price_html')){
         $vip_min = $max_int;
         $vip_max = $min_int;
 
+        $regular_price_txt = get_option( 'ywcrbp_regular_price_txt' );
+        if ($regular_price_txt) $regular_price_txt .= " ";
+        $sale_price_txt = get_option( 'ywcrbp_sale_price_txt' );
+        if ($sale_price_txt) $sale_price_txt .= " ";
+        $your_price_txt = get_option( 'ywcrbp_your_price_txt' );
+        if ($your_price_txt) $your_price_txt .= " ";
+        
         if (class_exists('YITH_Role_Based_Prices_Product')) {
             $YITH_Role = YITH_Role_Based_Prices_Product();
         } else {
@@ -356,7 +351,7 @@ if(!function_exists('tuandev_get_min_price_html')){
             }
             
             if ($regular_min == $max_int || $regular_max == $min_int) {
-                $html_regular = '<span class="td-price">Giá bán: ' . kiotViet_formatted_price(0) . '</span>';
+                $html_regular = '<span class="td-price">' . $regular_price_txt . kiotViet_formatted_price(0) . '</span>';
                 $html = '<div class="product-price">' . $html_regular . '</div>';
                 return $html;
             }
@@ -368,22 +363,22 @@ if(!function_exists('tuandev_get_min_price_html')){
                 $html_regular = kiotViet_formatted_price($regular_min);
             }
 
-            $html = '<span class="td-price">Giá bán: ' . $html_regular . '</span>';
+            $html = '<span class="td-price">' . $html_regular . '</span>';
 
             if ($sale_min == $max_int || $sale_max == $min_int) {
     //            return $html;
                 $html_sale = '';
                 $html = $html_regular;
             } else {
-                $sale_min = min(array($regular_min, $sale_min));
+//                $sale_min = min(array($regular_min, $sale_min));
                 if ($sale_min == $sale_max) {
                     $html_sale = kiotViet_formatted_price($sale_min);
                 } else {
                     $html_sale = kiotViet_formatted_price($sale_min);
 //                    $html_sale = kiotViet_formatted_price($sale_min) . ' - ' . kiotViet_formatted_price($sale_max);
                 }            
-                $html = '<span class="td-price-del" style="color: #888 !important;">Giá gốc: <del>' . $html_regular . '</del></span>
-                         <span class="td-price">Giá sale: ' . $html_sale . '</span>';
+                $html = '<span class="td-price-del" style="color: #888 !important;">' . $regular_price_txt . '<del>từ ' . $html_regular . '</del></span>
+                         <span class="td-price">' . $sale_price_txt . 'từ ' . $html_sale . '</span>';
             }
 
             // Xu ly gia VIP
@@ -400,12 +395,12 @@ if(!function_exists('tuandev_get_min_price_html')){
                 }  
 
                 if (empty($html_sale)) {
-                    $html = '<span class="td-price-del" style="color: #888 !important;">Giá gốc: <del>' . $html_regular . '</del></span>
-                             <span class="td-price">Giá VIP: ' . $html_vip . '</span>';
+                    $html = '<span class="td-price-del" style="color: #888 !important;">' . $regular_price_txt . '<del>từ ' . $html_regular . '</del></span>
+                             <span class="td-price">' . $your_price_txt . 'từ ' . $html_vip . '</span>';
                 } else {
-                    $html = '<span class="td-price-del" style="color: #888 !important;">Giá gốc: <del>' . $html_regular . '</del></span>
-                             <span class="td-price-del" style="color: #888 !important;">Giá sale: <del>' . $html_sale . '</del></span>
-                             <span class="td-price">Giá VIP: ' . $html_vip . '</span>';
+                    $html = '<span class="td-price-del" style="color: #888 !important;">' . $regular_price_txt . '<del>từ ' . $html_regular . '</del></span>
+                             <span class="td-price-del" style="color: #888 !important;">' . $sale_price_txt . '<del>từ ' . $html_sale . '</del></span>
+                             <span class="td-price">' . $your_price_txt . 'từ ' . $html_vip . '</span>';
                 }
 
                 if (!is_null($YITH_Role)) {
@@ -417,24 +412,24 @@ if(!function_exists('tuandev_get_min_price_html')){
             // Simple product
             $temp_regular = $product->get_regular_price();
             if ($temp_regular === '') {
-                $html = '<span class="td-price">Giá bán: ' . kiotViet_formatted_price(0) . '</span>';
+                $html = '<span class="td-price">' . kiotViet_formatted_price(0) . '</span>';
                 $html = '<div class="product-price">' . $html . '</div>';
                 return $html;
             } else {
                 $html_regular = kiotViet_formatted_price($temp_regular);
             }
 
-            $html = '<span class="td-price">Giá bán: ' . $html_regular . '</span>';
+            $html = '<span class="td-price">' . $html_regular . '</span>';
 
             $temp_sale = $product->get_sale_price();
             if ($temp_sale !== '') {
                 $html_sale = kiotViet_formatted_price($temp_sale);
-                $html = '<span class="td-price-del" style="color: #888 !important;">Giá gốc: <del>' . $html_regular . '</del></span>
-                         <span class="td-price">Giá sale: ' . $html_sale .'</span>';
+                $html = '<span class="td-price-del" style="color: #888 !important;">' . $regular_price_txt . '<del>' . $html_regular . '</del></span>
+                         <span class="td-price">' . $sale_price_txt . $html_sale .'</span>';
             } else {
                 $html_sale = '';
     //            $html = $html_regular;
-                $html = '<span class="td-price">Giá gốc: ' . $html_regular . '</span>';
+                $html = '<span class="td-price">' . $regular_price_txt . $html_regular . '</span>';
             }
 
             if (!is_null($YITH_Role)) {
@@ -443,19 +438,19 @@ if(!function_exists('tuandev_get_min_price_html')){
                 if ($temp_vip !== 'no_price') {
                     $html_vip = kiotViet_formatted_price($temp_vip);
                     if (empty($html_sale)) {
-                        $html = '<span class="td-price-del" style="color: #888 !important;">Giá gốc: <del>' . $html_regular . '</del></span>
-                                 <span class="td-price">Giá VIP: ' . $html_vip . '</span>';
+                        $html = '<span class="td-price-del" style="color: #888 !important;">' . $regular_price_txt . '<del>' . $html_regular . '</del></span>
+                                 <span class="td-price">' . $your_price_txt . $html_vip . '</span>';
                     } else {
-                        $html = '<span class="td-price-del" style="color: #888 !important;">Giá gốc: <del>' . $html_regular . '</del></span>
-                                 <span class="td-price-del" style="color: #888 !important;">Giá sale: <del>' . $html_sale . '</del></span>
-                                 <span class="td-price">Giá VIP: ' . $html_vip . '</span>';
+                        $html = '<span class="td-price-del" style="color: #888 !important;">' . $regular_price_txt . '<del>' . $html_regular . '</del></span>
+                                 <span class="td-price-del" style="color: #888 !important;">' . $sale_price_txt . '<del>' . $html_sale . '</del></span>
+                                 <span class="td-price">' . $your_price_txt . $html_vip . '</span>';
                     }
                 }
             }
         }
 
         if (empty($html)) {
-            $html = '<span class="td-price">Giá bán: ' . kiotViet_formatted_price(0) . '</span>'; // TODO just for testing, Should be 0
+            $html = '<span class="td-price">' . kiotViet_formatted_price(0) . '</span>'; // TODO just for testing, Should be 0
         }
 
         $html = '<div class="product-price">' . $html . '</div>';
