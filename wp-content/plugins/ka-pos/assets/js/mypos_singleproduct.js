@@ -45,8 +45,7 @@ jQuery(document).ready(function($) {
                 $('.alert-box').fadeIn();
                 $('#addToCartModal').modal('show');
                 
-                console.log(response.data.fragments);
-                
+//                console.log(response.data.fragments);
                 if (response.data.fragments !== '') {
                     var cart_content = response.data.fragments['widget_shopping_cart_content'];
                     $('.mini-cart-main-content').html(cart_content);

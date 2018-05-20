@@ -210,7 +210,3 @@ function build_list_attribute_dang_cap_nhat($selected = "", $default = "0") {
     
     return $html;
 }
-
-function process_outofstock($product) {
-    
-}
