@@ -1045,7 +1045,7 @@ if(!function_exists('s7upf_product_item'))
                                     '.s7upf_thumb_product($style='catelogy',$hover,$size,$animation,$hover_ef,$label).'
 									<div class="product-info">
                                         <h3 class="product-title"><a href="'.esc_url(get_the_permalink()).'" title="'.esc_attr(get_the_title()).'">'.get_the_title().'</a></h3>
-                                        '.s7upf_get_price_html().'
+                                        '.tuandev_process_get_min_price_html($product).'
 										'.$product_status.'
                                         '.s7upf_product_link('shop-list').'
                                     </div>
@@ -1069,7 +1069,7 @@ if(!function_exists('s7upf_product_item'))
                                     <div class="col-md-9 col-sm-8 col-xs-12">
                                         <div class="product-info">
                                             <h3 class="product-title"><a href="'.esc_url(get_the_permalink()).'" title="'.esc_attr(get_the_title()).'">'.get_the_title().'</a></h3>
-                                            '.s7upf_get_price_html().'
+                                            '.tuandev_process_get_min_price_html($product).'
                                             <p class="desc">'.get_the_excerpt().'</p>
                                             '.s7upf_get_rating_html().'
                                             '.s7upf_product_link('shop-list').'                                            
@@ -1122,7 +1122,7 @@ if(!function_exists('s7upf_product_item'))
                             '.s7upf_thumb_product($style,$hover,$size,$animation,$hover_ef,$label).'
                             <div class="product-info">
                                 <h3 class="product-title"><a href="'.esc_url(get_the_permalink()).'" title="'.esc_attr(get_the_title()).'">'.get_the_title().'</a></h3>
-                                '.s7upf_get_price_html().'
+                                '.tuandev_process_get_min_price_html($product).'
 				'.$product_status.'
                             </div>
                         </div>
@@ -1139,7 +1139,7 @@ if(!function_exists('s7upf_product_item'))
                                         
                                     </div>
                                     <h3 class="product-title"><a href="'.esc_url(get_the_permalink()).'" title="'.esc_attr(get_the_title()).'">'.get_the_title().'</a></h3>
-                                    '.s7upf_get_price_html().'
+                                    '.tuandev_process_get_min_price_html($product).'
                                     <p class="stock-status">'.$product->get_stock_status().'</p>
                                     '.s7upf_product_link().'
                                 </div>
@@ -1189,7 +1189,7 @@ if(!function_exists('s7upf_product_item'))
                             ' . s7upf_thumb_product($style, $hover, $size, $animation, $hover_ef, $label) . '
                             <div class="product-info">
                                 <h3 class="product-title"><a href="' . esc_url(get_the_permalink()) . '" title="' . esc_attr(get_the_title()) . '">' . get_the_title() . '</a></h3>
-                                ' . s7upf_get_price_html() . '
+                                ' . tuandev_process_get_min_price_html($product) . '
 				' . $product_status . '
                             </div>
                         </div>
