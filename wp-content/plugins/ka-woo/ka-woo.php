@@ -390,28 +390,13 @@ function function_kawoo_options_page() {
 }
 
 function function_kawoo_testing_page() {
-
-//    $content = new Kawoo_Product_Content_List();
-//    $product = wc_get_product(6553);
-//    $product2 = wc_get_product(8448);
-//    
-//    echo "<pre>";
-//    print_r($product);
-//    print_r($product2);
-//    echo "</pre>";
-
-    $outofstock_term = get_term_by('name', 'outofstock', 'product_visibility');
-    echo "<pre>";
-    print_r($outofstock_term);
-    echo "</pre>";
+    
 }
 
-//Fuck this line
 //add_action('pre_get_posts', 'kawoo_hide_out_of_stock_products');
-
 function kawoo_hide_out_of_stock_products($q) {
-
-    if (!$q->is_main_query() || is_admin()) {
+    
+    if (!$q->is_main_query() || is_admin() || !isset($q->query['product_cat'])) {
         return;
     }
     
@@ -435,7 +420,7 @@ function kawoo_hide_out_of_stock_products($q) {
         array(
             'key' => '_stock_status',
             'value' => 'outofstock',
-            'compare' => 'NOT IN'
+            'compare' => '!='
         ),
         array(
             'key' => '_mypos_show_always',
@@ -444,7 +429,6 @@ function kawoo_hide_out_of_stock_products($q) {
     ));
 
     $q->set('meta_query', $meta_query);
-    
     remove_action('pre_get_posts', 'kawoo_hide_out_of_stock_products');
 }
 
