@@ -104,6 +104,109 @@ function ja_ajax_check_quantity_cart(){
                     $message = '<span class="alert-message">Sản phẩm bạn đặt đã hết hàng. Mong bạn vui lòng quay lại sau.</span>';
                     // Set Product Item is out of stock
                     $product_data->set_stock_status('outofstock');
+                    // Process outofstock
+                    $product = &$product_data;
+                    if ($product->is_type( 'variation' )) {
+                        $base_product_id = $product->get_parent_id();
+                        $parent_product = wc_get_product($base_product_id);
+
+                        // Init information
+                        $dbModel = new DbModel();
+                        $p_stock = $dbModel->check_stock_by_parent_id($base_product_id);
+                        $p_preorder = $dbModel->check_preorder_by_parent_id($base_product_id);
+
+                        $return['p_stock'] = $p_stock;
+                        $return['p_preorder'] = $p_preorder;
+
+                        //Nếu tất cả các biến thể đều hết hàng và không có biến thể nào "pre-order" 
+                        //thì e remove cả 2 danh mục "sắp có hàng" và "Hàng mới về", chuyển tất cả các giá trị của thuộc tính "hạn sử dụng" thành "Đang cập nhật"
+                        if (!$p_stock && !$p_preorder) {
+                            $return['case'] = 1;
+                            $p_categories = $parent_product->get_category_ids();
+                            foreach ($p_categories as $key => $ca) {
+                                if ($ca == get_option('mypos_category_sapcohang') || $ca == get_option('mypos_category_hangmoive')) { // Danh muc: Sap co hang
+                                    unset($p_categories[$key]);
+                                }
+                            }
+                            $parent_product->set_category_ids($p_categories);
+
+                            if (get_option('mypos_tt_han_su_dung') != '0') {
+                                $attributes = $parent_product->get_attributes();
+                                if (isset($attributes["pa_" . get_option('mypos_tt_han_su_dung')])) {
+                                    wp_set_object_terms( $base_product_id, intval(get_option('mypos_tt_dang_cap_nhat')), "pa_" . get_option('mypos_tt_han_su_dung') , false);
+                                }
+                            }
+
+                        } //Nếu tồn tại 1 biến thể còn hàng và không có biến thể nào "pre-order" 
+                          //thì e remove danh mục "sắp có hàng", danh mục "Hàng mới về" e ko đụng tới
+                        elseif ($p_stock && !$p_preorder) {
+                            $return['case'] = 2;
+                            $p_categories = $parent_product->get_category_ids();
+                            foreach ($p_categories as $key => $ca) {
+                                if ($ca == get_option('mypos_category_sapcohang')) { // Danh muc: Sap co hang
+                                    unset($p_categories[$key]);
+                                }
+                            }
+                            $parent_product->set_category_ids($p_categories);
+
+                        } //Nếu tất cả các biến thể đều là hết hàng và tồn tại 1 biến thể "pre-order" 
+                          //thì e remove danh mục "Hàng mới về", và tick chọn danh mục "Sắp có hàng", chuyển tất cả các giá trị của thuộc tính "hạn sử dụng" thành "Đang cập nhật"
+                        elseif (!$p_stock && $p_preorder) {
+                            $return['case'] = 3;
+                            $p_categories = $parent_product->get_category_ids();
+                            foreach ($p_categories as $key => $ca) {
+                                if ($ca == get_option('mypos_category_hangmoive')) { // Danh muc: Sap co hang
+                                    unset($p_categories[$key]);
+                                }
+                            }
+                            $p_categories[] = get_option('mypos_category_sapcohang'); // Danh muc: Hang moi ve
+                            $parent_product->set_category_ids($p_categories);
+
+                            if (get_option('mypos_tt_han_su_dung') != '0') {
+                                $attributes = $parent_product->get_attributes();
+                                if (isset($attributes["pa_" . get_option('mypos_tt_han_su_dung')])) {
+                                    wp_set_object_terms( $base_product_id, intval(get_option('mypos_tt_dang_cap_nhat')), "pa_" . get_option('mypos_tt_han_su_dung') , false);
+                                }
+                            }
+
+                        } //Nếu tồn tại biến thể còn hàng, và tồn tại biến thể "pre-order" 
+                          //thì giống 2.2.1 (remove danh mục "Sắp có hàng", danh mục "Hàng mới về" không đụng đến)
+                        elseif ($p_stock && $p_preorder) {
+                            $return['case'] = 4;
+                            $p_categories = $parent_product->get_category_ids();
+                            foreach ($p_categories as $key => $ca) {
+                                if ($ca == get_option('mypos_category_sapcohang')) { // Danh muc: Sap co hang
+                                    unset($p_categories[$key]);
+                                }
+                            }
+                            $parent_product->set_category_ids($p_categories);
+                        }
+
+                        // Luu parent product
+                        $parent_product->save();
+
+                    } else {
+                        $return['case'] = 'simple';
+                        // San pham don gian
+                        $categories = $product->get_category_ids();
+                        foreach ($categories as $key => $ca) {
+                            if ($ca == get_option('mypos_category_sapcohang') || $ca == get_option('mypos_category_hangmoive')) { // Danh muc: Sap co hang
+                                unset($categories[$key]);
+                            }
+                        }
+
+                        $product->set_category_ids($categories);
+
+                        if (get_option('mypos_tt_han_su_dung') != '0') {
+                            $attributes = $product->get_attributes();
+                            if (isset($attributes["pa_" . get_option('mypos_tt_han_su_dung')])) {
+                                wp_set_object_terms( $product_id, intval(get_option('mypos_tt_dang_cap_nhat')), "pa_" . get_option('mypos_tt_han_su_dung') , false);
+                            }
+                        }
+
+                    }
+                    // End process outofstock
+                    
                     $product_data->save();
                     $return['deleted'] = delete_post_cache($product_id);
                 } else {

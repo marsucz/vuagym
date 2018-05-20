@@ -156,6 +156,12 @@ class KiotViet_API {
         $result = $this->api_call_prod($url);
 
         if ($result !== false && isset($result['id'])) {
+//             $t = date('Ymd');
+//            $log_file = "KiotVietAPI_ProductInfo_{$t}.txt";
+//            $log_text = "URL Get: " . $url;
+//            $log_text .= "\n Good response: " . json_encode($result);
+//            write_logs($log_file, $log_text);
+            
             return $result;
         } else {    // Double check if the response is still bad
             $t = date('Ymd');
@@ -624,6 +630,12 @@ class KiotViet_API {
         
         if ($access_token) {
             $this->access_token = $access_token['access_token'];
+            
+//            $t = date('Ymd');
+//            $log_file = "KiotVietAPI_GetToken_{$t}.txt";
+//            $log_text = "Get Token Good: " . json_encode($response);
+//            write_logs($log_file, $log_text);
+            
         } else {
             $this->access_token = '';
             $t = date('Ymd');

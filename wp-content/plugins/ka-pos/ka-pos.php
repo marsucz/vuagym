@@ -291,14 +291,7 @@ function function_mypos_options_page() {
                                                 <div class="form-group">
                                                 <label>Vui lòng chọn thuộc tính "Đang cập nhật"</label>
                                                 <select class="form-control" id="mypos-tt-dang-cap-nhat" name="mypos-tt-dang-cap-nhat" required>';
-                                                        echo build_list_attribute_dang_cap_nhat(get_option('mypos_tt_dang_cap_nhat'),'dang-cap-nhat');
-                                                echo '</select>
-                                                </div>
-                                                
-                                                <div class="form-group">
-                                                <label>Vui lòng chọn thuộc tính "None"</label>
-                                                <select class="form-control" id="mypos-tt-none" name="mypos-tt-none" required>';
-                                                        echo build_list_attribute_dang_cap_nhat(get_option('mypos_tt_none'),'none');
+                                                        echo build_list_attribute_dang_cap_nhat(get_option('mypos_tt_dang_cap_nhat'));
                                                 echo '</select>
                                                 </div>
                                             <h3>Thiết lập kết nối KiotViet API</h3>
@@ -523,30 +516,147 @@ function function_get_sku_kiotviet() {
 
 function function_testing_page() {
     
-    $product = wc_get_product(7113);
-    $child = $product->get_children();
+//    $test = get_term(749);
+//    echo '<pre>';
+//    print_r($test);
+//    echo '<pre>';
+//    exit;
     
-    $variations = $this->dbModel->get_children_ids(7113);
+//    $product = wc_get_product(7767);
+//    $product->set_stock_status('outofstock');
+//    $product->save();
+//    
+//    $dbModel = new DbModel();
+//    $p_stock = $dbModel->check_stock_by_parent_id(6496);
+//    echo $p_stock;
+//    if ($p_stock) {
+//        echo "TRUE";
+//    } else {
+//        echo "FALSE";
+//    }
+//    $product = wc_get_product(7113);
+//    $child = $product->get_children();
+//    
+//    $variations = $this->dbModel->get_children_ids(7113);
+//    
+//    echo "<pre>";
+//    print_r($child);
+//    echo "</pre>";
+//    exit;
+//    
+////    7113
+//    $pre_order = new YITH_Pre_Order_Product( 7113 );
+//      
+//    echo $pre_order->get_pre_order_status();
     
-    echo "<pre>";
-    print_r($child);
-    echo "</pre>";
+//    if ( 'yes' == $pre_order->get_pre_order_status() ) {
+    
+//    $attr = get_post_meta(5169, '_product_attributes');
+//    
+//    $term = get_term_by('name', 5169, 'pa_han-su-dung');
+//    get_term_
+    
+    $parent_product = wc_get_product(5169);
+    if (get_option('mypos_tt_han_su_dung') != '0') {
+            $attr_hsd = $parent_product->get_attribute("pa_" . get_option('mypos_tt_han_su_dung'));
+            echo '<pre>';
+            print_r($attr_hsd);
+            echo '<pre>';
+            if ($attr_hsd) {
+                wp_set_object_terms( 5169, intval(get_option('mypos_tt_dang_cap_nhat')), 'pa_han-su-dung' , false);
+            }
+        }
+//    wp_set_object_terms( 5169, intval(get_option('mypos_tt_dang_cap_nhat')), 'pa_han-su-dung' , false);
+exit;
+//    
+    echo '<pre>';
+    print_r($attr);
+    print_r($term);
+    echo '<pre>';
     exit;
     
-//    7113
-    $pre_order = new YITH_Pre_Order_Product( 7113 );
-      
-    echo $pre_order->get_pre_order_status();
+    $test = new WC_Product_Attribute();
     
+    echo get_option('mypos_tt_han_su_dung');
+    echo get_option('mypos_tt_dang_cap_nhat');
+    
+    $parent_product = wc_get_product(5169);
+//    
+    echo get_option('mypos_tt_han_su_dung');
+    
+    if (get_option('mypos_tt_han_su_dung') != '0') {
+        $attributes = $parent_product->get_attributes('edit');
+        
+        if (isset($attributes["pa_" . get_option('mypos_tt_han_su_dung')])) {
+            $list_attr = array();
+            foreach ($attributes as $key => $attr) {
+                if ($key == "pa_" . get_option('mypos_tt_han_su_dung')) {
+                    $attr_new = $attr;
+                    $attr_new->set_options(array("Đang cập nhật"));
+//                    $attr_new->set_variation(($attr->get_variation() ? 'yes':'no'));
+                    $list_attr[] = $attr_new;
+                } elseif ($key == "pa_dung-tich") {
+                    $attr_new = $attr;
+                    $attr_new->set_options(array("100 ml"));
+//                    $attr_new->set_variation(($attr->get_variation() ? 'yes':'no'));
+                    $list_attr[] = $attr_new;
+                } else {
+                    $attr_new = $attr;
+                    $attr_new->set_options(array("Black/Silver"));
+//                    $attr_new->set_variation(($attr->get_variation() ? 'yes':'no'));
+                    $list_attr[] = $attr_new;
+                }
+            }
+            
+            echo '<pre>';
+            print_r($list_attr);
+            echo '<pre>';
+            
+            $parent_product->set_attributes($list_attr);
+        }
+    }
+    
+////    
+//    $product->set_attributes($attrs);
+//    
+//    $parent_product->get_attribute($attribute);
+    $parent_product->save_meta_data();
+    $parent_product->save();
+
+//    
+//    $parent_product->save_meta_data();
+//    $product->save();
+//    
+    $product = wc_get_product(5169);
+//    
+    $attrs = $product->get_attributes();
+//    
+    echo '<pre>';
+    print_r($attrs);
+    echo '<pre>';
+    exit;
+//    
+//    exit;
+//    
+//    unset($attrs['pa_so-lan-dung']);
+//    
+//    $attr = &$attrs[];
+//    
+//    $attr->set_options(array(get_option('mypos_tt_dang_cap_nhat')));
+//    
+//    $attrs["pa_" . get_option('mypos_tt_han_su_dung')] = $attr;
+//    
+//    echo '<pre>';
+//    print_r($attrs);
+//    echo '<pre>';
+//    
+//    $product->set_attributes($attrs);
+//    
+//    echo $product->save();
 //    if ( 'yes' == $pre_order->get_pre_order_status() ) {
 //    $attrs = $product->get_attributes();
 //    $attr = &$attrs["pa_" . get_option('mypos_tt_han_su_dung')];
 //    $attr->set_options(get_option('mypos_tt_dang_cap_nhat'));
-//    
-//    $product->save();
-//    
-//    $product = wc_get_product(4660);
-//    $attrs = $product->get_attributes();
 //    
 //    echo "<pre>";
 //    print_r($attrs);

@@ -169,11 +169,12 @@ if ( ! function_exists( 'mypos_attribute_slug_to_title' ) ) {
     }
 }
 
-function build_list_attribute_taxonomies($selected = "") {
+function build_list_attribute_taxonomies($selected = "", $default = "0") {
     $dbModel = new DbModel();
     $terms = $dbModel->get_attribute_taxonomies();
     
-    $html = '<option value="0">Chưa chọn</option>';
+    if (!$selected) $selected = $default;
+    $html = '<option value="0">None</option>';
     foreach ($terms as $term) {
         if ($term['attribute_name'] == $selected) {
             $html .= '<option value="' . $term['attribute_name'] . '" selected>' . $term['attribute_label'] . '</option>';
@@ -185,7 +186,7 @@ function build_list_attribute_taxonomies($selected = "") {
     return $html;
 }
 
-function build_list_attribute_dang_cap_nhat($selected = "", $default = "") {
+function build_list_attribute_dang_cap_nhat($selected = "", $default = "0") {
     
     $tt_hansudung = get_option('mypos_tt_han_su_dung');
     if (!$tt_hansudung) {
@@ -208,4 +209,8 @@ function build_list_attribute_dang_cap_nhat($selected = "", $default = "") {
     }
     
     return $html;
+}
+
+function process_outofstock($product) {
+    
 }
