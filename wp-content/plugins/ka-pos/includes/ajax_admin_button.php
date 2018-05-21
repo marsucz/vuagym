@@ -30,6 +30,8 @@ function ja_ajax_mypos_update_product_instock() {
         $p_categories[] = get_option('mypos_category_hangmoive'); // Danh muc: Hang moi ve
         $parent_product->set_category_ids($p_categories);
         
+        $parent_product->set_catalog_visibility('visible');
+        
         $parent_product->save();
     } else {
         $categories = $product->get_category_ids();
@@ -40,6 +42,8 @@ function ja_ajax_mypos_update_product_instock() {
         }
         $categories[] = get_option('mypos_category_hangmoive'); // Danh muc: Hang moi ve
         $product->set_category_ids($categories);
+        
+        $product->set_catalog_visibility('visible');
     }
     
     $product->set_date_created(current_time('timestamp',7));
@@ -89,6 +93,11 @@ function ja_ajax_mypos_update_product_outofstock() {
     if ($product->is_type( 'variation' )) {
         $base_product_id = $product->get_parent_id();
         $parent_product = wc_get_product($base_product_id);
+        
+        $show_always = $parent_product->get_meta('_mypos_show_always', true);
+        if ($show_always != 'yes') {
+            $parent_product->set_catalog_visibility('hidden');
+        }
         
         // Init information
         $dbModel = new DbModel();
@@ -182,6 +191,11 @@ function ja_ajax_mypos_update_product_outofstock() {
             if (isset($attributes["pa_" . get_option('mypos_tt_han_su_dung')])) {
                 wp_set_object_terms( $product_id, intval(get_option('mypos_tt_dang_cap_nhat')), "pa_" . get_option('mypos_tt_han_su_dung') , false);
             }
+        }
+        
+        $show_always = $product->get_meta('_mypos_show_always', true);
+        if ($show_always != 'yes') {
+            $product->set_catalog_visibility('hidden');
         }
         
     }
