@@ -12,6 +12,7 @@ if( ! class_exists( 'WP_List_Table' ) ) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
+// Tab: Quản lý sản phẩm
 class Kawoo_Product_Search_List extends WP_List_Table {
 
     private $dbModel;
@@ -94,6 +95,55 @@ class Kawoo_Product_Search_List extends WP_List_Table {
                 }
                 
                 break;  // break case 2
+                
+            case 3: // Lọc sản phẩm Luôn Hiện
+        
+                $perPage = 50;
+                $currentPage = 0;
+
+                // show product one times
+                $show_products = $this->show_products_per_page;
+                $count_product = 0;
+
+                while ($count_product < $show_products) {
+
+                    $currentPage++;
+
+                    $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage ) );
+
+                    if (!$loop->post_count || $loop->post_count == 0) {
+                        break;
+                    }
+
+                    while ( $loop->have_posts() ) : $loop->the_post();
+
+                        $theid = get_the_ID();
+
+                        // add product to array but don't add the parent of product variations
+                        if ($theid) {
+                            
+                            $show_always = get_post_meta($theid, '_mypos_show_always', true);
+                            
+                            if ($show_always == 'yes') {
+                                $list_product[] = $theid;
+                                $count_product++;
+                            }
+                        }
+
+                        if ($count_product >= $show_products) {
+                            break;
+                        }
+
+                        if ($count_product >= $show_products) {
+                            break;
+                        }
+
+                    endwhile;
+                    wp_reset_query();
+
+                }
+                
+                break;  // break case 3
                 
         }
 

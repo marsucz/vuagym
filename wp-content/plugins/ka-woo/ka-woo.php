@@ -238,6 +238,7 @@ function function_manager_tabs_page() {
                             <select id="kawoo_show_type" name="kawoo_show_type">
                                 <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Tìm kiếm theo Mã sản phẩm</option>
                                 <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Hiện tất cả sản phẩm kho phụ</option>
+                                <option value="3"' . ($show_type == 3 ? 'selected' : '') . '>Lọc các sản phẩm luôn hiện</option>
                             </select>
                             <label id="kawoo_product_numbers_label">Số lượng SP hiển thị &nbsp</label>
                             <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
