@@ -106,6 +106,40 @@ function updateKVPrice_byWebPrice(product_id, price, confirm_text) {
 };
 
 jQuery(document).ready(function($) {
+    $("#import_manager_form").submit(function(event){
+    // Prevent form submission until we can call the server
     
+    if ($('#importfile').get(0).files.length === 0) {
+        alert("Bạn chưa chọn file nhập hàng.");
+    }
+    
+    event.preventDefault();
+    
+    var filename = $('input[name=importfile]').val().split('\\').pop();
+    console.log(filename);
+    $.post(
+        global.ajax, 
+        {   
+            file_name: filename,
+            action: 'mypos_check_exists_file' 
+        }, 
+        function(response) {
+            console.log(response);
+            if (response.data.status == true) {
+                var r = confirm("File đã tồn tại trên hệ thống, bạn có muốn ghi đè không?");
+                if (r == true) {
+                    $("#import_manager_form").unbind("submit");
+                    $("#import_manager_form").submit();
+                } else {
+                    console.log("Không ghi đè");
+                }
+                return;
+            }
+            if (response.data.status == false) {
+                $("#import_manager_form").unbind("submit");
+                $("#import_manager_form").submit();
+            }
+        });
+    });
 });
 

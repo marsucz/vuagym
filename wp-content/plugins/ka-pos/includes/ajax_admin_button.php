@@ -339,3 +339,24 @@ function ja_ajax_mypos_update_kvprice_by_webprice() {
 add_action( 'wp_ajax_mypos_update_kvprice_by_webprice', 'ja_ajax_mypos_update_kvprice_by_webprice' );
 add_action( 'wp_ajax_nopriv_mypos_update_kvprice_by_webprice', 'ja_ajax_mypos_update_kvprice_by_webprice' );
  */
+
+function ja_ajax_mypos_check_exists_file() {
+    //Form Input Values
+    $import_file_name     = trim($_POST['file_name']);
+    
+    $upload = wp_upload_dir();
+    $upload_dir = $upload['basedir'];
+    $upload_file_path = $upload_dir . '/import-files/' . $import_file_name;
+    
+    if (file_exists($upload_file_path)) {
+       $return['status'] = true;
+    } else {
+       $return['status'] = false;
+    }
+    
+    wp_send_json_success( $return );
+    
+}
+
+add_action( 'wp_ajax_mypos_check_exists_file', 'ja_ajax_mypos_check_exists_file' );
+add_action( 'wp_ajax_nopriv_mypos_check_exists_file', 'ja_ajax_mypos_check_exists_file' );
