@@ -261,6 +261,62 @@ function ja_ajax_mypos_update_product_enable() {
 add_action( 'wp_ajax_mypos_update_product_enable', 'ja_ajax_mypos_update_product_enable' );
 add_action( 'wp_ajax_nopriv_mypos_update_product_enable', 'ja_ajax_mypos_update_product_enable' );
 
+
+function ja_ajax_mypos_set_pre_order() {
+    //Form Input Values
+    $product_id     = intval($_POST['product_id']);
+    
+    //If empty return error
+    if(!$product_id){
+            wp_send_json(array('error' => __('Missing Product ID!')));
+    }
+		
+    $product = wc_get_product($product_id);
+    
+    $product->set_stock_status('instock');
+    
+    if ($product->is_type( 'variation' )) {
+        $base_product_id = $product->get_parent_id();
+        $parent_product = wc_get_product($base_product_id);
+        $parent_product->set_date_created(current_time('timestamp',7));
+        $parent_product->set_date_modified(current_time('timestamp',7));
+        
+        $parent_product->set_catalog_visibility('visible');
+        $parent_product->save();
+    } else {
+        $product->set_catalog_visibility('visible');
+    }
+    
+    $product->set_date_created(current_time('timestamp',7));
+    $product->set_date_modified(current_time('timestamp',7));
+    
+    if ('private' === $product->get_status()) {
+        $product->set_status('publish');
+    }
+    
+    $result = $product->save();
+    
+    $pre_order = new YITH_Pre_Order_Product( $product_id );
+    
+    if ( 'no' == $pre_order->get_pre_order_status() ) {
+        $pre_order->set_pre_order_status('yes');
+    }
+    
+    if ($result) {
+        $return['status'] = true;
+    } else {
+        $return['status'] = false;
+    }
+    
+    $return['deleted'] = delete_post_cache($product_id);
+    
+    wp_send_json_success( $return );
+    
+}
+
+add_action( 'wp_ajax_mypos_set_pre_order', 'ja_ajax_mypos_set_pre_order' );
+add_action( 'wp_ajax_nopriv_mypos_set_pre_order', 'ja_ajax_mypos_set_pre_order' );
+
 function ja_ajax_mypos_update_webprice_by_kvprice() {
     //Form Input Values
     $product_id     = intval($_POST['product_id']);

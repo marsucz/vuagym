@@ -52,6 +52,23 @@ function enableProduct(product_id) {
         });
 };
 
+function setPreOrder(product_id) {
+        
+        $('#setPreOrder_' + product_id).prop('disabled', true);
+        
+        $.post(
+        global.ajax, 
+        {   
+            product_id: product_id,
+            action: 'mypos_set_pre_order' 
+        }, 
+        function(data) {
+            console.log(data);
+            $('#setPreOrder_' + product_id).html('<i class="fa fa-check"></i>  Done');
+        });
+};
+
+
 function updateWebPrice_byKVPrice(product_id, price, confirm_text) {
         
         if (confirm_text === undefined) {
@@ -106,6 +123,20 @@ function updateKVPrice_byWebPrice(product_id, price, confirm_text) {
 };
 
 jQuery(document).ready(function($) {
+    
+    show_type_change();
+    $('#sync_by_web_show_type').on('change', function() {
+        show_type_change();
+    });
+    
+    function show_type_change() {
+        if ($('#sync_by_web_show_type').val() == 1) {
+            $("#importfile").show();
+        } else {
+            $("#importfile").hide();
+        }
+    }
+    
     $("#import_manager_form").submit(function(event){
     // Prevent form submission until we can call the server
     

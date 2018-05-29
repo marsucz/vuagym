@@ -18,3 +18,4 @@ require_once('includes/ajax_main_check_quantity.php');
 require_once('includes/KiotViet_ManualSyncKiotViet_List.php');
 require_once('includes/KiotViet_ManualSyncWeb_List.php');
 require_once('includes/Mypos_ImportFiles_List.php');
+require_once('includes/Mypos_ImportProduct_List.php');

@@ -124,9 +124,9 @@ function load_assets_manual_sync_table() {
     wp_register_style('prefix_toggle', WC_PLUGIN_URL . 'assets/admin/css/bootstrap-toggle.min.css');
     wp_enqueue_style('prefix_toggle');
     wp_enqueue_style('my-styles', WC_PLUGIN_URL . 'assets/admin/css/styles.css' );
+    wp_enqueue_style('my-css-table', WC_PLUGIN_URL . 'assets/admin/css/my_tables.css' );
     wp_enqueue_style('font-awesome', WC_PLUGIN_URL . 'assets/admin/font-awesome/css/font-awesome.min.css' );
     
-    wp_enqueue_style('my-styles', WC_PLUGIN_URL . 'assets/admin/css/my_tables.css' );
     
     wp_enqueue_script(
 		'global',

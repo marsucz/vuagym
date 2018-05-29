@@ -267,6 +267,7 @@ class DbModel {
         
         $query = "SELECT 
                         ip.product_code, 
+                        ip.product_name,
                         group_concat(concat(ip.product_quantity, ': ', ip.filename) separator '<br/>') as amount_info
                     FROM
                         $db_name ip
@@ -304,7 +305,7 @@ class DbModel {
         
         if ($result) {
             $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
-            $return = $return['count'];
+            $return = $return[0]['count'];
         } else {
             $return = 0;
         }

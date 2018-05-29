@@ -659,7 +659,7 @@ function function_mypos_sync_page() {
             if (empty($_POST) && !isset($_GET['paged'])) {
                 
             } else {
-                if (isset($_FILES['importfile'])) {
+                if (($show_type == 1) && isset($_FILES['importfile'])) {
                     // Nếu file upload không bị lỗi,
                     // Tức là thuộc tính error > 0
                     if (($_FILES['importfile']['error'] > 0))
@@ -753,13 +753,17 @@ function function_mypos_sync_page() {
             }
             
             if ($show_type == 1) {
-                echo '<form method="POST" id="sync-by-kv-list">';
+                echo '<form method="POST" id="import-files-list">';
                 $myListTable = new Mypos_ImportFiles_List($show_products);
                 $myListTable->prepare_items();
                 $myListTable->display();
                 echo '</form>';
-            } else {
-                echo 'LOL';
+            } else {    // show type = 0
+                echo '<form method="POST" id="import-product-list">';
+                $myListTable = new Mypos_ImportProduct_List($show_type, $show_products);
+                $myListTable->prepare_items();
+                $myListTable->display();
+                echo '</form>';
             }
             
             break;
