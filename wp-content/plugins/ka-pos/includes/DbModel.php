@@ -234,6 +234,42 @@ class DbModel {
         return $return;
     }
     
+    // Get Products LIST
+    
+    public function kapos_get_all_products_to_sethidden($perpage = 40, $currentpage = 1) {
+        
+        if (!$currentpage) $currentpage = 1;
+        $offset = ($currentpage - 1) * $perpage;
+        
+        $query = "  SELECT 
+                        pm.meta_value as stock_status, 
+                        pm2.meta_value as show_status, 
+                        p.ID
+                    FROM
+                        {$this->prefix}posts p
+                            INNER JOIN
+                        {$this->prefix}postmeta pm ON pm.post_id = p.ID
+                            AND pm.meta_key = '_stock_status'
+                            LEFT JOIN
+                        {$this->prefix}postmeta pm2 ON pm2.post_id = p.ID
+                            AND pm2.meta_key = '_mypos_show_always'
+                    WHERE
+                        post_type = 'product' 
+                    LIMIT $perpage OFFSET $offset";
+        
+        $result = mysqli_query($this->link, $query);
+
+        if ($result) {
+            $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        } else {
+            $return = [];
+        }
+        
+        return $return;
+        
+    }
+    
+    
     // IMPORT MANAGERS
     
     public function kapos_get_importfile_detail($import_file_name) {
@@ -271,7 +307,7 @@ class DbModel {
                         group_concat(concat(ip.product_quantity, ': ', ip.filename) separator '<br/>') as amount_info
                     FROM
                         $db_name ip
-                    GROUP BY product_code
+                    GROUP BY product_code, product_name
                     LIMIT $perpage OFFSET $offset";
         
         $result = mysqli_query($this->link, $query);
@@ -320,7 +356,7 @@ class DbModel {
 
         $insert_values = array();
         foreach ($import_rows as $import) {
-            $insert_values[] = "('" . esc_sql($import_file_name) . "','" . esc_sql(trim($import[0])) . "','" . esc_sql(trim($import[1])) . "','".esc_sql(intval($import[2]))."')";
+            $insert_values[] = "('" . mysqli_escape_string($this->link, $import_file_name) . "','" . mysqli_escape_string($this->link, trim($import[0])) . "','" . mysqli_escape_string($this->link, trim($import[1])) . "','".mysqli_escape_string($this->link, intval($import[2]))."')";
         }
 
         $query = "INSERT INTO {$db_name}(filename,product_code,product_name,product_quantity) VALUES " . implode(',', $insert_values);

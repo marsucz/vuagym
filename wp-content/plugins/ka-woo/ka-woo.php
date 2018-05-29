@@ -339,20 +339,68 @@ function function_kawoo_options_page() {
     if (isset($_POST['kawoo-roles'])) {
         update_option('kawoo_roles', $_POST['kawoo-roles']);
     }
+    
+    $message = '';
+    
+    if (isset($_POST['action_type'])) {
+        if ($_POST['action_type'] == 'hide_outofstock_products') {
+            
+            set_time_limit(0);
+            
+            $dbModel = new DbModel();
+            
+            $perPage = 40;
+            $currentPage = 0;
+            
+            $list_hidden = array();
+            $terms = array( 'exclude-from-catalog', 'exclude-from-search' );
+            while (1) {
+                
+                $currentPage++;
+                $list_product = $dbModel->kapos_get_all_products_to_sethidden($perPage, $currentPage);
 
+                if (count($list_product) == 0) {
+                    break;
+                }
+                
+                foreach ($list_product as $product) {
+                    if ($product['stock_status'] == 'outofstock' 
+                        && $product['show_status'] != 'yes') {
+
+                        wp_set_object_terms( $product['ID'], $terms, 'product_visibility' );
+
+                        $list_hidden[] = $product['ID'];
+                    }
+                }
+            }
+            
+            if (count($list_hidden) > 0) {
+                $message = 'Đã ẩn ' . count($list_hidden) . ' sản phẩm hết hàng: <br/>' . implode($list_hidden, ', ');
+            } else {
+                $message = 'Không ẩn sản phẩm nào.';
+            }
+        }
+    }
+    
+    if (!empty($message)) {
+        $message = '<div class="alert alert-success">' . $message . '</div>';
+    }
+    
     kawoo_load_assets_common_admin();
 
-    echo '<div class="wrap"><div class="row">
+    echo '<div class="wrap">
+        <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             Cài Đặt KA WOO Tools
                         </div>
                         <div class="panel-body">
+                            ' . $message . '
                             <div class="row">
-                                <div class="col-lg-12">
+                                <div class="col-lg-6">
                                     <form role="form" method="POST">
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-12">
                                             <div class="form-group">
                                                 <label>Các User Roles có thể dùng "KA WOO Tools"</label>';
     global $wp_roles;
@@ -382,6 +430,14 @@ function function_kawoo_options_page() {
                                         </div>
                                     </form>
                                 </div>
+                                <div class="col-lg-6">
+                                    <form role="form" method="POST">
+                                        <div class="col-lg-12">
+                                                <input class="hidden" id="action_type" type="text" name="action_type" value="hide_outofstock_products">
+                                                <button type="submit" class="btn btn-danger">Ẩn các sản phẩm hết hàng</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -391,6 +447,25 @@ function function_kawoo_options_page() {
 }
 
 function function_kawoo_testing_page() {
+    
+    $post_id = 3183;
+//    //Set product hidden: 
+//    $terms = array( 'exclude-from-catalog', 'exclude-from-search' );
+//    wp_set_object_terms( $post_id, $terms, 'product_visibility' );
+    
+    $test = get_the_terms($post_id, 'product_visibility');
+    echo '<pre>';
+    print_r($test);
+    echo '<pre>';
+    exit;
+    
+////Set product visible in catalog:
+//$terms = 'exclude-from-search';
+//wp_set_object_terms( $post_id, $terms, 'product_visibility' );
+//
+////Set product visible in search:
+//$terms = 'exclude-from-catalog';
+//wp_set_object_terms( $post_id, $terms, 'product_visibility' );
     
 }
 

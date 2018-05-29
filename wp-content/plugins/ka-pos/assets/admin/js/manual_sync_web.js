@@ -132,8 +132,14 @@ jQuery(document).ready(function($) {
     function show_type_change() {
         if ($('#sync_by_web_show_type').val() == 1) {
             $("#importfile").show();
+            $("#sync_by_web_products_label").hide();
+            $("#sync_by_web_products").hide();
+            $("input[type=submit]").val("Upload");
         } else {
             $("#importfile").hide();
+            $("#sync_by_web_products_label").show();
+            $("#sync_by_web_products").show();
+            $("input[type=submit]").val("Áp dụng");
         }
     }
     

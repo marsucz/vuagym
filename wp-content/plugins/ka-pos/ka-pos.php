@@ -647,10 +647,10 @@ function function_mypos_sync_page() {
                                 <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Quản lý phiếu nhập hàng</option>
                                 <option value="0"' . ($show_type == 0 ? 'selected' : '') . '>Quản lý sản phẩm nhập hàng</option>
                             </select>
-                            <input type="file" name="importfile" id="importfile"/>
+                            <input type="file" style="margin-left: 10%;" name="importfile" id="importfile"/>
                             <label id="sync_by_web_products_label"> Số lượng SP </label>
                             <input type="number" id="sync_by_web_products" name="sync_by_web_products" value="' . $show_products . '" min="1" required>
-                        <input type="submit" class="button" value="Áp dụng">
+                        <input type="submit" class="button" value="Upload">
                     </form>
                     </div>';
             
@@ -712,7 +712,7 @@ function function_mypos_sync_page() {
                                 }
                                 $import_rows[] = $cells;
                             }
-
+                            
                             $is_import = false;
                             if (count($import_rows) > 0) {
                                 $dbModel = new DbModel();

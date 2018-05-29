@@ -42,17 +42,19 @@ class Mypos_ImportFiles_List extends WP_List_Table {
         }
         $file_list = array_diff(scandir($upload_dir), array('.', '..'));
         
-        $totalItems = count($file_list);
+//        $totalItems = count($file_list);
         
-        $this->set_pagination_args( array(
-            'total_items' => $totalItems,
-            'per_page'    => $perPage
-        ));
+//        $this->set_pagination_args( array(
+//            'total_items' => $totalItems,
+//            'per_page'    => $perPage
+//        ));
         
         $this->_column_headers = array($columns, $hidden, $sortable);
         
-        $offset = ($currentPage - 1) * $perPage;
-        $this->items = array_slice($file_list, $offset, $perPage); 
+//        $offset = ($currentPage - 1) * $perPage;
+//        $this->items = array_slice($file_list, $offset, $perPage); 
+        
+        $this->items = $file_list;
     }
 
     public function single_row($item) {

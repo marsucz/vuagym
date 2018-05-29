@@ -19,17 +19,17 @@ class loader {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
         
         add_filter( 'product_type_options', array( $this, 'mypos_show_always_checkbox' ), 6 );
-        add_filter( 'woocommerce_product_is_visible', array( $this, 'kawoo_show_always'), 10, 2 );
+//        add_filter( 'woocommerce_product_is_visible', array( $this, 'kawoo_show_always'), 10, 2 );
     }
     
-    public function kawoo_show_always( $is_visible, $id ) {
-        
-        $show_always_status = get_post_meta($id, '_mypos_show_always', true);
-        if ($show_always_status && $show_always_status == 'yes') {
-            $is_visible = true;
-        }
-        return $is_visible;
-    }
+//    public function kawoo_show_always( $is_visible, $id ) {
+//        
+//        $show_always_status = get_post_meta($id, '_mypos_show_always', true);
+//        if ($show_always_status && $show_always_status == 'yes') {
+//            $is_visible = true;
+//        }
+//        return $is_visible;
+//    }
 
     public function enqueue_scripts($hook_suffix) {
         $current_screen = get_current_screen();
@@ -109,6 +109,10 @@ class loader {
             
             $is_show_always = isset( $_POST['_mypos_show_always'] ) && ! is_array( $_POST['_mypos_show_always'] ) ? 'yes' : 'no';
             update_post_meta($post_id, '_mypos_show_always', $is_show_always);
+            if ($is_show_always == 'yes') {
+                //overwrite catalog_visibility
+                $_POST['_visibility'] = 'visible';
+            }
     }
 
     public function mypos_save_variable_fields( $post_id, $_i ) {
