@@ -642,7 +642,7 @@ function function_mypos_sync_page() {
             
             echo '  <div class="wrap">
                     <form id="import_manager_form" method="POST" enctype="multipart/form-data">
-                            <label>Bộ lọc </label>
+                            <label>Chức năng </label>
                             <select id="sync_by_web_show_type" name="sync_by_web_show_type">
                                 <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Quản lý phiếu nhập hàng</option>
                                 <option value="0"' . ($show_type == 0 ? 'selected' : '') . '>Quản lý sản phẩm nhập hàng</option>
