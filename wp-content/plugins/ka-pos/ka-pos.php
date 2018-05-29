@@ -43,6 +43,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 add_action('plugins_loaded', 'kiotviet_tools_plugin_init');
 
 register_activation_hook(__FILE__, 'kiotviet_product_create_db');
+register_activation_hook(__FILE__, 'kapos_import_create_db');
 
 $loader = new loader();
 
@@ -525,74 +526,12 @@ function function_testing_page() {
     $upload = wp_upload_dir();
     $upload_dir = $upload['basedir'];
     $upload_dir = $upload_dir . '/import-files/';
-    
-    $file_input = $upload_dir . 'nhap_hang_mau.xlsx';
-    $file_output = $upload_dir . 'nhap_hang_mau_out.xlsx';
-    
-    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-    
-    $spreadsheet = $reader->load($file_input);
-    $spreadsheet->getActiveSheet()->removeColumn('C', 3);
-    $spreadsheet->getActiveSheet()->removeRow(1);
-    
-    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
-    $writer->save($file_output);
-    
-//    echo '<pre>';
-//    print_r($spreadsheet);
-//    echo '<pre>';
-    exit;
-//
-//    //Specify the properties for this document
-//    $spreadsheet->getProperties()
-//        ->setTitle('PHP Download Example')
-//        ->setSubject('A PHPExcel example')
-//        ->setDescription('A simple example for PhpSpreadsheet. This class replaces the PHPExcel class')
-//        ->setCreator('php-download.com')
-//        ->setLastModifiedBy('php-download.com');
-//
-//    //Adding data to the excel sheet
-//    $spreadsheet->setActiveSheetIndex(0)
-//        ->setCellValue('A1', 'This')
-//        ->setCellValue('A2', 'is')
-//        ->setCellValue('A3', 'only')
-//        ->setCellValue('A4', 'an')
-//        ->setCellValue('A5', 'example');
-//
-//    $spreadsheet->getActiveSheet()
-//        ->setCellValue('B1', "You")
-//        ->setCellValue('B2', "can")
-//        ->setCellValue('B3', "download")
-//        ->setCellValue('B4', "this")
-//        ->setCellValue('B5', "library")
-//        ->setCellValue('B6', "on")
-//        ->setCellValue('B7', "https://php-download.com/package/phpoffice/phpspreadsheet");
-//
-//
-//    $spreadsheet->getActiveSheet()
-//        ->setCellValue('C1', 1)
-//        ->setCellValue('C2', 0.5)
-//        ->setCellValue('C3', 0.25)
-//        ->setCellValue('C4', 0.125)
-//        ->setCellValue('C5', 0.0625);
-//
-//    $spreadsheet->getActiveSheet()
-//        ->setCellValue('C6', '=SUM(C1:C5)');
-//    $spreadsheet->getActiveSheet()
-//        ->getStyle("C6")->getFont()
-//        ->setBold(true);
-
-
-//    $writer = IOFactory::createWriter($spreadsheet, "Xlsx"); //Xls is also possible
-    
-//    $upload = wp_upload_dir();
-//    $upload_dir = $upload['basedir'];
-//    $upload_file_path = $upload_dir . '/import-files/my_excel_file.xlsx';
-    
-//    echo $upload_file_path;
-    
-//    $writer->save($upload_file_path);
-    
+    if (! is_dir($upload_dir)) {
+        mkdir( $upload_dir, 0700 );
+    }
+              
+    $file_list = array_diff(scandir($upload_dir), array('.', '..'));
+     
 }
 
 function update_default_manual_sync_options() {
@@ -720,13 +659,12 @@ function function_mypos_sync_page() {
             if (empty($_POST) && !isset($_GET['paged'])) {
                 
             } else {
-                
                 if (isset($_FILES['importfile'])) {
                     // Nếu file upload không bị lỗi,
                     // Tức là thuộc tính error > 0
-                    if ($_FILES['importfile']['error'] > 0)
+                    if (($_FILES['importfile']['error'] > 0))
                     {
-                        echo '<div class="wrap">
+                        echo '<div id="notice" class="wrap">
                         <span style="color: red; font-weight: bold">File bị lỗi, vui lòng thử lại.</span>
                         </div>';
                     }
@@ -735,26 +673,72 @@ function function_mypos_sync_page() {
                         $file_ext = pathinfo($_FILES['importfile']['name']);
                         
                         if ($file_ext['extension'] != 'xlsx') {
-                            echo '<div class="wrap">
+                            echo '<div  id="notice"  class="wrap">
                             <span style="color: red; font-weight: bold">Upload lỗi. Chỉ chấp nhận định dạng file Excel (xlsx).</span>
                             </div>';
                             $is_ok = false;
                         } else {
+                            
                             $upload = wp_upload_dir();
                             $upload_dir = $upload['basedir'];
-                            $upload_dir = $upload_dir . '/import-files';
+                            $upload_dir = $upload_dir . '/import-files/';
                             if (! is_dir($upload_dir)) {
-                               mkdir( $upload_dir, 0700 );
+                                mkdir( $upload_dir, 0700 );
+                             }
+
+                            $import_file_name = $_FILES['importfile']['name'];
+                            $file_input = $_FILES['importfile']['tmp_name'];
+                            $file_output = $upload_dir . $import_file_name;
+                            
+                            $is_overwrite = false;
+                            if (file_exists($file_output)) {
+                                $is_overwrite = true;
+                            }
+                            
+                            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+
+                            $spreadsheet = $reader->load($file_input);
+                            $worksheet = $spreadsheet->getActiveSheet();
+                            $worksheet->removeColumn('C', 3);
+                            $worksheet->removeRow(1);
+
+                            $import_rows = array();
+                            foreach ($worksheet->getRowIterator() AS $row) {
+                                $cellIterator = $row->getCellIterator();
+                                $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+                                $cells = [];
+                                foreach ($cellIterator as $cell) {
+                                    $cells[] = $cell->getValue();
+                                }
+                                $import_rows[] = $cells;
                             }
 
-                            // Upload file
-                            $result = move_uploaded_file($_FILES['importfile']['tmp_name'], $upload_dir . '/' . $_FILES['importfile']['name']);
-                            if ($result) {
-                                echo '<div class="wrap">
-                                <span style="color: green; font-weight: bold">File đã được upload.</span>
+                            $is_import = false;
+                            if (count($import_rows) > 0) {
+                                $dbModel = new DbModel();
+                                if ($is_overwrite) {
+                                    // Xoa file cu va du lieu database
+                                    unlink($file_output);
+                                    $dbModel->kapos_delete_imports($import_file_name);
+                                }
+                                $return['insert'] = $dbModel->kapos_insert_imports($import_file_name, $import_rows);
+                                $is_import = $return['insert'];
+                            }
+
+                            if ($is_import) {
+                                // Save new files on host
+                                $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
+                                $writer->save($file_output);
+                                $return['write'] = true;
+                            }
+
+                            
+                            if ($return['insert'] && $return['write']) {
+                                echo '<div id="notice" class="wrap">
+                                <span style="color: green; font-weight: bold">File đã được upload và xử lý thông tin nhập hàng.</span>
                                 </div>';
                             } else {
-                                echo '<div class="wrap">
+                                echo '<div id="notice" class="wrap">
                                 <span style="color: red; font-weight: bold">Có lỗi trong quá trình upload, vui lòng thử lại.</span>
                                 </div>';
                                 $is_ok = false;
@@ -762,20 +746,22 @@ function function_mypos_sync_page() {
                         }
                     }
                 } else {
-                    echo '<div class="wrap">
-                        <span style="color: red">Bạn chưa chọn file upload.</span>
-                        </div>';
+//                    echo '<div class="wrap">
+//                        <span style="color: red">Bạn chưa chọn file upload.</span>
+//                        </div>';
                 }
-                
-                if ($is_ok) {
-                    echo '<form method="POST" id="sync-by-kv-list">';
-                    $myListTable = new Mypos_ImportFiles_List($show_type, $show_products, $store_id);
-                    $myListTable->prepare_items();
-                    $myListTable->display();
-                    echo '</form>';
-                }
-                
             }
+            
+            if ($show_type == 1) {
+                echo '<form method="POST" id="sync-by-kv-list">';
+                $myListTable = new Mypos_ImportFiles_List($show_products);
+                $myListTable->prepare_items();
+                $myListTable->display();
+                echo '</form>';
+            } else {
+                echo 'LOL';
+            }
+            
             break;
             
         default:

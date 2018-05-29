@@ -1,6 +1,11 @@
 <?php
 
-function write_logs($file_name, $text) {
+function write_logs($file_name = '', $text = '') {
+    
+    if (empty($file_name)) {
+        $t = date('Ymd');
+        $file_name = "errors-{$t}.txt";
+    }
     
     $folder_path = WC_PLUGIN_DIR . '/logs';
     $file_path = $folder_path . '/' . $file_name;

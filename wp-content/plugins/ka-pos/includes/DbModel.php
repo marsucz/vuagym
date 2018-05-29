@@ -1,5 +1,6 @@
 <?php
 
+require_once('function.php');
 /**
  *
  * @author MT
@@ -231,6 +232,62 @@ class DbModel {
         }
 
         return $return;
+    }
+    
+    // IMPORT MANAGERS
+    
+    public function kapos_get_importfile_detail($import_file_name) {
+        
+        $db_name = $this->prefix . DB_KAPOS_IMPORTS;
+        
+        $query = "SELECT * FROM $db_name WHERE filename = '" . trim($import_file_name) ."'";
+        
+        $result = mysqli_query($this->link, $query);
+        if (!$result) {
+            write_logs('', $query);
+        }
+        
+        if ($result) {
+            $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        } else {
+            $return = [];
+        }
+        
+        return $return;
+        
+    }
+    
+    public function kapos_insert_imports($import_file_name, $import_rows) {
+        
+        $db_name = $this->prefix . DB_KAPOS_IMPORTS;
+
+        $insert_values = array();
+        foreach ($import_rows as $import) {
+            $insert_values[] = "('" . esc_sql($import_file_name) . "','" . esc_sql(trim($import[0])) . "','" . esc_sql(trim($import[1])) . "','".esc_sql(intval($import[2]))."')";
+        }
+
+        $query = "INSERT INTO {$db_name}(filename,product_code,product_name,product_quantity) VALUES " . implode(',', $insert_values);
+
+        $result = mysqli_query($this->link, $query);
+        if (!$result) {
+            write_logs('', $query);
+        }
+        return $result;
+        
+    }
+    
+    public function kapos_delete_imports($import_file_name) {
+        
+        $db_name = $this->prefix . DB_KAPOS_IMPORTS;
+
+        $query = "DELETE FROM {$db_name} WHERE filename = '" . trim($import_file_name) . "'";
+
+        $result = mysqli_query($this->link, $query);
+        if (!$result) {
+            write_logs('', $query);
+        }
+        return $result;
+        
     }
 }
 

@@ -170,3 +170,50 @@ if(!function_exists('kiotviet_UpdateCart_alert_modal')){
         return $result;
     }
 }
+
+if(!function_exists('kapos_import_detail_modal')){
+    function kapos_import_detail_modal($header = '', $detail = ''){
+        $return = '        
+        <div class="modal fade" id="import-detail" tabindex="-1" role="dialog" aria-labelledby="ImportDetailLabel" aria-hidden="true" style="padding-top: 5%; padding-left: 10%;">
+            <div class="modal-dialog modal-lg" id="mypos-modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header white">
+                        <div class="mypos-modal-header" style="text-align: center">
+                            ' . $header . '
+                        </div>
+                    </div>
+                    <div class="modal-body cart-title-body">
+                    ' . $detail . '
+                    </div>
+                </div>
+            </div>
+        </div>';
+        return $return;
+    }
+}
+
+function build_html_table_import_detail($rows) {
+    $result_string = '
+                <div class="table-responsive top-buffer" style="border: 0px !important;">        
+                                <table class="table" style="border: 0px !important;">
+                                <thead class="thead-default">
+                                    <tr style="white-space: nowrap;">
+                                      <th style="text-align: center">Mã sản phẩm</th>
+                                      <th style="text-align: center">Tên sản phẩm</th>
+                                      <th style="text-align: center">Số Lượng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>';
+    $cart_items  = WC()->cart->get_cart();
+    foreach ($rows as $product) {
+        
+        $result_string .= "<tr>";
+        $result_string .= "<td align='center'>{$product['product_code']}</td>";
+        $result_string .= "<td align='center'>{$product['product_name']}</td>";
+        $result_string .= "<td align='center'>{$product['product_quantity']}</td>";
+        $result_string .= "</tr>";
+    }
+    $result_string .= '</tbody></table></div>';
+            
+    return $result_string;
+}

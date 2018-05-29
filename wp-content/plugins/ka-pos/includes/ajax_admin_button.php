@@ -340,6 +340,24 @@ add_action( 'wp_ajax_mypos_update_kvprice_by_webprice', 'ja_ajax_mypos_update_kv
 add_action( 'wp_ajax_nopriv_mypos_update_kvprice_by_webprice', 'ja_ajax_mypos_update_kvprice_by_webprice' );
  */
 
+function ja_ajax_mypos_import_file_detail() {
+    //Form Input Values
+    $import_file_name     = trim($_POST['file_name']);
+
+    $dbModel = new DbModel();
+    $rows = $dbModel->kapos_get_importfile_detail($import_file_name);
+    
+    $html = build_html_table_import_detail($rows);
+    $html = kapos_import_detail_modal($import_file_name, $html);
+    
+    $return['html'] = $html;
+    
+    wp_send_json_success( $return );
+}
+
+add_action( 'wp_ajax_mypos_import_file_detail', 'ja_ajax_mypos_import_file_detail' );
+add_action( 'wp_ajax_nopriv_mypos_import_file_detail', 'ja_ajax_mypos_import_file_detail' );
+
 function ja_ajax_mypos_check_exists_file() {
     //Form Input Values
     $import_file_name     = trim($_POST['file_name']);
@@ -360,3 +378,35 @@ function ja_ajax_mypos_check_exists_file() {
 
 add_action( 'wp_ajax_mypos_check_exists_file', 'ja_ajax_mypos_check_exists_file' );
 add_action( 'wp_ajax_nopriv_mypos_check_exists_file', 'ja_ajax_mypos_check_exists_file' );
+
+
+function ja_ajax_mypos_delete_import_file() {
+    //Form Input Values
+    $import_file_name     = trim($_POST['file_name']);
+    
+    $upload = wp_upload_dir();
+    $upload_dir = $upload['basedir'];
+    $upload_file_path = $upload_dir . '/import-files/' . $import_file_name;
+    
+    if (file_exists($upload_file_path)) {
+       $return['exists'] = true;
+       if (!unlink($upload_file_path)) {
+            $return['status'] = false;
+            $return['message'] = "Có lỗi trong quá trình xóa file, vui lòng thử lại.";
+       } else {
+            $return['status'] = true;
+       }
+    } else {
+       $return['exists'] = false;
+       $return['message'] = "File không tồn tại trên hệ thống.";
+    }
+    
+    if ($return['status']) {
+        $dbModel = new DbModel();
+        $dbModel->kapos_delete_imports($import_file_name);
+    }
+    wp_send_json_success( $return );
+}
+
+add_action( 'wp_ajax_mypos_delete_import_file', 'ja_ajax_mypos_delete_import_file' );
+add_action( 'wp_ajax_nopriv_mypos_delete_import_file', 'ja_ajax_mypos_delete_import_file' );

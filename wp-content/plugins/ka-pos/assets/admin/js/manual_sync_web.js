@@ -109,14 +109,20 @@ jQuery(document).ready(function($) {
     $("#import_manager_form").submit(function(event){
     // Prevent form submission until we can call the server
     
+    $("#notice").remove();
+    
     if ($('#importfile').get(0).files.length === 0) {
-        alert("Bạn chưa chọn file nhập hàng.");
+        $("#importfile").remove();
+        $("#import_manager_form").unbind("submit");
+        $("#import_manager_form").submit();
+        return;
     }
     
     event.preventDefault();
     
     var filename = $('input[name=importfile]').val().split('\\').pop();
-    console.log(filename);
+    $("input[type=submit]").val("Đang xử lý...");
+    $("input[type=submit]").prop('disabled', true);
     $.post(
         global.ajax, 
         {   
@@ -124,6 +130,9 @@ jQuery(document).ready(function($) {
             action: 'mypos_check_exists_file' 
         }, 
         function(response) {
+            $("input[type=submit]").val("Áp dụng");
+            $("input[type=submit]").prop('disabled', false);
+            
             console.log(response);
             if (response.data.status == true) {
                 var r = confirm("File đã tồn tại trên hệ thống, bạn có muốn ghi đè không?");
@@ -143,3 +152,40 @@ jQuery(document).ready(function($) {
     });
 });
 
+function getImportFile(e, filename) {
+        
+        $('#import-detail').remove();
+        $(e).html('<i class="fa fa-check"></i>  Đang xử lý...');
+        $(e).prop('disabled', true);
+        
+        $.post(
+        global.ajax, 
+        {
+            file_name: filename,
+            action: 'mypos_import_file_detail' 
+        }, 
+        function(response) {
+            console.log(response);
+            $(e).html('<i class="fa fa-check"></i>  Xem chi tiết');
+            $(e).prop('disabled', false);
+            $('#wpwrap').append(response.data.html);
+            $('#import-detail').modal('show');
+        });
+};
+
+function deleteImportFile(e, filename) {
+        
+        $(e).html('<i class="fa fa-check"></i>  Đang xử lý...');
+        $(e).prop('disabled', true);
+        
+        $.post(
+        global.ajax, 
+        {   
+            file_name: filename,
+            action: 'mypos_delete_import_file' 
+        }, 
+        function(response) {
+            console.log(response);
+            $(e).html('<i class="fa fa-check"></i>  Done');
+        });
+};
