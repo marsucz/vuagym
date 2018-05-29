@@ -60,9 +60,8 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
             
             case 0: // Hien thi tat ca cac san pham
                 
-                $result = $this->kv_api->get_product_paged($perPage, $currentPage);
-        
-                $totalItems = $result['total'];
+                $result = $this->dbModel->kapos_get_all_import_product($perPage, $currentPage);
+                $totalItems = $this->dbModel->kapos_get_count_import_product();
 
                 $this->set_pagination_args( array(
                     'total_items' => $totalItems,
@@ -80,44 +79,6 @@ class KiotViet_ManualSyncKiotViet_List extends WP_List_Table {
                 
                 break;
             
-            case 1: // Chi hien thi san pham khong dong bo
-                
-                $this->list_kv_product = $this->kv_api->get_all_products_multi();
-                
-//                $perPage = 50;
-//                $currentPage = 0;
-                
-                // show product one times
-                $show_products = $this->show_products_per_page;
-                $count_product = 0;
-                
-//                while ($count_product < $show_products) {
-//                    
-//                    $currentPage++;
-//                    $result = $this->kv_api->get_product_paged($perPage, $currentPage);
-//                    
-//                    if (empty($result)) { break; }
-                    
-                    foreach ($this->list_kv_product as $kv_product) {
-                        if ($this->store != 1) {
-                            if ($kv_product && !empty($kv_product['sku'])) {
-                                $kv_product['sku'] = get_sku_store_phu($kv_product['sku']);
-                            }
-                        }
-                        $new_item = $this->get_product_show_type_no_sync($kv_product);
-                        if (!empty($new_item)) {
-                            $list_product[] = $new_item;
-                            $count_product++;
-                        }
-                        if ($count_product >= $show_products) {
-                            break;
-                        }
-                    }
-//                }
-                break;
-            
-            default:
-                break;
         }
         
         $this->_column_headers = array($columns, $hidden, $sortable);

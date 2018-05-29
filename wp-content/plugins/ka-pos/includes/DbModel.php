@@ -257,6 +257,62 @@ class DbModel {
         
     }
     
+    public function kapos_get_all_import_product($perpage = 20, $currentpage = 1) {
+        
+        $db_name = $this->prefix . DB_KAPOS_IMPORTS;
+        
+        if (!$currentpage) $currentpage = 1;
+        
+        $offset = ($currentpage - 1) * $perpage;
+        
+        $query = "SELECT 
+                        ip.product_code, 
+                        group_concat(concat(ip.product_quantity, ': ', ip.filename) separator '<br/>') as amount_info
+                    FROM
+                        $db_name ip
+                    GROUP BY product_code
+                    LIMIT $perpage OFFSET $offset";
+        
+        $result = mysqli_query($this->link, $query);
+        if (!$result) {
+            write_logs('', $query);
+        }
+        
+        if ($result) {
+            $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        } else {
+            $return = [];
+        }
+        
+        return $return;
+        
+    }
+    
+    public function kapos_get_count_import_product() {
+        
+        $db_name = $this->prefix . DB_KAPOS_IMPORTS;
+        
+        $query = "  SELECT 
+                        count(DISTINCT ip.product_code) as count
+                    FROM
+                        $db_name ip";
+        
+        $result = mysqli_query($this->link, $query);
+        if (!$result) {
+            write_logs('', $query);
+        }
+        
+        if ($result) {
+            $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            $return = $return['count'];
+        } else {
+            $return = 0;
+        }
+        
+        return $return;
+        
+    }
+    
     public function kapos_insert_imports($import_file_name, $import_rows) {
         
         $db_name = $this->prefix . DB_KAPOS_IMPORTS;
