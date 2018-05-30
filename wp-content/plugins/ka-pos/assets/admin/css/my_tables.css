@@ -23,8 +23,11 @@ and open the template in the editor.
 .wp-list-table .column-edit { width: 4%; }
 
 .wp-list-table .column-sku { width: 10%; }
+.wp-list-table .column-store { width: 10%; }
 .wp-list-table .column-name { width: 15%; }
 .wp-list-table .column-options { width: 20%; }
+.wp-list-table .column-kv { width: 20%; }
+.wp-list-table .column-woo { width: 20%; }
 .wp-list-table .column-quantity { width: 15%; }
 
 .wp-list-table .column-regular_price { width: 5%; }
