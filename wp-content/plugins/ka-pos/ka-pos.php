@@ -545,7 +545,6 @@ function function_mypos_sync_page() {
     kapos_do_permission();
     set_time_limit(600);
     
-    load_assets_manual_sync_table();
     
     echo '<div class="wrap">
         <h2>ĐỒNG BỘ HÓA SẢN PHẨM</h2>';
@@ -580,6 +579,8 @@ function function_mypos_sync_page() {
         
         case 'sync_by_web': // Dong bo thu cong theo Web
             
+            load_assets_manual_sync_table();
+            
             echo '  <div class="wrap">
                     <form id="sync-by-web-form" method="POST">
                             <label>Bộ lọc </label>
@@ -606,6 +607,8 @@ function function_mypos_sync_page() {
             break;
             
         case 'sync_by_kiotviet':
+            
+            load_assets_manual_sync_table();
             
             $store_id = get_option('mypos_sync_store');
             
@@ -639,6 +642,8 @@ function function_mypos_sync_page() {
             break;
 
         case 'import_manager':
+            
+            load_assets_tab_import_manager();
             
             echo '  <div class="wrap">
                     <form id="import_manager_form" method="POST" enctype="multipart/form-data">

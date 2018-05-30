@@ -87,9 +87,9 @@ function kawoo_update_default_manager_tabs_options() {
 }
 
 function function_manager_tabs_page() {
-
+    
+    set_time_limit(1200);
     kawoo_do_permission();
-    set_time_limit(600);
 
     echo '<div class="wrap">
         <h2>Quản lý Woocommerce</h2>';
@@ -336,6 +336,8 @@ function function_manager_tabs_page() {
 
 function function_kawoo_options_page() {
 
+    set_time_limit(1200);
+    
     if (isset($_POST['kawoo-roles'])) {
         update_option('kawoo_roles', $_POST['kawoo-roles']);
     }
@@ -344,8 +346,6 @@ function function_kawoo_options_page() {
     
     if (isset($_POST['action_type'])) {
         if ($_POST['action_type'] == 'hide_outofstock_products') {
-            
-            set_time_limit(0);
             
             $dbModel = new DbModel();
             
