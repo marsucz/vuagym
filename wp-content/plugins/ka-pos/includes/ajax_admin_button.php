@@ -96,7 +96,7 @@ function ja_ajax_mypos_update_product_outofstock() {
         
         $show_always = $parent_product->get_meta('_mypos_show_always', true);
         if ($show_always != 'yes') {
-            $parent_product->set_catalog_visibility('hidden');
+            $parent_product->set_catalog_visibility('search');
         }
         
         // Init information
@@ -195,7 +195,7 @@ function ja_ajax_mypos_update_product_outofstock() {
         
         $show_always = $product->get_meta('_mypos_show_always', true);
         if ($show_always != 'yes') {
-            $product->set_catalog_visibility('hidden');
+            $product->set_catalog_visibility('search');
         }
         
     }
