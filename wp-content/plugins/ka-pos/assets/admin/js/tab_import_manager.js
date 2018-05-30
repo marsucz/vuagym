@@ -110,17 +110,24 @@ function getImportFile(e, filename) {
 
 function deleteImportFile(e, filename) {
         
-        $(e).html('<i class="fa fa-check"></i>  Đang xử lý...');
-        $(e).prop('disabled', true);
+        var confirm_text = 'Bạn có chắc xóa file "' + filename + '" không?';
         
-        $.post(
-        global.ajax, 
-        {   
-            file_name: filename,
-            action: 'mypos_delete_import_file' 
-        }, 
-        function(response) {
-            console.log(response);
-            $(e).html('<i class="fa fa-check"></i>  Done');
-        });
+        var r = confirm(confirm_text);
+        
+        if (r == true) {
+        
+            $(e).html('<i class="fa fa-check"></i>  Đang xử lý...');
+            $(e).prop('disabled', true);
+
+            $.post(
+            global.ajax, 
+            {   
+                file_name: filename,
+                action: 'mypos_delete_import_file' 
+            }, 
+            function(response) {
+                console.log(response);
+                $(e).html('<i class="fa fa-check"></i>  Done');
+            });
+        }
 };
