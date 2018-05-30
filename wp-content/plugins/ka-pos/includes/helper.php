@@ -116,6 +116,41 @@ function load_assets_manual_sync_table() {
     wp_register_script('prefix_jquery', WC_PLUGIN_URL . 'assets/admin/lib/jquery-2.2.4.min.js');
     wp_enqueue_script('prefix_jquery');
     
+//    wp_register_script('prefix_bootstrap', WC_PLUGIN_URL . 'assets/admin/lib/bootstrap.min.js');
+//    wp_enqueue_script('prefix_bootstrap');
+    // CSS
+//    wp_register_style('prefix_bootstrap', WC_PLUGIN_URL . 'assets/admin/css/bootstrap.min.css');
+//    wp_enqueue_style('prefix_bootstrap');
+//    wp_register_style('prefix_toggle', WC_PLUGIN_URL . 'assets/admin/css/bootstrap-toggle.min.css');
+//    wp_enqueue_style('prefix_toggle');
+    wp_enqueue_style('my-styles', WC_PLUGIN_URL . 'assets/admin/css/styles.css' );
+//    wp_enqueue_style('my-css-table', WC_PLUGIN_URL . 'assets/admin/css/my_tables.css' );
+    wp_enqueue_style('font-awesome', WC_PLUGIN_URL . 'assets/admin/font-awesome/css/font-awesome.min.css' );
+    
+    
+    wp_enqueue_script(
+		'global',
+		WC_PLUGIN_URL . 'assets/admin/js/manual_sync_web.js',
+		array( 'jquery' ),
+		'1.0.0',
+		true
+    );
+    
+    wp_localize_script(
+		'global',
+		'global',
+		array(
+			'ajax' => admin_url( 'admin-ajax.php' ),
+		)
+    );
+}
+
+function load_assets_tab_import_manager() {
+    
+    // JS
+    wp_register_script('prefix_jquery', WC_PLUGIN_URL . 'assets/admin/lib/jquery-2.2.4.min.js');
+    wp_enqueue_script('prefix_jquery');
+    
     wp_register_script('prefix_bootstrap', WC_PLUGIN_URL . 'assets/admin/lib/bootstrap.min.js');
     wp_enqueue_script('prefix_bootstrap');
     // CSS
@@ -127,10 +162,9 @@ function load_assets_manual_sync_table() {
     wp_enqueue_style('my-css-table', WC_PLUGIN_URL . 'assets/admin/css/my_tables.css' );
     wp_enqueue_style('font-awesome', WC_PLUGIN_URL . 'assets/admin/font-awesome/css/font-awesome.min.css' );
     
-    
     wp_enqueue_script(
 		'global',
-		WC_PLUGIN_URL . 'assets/admin/js/manual_sync_web.js',
+		WC_PLUGIN_URL . 'assets/admin/js/tab_import_manager.js',
 		array( 'jquery' ),
 		'1.0.0',
 		true
