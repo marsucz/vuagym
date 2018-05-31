@@ -353,7 +353,7 @@ function function_kawoo_options_page() {
             $currentPage = 0;
             
             $list_hidden = array();
-            $terms = array( 'exclude-from-catalog', 'exclude-from-search' );
+            $terms = 'exclude-from-catalog';
             while (1) {
                 
                 $currentPage++;
