@@ -164,8 +164,8 @@ span.ywcrbp_sale_price, span.ywcrbp_regular_price {
 }
 
 .widget-mobile>a>span {
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
 }
 
 .add2cart {
@@ -226,32 +226,6 @@ span.ywcrbp_sale_price, span.ywcrbp_regular_price {
     -moz-animation: spin 2s infinite linear;
     -o-animation: spin 2s infinite linear;
     animation: spin 2s infinite linear;
-}
-
-/* Contact Widget */
-
-.ka-icon-01 {
-    display: inline-block;
-    background-image: url(images/chat.png);
-    background-size: 100%;
-    width: 20px;
-    height: 20px;
-}
-
-.ka-icon-02 {
-    display: inline-block;
-    background-image: url(images/chat.png);
-    background-size: 100%;
-    width: 20px;
-    height: 20px;
-}
-
-.ka-icon-03 {
-    display: inline-block;
-    background-image: url(images/chat.png);
-    background-size: 100%;
-    width: 20px;
-    height: 20px;
 }
 
 #chatchat * {

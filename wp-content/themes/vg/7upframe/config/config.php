@@ -251,7 +251,11 @@ if(!function_exists('s7upf_set_theme_config')){
                     'desc' => esc_html__('This allow you to change favicon of your website', 'kuteshop'),
                     'type' => 'upload',
                     'section' => 'option_logo'
-                ),array(
+                ),
+                /*----------------End Logo ----------------------*/
+                
+                /*---------------- Begin Contact Widget --------------------*/
+                array(
                     'id'          => 'ka_cw_group_text',
                     'label'       => esc_html__('Tên nhóm Contact Widget','kuteshop'),
                     'desc'        => esc_html__('Tên nhóm của contact widget trên mobile', 'kuteshop'),
@@ -265,8 +269,64 @@ if(!function_exists('s7upf_set_theme_config')){
                     'type'        => 'text',
                     'section'     => 'option_logo',
                     'std'         => 'Chỉ đường',
+                ),array(
+                    'id'          => 'ka_cw_line02_text',
+                    'label'       => esc_html__('Contact Widget: Tên link 02','kuteshop'),
+                    'desc'        => esc_html__('Tên liên kết thứ hai của contact widget', 'kuteshop'),
+                    'type'        => 'text',
+                    'section'     => 'option_logo',
+                    'std'         => 'Gọi điện',
+                ),array(
+                    'id'          => 'ka_cw_line03_text',
+                    'label'       => esc_html__('Contact Widget: Tên link 03','kuteshop'),
+                    'desc'        => esc_html__('Tên liên kết thứ ba của contact widget', 'kuteshop'),
+                    'type'        => 'text',
+                    'section'     => 'option_logo',
+                    'std'         => 'Inbox FB',
+                ),array(
+                    'id'          => 'ka_cw_icon01_link',
+                    'label'       => esc_html__('Contact Widget: Link icon 01','kuteshop'),
+                    'desc'        => esc_html__('Link icon thứ nhất của contact widget', 'kuteshop'),
+                    'type'        => 'text',
+                    'section'     => 'option_logo',
+                    'std'         => 'https://vuagym.com/wp-content/themes/vg/assets/css/images/chat.png',
+                ),array(
+                    'id'          => 'ka_cw_icon02_link',
+                    'label'       => esc_html__('Contact Widget: Link icon 02','kuteshop'),
+                    'desc'        => esc_html__('Link icon thứ hai của contact widget', 'kuteshop'),
+                    'type'        => 'text',
+                    'section'     => 'option_logo',
+                    'std'         => 'https://vuagym.com/wp-content/themes/vg/assets/css/images/chat.png',
+                ),array(
+                    'id'          => 'ka_cw_icon03_link',
+                    'label'       => esc_html__('Contact Widget: Link icon 03','kuteshop'),
+                    'desc'        => esc_html__('Link icon thứ ba của contact widget', 'kuteshop'),
+                    'type'        => 'text',
+                    'section'     => 'option_logo',
+                    'std'         => 'https://vuagym.com/wp-content/themes/vg/assets/css/images/chat.png',
+                ),array(
+                    'id'          => 'ka_cw_line01_link',
+                    'label'       => esc_html__('Contact Widget: Link item 01','kuteshop'),
+                    'desc'        => esc_html__('Link item thứ nhất của contact widget', 'kuteshop'),
+                    'type'        => 'text',
+                    'section'     => 'option_logo',
+                    'std'         => 'https://google.com.vn',
+                ),array(
+                    'id'          => 'ka_cw_line02_link',
+                    'label'       => esc_html__('Contact Widget: Link item 02','kuteshop'),
+                    'desc'        => esc_html__('Link item thứ hai của contact widget', 'kuteshop'),
+                    'type'        => 'text',
+                    'section'     => 'option_logo',
+                    'std'         => 'https://google.com.vn',
+                ),array(
+                    'id'          => 'ka_cw_line03_link',
+                    'label'       => esc_html__('Contact Widget: Link item 03','kuteshop'),
+                    'desc'        => esc_html__('Link item thứ ba của contact widget', 'kuteshop'),
+                    'type'        => 'text',
+                    'section'     => 'option_logo',
+                    'std'         => 'https://google.com.vn',
                 ),
-                /*----------------End Logo ----------------------*/
+                /*----------------End Contact Widget ----------------------*/
 
                 /*----------------Begin Menu --------------------*/
                 array(

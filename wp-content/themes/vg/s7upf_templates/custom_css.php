@@ -364,6 +364,32 @@ if (!empty($main_color)) {
                 }'."\n";
 }
 
+/* Contact Widget */
+
+$style .= '.ka-icon-01 {
+    display: inline-block;
+    background-image: url(' . s7upf_get_value_by_id('ka_cw_icon01_link') . ');
+    background-size: 100%;
+    width: 20px;
+    height: 20px;
+}
+
+.ka-icon-02 {
+    display: inline-block;
+    background-image: url(' . s7upf_get_value_by_id('ka_cw_icon02_link') . ');
+    background-size: 100%;
+    width: 20px;
+    height: 20px;
+}
+
+.ka-icon-03 {
+    display: inline-block;
+    background-image: url(' . s7upf_get_value_by_id('ka_cw_icon03_link') . ');
+    background-size: 100%;
+    width: 20px;
+    height: 20px;
+}';
+
 // ThemeOptions -> Shop Settings
 /*****END TYPOGRAPHY*****/
 if(!empty($style)) print $style;
