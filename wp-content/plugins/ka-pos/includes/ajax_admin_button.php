@@ -144,11 +144,11 @@ function ja_ajax_mypos_update_product_outofstock() {
             $return['case'] = 3;
             $p_categories = $parent_product->get_category_ids();
             foreach ($p_categories as $key => $ca) {
-                if ($ca == get_option('mypos_category_hangmoive')) { // Danh muc: Sap co hang
+                if ($ca == get_option('mypos_category_hangmoive')) { // Danh muc: Hang moi ve
                     unset($p_categories[$key]);
                 }
             }
-            $p_categories[] = get_option('mypos_category_sapcohang'); // Danh muc: Hang moi ve
+            $p_categories[] = get_option('mypos_category_sapcohang'); // Danh muc: Sap co hang
             $parent_product->set_category_ids($p_categories);
             
             if (get_option('mypos_tt_han_su_dung') != '0') {
@@ -282,9 +282,45 @@ function ja_ajax_mypos_set_pre_order() {
         $parent_product->set_date_modified(current_time('timestamp',7));
         
         $parent_product->set_catalog_visibility('visible');
+        
+        $dbModel = new DbModel();
+        $variations = $dbModel->get_children_ids($base_product_id);
+        $check_condition = true;
+        // Sp biến thể thì nếu KHÔNG tồn tại 1 biến thể nào là còn hàng (còn hàng là trạng thái còn hàng, đã bật và ko tick chọn pre-order)
+        // thì remove danh mục hàng mới về, tick chọn danh mục sắp có hàng
+        foreach ($variations as $child) {
+            $child_product = wc_get_product($child['ID']);
+            $pre_order = new YITH_Pre_Order_Product( $child['ID'] );
+            if ($child_product->is_in_stock() && $child_product->is_visible() && $pre_order->get_pre_order_status() != 'yes') {
+                $check_condition = false;
+                break;
+            }
+        }
+        
+        if ($check_condition) {
+            $return['variation_process'] = 'yes';
+            $p_categories = $parent_product->get_category_ids();
+            foreach ($p_categories as $key => $ca) {
+                if ($ca == get_option('mypos_category_hangmoive')) { // Danh muc: Hang moi ve
+                    unset($p_categories[$key]);
+                }
+            }
+            $p_categories[] = get_option('mypos_category_sapcohang'); // Danh muc: Sap co hang
+            $parent_product->set_category_ids($p_categories);
+        }
+        
         $parent_product->save();
     } else {
         $product->set_catalog_visibility('visible');
+        
+        $categories = $product->get_category_ids();
+        foreach ($categories as $key => $ca) {
+            if ($ca == get_option('mypos_category_hangmoive')) { // Danh muc: Hang moi ve
+                unset($categories[$key]);
+            }
+        }
+        $categories[] = get_option('mypos_category_sapcohang'); // Danh muc: Sap co hang
+        $product->set_category_ids($categories);
     }
     
     $product->set_date_created(current_time('timestamp',7));
