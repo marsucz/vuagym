@@ -251,6 +251,20 @@ if(!function_exists('s7upf_set_theme_config')){
                     'desc' => esc_html__('This allow you to change favicon of your website', 'kuteshop'),
                     'type' => 'upload',
                     'section' => 'option_logo'
+                ),array(
+                    'id'          => 'ka_cw_group_text',
+                    'label'       => esc_html__('Tên nhóm Contact Widget','kuteshop'),
+                    'desc'        => esc_html__('Tên nhóm của contact widget trên mobile', 'kuteshop'),
+                    'type'        => 'text',
+                    'section'     => 'option_logo',
+                    'std'         => 'Liên hệ',
+                ),array(
+                    'id'          => 'ka_cw_line01_text',
+                    'label'       => esc_html__('Contact Widget: Tên link 01','kuteshop'),
+                    'desc'        => esc_html__('Tên liên kết thứ nhất của contact widget', 'kuteshop'),
+                    'type'        => 'text',
+                    'section'     => 'option_logo',
+                    'std'         => 'Chỉ đường',
                 ),
                 /*----------------End Logo ----------------------*/
 

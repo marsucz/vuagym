@@ -155,7 +155,8 @@
 				});
 			});
 		}
-	}
+    }
+    
     function menu_responsive(){
     	//Menu Responsive
 		$('.toggle-mobile-menu').on('click',function(event){
@@ -560,6 +561,13 @@
     /************ END FUNCTION **************/
 
 	$(document).ready(function(){
+            
+                $("#add2cart").on('click', function() {
+                    console.log("Click");
+                    var $scrollTo = $('.product-price');
+                    $('html,body').animate({scrollTop: $scrollTo.offset().top - 120});
+                });
+            
 		if($('.variations_form').length > 0){
 			var id = $('input[name="variation_id"]').val();
 			if(id == 0) $('.addcart-special').addClass("disabled");

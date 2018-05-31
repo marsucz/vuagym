@@ -142,6 +142,48 @@ span.ywcrbp_sale_price, span.ywcrbp_regular_price {
 
 /* End */
 
+/* Contact Widget */
+
+.widget-mobile {
+    display: none;
+    padding-right: 0 !important;
+}
+
+.widget-pc {
+    display: block;
+}
+
+@media (max-width: 767px) {
+    .widget-mobile {
+        display: block;
+    }
+    
+    .widget-pc {
+        display: none;
+    }
+}
+
+.widget-mobile>a>span {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+
+.add2cart {
+    background: url(https://vuagym.com/wp-content/uploads/add-to-card-icon.png) 15px center no-repeat #079c3a;
+    font-size: 1.1em;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 0 0 0 50px;
+    background-size: 25px;
+    color: #fff !important;
+}
+
+.add2cart:hover{
+    background: url(https://vuagym.com/wp-content/uploads/add-to-card-icon.png) 15px center no-repeat #0b8434 !important;
+    background-size: 25px !important;
+    background-color: #005599 !important;
+}
+
 /*add style*/
 .breadcrumb >ul,
 .breadcrumb >ul > li{
@@ -188,14 +230,7 @@ span.ywcrbp_sale_price, span.ywcrbp_regular_price {
 
 /* Contact Widget */
 
-.icon-icon-phone {
-    display: inline-block;
-    background-image: url(images/call-phone.png);
-    background-size: 100%;
-    width: 24px;
-    height: 24px;
-}
-.icon-icon-chat {
+.ka-icon-01 {
     display: inline-block;
     background-image: url(images/chat.png);
     background-size: 100%;
@@ -203,13 +238,20 @@ span.ywcrbp_sale_price, span.ywcrbp_regular_price {
     height: 20px;
 }
 
-.icon-icon-zalo {
+.ka-icon-02 {
     display: inline-block;
-    background-image: url(images/zalo.png);
+    background-image: url(images/chat.png);
     background-size: 100%;
-    width: 18px;
-    height: 18px;
-    border-radius: 5px;
+    width: 20px;
+    height: 20px;
+}
+
+.ka-icon-03 {
+    display: inline-block;
+    background-image: url(images/chat.png);
+    background-size: 100%;
+    width: 20px;
+    height: 20px;
 }
 
 #chatchat * {
@@ -252,12 +294,12 @@ span.ywcrbp_sale_price, span.ywcrbp_regular_price {
      padding-right: 6%;
     float:left;
     height:auto;
-    padding-top:9px;
-    padding-bottom:9px;
+    padding-top:10px;
+    padding-bottom:10px;
     position:relative
 }
  #chatchat ul li:hover{
-    background:#4f4f4f
+    background:#005599
 }
  #chatchat ul li:hover a{
     color:#fff
@@ -273,7 +315,7 @@ span.ywcrbp_sale_price, span.ywcrbp_regular_price {
     margin:0px;
      display:none;
     position:absolute;
-    bottom:40px;
+    bottom:50px;
     right:0px;
      background:#fff;
     border: 1px solid #ccc;
@@ -293,16 +335,16 @@ span.ywcrbp_sale_price, span.ywcrbp_regular_price {
     background:#fff
 }
  #chatchat ul li:hover ul li a{
-    color:#4f4f4f
+    color:#005599
 }
  #chatchat ul li:hover ul li a i{
-    color:#4f4f4f
+    color:#005599
 }
  #chatchat ul li:hover ul li a span{
-    color:#4f4f4f
+    color:#005599
 }
  #chatchat ul li ul li:hover {
-    background:#4f4f4f
+    background:#005599
 }
  #chatchat ul li ul li:hover a{
     color:#fff
@@ -318,10 +360,9 @@ span.ywcrbp_sale_price, span.ywcrbp_regular_price {
 }
  #chatchat ul li a i{
     float:left;
-    margin-left:1px;
-    margin-top:2px;
-    font-size:21px;
+    margin-left:2px;
 }
+
  #chatchat ul li a{
     float:left;
     color:#333333;
@@ -3259,7 +3300,7 @@ button.single_add_to_cart_button {
     }
     #chatchat ul li ul li {
         width: 100% !important;
-        padding: 5px 20px;
+        padding: 10px 20px;
     }
     #chatchat ul li{
         width: 33.3% !important;
@@ -3267,8 +3308,8 @@ button.single_add_to_cart_button {
         padding-left: 0;
     }
     #chatchat ul li ul{
-        left: 0px !important;
-        width: 300px !important;
+        /*left: 0px !important;*/
+        width: 200px !important;
     }
     #designby1{
         margin-bottom: 62px;
