@@ -46,12 +46,12 @@
 <div id="chatchat">
 	<ul>
             <li id="add2cart" class="widget-mobile add2cart" style="width: 60% !important;"><a><span style="color: #fff; font-size: 1em; padding-left: 22px;">Thêm vào giỏ</span></a>
-            <li id="contact-group" class="widget-mobile" style="width: 40% !important"><a><span style="font-size: 1em;"><?php echo s7upf_get_value_by_id('ka_cw_group_text') ?></span></a>
+            <li id="contact-group" class="widget-mobile contact-group" style="width: 40% !important"><a><span class="contact-group" style="font-size: 1em;"><?php echo s7upf_get_value_by_id('ka_cw_group_text') ?></span></a>
                     <ul>
                         <li><a target="_blank" href="<?php echo s7upf_get_value_by_id('ka_cw_line01_link') ?>"><i class="ka-icon-01" aria-hidden="true" ></i> <span><?php echo s7upf_get_value_by_id('ka_cw_line01_text') ?></span></a></li> 
                         <li><a target="_blank" href="<?php echo s7upf_get_value_by_id('ka_cw_line02_link') ?>"><i class="ka-icon-02" aria-hidden="true"></i> <span><?php echo s7upf_get_value_by_id('ka_cw_line02_text') ?></span></a></li>
                         <li><a target="_blank" href="<?php echo s7upf_get_value_by_id('ka_cw_line03_link') ?>"><i class="ka-icon-03" aria-hidden="true"></i><span><?php echo s7upf_get_value_by_id('ka_cw_line03_text') ?></span></a></li>
-                    </ul> 
+                    </ul>
             </li>
             <li class="widget-pc"><a target="_blank" href="<?php echo s7upf_get_value_by_id('ka_cw_line01_link') ?>"><i class="ka-icon-01" aria-hidden="true" ></i> <span><?php echo s7upf_get_value_by_id('ka_cw_line01_text') ?></span></a></li>
             <li class="widget-pc"><a target="_blank" href="<?php echo s7upf_get_value_by_id('ka_cw_line02_link') ?>"><i class="ka-icon-02" aria-hidden="true"></i> <span><?php echo s7upf_get_value_by_id('ka_cw_line02_text') ?></span></a></li>

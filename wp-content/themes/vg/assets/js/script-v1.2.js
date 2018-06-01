@@ -563,19 +563,23 @@
 	$(document).ready(function(){
             
                 $("#add2cart").on('click', function() {
-                    console.log("Click");
                     var $scrollTo = $('.product-price');
                     $('html,body').animate({scrollTop: $scrollTo.offset().top - 120});
                 });
                 
+                var first_click = false;
                 $("#contact-group").on('click', function () {
+                    if (!first_click) {
+                        first_click = true;
+                        return;
+                    }
                     if ($("#contact-group ul").css('display') == 'block') {
-                        $("#contact-group ul").css('display','block');
-                    } else {
                         $("#contact-group ul").css('display','none');
+                    } else {
+                        $("#contact-group ul").css('display','block');
                     }
                 });
-            
+                
 		if($('.variations_form').length > 0){
 			var id = $('input[name="variation_id"]').val();
 			if(id == 0) $('.addcart-special').addClass("disabled");
@@ -673,6 +677,12 @@
 		})
 		$('body').on('click',function(event){
 			$('.live-search-on.active').removeClass('active');
+                        
+                        if (!$(event.target).hasClass('contact-group')) {
+                            first_click = false;
+                            $("#contact-group ul").css('display','');
+                            
+                        }
 		})
 		//Flash Count Down
 		if($('.flash-countdown').length>0){
