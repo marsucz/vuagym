@@ -567,6 +567,14 @@
                     var $scrollTo = $('.product-price');
                     $('html,body').animate({scrollTop: $scrollTo.offset().top - 120});
                 });
+                
+                $("#contact-group").on('click', function () {
+                    if ($("#contact-group ul").css('display') == 'block') {
+                        $("#contact-group ul").css('display','block');
+                    } else {
+                        $("#contact-group ul").css('display','none');
+                    }
+                });
             
 		if($('.variations_form').length > 0){
 			var id = $('input[name="variation_id"]').val();

@@ -52,12 +52,12 @@ span.ywcrbp_sale_price, span.ywcrbp_regular_price {
     color: #000;
 }
 
-.user-cp {
+    .user-cp {
     color: #fff;
     position: relative;
     z-index: 99;
     display: inline-block;
-    float: right;
+    /*float: right;*/
     padding-left: 10px;
 }
 
