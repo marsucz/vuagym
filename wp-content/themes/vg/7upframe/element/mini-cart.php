@@ -67,7 +67,7 @@ if(class_exists("woocommerce")){
                 case 'mini-cart17':
                     $header_cart_html = '<a class="mini-cart-link" href="'.esc_url(wc_get_cart_url()).'">
                                             <span class="mini-cart-icon"><i class="fa fa-shopping-basket" aria-hidden="true"></i></span>
-                                            <span class="mini-cart-number"><sup class="cart-item-count">0</sup>'.esc_html__("My Cart","kuteshop").'</span>
+                                            <span class="mini-cart-number"><sup class="cart-item-count">0</sup>'.esc_html__("Giỏ Hàng","kuteshop").'</span>
                                         </a>';
                     $html .=    '<div class="mini-cart-box '.$style.'">
                                     '.$header_cart_html.'
@@ -83,7 +83,7 @@ if(class_exists("woocommerce")){
                     $header_cart_html = '<a class="mini-cart-link" href="'.esc_url(wc_get_cart_url()).'">
                                             <span class="mini-cart-icon"><img style="width: 1em; height: 1em; max-width: 100%; " src="'.esc_url(get_template_directory_uri().'/assets/css/images/theme/store-cart.png').'" alt=""></span>
                                             <span class="mini-cart-number radius cart-item-count">0</span>
-                                            <span class="text">'.esc_html__("My Cart","kuteshop").'</span>
+                                            <span class="text">'.esc_html__("Giỏ Hàng","kuteshop").'</span>
                                         </a>';
                     $html .=    '<div class="mini-cart-box '.$style.'">
                                     '.$header_cart_html.'
