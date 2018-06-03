@@ -273,8 +273,6 @@ function ja_ajax_mypos_set_pre_order() {
 		
     $product = wc_get_product($product_id);
     
-    $product->set_stock_status('instock');
-    
     if ($product->is_type( 'variation' )) {
         $base_product_id = $product->get_parent_id();
         $parent_product = wc_get_product($base_product_id);
@@ -291,8 +289,9 @@ function ja_ajax_mypos_set_pre_order() {
         foreach ($variations as $child) {
             $child_product = wc_get_product($child['ID']);
             $pre_order = new YITH_Pre_Order_Product( $child['ID'] );
-            if ($child_product->is_in_stock() && $child_product->is_visible() && $pre_order->get_pre_order_status() != 'yes') {
+            if ($child_product->is_in_stock() && $child_product->get_status() == 'publish' && $pre_order->get_pre_order_status() == 'no') {
                 $check_condition = false;
+                $return['ID_is_instock'] = $child['ID'];
                 break;
             }
         }
@@ -323,6 +322,7 @@ function ja_ajax_mypos_set_pre_order() {
         $product->set_category_ids($categories);
     }
     
+    $product->set_stock_status('instock');
     $product->set_date_created(current_time('timestamp',7));
     $product->set_date_modified(current_time('timestamp',7));
     

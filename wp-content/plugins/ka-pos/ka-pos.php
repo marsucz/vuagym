@@ -520,18 +520,7 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
-    
     echo "TESTING PAGE";
-
-    $upload = wp_upload_dir();
-    $upload_dir = $upload['basedir'];
-    $upload_dir = $upload_dir . '/import-files/';
-    if (! is_dir($upload_dir)) {
-        mkdir( $upload_dir, 0700 );
-    }
-              
-    $file_list = array_diff(scandir($upload_dir), array('.', '..'));
-     
 }
 
 function update_default_manual_sync_options() {
