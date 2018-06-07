@@ -1,0 +1,5 @@
+
+2018-06-01 00:25:54   SELECT 
+                        count(DISTINCT ip.product_code) as count
+                    FROM
+                        vg_kapos_imports ip

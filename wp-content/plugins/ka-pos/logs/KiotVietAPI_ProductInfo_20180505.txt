@@ -1,0 +1,9 @@
+
+2018-05-05 23:14:45 URL Get: https://public.kiotapi.com/products/4634414
+ Bad response: {"ResponseStatus":{"ErrorCode":"KvRetailerExpireException","Message":"C\u1eeda h\u00e0ng c\u1ee7a b\u1ea1n \u0111\u00e3 b\u1ecb kh\u00f3a. Vui l\u00f2ng li\u00ean h\u1ec7 qu\u1ea3n tr\u1ecb \u0111\u1ec3 bi\u1ebft th\u00eam chi ti\u1ebft!"}}
+2018-05-05 23:22:00 URL Get: https://public.kiotapi.com/products/4634414
+ Bad response: {"ResponseStatus":{"ErrorCode":"KvRetailerExpireException","Message":"C\u1eeda h\u00e0ng c\u1ee7a b\u1ea1n \u0111\u00e3 b\u1ecb kh\u00f3a. Vui l\u00f2ng li\u00ean h\u1ec7 qu\u1ea3n tr\u1ecb \u0111\u1ec3 bi\u1ebft th\u00eam chi ti\u1ebft!"}}
+2018-05-05 23:46:02 URL Get: https://public.kiotapi.com/products/4634414
+ Bad response: {"ResponseStatus":{"ErrorCode":"KvRetailerExpireException","Message":"C\u1eeda h\u00e0ng c\u1ee7a b\u1ea1n \u0111\u00e3 b\u1ecb kh\u00f3a. Vui l\u00f2ng li\u00ean h\u1ec7 qu\u1ea3n tr\u1ecb \u0111\u1ec3 bi\u1ebft th\u00eam chi ti\u1ebft!"}}
+2018-05-05 23:59:50 URL Get: https://public.kiotapi.com/products/4634358
+ Bad response: {"ResponseStatus":{"ErrorCode":"KvRetailerExpireException","Message":"C\u1eeda h\u00e0ng c\u1ee7a b\u1ea1n \u0111\u00e3 b\u1ecb kh\u00f3a. Vui l\u00f2ng li\u00ean h\u1ec7 qu\u1ea3n tr\u1ecb \u0111\u1ec3 bi\u1ebft th\u00eam chi ti\u1ebft!"}}
