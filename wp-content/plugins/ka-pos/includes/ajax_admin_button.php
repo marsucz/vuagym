@@ -77,15 +77,8 @@ add_action( 'wp_ajax_mypos_update_product_instock', 'ja_ajax_mypos_update_produc
 add_action( 'wp_ajax_nopriv_mypos_update_product_instock', 'ja_ajax_mypos_update_product_instock' );
 
 
-function ja_ajax_mypos_update_product_outofstock() {
-    //Form Input Values
-    $product_id     = intval($_POST['product_id']);
+function process_update_outofstock($product_id) {
     
-    //If empty return error
-    if(!$product_id){
-            wp_send_json(array('error' => __('Missing Product ID!')));
-    }
-		
     $product = wc_get_product($product_id);
     $product->set_stock_status('outofstock');
     $product->save();
@@ -208,6 +201,19 @@ function ja_ajax_mypos_update_product_outofstock() {
         $return['status'] = false;
     }
     
+    return $return;
+}
+
+function ja_ajax_mypos_update_product_outofstock() {
+    //Form Input Values
+    $product_id     = intval($_POST['product_id']);
+    
+    //If empty return error
+    if(!$product_id){
+            wp_send_json(array('error' => __('Missing Product ID!')));
+    }
+		
+    $return = process_update_outofstock($product_id);
     $return['deleted'] = delete_post_cache($product_id);
     
     wp_send_json_success( $return );

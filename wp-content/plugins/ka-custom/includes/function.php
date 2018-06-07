@@ -17,12 +17,15 @@ if(!function_exists('tuandev_process_default_product_variation')){
                 $change_variation = true;
             } else {
                 $default_variation = wc_get_product($default_variation_id);
-                if ($default_variation->get_stock_status() == 'outofstock') {
+                $pre_order = get_post_meta($default_variation_id, '_ywpo_preorder', true);
+                
+                if ($default_variation->get_stock_status() == 'outofstock' || $pre_order == 'yes') {
                     $change_variation = true;
                 }
             }
 
             $variations = $product->get_children();
+            $temp_default_attributes = null;
             
             foreach ($variations as $child_id) {
                 if ( $child_id ) {
@@ -35,16 +38,28 @@ if(!function_exists('tuandev_process_default_product_variation')){
                         }
                     } else {
                         if ($change_variation && !$updated_default) {
-                            // Get the attributes of the product has instock
-                            $new_default_attributes = $child->get_attributes();
-                            // Update the new attributes to parent product
-                            $product->set_default_attributes($new_default_attributes);
-                            $product->save();
-                            $change_variation = false;
-                            $updated_default = true;
+                            $pre_order = get_post_meta($child_id, '_ywpo_preorder', true);
+                            if ($pre_order == 'yes') {
+                                // Get the attributes of the product has instock
+                                $temp_default_attributes = $child->get_attributes();
+                            } else {
+                                // Get the attributes of the product has instock
+                                $new_default_attributes = $child->get_attributes();
+                                // Update the new attributes to parent product
+                                $product->set_default_attributes($new_default_attributes);
+                                $product->save();
+                                $change_variation = false;
+                                $updated_default = true;
+                            }
                         }
                     }
                 }
+            }
+            
+            if (!$updated_default && $temp_default_attributes) {
+                $product->set_default_attributes($temp_default_attributes);
+                $product->save();
+                $updated_default = true;
             }
         }
 
