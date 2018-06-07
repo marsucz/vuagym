@@ -66,7 +66,7 @@ class DbModel {
         
 //        if (!$parent_id) return false;
         $query = "  SELECT *
-                    FROM db_vuagym.vg_postmeta
+                    FROM {$this->prefix}postmeta
                     WHERE post_id IN (  SELECT ID
                                         FROM {$this->prefix}posts 
                                         WHERE post_parent = {$parent_id}
@@ -91,7 +91,7 @@ class DbModel {
         if (!$parent_id) return false;
         
         $query = "  SELECT *
-                    FROM db_vuagym.vg_postmeta
+                    FROM {$this->prefix}postmeta
                     WHERE post_id IN (  SELECT ID
                                         FROM {$this->prefix}posts 
                                         WHERE post_parent = {$parent_id}
