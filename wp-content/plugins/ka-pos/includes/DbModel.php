@@ -22,7 +22,14 @@ class DbModel {
     
     public function query($query) {
         $result = mysqli_query($this->link, $query);
-        return $result;
+        
+        if ($result) {
+            $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        } else {
+            $return = array();
+        }
+        
+        return $return;
     }
     
     public function get_count_woo_product() {
