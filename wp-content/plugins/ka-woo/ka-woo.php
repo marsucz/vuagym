@@ -354,104 +354,11 @@ function function_kawoo_options_page() {
             
             $list_hidden = array();
             $list_show = array();
-            $list_none = array();
+            $list_show_always = array();
             
-//            while (1) {
-//
-//                $currentPage++;
-//
-//                $loop = new WP_Query(array('post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage));
-//                
-//                if (!$loop->post_count || $loop->post_count == 0) {
-//                    break;
-//                }
-//
-//                while ($loop->have_posts()) : $loop->the_post();
-//
-//                    $product_id = get_the_ID();
-//
-//                    // add product to array but don't add the parent of product variations
-//                    if ($product_id) {
-//                        
-//                        $product = wc_get_product($product_id);
-//                        
-//                        $always_show_status = get_post_meta($product_id, '_mypos_show_always', true);
-//                        
-//                        if ($always_show_status == 'yes') {
-//                            // Luon luon hien san pham nay
-//                            if ($product->get_catalog_visibility() != 'visible') {
-//                                $product->set_catalog_visibility('visible');
-//                                $product->save();
-//                                
-//                                $list_show[] = $product_id;
-//                            }
-//                        }
-//                        
-//                        if ($always_show_status != 'yes') {
-//                            if ($product && $product->is_type('variable') && $product->has_child()) {
-//
-//                                $check_in_stock = $dbModel->check_stock_by_parent_id($product_id);
-//                                $visibility_status = $product->get_catalog_visibility();
-//
-//                                if ($check_in_stock) {
-//                                    if ($visibility_status == 'visible') {
-//                                        // Con hang + Dang hien thi => Khong lam gi ca
-//                                        $list_none[] = $product_id;
-//                                    } else {
-//                                        $product->set_catalog_visibility('visible');
-//                                        $product->save();
-//
-//                                        $list_show[] = $product_id;
-//                                    }
-//                                } else {
-//                                    if ($visibility_status == 'visible') {
-//                                        // Con hang + Dang hien thi => Khong lam gi ca
-//                                        $list_none[] = $product_id;
-//                                    } else {
-//                                        // An trong catalog + van hien thi trong Search
-//                                        $product->set_catalog_visibility('search');
-//                                        $product->save();
-//
-//                                        $list_hidden[] = $product_id;
-//                                    }
-//                                }
-//
-//                            } elseif ($product && $product->is_type('simple')) {
-//
-//                                $visibility_status = $product->get_catalog_visibility();
-//
-//                                if ($product->is_in_stock()) {
-//                                    if ($visibility_status == 'visible') {
-//                                        // Con hang + Dang hien thi => Khong lam gi ca
-//                                        $list_none[] = $product_id;
-//                                    } else {
-//                                        $product->set_catalog_visibility('visible');
-//                                        $product->save();
-//
-//                                        $list_show[] = $product_id;
-//                                    }
-//                                } else {
-//                                    if ($visibility_status == 'visible') {
-//                                        // Con hang + Dang hien thi => Khong lam gi ca
-//                                        $list_none[] = $product_id;
-//                                    } else {
-//                                        // An trong catalog + van hien thi trong Search
-//                                        $product->set_catalog_visibility('search');
-//                                        $product->save();
-//
-//                                        $list_hidden[] = $product_id;
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                endwhile;
-//                wp_reset_query();
-//            }
+            $term_only_search = 'exclude-from-catalog';
+            $term_visible = array();
             
-            
-            $terms = 'exclude-from-catalog';
             while (1) {
                 
                 $currentPage++;
@@ -461,29 +368,40 @@ function function_kawoo_options_page() {
                     break;
                 }
                 
-                foreach ($list_product as $product) {
+                foreach ($list_product as $prod) {
                     
-                    $product_type = get_post_type($product['ID']);
-                    $check_in_stock = $dbModel->check_stock_by_parent_id($product_id);
+                    $product_id = $prod['ID'];
+                    if ($prod['show_status'] == 'yes') {
+                        wp_set_object_terms($product_id, $term_visible, 'product_visibility');
+                        $list_show_always[] = $product_id;
+                        continue;
+                    }
                     
-                    if ($product_type == 'product_variation') {
-                        
-                    } else {
-                        if ($product['show_status'] == 'yes') {
-                            wp_set_object_terms( $product['ID'], $terms, 'product_visibility' );
+                    $product = wc_get_product($product_id);
+                    if ($product && $product->is_type('variable')) {
+                        $check_in_stock = $dbModel->check_stock_by_parent_id($product_id);
+                        if ($check_in_stock) {
+                            wp_set_object_terms($product_id, $term_visible, 'product_visibility');
+                            $list_show[] = $product_id;
+                        } else {
+                            wp_set_object_terms( $product_id, $term_only_search, 'product_visibility' );
+                            $list_hidden[] = $product_id;
                         }
-                        
-                        if ($product['stock_status'] == 'outofstock' && $product['show_status'] != 'yes') {
-                            wp_set_object_terms( $product['ID'], $terms, 'product_visibility' );
-                            $list_hidden[] = $product['ID'];
+                    } else {
+                        if ($prod['stock_status'] == 'outofstock') {
+                            wp_set_object_terms( $product_id, $term_only_search, 'product_visibility' );
+                            $list_hidden[] = $product_id;
+                        } else {
+                            wp_set_object_terms( $product_id, $term_visible, 'product_visibility' );
+                            $list_show[] = $product_id;
                         }
                     }
                 }
             }
             
-            $message = "Đã ẩn: " . count($list_hidden) . " sản phẩm";
-            $message .= "<br/>Đã hiện: " . count($list_show) . " sản phẩm";
-            $message .= "<br/>None: " . count($list_none) . " sản phẩm";
+            $message = "Đã ẩn (" . count($list_hidden) . " sản phẩm): " . implode(', ', $list_hidden);
+            $message .= "<br/>Đã hiện (" . count($list_show) . " sản phẩm): ". implode(', ', $list_show);
+            $message .= "<br/>Luôn hiện (" . count($list_show_always) . " sản phẩm): ". implode(', ', $list_show_always);
         }
     }
     
@@ -554,15 +472,16 @@ function function_kawoo_options_page() {
 function function_kawoo_testing_page() {
     
     $post_id = 3183;
-//    //Set product hidden: 
+    //Set product hidden: 
 //    $terms = array( 'exclude-from-catalog', 'exclude-from-search' );
-//    wp_set_object_terms( $post_id, $terms, 'product_visibility' );
+    $terms = array();
+    wp_set_object_terms( $post_id, $terms, 'product_visibility' );
     
-    $test = get_the_terms($post_id, 'product_visibility');
-    echo '<pre>';
-    print_r($test);
-    echo '<pre>';
-    exit;
+//    $test = get_the_terms($post_id, 'product_visibility');
+//    echo '<pre>';
+//    print_r($test);
+//    echo '<pre>';
+//    exit;
     
 ////Set product visible in catalog:
 //$terms = 'exclude-from-search';
