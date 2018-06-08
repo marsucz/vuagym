@@ -270,9 +270,6 @@ if(!function_exists('tuandev_process_get_min_price_html')){
 if(!function_exists('tuandev_get_min_price_html')){
     function tuandev_get_min_price_html($product) {
         
-        echo "FUCK";
-        exit;
-    
         $max_int = 999999999;
         $min_int = -999999999;
 
