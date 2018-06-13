@@ -579,6 +579,7 @@ function ja_ajax_kapos_get_rename_popup() {
     $string_name = substr($product_name, 0, $pos) . '</span>' . substr($product_name, $pos);
     $string_name = '<span style="font-weight:bold; color: #ff6600">' . $string_name;
     
+    $kv_name = stripslashes($kv_name);
     $template = kapos_set_product_name_modal($product_id, $product_name, $string_name, $kv_name);
     
     $return = $template;

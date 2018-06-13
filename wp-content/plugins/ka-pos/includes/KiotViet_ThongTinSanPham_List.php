@@ -491,9 +491,10 @@ class KiotViet_ThongTinSanPham_List extends WP_List_Table {
                     if ($left_web_name != $kv_product['short_name']){
                         $show_rename = true;
                     }
-
+                    
                     if ($show_rename) {
-                        $r .= '  <button id="get_rename_popup_' . $product_id . '" type="button" class="btn btn-mypos btn-success" title="Cập nhật tên cho sản phẩm này" onclick="get_rename_popup('. $product_id . ',\'' . $kv_product['short_name'] . '\', ' . $len_kv_name . ');"><i class="fa fa-tasks"></i>  Cập nhật tên</button>';
+                        $short_string_name = esc_js($kv_product['short_name']);
+                        $r .= '  <button id="get_rename_popup_' . $product_id . '" type="button" class="btn btn-mypos btn-success" title="Cập nhật tên cho sản phẩm này" onclick="get_rename_popup('. $product_id . ',\'' . $short_string_name . '\', ' . $len_kv_name . ');"><i class="fa fa-tasks"></i>  Cập nhật tên</button>';
                     }
                     
                 } else {
