@@ -572,14 +572,27 @@ function function_mypos_sync_page() {
         case 'sync_by_web': // Dong bo thu cong theo Web
             
             load_assets_manual_sync_table();
-            
+            if (isset($_POST['sync_web_type']) && !empty($_POST['sync_web_type'])) {
+                $sync_web_type = $_POST['sync_web_type'];
+            } else {
+                $sync_web_type = 1;
+            }
+                    
             echo '  <div class="wrap">
                     <form id="sync-by-web-form" method="POST">
+                    <label>Loại </label>
+                    <select id="sync_web_type" name="sync_web_type">
+                        <option value="1"' . ($sync_web_type == 1 ? 'selected' : '') . '>Kho hàng và giá</option>
+                        <option value="2"' . ($sync_web_type == 2 ? 'selected' : '') . '>Thông tin sản phẩm</option>
+                    </select>
                             <label>Bộ lọc </label>
                             <select id="sync_by_web_show_type" name="sync_by_web_show_type">
                                 <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Chỉ hiển thị sản phẩm không đồng bộ</option>
                                 <option value="0"' . ($show_type == 0 ? 'selected' : '') . '>Hiển thị tất cả sản phẩm</option>
                                 <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Hiển thị tất cả sản phẩm Pre Order</option>
+                                    
+                                <option value="3"' . ($show_type == 3 ? 'selected' : '') . '>Chỉ hiển thị sản phẩm chưa đồng bộ</option>
+                                <option value="4"' . ($show_type == 4 ? 'selected' : '') . '>Hiển thị tất cả sản phẩm</option>  
                             </select>
                             <label id="sync_by_web_products_label"> Số lượng SP </label>
                             <input type="number" id="sync_by_web_products" name="sync_by_web_products" value="' . $show_products . '" min="1" required>
@@ -590,11 +603,24 @@ function function_mypos_sync_page() {
             if (empty($_POST) && !isset($_GET['paged'])) {
                 
             } else {
-                echo '<form method="POST" id="sync-by-web-list">';
-                $myListTable = new KiotViet_ManualSyncWeb_List($show_type, $show_products);
-                $myListTable->prepare_items();
-                $myListTable->display();
-                echo '</form>';
+                
+                switch ($show_type) {
+                    case 3:
+                    case 4:
+                        echo '<form method="POST" id="sync-by-web-list">';
+                        $myListTable = new KiotViet_ThongTinSanPham_List($show_type, $show_products);
+                        $myListTable->prepare_items();
+                        $myListTable->display();
+                        echo '</form>';
+                        break;
+                    default:
+                        echo '<form method="POST" id="sync-by-web-list">';
+                        $myListTable = new KiotViet_ManualSyncWeb_List($show_type, $show_products);
+                        $myListTable->prepare_items();
+                        $myListTable->display();
+                        echo '</form>';
+                        break;
+                }
             }
             break;
             

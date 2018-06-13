@@ -20,6 +20,7 @@ class loader {
         
         add_filter( 'product_type_options', array( $this, 'mypos_show_always_checkbox' ), 6 );
 //        add_filter( 'woocommerce_product_is_visible', array( $this, 'kawoo_show_always'), 10, 2 );
+        add_action( 'save_post', 'my_project_updated_send_email' );
     }
     
 //    public function kawoo_show_always( $is_visible, $id ) {
@@ -119,4 +120,27 @@ class loader {
             $is_other_store = isset( $_POST['_mypos_other_store'][ $_i ] ) ? 'yes' : 'no';
             update_post_meta($post_id, '_mypos_other_store', $is_other_store);
     }
+    
+    function kapos_update_price_variation_field( $post_id ) {
+        /*
+         * In production code, $slug should be set only once in the plugin,
+         * preferably as a class property, rather than in each function that needs it.
+         */
+        $post_type = get_post_type($post_id);
+
+        // If this isn't a 'book' post, don't update it.
+        if ( "book" != $post_type ) return;
+
+        // - Update the post's metadata.
+
+        if ( isset( $_POST['book_author'] ) ) {
+            update_post_meta( $post_id, 'book_author', sanitize_text_field( $_POST['book_author'] ) );
+        }
+
+        if ( isset( $_POST['publisher'] ) ) {
+            update_post_meta( $post_id, 'publisher', sanitize_text_field( $_POST['publisher'] ) );
+        }
+
+    }
+    
 }

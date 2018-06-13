@@ -508,3 +508,110 @@ function ja_ajax_mypos_delete_import_file() {
 
 add_action( 'wp_ajax_mypos_delete_import_file', 'ja_ajax_mypos_delete_import_file' );
 add_action( 'wp_ajax_nopriv_mypos_delete_import_file', 'ja_ajax_mypos_delete_import_file' );
+
+
+function kapos_set_product_name_modal($product_id, $web_productname, $kv_productname) {
+    
+    $return = '        
+        <div class="modal fade" id="setNameModal" tabindex="-1" role="dialog" aria-labelledby="setNameModalLabel" aria-hidden="true" style="padding-top: 5%;">
+            <div class="modal-dialog modal-lg" id="mypos-modal-dialog">
+                <div class="modal-content" style="margin-top: 10%">
+                    <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="setNameModalLabel">Cập nhật tên sản phẩm</h4>
+                    </div>
+                    <form method="post" id="setNameForm" name="setNameForm" class="set-name-form">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input class="form-control" type="hidden" id="product_id" name="product_id" value="' . $product_id . '">
+                            <span><strong>KiotViet:</strong> ' . $kv_productname . '</span>
+                        </div>
+                        <div class="form-group">
+                            <span><strong>Website:</strong> ' . $web_productname . '</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="heading">Tên mới:</label>
+                            <input class="form-control" type="text" value="' . $web_productname . '" id="new_productname" name="new_productname" placeholder="Nhập tên sản phẩm mới" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+        ';
+        return $return;
+}
+
+function ja_ajax_kapos_get_rename_popup() {
+    //Form Input Values
+    $product_id     = intval($_POST['product_id']);
+    $kv_name     = $_POST['kv_name'];
+    
+    //If empty return error
+    if(!$product_id){
+            wp_send_json(array('error' => __('Missing Product ID!')));
+    }
+		
+    $product = wc_get_product($product_id);
+    if ($product->is_type( 'variation' )) {
+        $base_product_id = $product->get_parent_id();
+    } elseif ($product->is_type( 'simple' )) {
+        $base_product_id = $product_id;
+    } else {
+        $base_product_id = $product_id;
+    }
+    
+    if ($base_product_id != $product_id) {
+        $cproduct = wc_get_product($base_product_id);
+        $product_name = $cproduct->get_name();
+    } else {
+        $product_name = $product->get_name();
+    }
+    
+    $template = kapos_set_product_name_modal($product_id, $product_name, $kv_name);
+    
+    $return = $template;
+    
+    wp_send_json_success( $return );
+    
+}
+
+add_action( 'wp_ajax_kapos_get_rename_popup', 'ja_ajax_kapos_get_rename_popup' );
+add_action( 'wp_ajax_nopriv_kapos_get_rename_popup', 'ja_ajax_kapos_get_rename_popup' );
+
+function ja_ajax_kapos_set_product_name() {
+    //Form Input Values
+    $product_id     = intval($_POST['product_id']);
+    $new_name     = $_POST['new_name'];
+    
+    //If empty return error
+    if(!$product_id){
+            wp_send_json(array('error' => __('Missing Product ID!')));
+    }
+		
+    $product = wc_get_product($product_id);
+    if ($product->is_type( 'variation' )) {
+        $base_product_id = $product->get_parent_id();
+    } elseif ($product->is_type( 'simple' )) {
+        $base_product_id = $product_id;
+    } else {
+        $base_product_id = $product_id;
+    }
+    
+    if ($base_product_id != $product) {
+        $product = wc_get_product($base_product_id);
+    }
+    
+    $product->set_name($new_name);
+    
+    $return['status'] = $product->save();
+    wp_send_json_success( $return );
+    
+}
+
+add_action( 'wp_ajax_kapos_set_product_name', 'ja_ajax_kapos_set_product_name' );
+add_action( 'wp_ajax_nopriv_kapos_set_product_name', 'ja_ajax_kapos_set_product_name' );
