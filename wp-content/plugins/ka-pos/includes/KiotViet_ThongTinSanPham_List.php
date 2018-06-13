@@ -363,7 +363,13 @@ class KiotViet_ThongTinSanPham_List extends WP_List_Table {
 
     public function column_default($item, $column_name) {
         $r = '';
-
+        
+        if (!empty($item['kv'])) {
+            $len_product_name = strlen($item['kv']['short_name']);
+        } else {
+            $len_product_name = 0;
+        }
+        
         $product_id      = $item['woo'];
         $product         = wc_get_product( $product_id );
         
@@ -426,7 +432,15 @@ class KiotViet_ThongTinSanPham_List extends WP_List_Table {
                 }
 
                 $formated_price = kiotViet_formatted_price($kv_product['price']);
-                $kv_text = "{$kv_product['name']}<br/>-Mã: <b>{$kv_product['sku']}</b> -{$kv_product['stock_status']} ({$kv_product['quantity']}) -Giá: {$formated_price}";
+                
+                if ($len_product_name) {
+                    $string_name = substr($kv_product['name'], 0, $len_product_name) . '</span>' . substr($kv_product['name'], $len_product_name);
+                    $string_name = '<span style="font-weight:bold; color: #ff6600">' . $string_name;
+                } else {
+                    $string_name = $kv_product['name'];
+                }
+                
+                $kv_text = "{$string_name}<br/>-Mã: <b>{$kv_product['sku']}</b> -{$kv_product['stock_status']} ({$kv_product['quantity']}) -Giá: {$formated_price}";
             } else {
                 $option_text = 'SP không tồn tại trên KiotViet';
             }
@@ -444,7 +458,14 @@ class KiotViet_ThongTinSanPham_List extends WP_List_Table {
                 break;
             case 'woo':
                 $formated_price = kiotViet_formatted_price($woo_product['price']);
-                $r = "{$woo_product['name']}<br/>-Mã: <b>{$woo_product['sku']}</b> -{$woo_product['stock_status']} -Giá: {$formated_price}";
+                
+                if ($len_product_name) {
+                    $string_name = substr($woo_product['name'], 0, $len_product_name) . '</span>' . substr($woo_product['name'], $len_product_name);
+                    $string_name = '<span style="font-weight:bold; color: #ff6600">' . $string_name;
+                } else {
+                    $string_name = $woo_product['name'];
+                }
+                $r = "{$string_name}<br/>-Mã: <b>{$woo_product['sku']}</b> -{$woo_product['stock_status']} -Giá: {$formated_price}";
                 break;
             case 'kv':
                 $r = $kv_text;
