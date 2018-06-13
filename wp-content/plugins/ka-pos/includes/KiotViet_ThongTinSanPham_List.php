@@ -252,7 +252,8 @@ class KiotViet_ThongTinSanPham_List extends WP_List_Table {
 
                     $temp_item = array();
                     $temp_item['woo'] = $child['ID'];
-
+                    $temp_item['web_name'] = $web_name;
+                    
                     $sku = get_post_meta($child['ID'], '_sku', true);
 
                     // KiotViet Process
@@ -280,10 +281,10 @@ class KiotViet_ThongTinSanPham_List extends WP_List_Table {
 
                     if (!empty($kv_product)) {
                         //Dong bo ten san pham
-                        $len_kv_name = strlen($kv_product['name']);
+                        $len_kv_name = strlen($kv_product['short_name']);
                         $left_web_name = substr($web_name, 0, $len_kv_name);
                         
-                        if ($kv_product['name'] != $left_web_name) {
+                        if ($kv_product['short_name'] != $left_web_name) {
                             $need_sync = true;
                         }
                     } else {
@@ -299,7 +300,8 @@ class KiotViet_ThongTinSanPham_List extends WP_List_Table {
 
             $temp_item = array();
             $temp_item['woo'] = $product_id;
-
+            $temp_item['web_name'] = $web_name;
+            
             $sku = get_post_meta($product_id, '_sku', true);
 
             // KiotViet Process
@@ -322,10 +324,10 @@ class KiotViet_ThongTinSanPham_List extends WP_List_Table {
             if (!empty($kv_product)) {
                 
                 //Dong bo ten san pham
-                $len_kv_name = strlen($kv_product['name']);
+                $len_kv_name = strlen($kv_product['short_name']);
                 $left_web_name = substr($web_name, 0, $len_kv_name);
 
-                if ($kv_product['name'] != $left_web_name) {
+                if ($kv_product['short_name'] != $left_web_name) {
                     $need_sync = true;
                 }
             } else {
