@@ -350,6 +350,7 @@ class KiotViet_API {
             $single_product['id'] = $product['id'];
             $single_product['sku'] = $product['code'];
             $single_product['name'] = isset($product['fullName']) ? $product['fullName'] : $product['name'];
+            $single_product['short_name'] = $product['name'];
             $single_product['price'] = $product['basePrice'];
 
             $quantity = 0;

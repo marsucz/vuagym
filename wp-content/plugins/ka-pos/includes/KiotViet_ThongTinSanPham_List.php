@@ -287,7 +287,7 @@ class KiotViet_ThongTinSanPham_List extends WP_List_Table {
                             $need_sync = true;
                         }
                     } else {
-                        $need_sync = true;
+//                        $need_sync = true;
                     }
 
                     if ($need_sync) {
@@ -329,7 +329,7 @@ class KiotViet_ThongTinSanPham_List extends WP_List_Table {
                     $need_sync = true;
                 }
             } else {
-                $need_sync = true;
+//                $need_sync = true;
             }
 
             if ($need_sync) {
@@ -460,17 +460,17 @@ class KiotViet_ThongTinSanPham_List extends WP_List_Table {
             case 'options':
                 
                 //Dong bo ten san pham
-                $len_kv_name = strlen($kv_product['name']);
+                $len_kv_name = strlen($kv_product['short_name']);
                 $left_web_name = substr($item['web_name'], 0, $len_kv_name);
                 
                 if (!empty($kv_product)) {
                     
-                    if ($left_web_name != $kv_product['name']){
+                    if ($left_web_name != $kv_product['short_name']){
                         $show_rename = true;
                     }
 
                     if ($show_rename) {
-                        $r .= '  <button id="get_rename_popup_' . $product_id . '" type="button" class="btn btn-mypos btn-success" title="Cập nhật tên cho sản phẩm này" onclick="get_rename_popup('. $product_id .',\'' . $kv_product['name'] . '\');"><i class="fa fa-tasks"></i>  Cập nhật tên sản phẩm</button>';
+                        $r .= '  <button id="get_rename_popup_' . $product_id . '" type="button" class="btn btn-mypos btn-success" title="Cập nhật tên cho sản phẩm này" onclick="get_rename_popup('. $product_id . ',\'' . $kv_product['short_name'] . '\', ' . $len_kv_name . ');"><i class="fa fa-tasks"></i>  Cập nhật tên</button>';
                     }
                     
                 } else {

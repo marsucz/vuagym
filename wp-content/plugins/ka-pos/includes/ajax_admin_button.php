@@ -87,11 +87,6 @@ function process_update_outofstock($product_id) {
         $base_product_id = $product->get_parent_id();
         $parent_product = wc_get_product($base_product_id);
         
-        $show_always = $parent_product->get_meta('_mypos_show_always', true);
-        if ($show_always != 'yes') {
-            $parent_product->set_catalog_visibility('search');
-        }
-        
         // Init information
         $dbModel = new DbModel();
         $p_stock = $dbModel->check_stock_by_parent_id($base_product_id);
@@ -99,6 +94,13 @@ function process_update_outofstock($product_id) {
         
         $return['p_stock'] = $p_stock;
         $return['p_preorder'] = $p_preorder;
+        
+        if (!$p_stock) {
+            $show_always = $parent_product->get_meta('_mypos_show_always', true);
+            if ($show_always != 'yes') {
+                $parent_product->set_catalog_visibility('search');
+            }
+        }
         
         //Nếu tất cả các biến thể đều hết hàng và không có biến thể nào "pre-order" 
         //thì e remove cả 2 danh mục "sắp có hàng" và "Hàng mới về", chuyển tất cả các giá trị của thuộc tính "hạn sử dụng" thành "Đang cập nhật"
@@ -510,7 +512,7 @@ add_action( 'wp_ajax_mypos_delete_import_file', 'ja_ajax_mypos_delete_import_fil
 add_action( 'wp_ajax_nopriv_mypos_delete_import_file', 'ja_ajax_mypos_delete_import_file' );
 
 
-function kapos_set_product_name_modal($product_id, $web_productname, $kv_productname) {
+function kapos_set_product_name_modal($product_id, $product_name, $web_productname, $kv_productname) {
     
     $return = '        
         <div class="modal fade" id="setNameModal" tabindex="-1" role="dialog" aria-labelledby="setNameModalLabel" aria-hidden="true" style="padding-top: 5%;">
@@ -524,14 +526,14 @@ function kapos_set_product_name_modal($product_id, $web_productname, $kv_product
                     <div class="modal-body">
                         <div class="form-group">
                             <input class="form-control" type="hidden" id="product_id" name="product_id" value="' . $product_id . '">
-                            <span><strong>KiotViet:</strong> ' . $kv_productname . '</span>
+                            <span><strong>KiotViet: </strong></span> <span style="font-weight:bold; color: #ff6600">' . $kv_productname . '</span>
                         </div>
                         <div class="form-group">
-                            <span><strong>Website:</strong> ' . $web_productname . '</span>
+                            <span><strong>Website: </strong></span> ' . $web_productname . '
                         </div>
                         <div class="form-group">
                             <label for="heading">Tên mới:</label>
-                            <input class="form-control" type="text" value="' . $web_productname . '" id="new_productname" name="new_productname" placeholder="Nhập tên sản phẩm mới" required>
+                            <input class="form-control" type="text" value="' . $product_name . '" id="new_productname" name="new_productname" placeholder="Nhập tên sản phẩm mới" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -550,6 +552,7 @@ function ja_ajax_kapos_get_rename_popup() {
     //Form Input Values
     $product_id     = intval($_POST['product_id']);
     $kv_name     = $_POST['kv_name'];
+    $len_kv_name = $_POST['len_kv_name'];
     
     //If empty return error
     if(!$product_id){
@@ -572,7 +575,11 @@ function ja_ajax_kapos_get_rename_popup() {
         $product_name = $product->get_name();
     }
     
-    $template = kapos_set_product_name_modal($product_id, $product_name, $kv_name);
+    $pos = $len_kv_name;
+    $string_name = substr($product_name, 0, $pos) . '</span>' . substr($product_name, $pos);
+    $string_name = '<span style="font-weight:bold; color: #ff6600">' . $string_name;
+    
+    $template = kapos_set_product_name_modal($product_id, $product_name, $string_name, $kv_name);
     
     $return = $template;
     

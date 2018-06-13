@@ -103,7 +103,9 @@ function ja_ajax_check_quantity_cart(){
             if ($return['status'] == 0) {   // check quantity false
                 if ($max_quantity == 0) {
                     $message = '<span class="alert-message">Sản phẩm bạn đặt đã hết hàng. Mong bạn vui lòng quay lại sau.</span>';
-                    $return['outofstock'] = process_update_outofstock($product_id);
+                    
+                    $process_id = $variation_id ? $variation_id : $product_id;
+                    $return['outofstock'] = process_update_outofstock($process_id);
                     $return['deleted'] = delete_post_cache($product_id);
                 } else {
 //                    if ($mark_red) {

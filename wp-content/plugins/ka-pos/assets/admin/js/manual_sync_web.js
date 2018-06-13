@@ -190,7 +190,7 @@ jQuery(document).ready(function($) {
 });
 
 
-function get_rename_popup(product_id, kv_name) {
+function get_rename_popup(product_id,kv_name,len_kv_name) {
         
         if ($('#setNameModal').length) {
             $('#setNameModal').remove();
@@ -203,7 +203,8 @@ function get_rename_popup(product_id, kv_name) {
             data: {
                     action: 'kapos_get_rename_popup',
                     product_id: product_id,
-                    kv_name: kv_name
+                    kv_name: kv_name,
+                    len_kv_name: len_kv_name
             },
             success: function(response){
                 console.log(response);
