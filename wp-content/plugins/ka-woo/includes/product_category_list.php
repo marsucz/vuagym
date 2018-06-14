@@ -5,15 +5,12 @@
  *
  * @author dmtuan
  */
-require_once('DbModel.php');
-
 if (!class_exists('WP_List_Table')) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
 class Kawoo_Product_Category_List extends WP_List_Table {
 
-//    private $dbModel;
     private $show_type = 1;
     private $show_products_per_page = 10;
     private $selected_categories = [];
@@ -21,10 +18,8 @@ class Kawoo_Product_Category_List extends WP_List_Table {
     function __construct($show_type = 1, $show_products = 10, $selected_categories = []) {
         $args = array();
         parent::__construct($args);
-//        $this->dbModel = new DbModel();
         $this->show_type = $show_type;
         $this->show_products_per_page = $show_products;
-//        $this->image_link = $image_link;
         $this->selected_categories = $selected_categories;
     }
 

@@ -6,7 +6,7 @@
  * @author dmtuan
  */
 
-require_once('DbModel.php');
+require_once('WooDbModel.php');
 
 if( ! class_exists( 'WP_List_Table' ) ) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
@@ -22,7 +22,7 @@ class Kawoo_Product_Price_List extends WP_List_Table {
     function __construct($show_type = 1, $show_products = 10, $selected_categories = []) {
         $args = array();
         parent::__construct($args);
-        $this->dbModel = new DbModel();
+        $this->dbModel = new WooDbModel();
         $this->show_type = $show_type;
         $this->show_products_per_page = $show_products;
 //        $this->image_link = $image_link;

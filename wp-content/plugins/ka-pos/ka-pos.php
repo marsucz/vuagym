@@ -520,10 +520,11 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
-    echo "TESTING PAGE";
+//    echo "TESTING PAGE";
     
-    $product = wc_get_product(7596);
-    echo tuandev_process_price_html($product);
+    $product = wc_get_product();
+    $YITH_Role = YITH_Role_Based_Prices_Product();
+    
 }
 
 function update_default_manual_sync_options() {

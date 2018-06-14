@@ -241,42 +241,6 @@ class DbModel {
         return $return;
     }
     
-    // Get Products LIST
-    
-    public function kapos_get_all_products_to_sethidden($perpage = 40, $currentpage = 1) {
-        
-        if (!$currentpage) $currentpage = 1;
-        $offset = ($currentpage - 1) * $perpage;
-        
-        $query = "  SELECT 
-                        pm.meta_value as stock_status, 
-                        pm2.meta_value as show_status, 
-                        p.ID
-                    FROM
-                        {$this->prefix}posts p
-                            INNER JOIN
-                        {$this->prefix}postmeta pm ON pm.post_id = p.ID
-                            AND pm.meta_key = '_stock_status'
-                            LEFT JOIN
-                        {$this->prefix}postmeta pm2 ON pm2.post_id = p.ID
-                            AND pm2.meta_key = '_mypos_show_always'
-                    WHERE
-                        post_type = 'product' 
-                    LIMIT $perpage OFFSET $offset";
-        
-        $result = mysqli_query($this->link, $query);
-
-        if ($result) {
-            $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        } else {
-            $return = [];
-        }
-        
-        return $return;
-        
-    }
-    
-    
     // IMPORT MANAGERS
     
     public function kapos_get_importfile_detail($import_file_name) {

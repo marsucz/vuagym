@@ -1,11 +1,12 @@
 <?php
-
+require_once('DbModel.php');
 /**
  * Description of loader
  *
  * @author Tartarus
  */
 class loader {
+    
     private $kho_phu = '';
     
     public function __construct() {
@@ -20,7 +21,7 @@ class loader {
         
         add_filter( 'product_type_options', array( $this, 'mypos_show_always_checkbox' ), 6 );
 //        add_filter( 'woocommerce_product_is_visible', array( $this, 'kawoo_show_always'), 10, 2 );
-        add_action( 'save_post', 'my_project_updated_send_email' );
+        add_action( 'post_updated', array( $this, 'kapos_update_price_variation_field' ), 10 );
     }
     
 //    public function kawoo_show_always( $is_visible, $id ) {
@@ -121,26 +122,50 @@ class loader {
             update_post_meta($post_id, '_mypos_other_store', $is_other_store);
     }
     
-    function kapos_update_price_variation_field( $post_id ) {
-        /*
-         * In production code, $slug should be set only once in the plugin,
-         * preferably as a class property, rather than in each function that needs it.
-         */
-        $post_type = get_post_type($post_id);
+    function kapos_update_price_variation_field( $product_id ) {
+        
+        $post_type = get_post_type($product_id);
+        
+        if ($post_type != 'product') return;
+        
+        $product = wc_get_product($product_id);
+    
+        $dbModel = new DbModel();
+        $childrens = $dbModel->get_children_ids($product_id);
 
-        // If this isn't a 'book' post, don't update it.
-        if ( "book" != $post_type ) return;
+        $max_int = 999999999;
+        $min_int = -999999999;
+        $price_min = $max_int;
+        $price_max = $min_int;
 
-        // - Update the post's metadata.
+        $id_min = 0;
+        $id_max = 0;
 
-        if ( isset( $_POST['book_author'] ) ) {
-            update_post_meta( $post_id, 'book_author', sanitize_text_field( $_POST['book_author'] ) );
+        foreach ($childrens as $child) {
+            $child_id = $child['ID'];
+            $child_prod = wc_get_product($child_id);
+            $temp_price = $child_prod->get_price();
+            if ($temp_price) {
+                if ($temp_price < $price_min) {
+                    $price_min = $temp_price;
+                    $id_min = $child_id;
+                }
+
+                if ($temp_price > $price_max) {
+                    $price_max = $temp_price;
+                    $id_max = $child_id;
+                }
+            }
         }
 
-        if ( isset( $_POST['publisher'] ) ) {
-            update_post_meta( $post_id, 'publisher', sanitize_text_field( $_POST['publisher'] ) );
+        $udata = array();
+        if ($id_min && $id_max) {
+            $udata['min'] = $id_min;
+            $udata['max'] = $id_max;
         }
-
+        if (!empty($udata)) {
+            update_post_meta($product_id, '_kapos_custom_price', $udata);
+        }
     }
     
 }

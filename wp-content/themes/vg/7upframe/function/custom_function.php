@@ -226,23 +226,83 @@ if(!function_exists('tuandev_check_variable_price')){
     }
 }
 
-// #tasks/17923983
 if(!function_exists('tuandev_process_price_html')){
     function tuandev_process_price_html($product) {
 //        $product = wc_get_product(); // For Testing
         if ( $product && $product->is_type( 'variable' )) {
-            $check_price = tuandev_check_variable_price($product->get_id());
             
-            if (!$check_price) {
+            $price_data = get_post_meta($product->get_id(), '_kapos_custom_price', true);
+            
+            if ($price_data && is_array($price_data)) {
+                
+                if (class_exists('YITH_Role_Based_Prices_Product')) {
+                    $YITH_Role = YITH_Role_Based_Prices_Product();
+                } else {
+                    $YITH_Role = null;
+                }
+                
+                $child_min = wc_get_product($price_data['min']);
+                $child_max = wc_get_product($price_data['max']);
+                
+                $min_price = $child_min->get_price();
+                $max_price = $child_max->get_price();
+                
                 $html = '';
-                return $html;
+                
+                if ($min_price == $max_price) {
+                    
+                    $has_vip = false;
+                    // Xu ly gia VIP
+                    if (!is_null($YITH_Role)) {
+                        $temp_vip = $YITH_Role->get_role_based_price($child_min);
+                        if ($temp_vip !== 'no_price') {
+                            $html = kiotViet_formatted_price($temp_vip);
+                            $has_vip = true;
+                        }
+                    }
+                    
+                    if (!$has_vip) {
+                        $html = kiotViet_formatted_price($child_min->get_price());
+                    }
+                    
+                } else {
+                    
+                    $has_vip = false;
+                    // Xu ly gia VIP
+                    if (!is_null($YITH_Role)) {
+                        $vip_min = $YITH_Role->get_role_based_price($child_min);
+                        $vip_max = $YITH_Role->get_role_based_price($child_max);
+                        
+                        $has_vip = true;
+                        if ($vip_min !== 'no_price' && $vip_max !== 'no_price') {
+                            $html = kiotViet_formatted_price($vip_min) . ' - ' . kiotViet_formatted_price($vip_max);
+                        } elseif ($vip_min !== 'no_price') {
+                            $html = kiotViet_formatted_price($vip_min);
+                        } elseif ($vip_max !== 'no_price') {
+                            $html = kiotViet_formatted_price($vip_max);
+                        } else {
+                            $has_vip = false;
+                        }
+                    }
+                    
+                    if (!$has_vip) {
+                        $html = kiotViet_formatted_price($min_price) . ' - ' . kiotViet_formatted_price($max_price);
+                    }
+                }
+                
+                if ($html) {
+                    $html = '<span class="td-price">Giá NEW: ' . $html . '</span>';
+                }
+                
+            } else {
+                $check_price = tuandev_check_variable_price($product->get_id());
+                if (!$check_price) {
+                    $html = '';
+                } else {
+                    $html = $product->get_price_html();
+                }
             }
             
-            if ($product->is_in_stock()) {
-                $html = $product->get_price_html();
-            } else {
-                $html = tuandev_get_min_price_html($product);
-            }
         } else {
             if ($product->get_regular_price()) {
                 $html = $product->get_price_html();
@@ -250,6 +310,9 @@ if(!function_exists('tuandev_process_price_html')){
                 $html = '';
             }
         }
+        
+        $html = '<div class="product-price">' . $html . '</div>';
+        
         return $html;
     }
 }

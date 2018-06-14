@@ -344,10 +344,18 @@ function function_kawoo_options_page() {
     
     $message = '';
     
+//    if (isset($_POST)) {
+//        
+//        echo "<pre>";
+//        print_r($_POST);
+//        echo "</pre>";
+//        
+//    }
+    
     if (isset($_POST['action_type'])) {
         if ($_POST['action_type'] == 'hide_outofstock_products') {
             
-            $dbModel = new DbModel();
+            $dbModel = new WooDbModel();
             
             $perPage = 40;
             $currentPage = 0;
@@ -362,7 +370,7 @@ function function_kawoo_options_page() {
             while (1) {
                 
                 $currentPage++;
-                $list_product = $dbModel->kapos_get_all_products_to_sethidden($perPage, $currentPage);
+                $list_product = $dbModel->kawoo_get_all_products_to_sethidden($perPage, $currentPage);
 
                 if (count($list_product) == 0) {
                     break;
@@ -402,6 +410,74 @@ function function_kawoo_options_page() {
             $message = "Đã ẩn (" . count($list_hidden) . " sản phẩm): " . implode(', ', $list_hidden);
             $message .= "<br/>Đã hiện (" . count($list_show) . " sản phẩm): ". implode(', ', $list_show);
             $message .= "<br/>Luôn hiện (" . count($list_show_always) . " sản phẩm): ". implode(', ', $list_show_always);
+        }
+        
+        
+        if ($_POST['action_type'] == 'update_custom_price_field') {
+            
+            $dbModel = new WooDbModel();
+            
+            $perPage = 40;
+            $currentPage = 0;
+            
+            $max_int = 999999999;
+            $min_int = -999999999;
+                    
+            $list_processed = array();
+            
+            while (1) {
+                
+                $currentPage++;
+                $list_product = $dbModel->kawoo_get_all_products($perPage, $currentPage);
+
+                if (count($list_product) == 0) {
+                    break;
+                }
+                
+                foreach ($list_product as $prod) {
+                    $product_id = $prod['ID'];
+                    $product = wc_get_product($product_id);
+                    if ($product && $product->is_type('variable')) {
+    
+                        $childrens = $dbModel->get_children_ids($product_id);
+
+                        $price_min = $max_int;
+                        $price_max = $min_int;
+
+                        $id_min = 0;
+                        $id_max = 0;
+
+                        foreach ($childrens as $child) {
+                            $child_id = $child['ID'];
+                            $child_prod = wc_get_product($child_id);
+                            $temp_price = $child_prod->get_price();
+                            if ($temp_price) {
+                                if ($temp_price < $price_min) {
+                                    $price_min = $temp_price;
+                                    $id_min = $child_id;
+                                }
+
+                                if ($temp_price > $price_max) {
+                                    $price_max = $temp_price;
+                                    $id_max = $child_id;
+                                }
+                            }
+                        }
+
+                        $udata = array();
+                        if ($id_min && $id_max) {
+                            $udata['min'] = $id_min;
+                            $udata['max'] = $id_max;
+                        }
+                        if (!empty($udata)) {
+                            update_post_meta($product_id, '_kapos_custom_price', $udata);
+                            $list_processed[] = $product_id;
+                        }
+                    } 
+                }
+            }
+            
+            $message = "Đã tính lại giá hiển thị biến thể (" . count($list_processed) . " sản phẩm): " . implode(', ', $list_processed);
         }
     }
     
@@ -453,14 +529,19 @@ function function_kawoo_options_page() {
                                         </div>
                                     </form>
                                 </div>
+                                            
                                 <div class="col-lg-6">
-                                    <form role="form" method="POST">
-                                        <div class="col-lg-12">
-                                                <input class="hidden" id="action_type" type="text" name="action_type" value="hide_outofstock_products">
-                                                <button type="submit" class="btn btn-danger">Cập nhật lại Mức độ hiển thị catalog</button>
-                                        </div>
-                                    </form>
+                                    <div class="form-group">
+                                        <form role="form" method="POST">
+                                            <div class="col-lg-12">
+                                                    <input class="hidden" id="action_type" type="text" name="action_type" value="hide_outofstock_products">
+                                                    <button type="submit" name="action_type" value="hide_outofstock_products" class="btn btn-danger">Cập nhật lại Mức độ hiển thị catalog</button>
+                                                    <button type="submit" name="action_type" value="update_custom_price_field" class="btn btn-danger">Tính lại giá hiển thị biến thể</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
