@@ -241,17 +241,12 @@ if(!function_exists('tuandev_process_price_html')){
                     $YITH_Role = null;
                 }
                 
-                $child_min = wc_get_product($price_data['min']);
-                $child_max = wc_get_product($price_data['max']);
-                
-                $min_price = $child_min->get_price();
-                $max_price = $child_max->get_price();
-                
                 $html = '';
                 
-                if ($min_price == $max_price) {
+                if ($price_data['min'] == $price_data['max']) {
                     
                     $has_vip = false;
+                    $child_min = wc_get_product($price_data['min']);
                     // Xu ly gia VIP
                     if (!is_null($YITH_Role)) {
                         $temp_vip = $YITH_Role->get_role_based_price($child_min);
@@ -267,9 +262,13 @@ if(!function_exists('tuandev_process_price_html')){
                     
                 } else {
                     
+                    $child_min = wc_get_product($price_data['min']);
+                    $child_max = wc_get_product($price_data['max']);
+                        
                     $has_vip = false;
                     // Xu ly gia VIP
                     if (!is_null($YITH_Role)) {
+                        
                         $vip_min = $YITH_Role->get_role_based_price($child_min);
                         $vip_max = $YITH_Role->get_role_based_price($child_max);
                         
@@ -286,6 +285,10 @@ if(!function_exists('tuandev_process_price_html')){
                     }
                     
                     if (!$has_vip) {
+                        
+                        $min_price = $child_min->get_price();
+                        $max_price = $child_max->get_price();
+                        
                         $html = kiotViet_formatted_price($min_price) . ' - ' . kiotViet_formatted_price($max_price);
                     }
                 }
