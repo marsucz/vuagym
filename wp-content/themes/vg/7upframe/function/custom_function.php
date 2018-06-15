@@ -244,22 +244,8 @@ if(!function_exists('tuandev_process_price_html')){
                 $html = '';
                 
                 if ($price_data['min'] == $price_data['max']) {
-                    
-                    $has_vip = false;
                     $child_min = wc_get_product($price_data['min']);
-                    // Xu ly gia VIP
-                    if (!is_null($YITH_Role)) {
-                        $temp_vip = $YITH_Role->get_role_based_price($child_min);
-                        if ($temp_vip !== 'no_price') {
-                            $html = kiotViet_formatted_price($temp_vip);
-                            $has_vip = true;
-                        }
-                    }
-                    
-                    if (!$has_vip) {
-                        $html = kiotViet_formatted_price($child_min->get_price());
-                    }
-                    
+                    $html = $child_min->get_price_html();
                 } else {
                     
                     $child_min = wc_get_product($price_data['min']);
@@ -291,10 +277,11 @@ if(!function_exists('tuandev_process_price_html')){
                         
                         $html = kiotViet_formatted_price($min_price) . ' - ' . kiotViet_formatted_price($max_price);
                     }
-                }
-                
-                if ($html) {
-                    $html = '<span class="td-price">Giá NEW: ' . $html . '</span>';
+                    
+                    if ($html) {
+                        $html = '<span class="td-price">Giá NEW: ' . $html . '</span>';
+                    }
+                    
                 }
                 
             } else {
