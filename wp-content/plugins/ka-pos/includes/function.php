@@ -215,3 +215,55 @@ function build_list_attribute_dang_cap_nhat($selected = "", $default = "0") {
     
     return $html;
 }
+
+if ( ! function_exists( 'tuandev_update_price_variation_field' ) ) {
+    function tuandev_update_price_variation_field( $product_id ) {
+        
+        $product = wc_get_product($product_id);
+        if ($product->is_type('simple')) {
+            return;
+        }
+        if ($product->is_type( 'variation' )) {
+            $base_product_id = $product->get_parent_id();
+        } else {
+            $base_product_id = $product_id;
+        }
+        
+        $dbModel = new DbModel();
+        $childrens = $dbModel->get_children_ids($base_product_id);
+
+        $max_int = 999999999;
+        $min_int = -999999999;
+        $price_min = $max_int;
+        $price_max = $min_int;
+
+        $id_min = 0;
+        $id_max = 0;
+
+        foreach ($childrens as $child) {
+            $child_id = $child['ID'];
+            $child_prod = wc_get_product($child_id);
+            $temp_price = $child_prod->get_price();
+            if ($temp_price) {
+                if ($temp_price < $price_min) {
+                    $price_min = $temp_price;
+                    $id_min = $child_id;
+                }
+
+                if ($temp_price > $price_max) {
+                    $price_max = $temp_price;
+                    $id_max = $child_id;
+                }
+            }
+        }
+
+        $udata = array();
+        if ($id_min && $id_max) {
+            $udata['min'] = $id_min;
+            $udata['max'] = $id_max;
+        }
+        if (!empty($udata)) {
+            update_post_meta($base_product_id, '_kapos_custom_price', $udata);
+        }
+    }
+}

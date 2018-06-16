@@ -1,6 +1,7 @@
 <?php
 
 require_once 'kiotviet_api.php';
+require_once 'function.php';
 
 function ja_ajax_mypos_update_product_instock() {
     //Form Input Values
@@ -399,7 +400,8 @@ function ja_ajax_mypos_update_webprice_by_kvprice() {
     } else {
         $return['status'] = false;
     }
-
+    
+    tuandev_update_price_variation_field($product_id);
     $return['deleted'] = delete_post_cache($product_id);
     
     wp_send_json_success( $return );

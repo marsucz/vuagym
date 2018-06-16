@@ -1,5 +1,7 @@
 <?php
 
+require_once 'function.php';
+
 function kawoo_set_regular_price_modal($product_id, $product_name, $regular_price) {
     
     $return = '        
@@ -76,6 +78,8 @@ function ja_ajax_kawoo_set_prices() {
     
     $return[] = update_post_meta( $product_id, '_regular_price', $regular );
     $return[] = update_post_meta( $product_id, '_sale_price', $sale );
+    
+    tuandev_update_price_variation_field($product_id);
     $return['deleted'] = delete_post_cache($product_id);
     
     wp_send_json_success( $return );
