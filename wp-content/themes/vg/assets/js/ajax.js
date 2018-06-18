@@ -151,8 +151,6 @@
         $('.btn-shoppe-text').on('click', function() {
             
             var product_id = $(this).data("id");
-            console.log(product_id);
-            
             $.ajax({
                 type : "POST",
                 url : ajax_process.ajaxurl,
