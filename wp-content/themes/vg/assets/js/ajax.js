@@ -147,7 +147,31 @@
         $( '.shop-ajax-enable .woocommerce-ordering' ).on( 'submit', function(e) {
             e.preventDefault();
         });
-
+        
+        $('.btn-shoppe-text').on('click', function() {
+            
+            var product_id = $(this).data("id");
+            console.log(product_id);
+            
+            $.ajax({
+                type : "POST",
+                url : ajax_process.ajaxurl,
+                data: {
+                    action: "ka_get_shoppe_popup",
+                    product_id: product_id,
+                    crossDomain: true,
+                },
+                success: function(response){
+                    $('#main-content').append(response.data);
+                    $('#sanTMDTModal').modal('show');
+                },
+                error: function(data){
+                    console.log(data);
+                }
+            });
+            
+        });
+        
         // Shop load more
         $('.main-shop-load').on('click','.load-more-shop',function(e){
             e.preventDefault();

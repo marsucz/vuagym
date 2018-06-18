@@ -4220,5 +4220,54 @@ button.single_add_to_cart_button {
     border-top: 1px solid #e5e5e5;
     padding-top: 15px;
 }
+
+.btn-shoppe {
+    background-color: #f0572b !important;
+    border-radius: 30px !important;
+}
+
+.fs-tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.fs-tooltip .fs-tooltiptext {
+    visibility: hidden;
+    width: 130px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 10px 5px;
+    border-radius: 6px;
+
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -65px;
+
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.fs-tooltip .fs-tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.fs-tooltip:hover .fs-tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
 /* End */
 

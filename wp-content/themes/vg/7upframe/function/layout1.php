@@ -27,6 +27,10 @@ if(!function_exists('s7upf_product_main_detai')){
             $ul_block .= '<li data-image_id="'.esc_attr($attachment_id).'"><a href="#" class="'.esc_attr($active).'">'.$image.'</a></li>';
             $i++;
         }
+        // Tuan Dev
+        $ka_shoppe = get_post_meta($post->ID, '_ka_shoppe', true);
+        $ka_shoppe_type = get_post_meta($post->ID, '_ka_shoppe_type', true);
+        
         $available_data = array();
         $ka_product_sku = '';
         $ka_show_general_price = false;
@@ -184,9 +188,30 @@ if(!function_exists('s7upf_product_main_detai')){
 									do_action( 'woocommerce_product_meta_start' );
 									do_action( 'woocommerce_product_meta_end' );
 									do_action( 'woocommerce_single_product_summary' );
-			echo                '</div></div>
-							</div>';
+			echo                '
+                                                    </div></div>';
+                        
+                            if ($ka_shoppe == 'yes') {
+                                echo                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding: 0">
+                                                            <div style="float:left; margin-top: 14px;">
+                                                                <img style="height: 35px; margin-top: -14px;" src="' . wp_upload_dir()['baseurl'] . '/images/shopee.png">
+                                                                <div class="fs-tooltip">
+                                                                    <span style="color: green">(Freeship <i class="fa fa-exclamation-circle"></i>)</span>
+                                                                    <span class="fs-tooltiptext">Nội dung hover FreeShip</span>
+                                                                </div>
+                                                            </div>
+                                                            <div style="float:right">';
+                                if ($ka_shoppe_type == 'link') {
+                                    $ka_shoppe_content = get_post_meta($post->ID, '_ka_shoppe_content', true);
+                                    echo '<a href="' . $ka_shoppe_content . '" target="_blank"><button class="button btn-shoppe">Tới Shopee</button></a>';
+                                } else {
+                                    echo '<button data-id="' . $post_id . '" class="button btn-shoppe btn-shoppe-text">Tới Shopee</button>';
+                                }
+                                echo    '</div>
+                                                        </div>';
 
+                            }
+                        echo '</div>';
 							if (array_key_exists("ywtm_5779",$tabs)){
 			echo        		'<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">THÀNH PHẦN DINH DƯỠNG</h2>
 									<div class="row product-header" style="padding: 0px;">
