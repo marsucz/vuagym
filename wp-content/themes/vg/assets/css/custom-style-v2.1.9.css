@@ -711,7 +711,7 @@ body{
     border-radius: 4px;
     display: inline-block;
     height: 40px;
-    line-height: 40px;
+    /*line-height: 40px;*/
     position: relative;
     text-align: center;
     vertical-align: top;
@@ -3259,7 +3259,7 @@ button.single_add_to_cart_button {
     width: 76% !important;
     float: right !important;
 }
-.cart .detail-qty {
+.detail-info .detail-qty {
     width: 20% !important;
 }
 
@@ -3327,7 +3327,7 @@ button.single_add_to_cart_button {
         width: 82% !important;
         float: right !important;
     }
-    .cart .detail-qty {
+    .detail-info .detail-qty {
         width: 15% !important;
     }
 }
@@ -3359,7 +3359,7 @@ button.single_add_to_cart_button {
         width: 80% !important;
         float: right !important;
     }
-    .cart .detail-qty {
+    .detail-info .detail-qty {
         width: 15% !important;
     }
 }
