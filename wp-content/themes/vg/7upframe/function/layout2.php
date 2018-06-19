@@ -30,16 +30,19 @@ if(!function_exists('s7upf_product_main_detai')){
         // Tuan Dev
         $ka_shoppe = get_post_meta($post->ID, '_ka_shoppe', true);
         $ka_shoppe_type = get_post_meta($post->ID, '_ka_shoppe_type', true);
-        $ka_tinh_trang_sp = get_post_meta($post->ID, '_ka_tinh_trang_sp', true);
         
         $available_data = array();
         $ka_show_general_price = false;
-        if( $product->is_type( 'variable' ) ) $available_data = $product->get_available_variations();        
+        if( $product->is_type( 'variable' ) ) {
+            $available_data = $product->get_available_variations();        
+        } else {
+            $ka_tinh_trang_sp = get_post_meta($post->ID, '_ka_tinh_trang_sp', true);
+        }
         if(!empty($available_data)){
             foreach ($available_data as $available) {
-                if (empty($available['price_html'])) {
-                    $ka_show_general_price = true;
-                }
+//                if (empty($available['price_html'])) {
+//                    $ka_show_general_price = true;
+//                }
                 if(!empty($available['image_id']) && !in_array($available['image_id'],$attachment_ids)){
                     $attachment_ids[] = $available['image_id'];
                     if(!empty($available['image_id'])){
@@ -53,9 +56,10 @@ if(!function_exists('s7upf_product_main_detai')){
                     }
                 }
             }
-        } else {
-            $ka_show_general_price = true;
-        }
+        } 
+//        else {
+//            $ka_show_general_price = true;
+//        }
         $thumb_html =   '<div class="detail-gallery">
                             <div class="mid">
                                 '.get_the_post_thumbnail(get_the_ID(),'full').'
@@ -159,9 +163,9 @@ if(!function_exists('s7upf_product_main_detai')){
 							<h2 class="title14 title-side" style="background-color: #ddd; text-align: center; color: #333; font-size: 14px; font-weight: 700;">THÔNG TIN MUA HÀNG</h2>
 							<div class="row product-header">
 								<div class="detail-info">';
-                                                                if ($ka_show_general_price) {
-                                                                    echo tuandev_process_get_price_html($product);
-                                                                }
+//                                                                if ($ka_show_general_price) {
+                                                                    echo $product->get_price_html();
+//                                                                }
                                                                 if ($ka_tinh_trang_sp){
                         echo                                            '<div class="alert alert-danger" style="padding: 0px;">
                                                                                         <div style="margin: 10px 5px 5px 5px;"><p>';
