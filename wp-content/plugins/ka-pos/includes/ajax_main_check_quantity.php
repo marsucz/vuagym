@@ -59,7 +59,7 @@ function ja_ajax_check_quantity_cart(){
             
             $item_id = $product_data->get_id();
             $product_sku = $product_data->get_sku();
-            $product_name = $product_data->get_name();
+            $product_name = mypos_get_variation_title($product_data);
             
             $store = $product_data->get_meta('_mypos_other_store', true);
             if ($store && $store == 'yes') {
@@ -111,7 +111,7 @@ function ja_ajax_check_quantity_cart(){
 //                    if ($mark_red) {
 //                        $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $return['current_quantity'] . ' sản phẩm</b> này trong giỏ hàng. Bạn vui lòng cập nhật số lượng tại <a href="' . wc_get_cart_url() . '" class="mypos-alert-link">Giỏ Hàng</a>.</span>';
 //                    } else {
-                        $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $return['current_quantity'] . ' sản phẩm</b> này trong giỏ hàng.</span>';
+                        $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>.</span>';
 //                    }
                     
                 }
@@ -131,7 +131,7 @@ function ja_ajax_check_quantity_cart(){
 //                    $product_data = wc_get_product( $variation_id ? $variation_id : $product_id );
 //                    $product_sku = $product_data->get_sku();
                     $return['status'] = 2; // Add sucessful
-                    $message = '<span class="alert-success-message">Bạn đã thêm thành công <b>' . $quantity . ' sản phẩm</b> ' . $product_name . '.</span>';
+                    $message = '<span class="alert-success-message"><b>Thêm vào giỏ hàng thành công!</b></span>';
                     $return['alert'] = kiotviet_addToCart_success_message($message);
                     
                     $carts_table = build_html_table_carts($item_id, 1, 'green');
@@ -251,7 +251,7 @@ function ja_ajax_mypos_update_cart() {
     
     $item_id = $product_data->get_id();
     $product_sku = $product_data->get_sku();
-    $product_name = $product_data->get_name();
+    $product_name = mypos_get_variation_title($product_data);
     
     if ($cart_maxQuantity < 0) {
         
@@ -274,7 +274,7 @@ function ja_ajax_mypos_update_cart() {
     
     if ($cart_quantity > $max_quantity) {
         $return['status'] = false;
-        $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>. <br/> Bạn đã có <b>' . $cart_detail['quantity'] . ' sản phẩm</b> này trong giỏ hàng.</span>';
+        $message = '<span class="alert-message"><b>' . $product_name . '</b> chỉ cho phép đặt tối đa <b>' . $max_quantity . ' sản phẩm</b>.</span>';
         $return['alert'] = kiotviet_UpdateCart_alert_modal($message);
     } else {
         $cart_success = WC()->cart->set_quantity($cart_key, $cart_quantity, true);
