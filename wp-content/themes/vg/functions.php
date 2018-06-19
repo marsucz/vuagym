@@ -17,13 +17,18 @@ if ( ! isset( $content_width ) ) {
 }
 
 require_once( trailingslashit( get_template_directory() ). '/7upframe/function/function.php' );
+
 // Tuan Dev
+require_once( trailingslashit( get_template_directory() ). '/7upframe/function/ka_loader.php' );
+$ka_loader = new ka_loader();
+
 $option_tree = get_option('option_tree');
 if (array_key_exists('ka_custom_layout', $option_tree) && $option_tree['ka_custom_layout'] == 'layout2') {
     require_once( trailingslashit( get_template_directory() ). '/7upframe/function/layout2.php' );
 } else {
     require_once( trailingslashit( get_template_directory() ). '/7upframe/function/layout1.php' );
 }
+
 require_once( trailingslashit( get_template_directory() ). '/7upframe/config/config.php' );
 
 // LOAD CLASS LIB

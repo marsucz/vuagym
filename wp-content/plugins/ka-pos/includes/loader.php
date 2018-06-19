@@ -20,24 +20,9 @@ class loader {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
         
         add_filter( 'product_type_options', array( $this, 'mypos_show_always_checkbox' ), 6 );
-//        add_filter( 'woocommerce_product_is_visible', array( $this, 'kawoo_show_always'), 10, 2 );
         add_action( 'post_updated', array( $this, 'kapos_update_price_variation_field' ), 10 );
-        
-        //Tinh trang san pham
-        add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'ka_add_variation_info_tinh_trang_sp' ), 10, 3 );
-        add_action( 'woocommerce_product_options_general_product_data', array ($this, 'ka_add_simple_info_tinh_trang_sp') );
-        add_filter( 'woocommerce_available_variation', array( $this, 'ka_load_variation_settings_fields' ) );
     }
     
-//    public function kawoo_show_always( $is_visible, $id ) {
-//        
-//        $show_always_status = get_post_meta($id, '_mypos_show_always', true);
-//        if ($show_always_status && $show_always_status == 'yes') {
-//            $is_visible = true;
-//        }
-//        return $is_visible;
-//    }
-
     public function enqueue_scripts($hook_suffix) {
         $current_screen = get_current_screen();
 
@@ -120,26 +105,15 @@ class loader {
                 //overwrite catalog_visibility
                 $_POST['_visibility'] = 'visible';
             }
-            
-            //Tinh trang san pham Simple
-            if (isset($_POST['_ka_tinh_trang_sp'])) {
-                update_post_meta($post_id, '_ka_tinh_trang_sp', $_POST['_ka_tinh_trang_sp']);
-            }
     }
 
     public function mypos_save_variable_fields( $post_id, $_i ) {
         //Kho phu
         $is_other_store = isset( $_POST['_mypos_other_store'][ $_i ] ) ? 'yes' : 'no';
         update_post_meta($post_id, '_mypos_other_store', $is_other_store);
-        
-        //Tinh trang san pham
-        if (isset( $_POST['_ka_tinh_trang_sp'][ $_i ] )) {
-            $tinh_trang_sp = $_POST['_ka_tinh_trang_sp'][ $_i ];
-            update_post_meta($post_id, '_ka_tinh_trang_sp', $tinh_trang_sp);
-        }
     }
     
-    function kapos_update_price_variation_field( $product_id ) {
+    public function kapos_update_price_variation_field( $product_id ) {
         
         $post_type = get_post_type($product_id);
         
@@ -183,38 +157,5 @@ class loader {
         if (!empty($udata)) {
             update_post_meta($product_id, '_kapos_custom_price', $udata);
         }
-    }
-    
-    // Tinh trang san pham Variations
-    public function ka_add_variation_info_tinh_trang_sp( $loop, $variation_data, $variation ) {
-        woocommerce_wp_textarea_input(
-            array(
-                'id'            => "_ka_tinh_trang_sp{$loop}",
-                'name'          => "_ka_tinh_trang_sp[{$loop}]",
-                'value'         => get_post_meta( $variation->ID, '_ka_tinh_trang_sp', true ),
-                'label'         => __( 'Tình trạng sản phẩm', 'woocommerce' ),
-                'wrapper_class' => 'form-row form-row-full',
-            )
-        );
-    }
-    // Tinh trang san pham Simple
-    public function ka_add_simple_info_tinh_trang_sp() {
-        global $post;
-        woocommerce_wp_textarea_input(
-            array(
-                'id'            => "_ka_tinh_trang_sp",
-                'name'          => "_ka_tinh_trang_sp",
-                'value'         => get_post_meta( $post->ID, '_ka_tinh_trang_sp', true ),
-                'label'         => __( 'Tình trạng sản phẩm', 'woocommerce' ),
-                'wrapper_class' => 'form-row form-row-full',
-                'class'         => ''
-            )
-        );
-    }
- 
-    // Load data to product info
-    function ka_load_variation_settings_fields( $variations ) {
-        $variations['_ka_tinh_trang_sp'] = get_post_meta( $variations[ 'variation_id' ], '_ka_tinh_trang_sp', true );
-        return $variations;
     }
 }

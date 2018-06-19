@@ -4269,5 +4269,16 @@ button.single_add_to_cart_button {
     opacity: 1;
 }
 
+.woocommerce div.product form.cart .woocommerce-variation-tinhtrang p {
+    color: #a94442;
+    background-image: linear-gradient(to bottom, #f2dede 0%, #e7c3c3 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff2dede', endColorstr='#ffe7c3c3', GradientType=0);
+    background-repeat: repeat-x;
+    margin-bottom: 20px;
+    border: 1px solid #dca7a7;
+    border-radius: 4px;
+    padding: 10px;
+}
+
 /* End */
 

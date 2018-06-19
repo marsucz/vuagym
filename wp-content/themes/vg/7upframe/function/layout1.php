@@ -30,6 +30,7 @@ if(!function_exists('s7upf_product_main_detai')){
         // Tuan Dev
         $ka_shoppe = get_post_meta($post->ID, '_ka_shoppe', true);
         $ka_shoppe_type = get_post_meta($post->ID, '_ka_shoppe_type', true);
+        $ka_tinh_trang_sp = get_post_meta($post->ID, '_ka_tinh_trang_sp', true);
         
         $available_data = array();
         $ka_product_sku = '';
@@ -174,14 +175,13 @@ if(!function_exists('s7upf_product_main_detai')){
                                                                 if ($ka_show_general_price) {
                                                                     echo tuandev_process_get_price_html($product);
                                                                 }
-                                                            if (array_key_exists("ywtm_6579",$tabs)){
-			echo                                            '<div class="alert alert-danger" style="padding: 0px;">
-											<div style="margin: 10px 5px 5px 5px;">';
-												$tab = $tabs['ywtm_6579'];
-												call_user_func( $tab['callback'], 'ywtm_6579', $tab );
-			echo                                            '</div>
-                                                                </div>';
-                                                            }
+                                                                if ($ka_tinh_trang_sp){
+                        echo                                            '<div class="alert alert-danger" style="padding: 0px;">
+                                                                                        <div style="margin: 10px 5px 5px 5px;"><p>';
+                        echo                                               $ka_tinh_trang_sp;
+                        echo                                            '</p></div>
+                                                                    </div>';
+                                                                }
 			echo					'<div class="detail-extralink' . (!$ka_show_general_price ? ' ka-remove-line' : '') . '">';
 										do_action('s7upf_template_single_add_to_cart');                                    
 									'</div>';
