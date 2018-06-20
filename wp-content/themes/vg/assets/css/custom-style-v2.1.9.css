@@ -236,7 +236,7 @@ span.ywcrbp_sale_price, span.ywcrbp_regular_price {
  #chatchat ul {
      list-style: none;
 }
- #chatchat{
+ #chatchat {
     width:140px;
     position:fixed;
     bottom:1px;
@@ -254,7 +254,7 @@ span.ywcrbp_sale_price, span.ywcrbp_regular_price {
     -moz-background-clip: padding;
     background-clip: padding-box;
     height:auto;
-    z-index: 99999;
+    z-index: 1039;
 }
  #chatchat ul{
     margin:0px;
@@ -3316,16 +3316,19 @@ button.single_add_to_cart_button {
     .content-from-cat .custom-list-small .thumb{
     	width: 41%;
     }
+    button.single_add_to_cart_button {
+        width: 73% !important;
+    }
+    .detail-info .detail-qty {
+        width: 22% !important;
+    }
 }
 @media (max-width: 767px){
     .content-from-cat .custom-list-small .thumb{
     	width: 42%;
     }
-    
-    /*Tuan Dev*/
     button.single_add_to_cart_button {
         width: 82% !important;
-        float: right !important;
     }
     .detail-info .detail-qty {
         width: 15% !important;
@@ -3334,6 +3337,12 @@ button.single_add_to_cart_button {
 @media (max-width: 667px){
     .content-from-cat .custom-list-small .thumb {
         width: 47%;
+    }
+    button.single_add_to_cart_button {
+        width: 78% !important;
+    }
+    .detail-info .detail-qty {
+        width: 17% !important;
     }
 }
 @media (max-width: 600px){
@@ -3354,13 +3363,11 @@ button.single_add_to_cart_button {
     .content-from-cat .custom-list-small:last-child{
     	border-bottom:none!important;
     }
-        /*Tuan Dev*/
     button.single_add_to_cart_button {
-        width: 80% !important;
-        float: right !important;
+        width: 75% !important;
     }
     .detail-info .detail-qty {
-        width: 15% !important;
+        width: 20% !important;
     }
 }
 /*END*/
