@@ -33,7 +33,7 @@ if(!function_exists('s7upf_product_main_detai')){
         
         $available_data = array();
         $ka_product_sku = '';
-//        $ka_show_general_price = false;
+        $ka_show_general_price = false;
         if( $product->is_type( 'variable' ) ) {
             $available_data = $product->get_available_variations();        
         } else {
@@ -44,9 +44,9 @@ if(!function_exists('s7upf_product_main_detai')){
                 if (!$ka_product_sku && !empty($available['sku'])) {
                     $ka_product_sku = $available['sku'];
                 }
-//                if (empty($available['price_html'])) {
-//                    $ka_show_general_price = true;
-//                }
+                if (empty($available['price_html'])) {
+                    $ka_show_general_price = true;
+                }
                 if(!empty($available['image_id']) && !in_array($available['image_id'],$attachment_ids)){
                     $attachment_ids[] = $available['image_id'];
                     if(!empty($available['image_id'])){
@@ -61,9 +61,9 @@ if(!function_exists('s7upf_product_main_detai')){
                 }
             }
         } 
-//        else {
-//            $ka_show_general_price = true;
-//        }
+        else {
+            $ka_show_general_price = true;
+        }
         $thumb_html =   '<div class="detail-gallery">
                             <div class="mid">
                                 '.get_the_post_thumbnail(get_the_ID(),'full').'
@@ -176,9 +176,9 @@ if(!function_exists('s7upf_product_main_detai')){
 							<h2 class="title14 white bg-color title-side" style="background-color: #059; text-align: center;">THÔNG TIN MUA HÀNG</h2>
 							<div class="row product-header">
 								<div class="detail-info">';
-//                                                                if ($ka_show_general_price) {
+                                                                if ($ka_show_general_price) {
                                                                     echo $product->get_price_html();
-//                                                                }
+                                                                }
                                                                 if ($ka_tinh_trang_sp) {
                         echo                                            '<div class="alert alert-danger" style="padding: 0px;">
                                                                                         <div style="margin: 10px 5px 5px 5px;"><p>';
