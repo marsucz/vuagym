@@ -100,7 +100,9 @@ function ka_san_tmdt_tab_panel() {
                     <option value="link" <?php echo ($ka_shoppe_type == 'link') ? 'selected' : ''; ?>>Link</option>
                     <option value="text" <?php echo ($ka_shoppe_type == 'text') ? 'selected' : ''; ?>>Text</option>
                 </select>
-                <textarea class="" style="" name="_ka_shoppe_content" id="_ka_shoppe_content" placeholder="Nhập link/text..." rows="2" cols="20" style="min-height: 28px"><?php echo $ka_shoppe_content; ?></textarea>
+                <?php 
+                    wp_editor( $ka_shoppe_content, '_ka_shoppe_content', $settings = array('textarea_rows'=> '5') );
+                ?>
               </p>
           </div>
       </div>
@@ -132,7 +134,7 @@ function ka_san_TMDT_modal($message = ''){
                     </div>
                 </div>
                 <div class="modal-body cart-title-body">
-                ' . $message . '
+                ' . html_entity_decode($message) . '
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary mypos-btn-close" data-dismiss="modal">Thoát</button>
@@ -149,7 +151,8 @@ function ja_ajax_ka_get_shoppe_popup() {
     $product_id     = intval($_POST['product_id']);
     
     $shoppe_content = get_post_meta($product_id, '_ka_shoppe_content', true);
-    $return = ka_san_TMDT_modal($shoppe_content);
+    $content = nl2br($shoppe_content);
+    $return = ka_san_TMDT_modal($content);
     wp_send_json_success( $return );
 }
 

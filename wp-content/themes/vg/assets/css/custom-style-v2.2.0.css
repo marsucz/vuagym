@@ -711,7 +711,6 @@ body{
     border-radius: 4px;
     display: inline-block;
     height: 40px;
-    /*line-height: 40px;*/
     position: relative;
     text-align: center;
     vertical-align: top;
@@ -719,6 +718,11 @@ body{
     transition: all .5s ease-out 0s;
     -webkit-transition: all .5s ease-out 0s;
 }
+
+.wc-backward {
+    line-height: 40px !important;
+}
+
 .woocommerce #respond input#submit:hover, .woocommerce a.button:hover, .woocommerce button.button:hover, .woocommerce input.button:hover{
     background: #059;
     color: #fff;
