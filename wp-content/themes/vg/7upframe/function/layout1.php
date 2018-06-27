@@ -206,8 +206,8 @@ if(!function_exists('s7upf_product_main_detai')){
                                                             </div>
                                                             <div style="float:right">';
                                 if ($ka_shoppe_type == 'link') {
-                                    $ka_shoppe_content = get_post_meta($post->ID, '_ka_shoppe_content', true);
-                                    echo '<a href="' . $ka_shoppe_content . '" target="_blank"><button class="button btn-shoppe">Tới Shopee</button></a>';
+                                    $ka_shoppe_link = get_post_meta($post->ID, '_ka_shoppe_link', true);
+                                    echo '<a href="' . $ka_shoppe_link . '" target="_blank"><button class="button btn-shoppe">Tới Shopee</button></a>';
                                 } else {
                                     echo '<button data-id="' . $post_id . '" class="button btn-shoppe btn-shoppe-text">Tới Shopee</button>';
                                 }

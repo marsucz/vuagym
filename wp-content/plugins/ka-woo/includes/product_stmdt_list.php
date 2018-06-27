@@ -90,7 +90,22 @@ class Kawoo_Product_SanTMDT_List extends WP_List_Table {
                         // add product to array but don't add the parent of product variations
                         if ($theid) {
                             $shoppe = get_post_meta($theid, '_ka_shoppe', true);
-                            if (!$shoppe || $shoppe == 'no') {
+                            if ($shoppe && $shoppe == 'yes') {
+                                $ka_shoppe_type = get_post_meta($theid, '_ka_shoppe_type', true);
+                                if ($ka_shoppe_type == 'link') {
+                                    $shoppe_link = get_post_meta($theid, '_ka_shoppe_link', true);
+                                    if (!$shoppe_link || $shoppe_link == '') {
+                                        $list_product[] = $theid;
+                                        $count_product++;
+                                    }
+                                } else {
+                                    $shoppe_content = get_post_meta($theid, '_ka_shoppe_content', true);
+                                    if (!$shoppe_content || $shoppe_content == '') {
+                                        $list_product[] = $theid;
+                                        $count_product++;
+                                    }
+                                }
+                            } else {
                                 $list_product[] = $theid;
                                 $count_product++;
                             }
@@ -133,10 +148,19 @@ class Kawoo_Product_SanTMDT_List extends WP_List_Table {
                         if ($theid) {
                             $shoppe = get_post_meta($theid, '_ka_shoppe', true);
                             if ($shoppe && $shoppe == 'yes') {
-                                $shoppe_content = get_post_meta($woo_product['id'], '_ka_shoppe_content', true);
-                                if ($shoppe_content && $shoppe_content != '') {
-                                    $list_product[] = $theid;
-                                    $count_product++;
+                                $ka_shoppe_type = get_post_meta($theid, '_ka_shoppe_type', true);
+                                if ($ka_shoppe_type == 'link') {
+                                    $shoppe_link = get_post_meta($theid, '_ka_shoppe_link', true);
+                                    if ($shoppe_link != '') {
+                                        $list_product[] = $theid;
+                                        $count_product++;
+                                    }
+                                } else {
+                                    $shoppe_content = get_post_meta($theid, '_ka_shoppe_content', true);
+                                    if ($shoppe_content != '') {
+                                        $list_product[] = $theid;
+                                        $count_product++;
+                                    }
                                 }
                             }
                         }
@@ -255,7 +279,7 @@ class Kawoo_Product_SanTMDT_List extends WP_List_Table {
             case 'tmdt_type':
                 $shoppe = get_post_meta($woo_product['id'], '_ka_shoppe', true);
                 if ($shoppe && $shoppe == 'yes') {
-                    $r = "Shoppe: " . get_post_meta($woo_product['id'], '_ka_shoppe_type', true);
+                    $r = 'Shoppe: <span style="color:green; font-weight: bold;">' . strtoupper(get_post_meta($woo_product['id'], '_ka_shoppe_type', true)) . '</span>';
                 } else {
                     $r = "Chưa có Shoppe";
                 }
@@ -263,7 +287,12 @@ class Kawoo_Product_SanTMDT_List extends WP_List_Table {
             case 'tmdt_content':
                 $shoppe = get_post_meta($woo_product['id'], '_ka_shoppe', true);
                 if ($shoppe && $shoppe == 'yes') {
-                    $r = get_post_meta($woo_product['id'], '_ka_shoppe_content', true);
+                    $shoppe_type = get_post_meta($woo_product['id'], '_ka_shoppe_type', true);
+                    if ($shoppe_type == 'link') {
+                        $r = get_post_meta($woo_product['id'], '_ka_shoppe_link', true);
+                    } else {
+                        $r = get_post_meta($woo_product['id'], '_ka_shoppe_content', true);
+                    }
                 } else {
                     $r = "";
                 }

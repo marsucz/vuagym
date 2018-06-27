@@ -19,11 +19,13 @@ function ka_san_tmdt_tab_panel() {
     
     $ka_shoppe = get_post_meta($post->ID, '_ka_shoppe', true);
     $ka_shoppe_type = get_post_meta($post->ID, '_ka_shoppe_type', true);
+    
     $ka_shoppe_content = get_post_meta($post->ID, '_ka_shoppe_content', true);
+    $ka_shoppe_link = get_post_meta($post->ID, '_ka_shoppe_link', true);
     
   ?>
   <div id="san_tmdt_panel" class="panel woocommerce_options_panel">
-          <div class="options_group">
+          <div class="options_group" style="padding: 10px">
               <p class="form-field my_custom_input_field">
                   <label for="_ka_shoppe" style="width: 15%"><strong>Shoppe</strong>
                     <input type="checkbox" name="_ka_shoppe" id="_ka_shoppe" <?php echo ($ka_shoppe == 'yes')?'checked':''; ?>>
@@ -32,10 +34,10 @@ function ka_san_tmdt_tab_panel() {
                     <option value="link" <?php echo ($ka_shoppe_type == 'link') ? 'selected' : ''; ?>>Link</option>
                     <option value="text" <?php echo ($ka_shoppe_type == 'text') ? 'selected' : ''; ?>>Text</option>
                 </select>
-                <?php 
-                    wp_editor( $ka_shoppe_content, '_ka_shoppe_content_text', $settings = array('textarea_rows'=> '5') );
+                <?php
+                    wp_editor( $ka_shoppe_content, '_ka_shoppe_content', $settings = array('textarea_rows'=> '5') );
                 ?>
-                  <input type="text" name="_ka_shoppe_content_link" id="_ka_shoppe_content_link" placeholder="Nhập link..." value="<?= $ka_shoppe_content ?>">
+                  <input type="text" name="_ka_shoppe_link" id="_ka_shoppe_link" style="width: 80%" placeholder="Nhập link..." value="<?= $ka_shoppe_link ?>">
               </p>
           </div>
       </div>
@@ -54,6 +56,8 @@ function ka_save_san_tmdt_fields( $post_id ) {
     $ka_shoppe_content = isset($_POST['_ka_shoppe_content']) ? $_POST['_ka_shoppe_content'] : '';
     update_post_meta($post_id, '_ka_shoppe_content', $ka_shoppe_content);
     
+    $ka_shoppe_link = isset($_POST['_ka_shoppe_link']) ? $_POST['_ka_shoppe_link'] : '';
+    update_post_meta($post_id, '_ka_shoppe_link', $ka_shoppe_link);
 }
 
 function ka_san_TMDT_modal($message = ''){
@@ -98,7 +102,7 @@ function add_admin_scripts( $hook ) {
 
     if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
         if ( 'product' === $post->post_type ) {
-            wp_enqueue_script(  'myscript', KAWOO_PLUGIN_URL . 'assets/admin/js/post_shoppe.js' );
+            wp_enqueue_script(  'kawoo-scripts', KAWOO_PLUGIN_URL . 'assets/admin/js/post_shoppe.js' );
         }
     }
 }
