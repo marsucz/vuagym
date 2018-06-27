@@ -141,5 +141,28 @@ class WooDbModel {
         return $return;
         
     }
+    
+    // Tim kiem san pham theo MA SAN PHAM (Tim kiem tuong doi)
+    public function search_product_like_sku($sku) {
+		
+        $query = "  SELECT post_id
+                    FROM {$this->prefix}postmeta 
+                    WHERE
+                    meta_key = '_sku' and meta_value like '%$sku%'";
+                    
+        $result = mysqli_query($this->link, $query);
+        
+        if ($result) {
+            $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            if ($return) {
+                return $return;
+            } else {
+                return [];
+            }
+        } else {
+            return [];
+        }
+        
+    }
 }
         

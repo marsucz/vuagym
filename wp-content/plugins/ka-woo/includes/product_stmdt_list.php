@@ -13,23 +13,20 @@ if( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 // Tab: Quản lý sản phẩm
-class Kawoo_Product_Search_List extends WP_List_Table {
+class Kawoo_Product_SanTMDT_List extends WP_List_Table {
 
     private $dbModel;
     private $show_type = 1;
     private $show_products_per_page = 10;
-    private $finding_product_code = '';
-    private $search_advance = 1;
+    private $shoppe_advance = 1;
 
-    function __construct($show_type = 1, $show_products = 10, $finding_product_code = "", $search_advance = 1) {
+    function __construct($show_type = 1, $show_products = 10, $shoppe_advance = 1) {
         $args = array();
         parent::__construct($args);
         $this->dbModel = new WooDbModel();
         $this->show_type = $show_type;
         $this->show_products_per_page = $show_products;
-//        $this->image_link = $image_link;
-        $this->finding_product_code = $finding_product_code;
-        $this->search_advance = $search_advance;
+        $this->shoppe_advance = $shoppe_advance;
     }
     
     public function prepare_items()
@@ -39,29 +36,36 @@ class Kawoo_Product_Search_List extends WP_List_Table {
         $sortable = $this->get_sortable_columns();
 
         $perPage = $this->show_products_per_page;
-        $currentPage = $this->get_pagenum();
         $list_product = array();
         
-        switch ($this->show_type) {
+        switch ($this->shoppe_advance) {
             
-            case 1: // Tìm kiếm sản phẩm theo Mã sản phẩm
-                if ($this->search_advance == 1) {
-                        $product_id = wc_get_product_id_by_sku($this->finding_product_code);
-                        if ($product_id) {
-                            $list_product[] = $product_id;
-                        }
-                } else {
-                        $list_prod = $this->dbModel->search_product_like_sku($this->finding_product_code);
-                        if (count($list_prod) > 0) {
-                            foreach ($list_prod as $prod) {
-                                $list_product[] = $prod['post_id'];
-                            }
-                        }
-                }
-                break;
+            case 1: // Hien thi tat ca san pham
+                
+                $currentPage = $this->get_pagenum();
+                $totalItems = $this->dbModel->get_count_woo_product();
+                
+                $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage ) );
 
-            case 2: // Hien các sản phẩm thuộc kho ngoài
-        
+                while ( $loop->have_posts() ) : $loop->the_post();
+
+                    $theid = get_the_ID();
+
+                    // add product to array but don't add the parent of product variations
+                    if ($theid) {
+                        $list_product[] = $theid;
+                    }
+
+                endwhile;
+                wp_reset_query();
+
+                $this->set_pagination_args( array(
+                    'total_items' => $totalItems,
+                    'per_page'    => $perPage
+                ) );
+
+                break;
+            case 2: // Chi hien thi cac san pham chua co Shoppe
                 $perPage = 50;
                 $currentPage = 0;
 
@@ -85,9 +89,9 @@ class Kawoo_Product_Search_List extends WP_List_Table {
 
                         // add product to array but don't add the parent of product variations
                         if ($theid) {
-                            $temp_products = $this->get_product_in_other_store($theid);
-                            if (!empty($temp_products)) {
-                                $list_product = array_merge($list_product, $temp_products);
+                            $shoppe = get_post_meta($theid, '_ka_shoppe', true);
+                            if (!$shoppe || $shoppe == 'no') {
+                                $list_product[] = $theid;
                                 $count_product++;
                             }
                         }
@@ -103,8 +107,7 @@ class Kawoo_Product_Search_List extends WP_List_Table {
                 
                 break;  // break case 2
                 
-            case 3: // Lọc sản phẩm Luôn Hiện
-        
+            case 3: // Chi hien thi cac san pham da co Shoppe
                 $perPage = 50;
                 $currentPage = 0;
 
@@ -128,12 +131,13 @@ class Kawoo_Product_Search_List extends WP_List_Table {
 
                         // add product to array but don't add the parent of product variations
                         if ($theid) {
-                            
-                            $show_always = get_post_meta($theid, '_mypos_show_always', true);
-                            
-                            if ($show_always == 'yes') {
-                                $list_product[] = $theid;
-                                $count_product++;
+                            $shoppe = get_post_meta($theid, '_ka_shoppe', true);
+                            if ($shoppe && $shoppe == 'yes') {
+                                $shoppe_content = get_post_meta($woo_product['id'], '_ka_shoppe_content', true);
+                                if ($shoppe_content && $shoppe_content != '') {
+                                    $list_product[] = $theid;
+                                    $count_product++;
+                                }
                             }
                         }
 
@@ -147,38 +151,10 @@ class Kawoo_Product_Search_List extends WP_List_Table {
                 }
                 
                 break;  // break case 3
-                
         }
 
         $this->_column_headers = array($columns, $hidden, $sortable);
         $this->items = $list_product;
-    }
-    
-    public function get_product_in_other_store($product_id) {
-
-        $return_products = array();
-
-        $prod = wc_get_product($product_id);
-
-        if ($prod && $prod->is_type('variable') && $prod->has_child()) {
-
-            $variations = $this->dbModel->get_children_ids($product_id);
-            foreach ($variations as $child) {
-                if ($child) {
-                    $store = get_post_meta($child['ID'], '_mypos_other_store', true);
-                    if ($store && $store == 'yes') {
-                        $return_products[] = $child['ID'];
-                    }
-                }
-            }
-        } elseif ($prod && $prod->is_type('simple')) {
-            $store = get_post_meta($child['ID'], '_mypos_other_store', true);
-            if ($store && $store == 'yes') {
-                $return_products[] = $product_id;
-            }
-        }
-
-        return $return_products;
     }
     
     public function single_row($item) {
@@ -193,8 +169,9 @@ class Kawoo_Product_Search_List extends WP_List_Table {
             'id' => 'ID',
             'edit' => '<span class="dashicons dashicons-admin-generic"></span>',
             'product' => 'Sản Phẩm',
-            'store'     => 'Kho Hàng',
-            'price-options' => 'Tùy Chọn',
+            'tmdt_type'     => 'Loại Tab',
+            'tmdt_content'     => 'Nội dung Shoppe',
+            'tmdt_options' => 'Tùy Chọn',
         );
         return $columns;
     }
@@ -275,15 +252,23 @@ class Kawoo_Product_Search_List extends WP_List_Table {
                 $formated_price = kiotViet_formatted_price($woo_product['price']);
                 $r = "{$woo_product['name']}<br/>-Mã: <b>{$woo_product['sku']}</b> -{$woo_product['stock_status']} -Giá: {$formated_price}";
                 break;
-            case 'store':
-                $store = get_post_meta($woo_product['id'], '_mypos_other_store', true);
-                if ($store && $store == 'yes') {
-                    $r = get_option('kiotviet2_name');
+            case 'tmdt_type':
+                $shoppe = get_post_meta($woo_product['id'], '_ka_shoppe', true);
+                if ($shoppe && $shoppe == 'yes') {
+                    $r = "Shoppe: " . get_post_meta($woo_product['id'], '_ka_shoppe_type', true);
                 } else {
-                    $r = get_option('kiotviet_name');
+                    $r = "Chưa có Shoppe";
                 }
                 break;
-            case 'price-options':
+            case 'tmdt_content':
+                $shoppe = get_post_meta($woo_product['id'], '_ka_shoppe', true);
+                if ($shoppe && $shoppe == 'yes') {
+                    $r = get_post_meta($woo_product['id'], '_ka_shoppe_content', true);
+                } else {
+                    $r = "";
+                }
+                break;
+            case 'tmdt_options':
                 $r = '';
                 break;
             default:

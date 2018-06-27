@@ -227,9 +227,12 @@ function function_manager_tabs_page() {
             }
             break;
         case 'product_search_manager': // Tim kiem va hien cac san pham thuoc kho phu
-
+            
+            $search_advance = isset($_POST['search_advance']) ? $_POST['search_advance'] : 1;
+            $shoppe_advance = isset($_POST['shoppe_advance']) ? $_POST['shoppe_advance'] : 1;
+            
             kawoo_load_assets_tab_search();
-
+            
             $finding_product_code = get_option('kawoo_selected_text');
 
             echo '  <div class="wrap">
@@ -239,6 +242,18 @@ function function_manager_tabs_page() {
                                 <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Tìm kiếm theo Mã sản phẩm</option>
                                 <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Hiện tất cả sản phẩm kho phụ</option>
                                 <option value="3"' . ($show_type == 3 ? 'selected' : '') . '>Lọc các sản phẩm luôn hiện</option>
+                                <option value="4"' . ($show_type == 4 ? 'selected' : '') . '>Sản phẩm Shoppe</option>
+                            </select>
+                            <label class="search_advance">Nâng cao &nbsp</label>
+                            <select id="search_advance" name="search_advance" class="search_advance">
+                                <option value="1"' . ($search_advance == 1 ? 'selected' : '') . '>Tìm kiếm chính xác</option>
+                                <option value="2"' . ($search_advance == 2 ? 'selected' : '') . '>Tìm kiếm tương đối</option>
+                            </select>
+                            <label class="shoppe_advance">Nâng cao &nbsp</label>
+                            <select id="shoppe_advance" name="shoppe_advance" class="shoppe_advance">
+                                <option value="1"' . ($shoppe_advance == 1 ? 'selected' : '') . '>Hiển thị tất cả</option>
+                                <option value="2"' . ($shoppe_advance == 2 ? 'selected' : '') . '>Chỉ hiển thị sp chưa có Shopee</option>
+                                <option value="3"' . ($shoppe_advance == 3 ? 'selected' : '') . '>Chỉ hiển thị sp đã có Shopee</option>
                             </select>
                             <label id="kawoo_product_numbers_label">Số lượng SP hiển thị &nbsp</label>
                             <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
@@ -251,11 +266,23 @@ function function_manager_tabs_page() {
             if (empty($_POST) && !isset($_GET['paged'])) {
                 
             } else {
-                echo '<form method="POST" id="product-search-manager-list">';
-                $myListTable = new Kawoo_Product_Search_List($show_type, $show_products, $finding_product_code);
-                $myListTable->prepare_items();
-                $myListTable->display();
-                echo '</form>';
+                switch ($show_type) {
+                    case 4: // Shoppe
+                        echo '<form method="POST" id="product-search-manager-list">';
+                        $myListTable = new Kawoo_Product_SanTMDT_List($show_type, $show_products, $shoppe_advance);
+                        $myListTable->prepare_items();
+                        $myListTable->display();
+                        echo '</form>';
+                        break;
+                    default:
+                        echo '<form method="POST" id="product-search-manager-list">';
+                        $myListTable = new Kawoo_Product_Search_List($show_type, $show_products, $finding_product_code, $search_advance, $shoppe_advance);
+                        $myListTable->prepare_items();
+                        $myListTable->display();
+                        echo '</form>';
+                        break;
+                }
+                
             }
             break;
         case 'product_content_manager': // Tim kiem va hien cac san pham thuoc kho phu
