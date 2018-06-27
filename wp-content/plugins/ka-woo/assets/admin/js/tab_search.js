@@ -26,6 +26,7 @@ jQuery(document).ready(function($) {
 
                 $('.search_advance').show();
                 $('.shoppe_advance').hide();
+                $('.catalog_advance').hide();
                 break;
             case 2:
             case 3:
@@ -39,6 +40,7 @@ jQuery(document).ready(function($) {
 
                 $('.search_advance').hide();
                 $('.shoppe_advance').hide();
+                $('.catalog_advance').hide();
                 break;
             case 4:
                 $('#kawoo_finding_code_text').hide();
@@ -51,7 +53,20 @@ jQuery(document).ready(function($) {
 
                 $('.search_advance').hide();
                 $('.shoppe_advance').show();
+                $('.catalog_advance').hide();
                 break;
+            case 5:
+                $('#kawoo_finding_code_text').hide();
+                $('#kawoo_finding_code_label').hide();
+                $("#kawoo_finding_code_text").prop('required',false);
+
+                $('#kawoo_product_numbers_label').show();
+                $('#kawoo_number_of_products').show();
+                $("#kawoo_number_of_products").prop('required',true);
+
+                $('.search_advance').hide();
+                $('.shoppe_advance').hide();
+                $('.catalog_advance').show();
         }
     }
 });

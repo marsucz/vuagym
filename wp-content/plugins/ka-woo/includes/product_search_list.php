@@ -20,8 +20,9 @@ class Kawoo_Product_Search_List extends WP_List_Table {
     private $show_products_per_page = 10;
     private $finding_product_code = '';
     private $search_advance = 1;
+    private $catalog_advance = 1;
 
-    function __construct($show_type = 1, $show_products = 10, $finding_product_code = "", $search_advance = 1) {
+    function __construct($show_type = 1, $show_products = 10, $finding_product_code = "", $search_advance = 1, $catalog_advance = 1) {
         $args = array();
         parent::__construct($args);
         $this->dbModel = new WooDbModel();
@@ -30,6 +31,7 @@ class Kawoo_Product_Search_List extends WP_List_Table {
 //        $this->image_link = $image_link;
         $this->finding_product_code = $finding_product_code;
         $this->search_advance = $search_advance;
+        $this->catalog_advance = $catalog_advance;
     }
     
     public function prepare_items()
@@ -147,7 +149,71 @@ class Kawoo_Product_Search_List extends WP_List_Table {
                 }
                 
                 break;  // break case 3
-                
+//            case 4: // Shoppe ở Class khác
+            case 5: // Mức độ hiển thị catalog
+        
+                $perPage = 50;
+                $currentPage = 0;
+
+                // show product one times
+                $show_products = $this->show_products_per_page;
+                $count_product = 0;
+
+                while ($count_product < $show_products) {
+
+                    $currentPage++;
+
+                    $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage ) );
+
+                    if (!$loop->post_count || $loop->post_count == 0) {
+                        break;
+                    }
+
+                    while ( $loop->have_posts() ) : $loop->the_post();
+
+                        $theid = get_the_ID();
+
+                        // add product to array but don't add the parent of product variations
+                        if ($theid) {
+                            $product = wc_get_product($theid);
+                            $status = $product->get_catalog_visibility();
+                            switch($this->catalog_advance) {
+                                case 1: //Cửa hàng và kết quả tìm kiếm
+                                    if ($status == 'visible') {
+                                        $list_product[] = $theid;
+                                        $count_product++;
+                                    }
+                                    break;
+                                case 2: //Chỉ cửa hàng
+                                    if ($status == 'catalog') {
+                                        $list_product[] = $theid;
+                                        $count_product++;
+                                    }
+                                    break;
+                                case 3: //Chỉ tìm kiếm kết quả
+                                    if ($status == 'search') {
+                                        $list_product[] = $theid;
+                                        $count_product++;
+                                    }
+                                    break;
+                                case 4: //Ẩn
+                                    if ($status == 'hidden') {
+                                        $list_product[] = $theid;
+                                        $count_product++;
+                                    }
+                                    break;
+                            }
+                        }
+
+                        if ($count_product >= $show_products) {
+                            break;
+                        }
+
+                    endwhile;
+                    wp_reset_query();
+
+                }
+                break;  // break case 5    
         }
 
         $this->_column_headers = array($columns, $hidden, $sortable);
