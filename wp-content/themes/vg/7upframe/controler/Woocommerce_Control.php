@@ -7,24 +7,24 @@
  */
 if(class_exists("woocommerce")){
     if(function_exists('stp_reg_taxonomy')){
-    	stp_reg_taxonomy(
-    	    'product_brand',
-    	    'product',
-    	    array(
-    	        'label' => esc_html__( 'Brands', 'kuteshop' ),
-    	        'rewrite' => array( 'slug' => 'product_brand', 'kuteshop' ),
-    	        'labels'	=> array(
-    		        'all_items' => esc_html__( 'All Brands', 'kuteshop' ),
-    		        'edit_item' => esc_html__( 'Edit Brand', 'kuteshop' ),
-    		        'view_item' => esc_html__( 'View Brand', 'kuteshop' ),
-    		        'update_item' => esc_html__( 'Update Brand', 'kuteshop' ),
-    		        'add_new_item' => esc_html__( 'Add New Brand', 'kuteshop' ),
-    		        'new_item_name' => esc_html__( 'New Brand Name', 'kuteshop' ),
-    		       ),
-    	        'hierarchical' => true,
-    	        'query_var'  => true
-    	    )
-    	);
+//    	stp_reg_taxonomy(
+//    	    'product_brand',
+//    	    'product',
+//    	    array(
+//    	        'label' => esc_html__( 'Brands', 'kuteshop' ),
+//    	        'rewrite' => array( 'slug' => 'product_brand', 'kuteshop' ),
+//    	        'labels'	=> array(
+//    		        'all_items' => esc_html__( 'All Brands', 'kuteshop' ),
+//    		        'edit_item' => esc_html__( 'Edit Brand', 'kuteshop' ),
+//    		        'view_item' => esc_html__( 'View Brand', 'kuteshop' ),
+//    		        'update_item' => esc_html__( 'Update Brand', 'kuteshop' ),
+//    		        'add_new_item' => esc_html__( 'Add New Brand', 'kuteshop' ),
+//    		        'new_item_name' => esc_html__( 'New Brand Name', 'kuteshop' ),
+//    		       ),
+//    	        'hierarchical' => true,
+//    	        'query_var'  => true
+//    	    )
+//    	);
     }
 
     /********************************** POPUP Wishlist ************************************/
