@@ -795,18 +795,16 @@ function function_mypos_sync_page() {
             
         case 'sync_shoppe':
             
-            load_assets_tab_import_manager();
+            load_assets_tab_sync_shoppe();
             
             echo '  <div class="wrap">
                     <form id="import_manager_form" method="POST" enctype="multipart/form-data">
-                            <label>Chức năng </label>
+                            <label>Bộ lọc </label>
                             <select id="sync_by_web_show_type" name="sync_by_web_show_type">
-                                <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Quản lý phiếu nhập hàng</option>
-                                <option value="0"' . ($show_type == 0 ? 'selected' : '') . '>Quản lý sản phẩm nhập hàng</option>
+                                <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Hiển thị tất cả sản phẩm</option>
+                                <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Chỉ sản phẩm chưa đồng bộ</option>
                             </select>
                             <input type="file" style="margin-left: 10%;" name="importfile" id="importfile"/>
-                            <label id="sync_by_web_products_label"> Số lượng SP </label>
-                            <input type="number" id="sync_by_web_products" name="sync_by_web_products" value="' . $show_products . '" min="1" required>
                         <input type="submit" class="button" value="Upload">
                     </form>
                     </div>';
@@ -857,7 +855,6 @@ function function_mypos_sync_page() {
                             $spreadsheet = $reader->load($file_input);
                             $worksheet = $spreadsheet->getActiveSheet();
                             
-                            $worksheet->getProtection()->setSheet(false);
                             $import_rows = array();
                             foreach ($worksheet->getRowIterator() AS $row) {
                                 $cellIterator = $row->getCellIterator();
@@ -869,23 +866,53 @@ function function_mypos_sync_page() {
                                 $import_rows[] = $cells;
                             }
                             
-                            echo "<pre>";
-                            print_r($import_rows);
-                            echo "</pre>";
+                            $is_import = false;
+                            
+//                            echo '<pre>';
+//                            print_r($import_rows);
+//                            echo '<pre>';
+//                            exit;
+                            
+                            // Init data
+                            $base_col = 7;
+                            $num_info = 5;
+                            
+                            $list_shoppe = array();
+                            $count = 0;
+                            foreach ($import_rows as $key => $row) {
+                                $count++;
+                                if ($count < 4) continue;
+                                if ($row[0] == '') continue;
+                                
+                                if ($row[$base_col] != '') {
+                                    // La san pham co bien bien the
+                                    for($i=0; $i < 20; $i++) {
+                                        if ($row[$base_col + $num_info*$i] == '') {
+                                            break;
+                                        }
+                                        $shoppe['id'] = $row[$base_col + $num_info*$i];
+                                        $shoppe['sku'] = $row[$base_col + $num_info*$i + 1];
+                                        $shoppe['name'] = $row[2] . ' - ' . $row[$base_col + $num_info*$i + 2];
+                                        $shoppe['price'] = $row[$base_col + $num_info*$i + 3];
+                                        $shoppe['stock'] = $row[$base_col + $num_info*$i + 4];
+                                        $list_shoppe[] = $shoppe;
+                                    }
+                                } else {
+                                    // La san pham don gian
+                                    $shoppe['id'] = $row[0];
+                                    $shoppe['sku'] = $row[1];
+                                    $shoppe['name'] = $row[2];
+                                    $shoppe['price'] = $row[5];
+                                    $shoppe['stock'] = $row[6];
+                                    $list_shoppe[] = $shoppe;
+                                }
+                            }
+                            
+                            echo '<pre>';
+                            print_r($list_shoppe);
+                            echo '<pre>';
                             exit;
                             
-                            $is_import = false;
-                            if (count($import_rows) > 0) {
-//                                $dbModel = new DbModel();
-//                                if ($is_overwrite) {
-//                                    // Xoa file cu va du lieu database
-//                                    unlink($file_output);
-//                                    $dbModel->kapos_delete_imports($import_file_name);
-//                                }
-//                                $return['insert'] = $dbModel->kapos_insert_imports($import_file_name, $import_rows);
-//                                $is_import = $return['insert'];
-                            }
-
 //                            if ($is_import) {
 //                                // Save new files on host
 //                                $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
@@ -911,22 +938,14 @@ function function_mypos_sync_page() {
 //                        <span style="color: red">Bạn chưa chọn file upload.</span>
 //                        </div>';
                 }
-            }
-            
-            if ($show_type == 1) {
+                
                 echo '<form method="POST" id="import-files-list">';
-                $myListTable = new Mypos_ImportFiles_List($show_products);
+                $myListTable = new KiotViet_SyncShoppe_List($show_type, $list_shoppe);
                 $myListTable->prepare_items();
                 $myListTable->display();
                 echo '</form>';
-            } else {    // show type = 0
-                echo '<form method="POST" id="import-product-list">';
-                $myListTable = new Mypos_ImportProduct_List($show_type, $show_products);
-                $myListTable->prepare_items();
-                $myListTable->display();
-                echo '</form>';
+                
             }
-            
             break;
             
         default:

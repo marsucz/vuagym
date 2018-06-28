@@ -20,3 +20,4 @@ require_once('includes/KiotViet_ManualSyncWeb_List.php');
 require_once('includes/KiotViet_ThongTinSanPham_List.php');
 require_once('includes/Mypos_ImportFiles_List.php');
 require_once('includes/Mypos_ImportProduct_List.php');
+require_once('includes/KiotViet_SyncShoppe_List.php');
