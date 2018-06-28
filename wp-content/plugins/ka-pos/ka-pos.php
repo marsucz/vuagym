@@ -566,6 +566,7 @@ function function_mypos_sync_page() {
             <a href="?page=mypos-sync&tab=sync_by_web" class="nav-tab ' . ($active_tab == "sync_by_web" ? "nav-tab-active" : "") . '">Đồng bộ hóa thủ công theo Web</a>
             <a href="?page=mypos-sync&tab=sync_by_kiotviet" class="nav-tab ' . ($active_tab == "sync_by_kiotviet" ? "nav-tab-active" : "") . '">Đồng bộ hóa thủ công theo KiotViet</a>
             <a href="?page=mypos-sync&tab=import_manager" class="nav-tab ' . ($active_tab == "import_manager" ? "nav-tab-active" : "") . '">Quản lý nhập hàng</a>
+            <a href="?page=mypos-sync&tab=sync_shoppe" class="nav-tab ' . ($active_tab == "sync_shoppe" ? "nav-tab-active" : "") . '">Đồng bộ Shoppe</a>
          </h2>';
     
     switch ($active_tab) {
@@ -755,6 +756,142 @@ function function_mypos_sync_page() {
                                 $writer->save($file_output);
                                 $return['write'] = true;
                             }
+
+                            
+                            if ($return['insert'] && $return['write']) {
+                                echo '<div id="notice" class="wrap">
+                                <span style="color: green; font-weight: bold">File đã được upload và xử lý thông tin nhập hàng.</span>
+                                </div>';
+                            } else {
+                                echo '<div id="notice" class="wrap">
+                                <span style="color: red; font-weight: bold">Có lỗi trong quá trình upload, vui lòng thử lại.</span>
+                                </div>';
+                                $is_ok = false;
+                            }
+                        }
+                    }
+                } else {
+//                    echo '<div class="wrap">
+//                        <span style="color: red">Bạn chưa chọn file upload.</span>
+//                        </div>';
+                }
+            }
+            
+            if ($show_type == 1) {
+                echo '<form method="POST" id="import-files-list">';
+                $myListTable = new Mypos_ImportFiles_List($show_products);
+                $myListTable->prepare_items();
+                $myListTable->display();
+                echo '</form>';
+            } else {    // show type = 0
+                echo '<form method="POST" id="import-product-list">';
+                $myListTable = new Mypos_ImportProduct_List($show_type, $show_products);
+                $myListTable->prepare_items();
+                $myListTable->display();
+                echo '</form>';
+            }
+            
+            break;
+            
+        case 'sync_shoppe':
+            
+            load_assets_tab_import_manager();
+            
+            echo '  <div class="wrap">
+                    <form id="import_manager_form" method="POST" enctype="multipart/form-data">
+                            <label>Chức năng </label>
+                            <select id="sync_by_web_show_type" name="sync_by_web_show_type">
+                                <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Quản lý phiếu nhập hàng</option>
+                                <option value="0"' . ($show_type == 0 ? 'selected' : '') . '>Quản lý sản phẩm nhập hàng</option>
+                            </select>
+                            <input type="file" style="margin-left: 10%;" name="importfile" id="importfile"/>
+                            <label id="sync_by_web_products_label"> Số lượng SP </label>
+                            <input type="number" id="sync_by_web_products" name="sync_by_web_products" value="' . $show_products . '" min="1" required>
+                        <input type="submit" class="button" value="Upload">
+                    </form>
+                    </div>';
+            
+            $is_ok = true;
+            
+            if (empty($_POST) && !isset($_GET['paged'])) {
+                
+            } else {
+                if (($show_type == 1) && isset($_FILES['importfile'])) {
+                    // Nếu file upload không bị lỗi,
+                    // Tức là thuộc tính error > 0
+                    if (($_FILES['importfile']['error'] > 0))
+                    {
+                        echo '<div id="notice" class="wrap">
+                        <span style="color: red; font-weight: bold">File bị lỗi, vui lòng thử lại.</span>
+                        </div>';
+                    }
+                    else{
+                        
+                        $file_ext = pathinfo($_FILES['importfile']['name']);
+                        
+                        if ($file_ext['extension'] != 'xlsx') {
+                            echo '<div  id="notice"  class="wrap">
+                            <span style="color: red; font-weight: bold">Upload lỗi. Chỉ chấp nhận định dạng file Excel (xlsx).</span>
+                            </div>';
+                            $is_ok = false;
+                        } else {
+                            
+                            $upload = wp_upload_dir();
+                            $upload_dir = $upload['basedir'];
+                            $upload_dir = $upload_dir . '/shoppe/';
+                            if (! is_dir($upload_dir)) {
+                                mkdir( $upload_dir, 0700 );
+                             }
+
+                            $import_file_name = $_FILES['importfile']['name'];
+                            $file_input = $_FILES['importfile']['tmp_name'];
+                            $file_output = $upload_dir . $import_file_name;
+                            
+                            $is_overwrite = false;
+                            if (file_exists($file_output)) {
+                                $is_overwrite = true;
+                            }
+                            
+                            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+
+                            $spreadsheet = $reader->load($file_input);
+                            $worksheet = $spreadsheet->getActiveSheet();
+                            
+                            $worksheet->getProtection()->setSheet(false);
+                            $import_rows = array();
+                            foreach ($worksheet->getRowIterator() AS $row) {
+                                $cellIterator = $row->getCellIterator();
+                                $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+                                $cells = [];
+                                foreach ($cellIterator as $cell) {
+                                    $cells[] = $cell->getValue();
+                                }
+                                $import_rows[] = $cells;
+                            }
+                            
+                            echo "<pre>";
+                            print_r($import_rows);
+                            echo "</pre>";
+                            exit;
+                            
+                            $is_import = false;
+                            if (count($import_rows) > 0) {
+//                                $dbModel = new DbModel();
+//                                if ($is_overwrite) {
+//                                    // Xoa file cu va du lieu database
+//                                    unlink($file_output);
+//                                    $dbModel->kapos_delete_imports($import_file_name);
+//                                }
+//                                $return['insert'] = $dbModel->kapos_insert_imports($import_file_name, $import_rows);
+//                                $is_import = $return['insert'];
+                            }
+
+//                            if ($is_import) {
+//                                // Save new files on host
+//                                $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
+//                                $writer->save($file_output);
+//                                $return['write'] = true;
+//                            }
 
                             
                             if ($return['insert'] && $return['write']) {
