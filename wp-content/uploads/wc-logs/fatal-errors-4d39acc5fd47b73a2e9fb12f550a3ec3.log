@@ -10,3 +10,5 @@
 
 2018-06-29T17:56:48+07:00 CRITICAL Call to a member function is_type() on boolean
 
+2018-06-30T07:26:30+07:00 CRITICAL Call to a member function setValue() on null
+
