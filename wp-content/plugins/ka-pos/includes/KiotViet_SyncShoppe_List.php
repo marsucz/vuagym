@@ -354,8 +354,15 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
                 $r = $kv_text;
                 break;
             case 'sp_shoppe':
+                
+                if ($shoppe['quantity'] > 0) {
+                    $stock_text = '<span style="color:green; font-weight: bold;">Còn hàng</span> (' . $shoppe['quantity'] . ')';
+                } else {
+                    $stock_text = '<span style="color:red; font-weight: bold;">Hết hàng</span> (' . $shoppe['quantity'] . ')';
+                }
+                
                 $formated_price = kiotViet_formatted_price($shoppe['price']);
-                $r = "{$shoppe['name']}<br/>-Mã: <b>{$shoppe['sku']}</b> -Số lượng: {$shoppe['quantity']} -Giá: {$formated_price}";
+                $r = "{$shoppe['name']}<br/>-Mã: <b>{$shoppe['sku']}</b> -{$stock_text} -Giá: {$formated_price}";
                 break;
             case 'sp_store':
                 $store = get_post_meta($woo_product['id'], '_mypos_other_store', true);

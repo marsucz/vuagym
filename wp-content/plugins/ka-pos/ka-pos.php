@@ -976,7 +976,7 @@ function function_mypos_sync_page() {
                 
                 if ($file_output_url) {
                     if (count($list_shoppe) > 0) {
-                        $form_html .= '<a href="' . $file_output_url . '" target="_blank"><input type="button" class="button" style="margin-left: 10px;" value="Download"></a>';
+                        $form_html .= '<a href="' . $file_output_url . '" target="_blank"><input type="button" class="button" style="margin-left: 10px; float: right" value="Download kết quả"></a>';
                     } else {
                         $addition_html .= '<div class="wrap">
                         <span style="color: red">Có lỗi trong quá trình đọc file, vui lòng kiểm tra lại.</span>
