@@ -4,6 +4,54 @@
  * and open the template in the editor.
  */
 
+function updateInStock(product_id) {
+        
+        $('#updateInStock_' + product_id).prop('disabled', true);
+        
+        $.post(
+        global.ajax, 
+        {   
+            product_id: product_id,
+            action: 'mypos_update_product_instock' 
+        }, 
+        function(data) {
+            console.log(data);
+            $('#updateInStock_' + product_id).html('<i class="fa fa-check"></i>  Done');
+        });
+};
+
+function updateOutOfStock(product_id) {
+        
+        $('#updateOutOfStock_' + product_id).prop('disabled', true);
+        
+        $.post(
+        global.ajax, 
+        {   
+            product_id: product_id,
+            action: 'mypos_update_product_outofstock' 
+        }, 
+        function(data) {
+            console.log(data);
+            $('#updateOutOfStock_' + product_id).html('<i class="fa fa-check"></i>  Done');
+        });
+};
+
+function enableProduct(product_id) {
+        
+        $('#enableProduct_' + product_id).prop('disabled', true);
+        
+        $.post(
+        global.ajax, 
+        {   
+            product_id: product_id,
+            action: 'mypos_update_product_enable' 
+        }, 
+        function(data) {
+            console.log(data);
+            $('#enableProduct_' + product_id).html('<i class="fa fa-check"></i>  Done');
+        });
+};
+
 function setPreOrder(product_id) {
         
         $('#setPreOrder_' + product_id).prop('disabled', true);
@@ -20,114 +68,118 @@ function setPreOrder(product_id) {
         });
 };
 
-jQuery(document).ready(function($) {
-    
-    show_type_change();
-    $('#sync_by_web_show_type').on('change', function() {
-        show_type_change();
-    });
-    
-    function show_type_change() {
-        if ($('#sync_by_web_show_type').val() == 1) {
-            $("#importfile").show();
-            $("#sync_by_web_products_label").hide();
-            $("#sync_by_web_products").hide();
-            $("input[type=submit]").val("Upload");
-        } else {
-            $("#importfile").hide();
-            $("#sync_by_web_products_label").show();
-            $("#sync_by_web_products").show();
-            $("input[type=submit]").val("Áp dụng");
-        }
-    }
-    
-    $("#import_manager_form").submit(function(event){
-    // Prevent form submission until we can call the server
-    
-    $("#notice").remove();
-    
-    if ($('#importfile').get(0).files.length === 0) {
-        $("#importfile").remove();
-        $("#import_manager_form").unbind("submit");
-        $("#import_manager_form").submit();
-        return;
-    }
-    
-    event.preventDefault();
-    
-    var filename = $('input[name=importfile]').val().split('\\').pop();
-    $("input[type=submit]").val("Đang xử lý...");
-    $("input[type=submit]").prop('disabled', true);
-    $.post(
-        global.ajax, 
-        {   
-            file_name: filename,
-            action: 'mypos_check_exists_file' 
-        }, 
-        function(response) {
-            $("input[type=submit]").val("Áp dụng");
-            $("input[type=submit]").prop('disabled', false);
-            
-            console.log(response);
-            if (response.data.status == true) {
-                var r = confirm("File đã tồn tại trên hệ thống, bạn có muốn ghi đè không?");
-                if (r == true) {
-                    $("#import_manager_form").unbind("submit");
-                    $("#import_manager_form").submit();
-                } else {
-                    console.log("Không ghi đè");
-                }
-                return;
-            }
-            if (response.data.status == false) {
-                $("#import_manager_form").unbind("submit");
-                $("#import_manager_form").submit();
-            }
-        });
-    });
-});
 
-function getImportFile(e, filename) {
+function updateWebPrice_byKVPrice(product_id, price, confirm_text) {
         
-        $('#import-detail').remove();
-        $(e).html('<i class="fa fa-check"></i>  Đang xử lý...');
-        $(e).prop('disabled', true);
+        if (confirm_text === undefined) {
+            confirm_text = 'Bạn có muốn cập nhật giá mới (' + price + ') cho sản phẩm này không?';
+        }
         
-        $.post(
-        global.ajax, 
-        {
-            file_name: filename,
-            action: 'mypos_import_file_detail' 
-        }, 
-        function(response) {
-            console.log(response);
-            $(e).html('<i class="fa fa-check"></i>  Xem chi tiết');
-            $(e).prop('disabled', false);
-            $('#wpwrap').append(response.data.html);
-            $('#import-detail').modal('show');
-        });
+        var r = confirm(confirm_text);
+        
+        if (r == true) {
+            $('#updateWebPrice_' + product_id).prop('disabled', true);
+
+            $.post(
+            global.ajax, 
+            {   
+                product_id: product_id,
+                price: price,
+                action: 'mypos_update_webprice_by_kvprice' 
+            }, 
+            function(data) {
+                console.log(data);
+    //            $('#updateOutOfStock_' + product_id).prop('disabled', true);
+                $('#updateWebPrice_' + product_id).html('<i class="fa fa-check"></i>  Done');
+            });
+        } 
 };
 
-function deleteImportFile(e, filename) {
-        
-        var confirm_text = 'Bạn có chắc xóa file "' + filename + '" không?';
+function updateKVPrice_byWebPrice(product_id, price, confirm_text) {
+    
+        if (confirm_text === undefined) {
+            confirm_text = 'Bạn có muốn cập nhật giá mới (' + price + ') cho sản phẩm này không?';
+        }
         
         var r = confirm(confirm_text);
         
         if (r == true) {
         
-            $(e).html('<i class="fa fa-check"></i>  Đang xử lý...');
-            $(e).prop('disabled', true);
+            $('#updateKVPrice_' + product_id).prop('disabled', true);
 
             $.post(
             global.ajax, 
             {   
-                file_name: filename,
-                action: 'mypos_delete_import_file' 
+                product_id: product_id,
+                price: price,
+                action: 'mypos_update_kvprice_by_webprice' 
             }, 
-            function(response) {
-                console.log(response);
-                $(e).html('<i class="fa fa-check"></i>  Done');
+            function(data) {
+                console.log(data);
+    //            $('#updateOutOfStock_' + product_id).prop('disabled', true);
+                $('#updateKVPrice_' + product_id).html('<i class="fa fa-check"></i>  Done');
             });
         }
+};
+
+jQuery(document).ready(function($) {
+    
+    $('#wpcontent').on('submit', 'form.set-name-form', function(e){
+        e.preventDefault();
+        $('#setPriceAlert').remove();
+        
+        var product_id = $("#product_id").val();
+        var new_productname = $('#new_productname').val();
+        
+        if (!new_productname || !product_id) {
+            $('.modal-body').prepend('<div id="setPriceAlert" class="alert alert-danger">Tên sản phẩm không được để trống.</div>');
+            return;
+        }
+        
+        $.ajax({
+            url: global.ajax,
+            type: 'POST',
+            data: {
+                    action: 'kapos_set_product_name',
+                    product_id: product_id,
+                    new_name: new_productname
+            },
+            success: function(response){
+                console.log(response);
+                $('#get_rename_popup_' + product_id).prop('disabled', true);
+                $('#get_rename_popup_' + product_id).html('<i class="fa fa-check"></i>  Done');
+                $('#get_rename_popup_' + product_id).removeClass('btn-danger');
+                $('#get_rename_popup_' + product_id).addClass('btn-success');
+                $('#setNameModal').modal('hide');
+                $('.modal-backdrop').remove();
+            }
+        });
+    });
+    
+    
+});
+
+
+function get_rename_popup(product_id,kv_name,len_kv_name) {
+        
+        if ($('#setNameModal').length) {
+            $('#setNameModal').remove();
+            $('.modal-backdrop').remove();
+        }
+        
+        $.ajax({
+            url: global.ajax,
+            type: 'POST',
+            data: {
+                    action: 'kapos_get_rename_popup',
+                    product_id: product_id,
+                    kv_name: kv_name,
+                    len_kv_name: len_kv_name
+            },
+            success: function(response){
+                console.log(response);
+                $('#wpcontent').append($(response.data));
+                $('#setNameModal').modal('show');
+            }
+        });
 };

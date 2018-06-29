@@ -697,7 +697,7 @@ function function_mypos_sync_page() {
                         
                         $file_ext = pathinfo($_FILES['importfile']['name']);
                         
-                        if ($file_ext['extension'] != 'xlsx') {
+                        if (strtolower($file_ext['extension']) != 'xlsx') {
                             echo '<div  id="notice"  class="wrap">
                             <span style="color: red; font-weight: bold">Upload lỗi. Chỉ chấp nhận định dạng file Excel (xlsx).</span>
                             </div>';
@@ -797,38 +797,31 @@ function function_mypos_sync_page() {
             
             load_assets_tab_sync_shoppe();
             
-            echo '  <div class="wrap">
-                    <form id="import_manager_form" method="POST" enctype="multipart/form-data">
-                            <label>Bộ lọc </label>
-                            <select id="sync_by_web_show_type" name="sync_by_web_show_type">
-                                <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Hiển thị tất cả sản phẩm</option>
-                                <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Chỉ sản phẩm chưa đồng bộ</option>
-                            </select>
-                            <input type="file" style="margin-left: 10%;" name="importfile" id="importfile"/>
-                        <input type="submit" class="button" value="Upload">
-                    </form>
-                    </div>';
-            
-            $is_ok = true;
+            $addition_html = '';
             
             if (empty($_POST) && !isset($_GET['paged'])) {
                 
             } else {
-                if (($show_type == 1) && isset($_FILES['importfile'])) {
+                
+//                echo "<pre>";
+//                print_r($_FILES);
+//                echo "</pre>";
+//                exit;
+                
+                if (isset($_FILES['importfile'])) {
                     // Nếu file upload không bị lỗi,
                     // Tức là thuộc tính error > 0
-                    if (($_FILES['importfile']['error'] > 0))
-                    {
-                        echo '<div id="notice" class="wrap">
+                    if (($_FILES['importfile']['error'] > 0)) {
+                        $addition_html .= '<div id="notice" class="wrap">
                         <span style="color: red; font-weight: bold">File bị lỗi, vui lòng thử lại.</span>
                         </div>';
                     }
                     else{
                         
-                        $file_ext = pathinfo($_FILES['importfile']['name']);
+                        $file_info = pathinfo($_FILES['importfile']['name']);
                         
-                        if ($file_ext['extension'] != 'xlsx') {
-                            echo '<div  id="notice"  class="wrap">
+                        if (strtolower($file_info['extension']) != 'xlsx') {
+                            $addition_html .= '<div  id="notice"  class="wrap">
                             <span style="color: red; font-weight: bold">Upload lỗi. Chỉ chấp nhận định dạng file Excel (xlsx).</span>
                             </div>';
                             $is_ok = false;
@@ -843,7 +836,10 @@ function function_mypos_sync_page() {
 
                             $import_file_name = $_FILES['importfile']['name'];
                             $file_input = $_FILES['importfile']['tmp_name'];
-                            $file_output = $upload_dir . $import_file_name;
+                            $file_output = $upload_dir . $file_info['filename'] . '_exported.' . $file_info['extension'];
+                            
+                            $upload_url = $upload['baseurl'] . '/shoppe/';
+                            $file_output_url = $upload_url . $file_info['filename'] . '_exported.' . $file_info['extension'];
                             
                             $is_overwrite = false;
                             if (file_exists($file_output)) {
@@ -860,92 +856,153 @@ function function_mypos_sync_page() {
                                 $cellIterator = $row->getCellIterator();
                                 $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
                                 $cells = [];
-                                foreach ($cellIterator as $cell) {
-                                    $cells[] = $cell->getValue();
+                                foreach ($cellIterator as $key => $cell) {
+                                    $temp['value'] = $cell->getValue();
+                                    $col = $cell->getColumn();
+                                    $row = $cell->getRow();
+                                    $temp['pos'] = $col . $row;
+                                    $cells[] = $temp;
                                 }
                                 $import_rows[] = $cells;
                             }
                             
-                            $is_import = false;
+                            $check_format = true;
                             
-//                            echo '<pre>';
-//                            print_r($import_rows);
-//                            echo '<pre>';
-//                            exit;
+                            $format_row = reset($import_rows);
+                            if ($format_row[0]['value'] == 'ps_product_id'
+                                    && $format_row[1]['value'] == 'ps_sku_ref_no_parent'
+                                    && $format_row[2]['value'] == 'ps_product_name'
+                                    && $format_row[3]['value'] == 'ps_category_list_id'
+                                    && $format_row[4]['value'] == 'ps_product_weight'
+                                    && $format_row[5]['value'] == 'ps_price'
+                                    && $format_row[6]['value'] == 'ps_stock'
+                                    ) {
+                                // Correct Format
+                            } else {
+                                $check_format = false;
+                                $addition_html .= '<div class="wrap">
+                                <span style="color: red">LỖI FORMAT: Format các sản phẩm đơn giản bị lỗi.</span>
+                                </div>';
+                            }
                             
                             // Init data
                             $base_col = 7;
                             $num_info = 5;
                             
-                            $list_shoppe = array();
-                            $count = 0;
-                            foreach ($import_rows as $key => $row) {
-                                $count++;
-                                if ($count < 4) continue;
-                                if ($row[0] == '') continue;
-                                
-                                if ($row[$base_col] != '') {
-                                    // La san pham co bien bien the
-                                    for($i=0; $i < 20; $i++) {
-                                        if ($row[$base_col + $num_info*$i] == '') {
-                                            break;
-                                        }
-                                        $shoppe['id'] = $row[$base_col + $num_info*$i];
-                                        $shoppe['sku'] = $row[$base_col + $num_info*$i + 1];
-                                        $shoppe['name'] = $row[2] . ' - ' . $row[$base_col + $num_info*$i + 2];
-                                        $shoppe['price'] = $row[$base_col + $num_info*$i + 3];
-                                        $shoppe['stock'] = $row[$base_col + $num_info*$i + 4];
-                                        $list_shoppe[] = $shoppe;
+                            // Kiem tra format cac bien the
+                            if ($check_format) {
+                                $count = 0;
+                                // La san pham co bien bien the
+                                for($i=0; $i < 20; $i++) {
+                                    if ($check_format) {
+                                        $id = $i + 1;
+                                        $string_id = "ps_variation {$id} ps_variation_id";
+                                        $string_sku = "ps_variation {$id} ps_variation_sku";
+                                        $string_name = "ps_variation {$id} ps_variation_name";
+                                        $string_price = "ps_variation {$id} ps_variation_price";
+                                        $string_stock = "ps_variation {$id} ps_variation_stock";
+                                        
+                                        if ($format_row[$base_col + $num_info*$i]['value'] != $string_id) $check_format = false;
+                                        if ($format_row[$base_col + $num_info*$i + 1]['value'] != $string_sku) $check_format = false;
+                                        if ($format_row[$base_col + $num_info*$i + 2]['value'] != $string_name) $check_format = false;
+                                        if ($format_row[$base_col + $num_info*$i + 3]['value'] != $string_price) $check_format = false;
+                                        if ($format_row[$base_col + $num_info*$i + 4]['value'] != $string_stock) $check_format = false;
                                     }
-                                } else {
-                                    // La san pham don gian
-                                    $shoppe['id'] = $row[0];
-                                    $shoppe['sku'] = $row[1];
-                                    $shoppe['name'] = $row[2];
-                                    $shoppe['price'] = $row[5];
-                                    $shoppe['stock'] = $row[6];
-                                    $list_shoppe[] = $shoppe;
+                                }
+                                
+                                if (!$check_format) {
+                                    $addition_html .= '<div class="wrap">
+                                    <span style="color: red">LỖI FORMAT: Format các biến thể bị lỗi.</span>
+                                    </div>';
                                 }
                             }
                             
-                            echo '<pre>';
-                            print_r($list_shoppe);
-                            echo '<pre>';
-                            exit;
+                            if ($check_format) {
                             
-//                            if ($is_import) {
-//                                // Save new files on host
-//                                $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
-//                                $writer->save($file_output);
-//                                $return['write'] = true;
-//                            }
+                                $list_shoppe = array();
+                                $count = 0;
+                                foreach ($import_rows as $key => $row) {
+                                    $count++;
+                                    if ($count < 4) continue;
+                                    if ($row[0]['value'] == '') continue;
 
-                            
-                            if ($return['insert'] && $return['write']) {
-                                echo '<div id="notice" class="wrap">
-                                <span style="color: green; font-weight: bold">File đã được upload và xử lý thông tin nhập hàng.</span>
-                                </div>';
-                            } else {
-                                echo '<div id="notice" class="wrap">
-                                <span style="color: red; font-weight: bold">Có lỗi trong quá trình upload, vui lòng thử lại.</span>
-                                </div>';
-                                $is_ok = false;
+                                    if ($row[$base_col]['value'] != '') {
+                                        // La san pham co bien bien the
+                                        for($i=0; $i < 20; $i++) {
+                                            if ($row[$base_col + $num_info*$i]['value'] == '') {
+                                                break;
+                                            }
+                                            $shoppe['id'] = $row[$base_col + $num_info*$i]['value'];
+                                            $shoppe['sku'] = $row[$base_col + $num_info*$i + 1]['value'];
+                                            $shoppe['name'] = $row[2]['value'] . ' - ' . $row[$base_col + $num_info*$i + 2]['value'];
+                                            $shoppe['price'] = $row[$base_col + $num_info*$i + 3]['value'];
+                                            $shoppe['quantity'] = $row[$base_col + $num_info*$i + 4]['value'];
+                                            $shoppe['price_pos'] = $row[$base_col + $num_info*$i + 3]['pos'];
+                                            $shoppe['quantity_pos'] = $row[$base_col + $num_info*$i + 4]['pos'];
+                                            $list_shoppe[] = $shoppe;
+                                        }
+                                    } else {
+                                        // La san pham don gian
+                                        $shoppe['id'] = $row[0]['value'];
+                                        $shoppe['sku'] = $row[1]['value'];
+                                        $shoppe['name'] = $row[2]['value'];
+                                        $shoppe['price'] = $row[5]['value'];
+                                        $shoppe['quantity'] = $row[6]['value'];
+                                        $shoppe['price_pos'] = $row[5]['pos'];
+                                        $shoppe['quantity_pos'] = $row[6]['pos'];
+                                        $list_shoppe[] = $shoppe;
+                                    }
+                                }
                             }
                         }
                     }
                 } else {
-//                    echo '<div class="wrap">
-//                        <span style="color: red">Bạn chưa chọn file upload.</span>
-//                        </div>';
+                    $addition_html .= '<div class="wrap">
+                    <span style="color: red">Bạn chưa chọn file upload.</span>
+                    </div>';
                 }
                 
-                echo '<form method="POST" id="import-files-list">';
-                $myListTable = new KiotViet_SyncShoppe_List($show_type, $list_shoppe);
-                $myListTable->prepare_items();
-                $myListTable->display();
-                echo '</form>';
-                
             }
+            
+            $form_html = '  <div class="wrap">
+                    <form id="import_manager_form" method="POST" enctype="multipart/form-data">
+                            <label>Bộ lọc </label>
+                            <select id="sync_by_web_show_type" name="sync_by_web_show_type">
+                                <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Hiển thị tất cả sản phẩm</option>
+                                <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Chỉ sản phẩm chưa đồng bộ</option>
+                            </select>
+                            <input type="file" style="margin-left: 10px;" name="importfile" id="importfile"/>
+                        <input type="submit" class="button" style="margin-left: 10px;" value="Upload">';
+                
+                if ($file_output_url) {
+                    if (count($list_shoppe) > 0) {
+                        $form_html .= '<a href="' . $file_output_url . '" target="_blank"><input type="button" class="button" style="margin-left: 10px;" value="Download"></a>';
+                    } else {
+                        $addition_html .= '<div class="wrap">
+                        <span style="color: red">Có lỗi trong quá trình đọc file, vui lòng kiểm tra lại.</span>
+                        </div>';
+                    }
+                }
+                
+                $form_html .= '</form>
+                    </div>';
+
+                echo $form_html . $addition_html;
+                
+                if (count($list_shoppe) > 0) {
+                    echo '<form method="POST" id="import-files-list">';
+                    $myListTable = new KiotViet_SyncShoppe_List($show_type, $list_shoppe, $spreadsheet);
+                    $myListTable->prepare_items();
+                    $myListTable->display();
+                    echo '</form>';
+                }
+                
+                // Save new files on host
+                if (count($list_shoppe) > 0 && $spreadsheet) {
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
+                    $writer->save($file_output);
+                }
+            
             break;
             
         default:
