@@ -145,26 +145,23 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
                 // show product one times
                 $show_products = $this->show_products_per_page;
                     
-                $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage ) );
-                
-                    if (!$loop->post_count || $loop->post_count == 0) {
-                        break;
-                    }
+//                $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage ) );
+                $loop = $this->dbModel->kapos_get_products($perPage, $currentPage);
+//                    if (!$loop->post_count || $loop->post_count == 0) {
+//                        break;
+//                    }
                     
-                    while ( $loop->have_posts() ) : $loop->the_post();
-                        $theid = get_the_ID();
+                    foreach ($loop as $product_id) {
+//                        $theid = get_the_ID();
                         // add product to array but don't add the parent of product variations
-                        if ($theid) {
-                            $temp_products = $this->get_product_show_type_all($theid);
+//                        if ($theid) {
+                            $temp_products = $this->get_product_show_type_all($product_id);
                             if (!empty($temp_products)) {
                                 $list_product = array_merge($list_product, $temp_products);
                             }
-                        }
-
-                    endwhile;
+//                        }
+                    }
                     
-                wp_reset_query();
-                
                 $this->set_pagination_args( array(
                     'total_items' => $totalItems,
                     'per_page'    => $perPage
@@ -178,25 +175,25 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
                 // show product one times
                 $show_products = $this->show_products_per_page;
                     
-                $loop = new WP_Query( array( 'post_type' => array('product'), 'posts_per_page' => $perPage, 'paged' => $currentPage ) );
+                $loop = $this->dbModel->kapos_get_products($perPage, $currentPage);
 
-                    if (!$loop->post_count || $loop->post_count == 0) {
-                        break;
-                    }
-                    
-                    while ( $loop->have_posts() ) : $loop->the_post();
-                        $theid = get_the_ID();
+//                    if (!$loop->post_count || $loop->post_count == 0) {
+//                        break;
+//                    }
+                   foreach ($loop as $product_id) { 
+//                    while ( $loop->have_posts() ) : $loop->the_post();
+//                        $theid = get_the_ID();
                         // add product to array but don't add the parent of product variations
-                        if ($theid) {
+//                        if ($theid) {
                             $temp_products = $this->get_product_show_type_only_not_sync($theid);
                             if (!empty($temp_products)) {
                                 $list_product = array_merge($list_product, $temp_products);
                             }
-                        }
-
-                    endwhile;
+//                        }
+                   }
+//                    endwhile;
                     
-                wp_reset_query();
+//                wp_reset_query();
                 
                 $this->set_pagination_args( array(
                     'total_items' => $totalItems,
