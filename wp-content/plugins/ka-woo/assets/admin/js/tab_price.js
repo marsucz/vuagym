@@ -132,7 +132,7 @@ jQuery(document).ready(function($) {
 //                    console.log(value.id);
 //                    console.log(value.format_sale);
                     $('#get_price_popup_' + value.id).prop('disabled', true);
-                    $('#get_price_popup_' + value.id).html('<i class="fa fa-check"></i>  Đã cập nhật giá sale = ' + value.format_sale);
+                    $('#get_price_popup_' + value.id).html('<i class="fa fa-check"></i>  Đã cập nhật giá gốc = ' + value.format_sale);
                     $('#get_price_popup_' + value.id).removeClass('btn-danger');
                     $('#get_price_popup_' + value.id).addClass('btn-success');
                     

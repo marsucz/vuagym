@@ -216,7 +216,9 @@ function ja_ajax_kawoo_set_bulk_prices() {
 //            $temp_return['lam_tron'] = $lam_tron;
             $sale_price = ($temp + 1) * $lam_tron;
         }
-        update_post_meta( $product_id, '_sale_price', $sale_price);
+        update_post_meta( $product_id, '_sale_price', $regular_price);
+        update_post_meta( $product_id, '_regular_price', $sale_price);
+        
         tuandev_update_price_variation_field($product_id);
         delete_post_cache($product_id);
         
