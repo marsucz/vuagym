@@ -296,6 +296,40 @@ class DbModel {
         
     }
     
+    public function kapos_get_products($perpage = 20, $currentpage = 1) {
+        
+        $db_name = $this->prefix . 'posts';
+        
+        if (!$currentpage) $currentpage = 1;
+        
+        $offset = ($currentpage - 1) * $perpage;
+        
+        $query = "SELECT 
+                        ID
+                    FROM
+                        $db_name
+                    WHERE post_type = 'product' AND post_status = 'publish'
+                    LIMIT $perpage OFFSET $offset";
+        
+        $result = mysqli_query($this->link, $query);
+        if (!$result) {
+            write_logs('', $query);
+        }
+        
+        $products = array();
+        if ($result) {
+            $return = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            foreach ($return as $product) {
+                $products[] = $product['ID'];
+            }
+        } else {
+            $products = [];
+        }
+        
+        return $products;
+        
+    }
+    
     public function kapos_get_count_import_product() {
         
         $db_name = $this->prefix . DB_KAPOS_IMPORTS;

@@ -2,6 +2,7 @@
 
 require_once 'kiotviet_api.php';
 require_once 'function.php';
+require_once('PHPExcel/autoload.php');
 
 function ja_ajax_mypos_update_product_instock() {
     //Form Input Values
@@ -625,3 +626,23 @@ function ja_ajax_kapos_set_product_name() {
 
 add_action( 'wp_ajax_kapos_set_product_name', 'ja_ajax_kapos_set_product_name' );
 add_action( 'wp_ajax_nopriv_kapos_set_product_name', 'ja_ajax_kapos_set_product_name' );
+
+function ja_ajax_set_excel_cell_value() {
+    //Form Input Values
+    $cell_product   = $_POST['product_id'];
+    $cell_type      = $_POST['cell_type'];
+    $cell_pos       = $_POST['cell_pos'];
+    $cell_value     = $_POST['cell_value'];
+    
+    $temp['pos'] = $cell_pos;
+    $temp['value'] = $cell_value;
+    
+    $_SESSION[$cell_type][$cell_product] = $temp;
+    
+    $return['status'] = true;
+    
+    wp_send_json_success( $return );
+}
+
+add_action( 'wp_ajax_set_excel_cell_value', 'ja_ajax_set_excel_cell_value' );
+add_action( 'wp_ajax_nopriv_set_excel_cell_value', 'ja_ajax_set_excel_cell_value' );

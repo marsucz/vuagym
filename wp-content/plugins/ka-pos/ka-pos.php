@@ -86,6 +86,9 @@ function kiotviet_tools_plugin_init() {
     add_option('sync_by_web_show_type', 1);
     add_option('sync_by_web_products', MYPOS_PER_PAGE);
     
+    if (!session_id()) {
+        session_start();
+    }
 }
 
 function kapos_tools_admin_menu() {
@@ -520,11 +523,13 @@ function function_get_sku_kiotviet() {
 }
 
 function function_testing_page() {
-//    echo "TESTING PAGE";
-    
-    $product = wc_get_product();
-    $YITH_Role = YITH_Role_Based_Prices_Product();
-    
+    echo '<pre>';
+    print_r($_SESSION);
+    print_r($_GET);
+    print_r($_POST);
+    print_r($_REQUEST);
+    echo '<pre>';
+    exit;
 }
 
 function update_default_manual_sync_options() {
@@ -799,21 +804,57 @@ function function_mypos_sync_page() {
             
             $addition_html = '';
             $spreadsheet = null;
+            $is_submit = false;
+            $show_products = isset($_SESSION['show_products']) ? $_SESSION['show_products'] : 200;
+//            echo '<pre>';
+//            print_r($_SESSION);
+//            print_r($_GET);
+//            print_r($_POST);
+//            print_r($_REQUEST);
+//            echo '<pre>';
+//            exit;
             
-            if (empty($_POST) && !isset($_GET['paged'])) {
-                
+            if (empty($_POST) && !isset($_REQUEST['paged'])) {
+                unset($_SESSION['file_input']);
+                unset($_SESSION['file_output']);
+                unset($_SESSION['file_output_url']);
+                unset($_SESSION['price']);
+                unset($_SESSION['quantity']);
+                unset($_SESSION['sync_type']);
+                unset($_SESSION['show_products']);
+            } elseif (isset($_REQUEST['paged'])) {
+                if ($_FILES['importfile']['size'] > 0) {
+                        unset($_SESSION['file_input']);
+                        unset($_SESSION['file_output']);
+                        unset($_SESSION['file_output_url']);
+                        unset($_SESSION['price']);
+                        unset($_SESSION['quantity']);
+                        unset($_SESSION['sync_type']);
+                        unset($_SESSION['show_products']);
+                } elseif (isset($_SESSION['file_input']) && isset($_SESSION['file_output'])) {
+                    
+                    $file_input = $_SESSION['file_input'];
+                    $file_output = $_SESSION['file_output'];
+                    $file_output_url = $_SESSION['file_output_url'];
+                    
+                    // Process on same file
+//                    $file_input = $file_output;
+                    
+                    $list_shoppe = read_xlsx_and_get_shoppe_list($file_input, $spreadsheet, $addition_html);
+                }
             } else {
-                
-//                echo "<pre>";
-//                print_r($_POST);
-//                echo "</pre>";
-//                exit;
                 
                 if (isset($_FILES['importfile'])) {
                     
-                    unset($_SESSION['file_input']);
-                    unset($_SESSION['file_output']);
-                    unset($_SESSION['file_output_url']);
+                    if ($_FILES['importfile']['size'] > 0) {
+                        unset($_SESSION['file_input']);
+                        unset($_SESSION['file_output']);
+                        unset($_SESSION['file_output_url']);
+                        unset($_SESSION['price']);
+                        unset($_SESSION['quantity']);
+                        unset($_SESSION['sync_type']);
+                        unset($_SESSION['show_products']);
+                    }
                     
                     // Nếu file upload không bị lỗi,
                     // Tức là thuộc tính error > 0
@@ -823,6 +864,18 @@ function function_mypos_sync_page() {
                         </div>';
                     }
                     else{
+                        
+                        $_SESSION['show_products'] = $_POST['sync_by_web_products'];
+                        
+                        $show_products = $_SESSION['show_products'];
+                        
+                        if (isset($_POST['sync_type']) && $_POST['sync_type'] == 'auto') {
+                            $_SESSION['sync_type'] = 'auto';
+                        } else {
+                            $_SESSION['sync_type'] = 'manual';
+                        }
+                        
+                        $sync_type = $_SESSION['sync_type'];
                         
                         $file_info = pathinfo($_FILES['importfile']['name']);
                         
@@ -841,22 +894,35 @@ function function_mypos_sync_page() {
                              }
 
                             $import_file_name = $_FILES['importfile']['name'];
-                            $file_input = $_FILES['importfile']['tmp_name'];
-                            $file_output = $upload_dir . $file_info['filename'] . '_exported.' . $file_info['extension'];
+                            $file_input = $upload_dir . $file_info['filename'] . '.' . $file_info['extension'];
+                            move_uploaded_file($_FILES['importfile']['tmp_name'], $file_input);
                             
-                            $upload_url = $upload['baseurl'] . '/shoppe/';
-                            $file_output_url = $upload_url . $file_info['filename'] . '_exported.' . $file_info['extension'];
+                            if ($sync_type == 'auto') {
+                                $file_output = $upload_dir . $file_info['filename'] . '_auto_exported.' . $file_info['extension'];
+                                $upload_url = $upload['baseurl'] . '/shoppe/';
+                                $file_output_url = $upload_url . $file_info['filename'] . '_auto_exported.' . $file_info['extension'];
+                            } else {
+                                // Manual
+                                $file_output = $upload_dir . $file_info['filename'] . '_exported.' . $file_info['extension'];
+                                $upload_url = $upload['baseurl'] . '/shoppe/';
+                                $file_output_url = $upload_url . $file_info['filename'] . '_exported.' . $file_info['extension'];
+                            }
                             
-                            $_SESSION['file_input'] = $file_info;
+                            $_SESSION['file_input'] = $file_input;
                             $_SESSION['file_output'] = $file_output;
                             $_SESSION['file_output_url'] = $file_output_url;
                             
-                            $is_overwrite = false;
-                            if (file_exists($file_output)) {
-                                $is_overwrite = true;
-                            }
+//                            echo '<pre>';
+//                            print_r($_SESSION);
+//                            echo '<pre>';
+//                            exit;
                             
-                            $list_shoppe = read_xlsx_and_get_shoppe_list($file_input, $spreadsheet);
+                            $is_submit = true;
+//                            if (file_exists($file_output)) {
+//                                $is_overwrite = true;
+//                            }
+                            
+                            $list_shoppe = read_xlsx_and_get_shoppe_list($file_input, $spreadsheet, $addition_html);
                         }
                     }
                 } else {
@@ -865,7 +931,12 @@ function function_mypos_sync_page() {
                     </div>';
                 }
             }
-            
+            $sync_type = $_SESSION['sync_type'];
+            if ($sync_type == 'auto') {
+                $sync_checked = ' checked ';
+            } else {
+                $sync_checked = '';
+            }
             $form_html = '  <div class="wrap">
                     <form id="import_manager_form" method="POST" enctype="multipart/form-data">
                             <label>Bộ lọc </label>
@@ -873,13 +944,20 @@ function function_mypos_sync_page() {
                                 <option value="1"' . ($show_type == 1 ? 'selected' : '') . '>Hiển thị tất cả sản phẩm</option>
                                 <option value="2"' . ($show_type == 2 ? 'selected' : '') . '>Chỉ sản phẩm chưa đồng bộ</option>
                             </select>
-                            <label><input type="checkbox" name="sync_type" style="margin-left: 10px;" value="auto"> Tự động đồng bộ</label>
-                            <input type="file" style="margin-left: 10px;" name="importfile" id="importfile"/>
+                            <label><input type="checkbox" name="sync_type" style="margin-left: 10px;" value="auto" ' . $sync_checked . '> Tự động đồng bộ</label>
+                            <input type="file" style="margin-left: 10px; width: 22%;" name="importfile" id="importfile"/>
+                            <label id="sync_by_web_products_label"> Số lượng </label>
+                            <input type="number" id="sync_by_web_products" style="width: 50px;" name="sync_by_web_products" value="' . $show_products . '" min="1" required>
+
                         <input type="submit" class="button" style="margin-left: 10px;" value="Upload">';
                 
                 if ($file_output_url) {
                     if (count($list_shoppe) > 0) {
-                        $form_html .= '<a href="' . $file_output_url . '" target="_blank"><input type="button" class="button" style="margin-left: 10px; float: right" value="Download kết quả"></a>';
+//                        if ($sync_type == 'auto') {
+//                            $form_html .= '<a href="' . $file_output_url . '" target="_blank"><input type="button" class="button" style="margin-left: 10px; float: right" value="Download kết quả"></a>';
+//                        } else {
+                            $form_html .= '<a href="?page=mypos-sync&tab=export_excel" target="_blank"><input type="button" class="button" style="margin-left: 10px; float: right" value="Download kết quả"></a>';
+//                        }
                     } else {
                         $addition_html .= '<div class="wrap">
                         <span style="color: red">Có lỗi trong quá trình đọc file, vui lòng kiểm tra lại.</span>
@@ -892,28 +970,79 @@ function function_mypos_sync_page() {
 
                 echo $form_html . $addition_html;
                 
-                if (isset($_POST['sync_type']) && $_POST['sync_type'] == 'auto') {
-                    $sync_type = 'auto';
-                } else {
-                    $sync_type = 'manual';
-                }
+//                if (isset($_SESSION['sync_type']) && !empty($_SESSION['sync_type'])) {
+//                    $sync_type = $_SESSION['sync_type'];
+//                } else {
+//                    $sync_type = 'manual';
+//                }
                 
                 if (count($list_shoppe) > 0) {
                     echo '<form method="POST" id="import-files-list">';
-                    $myListTable = new KiotViet_SyncShoppe_List($show_type, $list_shoppe, $spreadsheet, $sync_type);
+                    $myListTable = new KiotViet_SyncShoppe_List($show_type, $show_products, $list_shoppe, $spreadsheet, $sync_type, $is_submit);
                     $myListTable->prepare_items();
                     $myListTable->display();
                     echo '</form>';
                 }
                 
                 // Save new files on host
-                if (count($list_shoppe) > 0 && $spreadsheet) {
+                if (count($list_shoppe) > 0 && $spreadsheet && $sync_type == 'auto' && $is_submit) {
                     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
                     $writer->save($file_output);
-                }
+//                    echo '<pre>';
+//                    print_r($_SESSION);
+//                    print_r($_GET);
+//                    print_r($_POST);
+//                    print_r($_REQUEST);
+//                    echo '<pre>';
+//                    exit;
+                } 
             
             break;
+        case 'export_excel':
             
+            if (isset($_SESSION['sync_type']) && !empty($_SESSION['sync_type'])) {
+                $sync_type = $_SESSION['sync_type'];
+            } else {
+                $sync_type = 'manual';
+            }
+            
+            $file_input = $_SESSION['file_input'];
+            $file_output = $_SESSION['file_output'];
+            $file_output_url = $_SESSION['file_output_url'];
+            
+            if ($sync_type == 'manual') {
+                //If empty return error
+                $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+                $spreadsheet = $reader->load($file_input);
+                $worksheet = $spreadsheet->getActiveSheet();
+
+                //Set value
+                $list_price = $_SESSION['price'];
+                $list_quantity = $_SESSION['quantity'];
+                
+                foreach ($list_price as $value) {
+                    if (!empty($value)) {
+                        $worksheet->getCell($value['pos'], false)->setValue($value['value']);
+                    }
+                }
+                foreach ($list_quantity as $value) {
+                    if (!empty($value)) {
+                        $worksheet->getCell($value['pos'], false)->setValue($value['value']);
+                    }
+                }
+
+                $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xlsx");
+
+                $writer->save($file_output);
+
+                header("Location: {$file_output_url}");
+                exit;
+            } else {
+                header("Location: {$file_output_url}");
+                exit;
+            }
+            
+            break;
         default:
             echo '<div class="wrap">
                     <span>Vui lòng chọn các TAB chức năng.</span>
@@ -926,9 +1055,17 @@ function function_mypos_sync_page() {
     
     echo '</div>';
     
+//    echo '<pre>';
+//    print_r($_SESSION);
+//    print_r($_GET);
+//    print_r($_POST);
+//    print_r($_REQUEST);
+//    echo '<pre>';
+//    exit;
+    
 }
 
-function read_xlsx_and_get_shoppe_list($file_input, &$spreadsheet) {
+function read_xlsx_and_get_shoppe_list($file_input, &$spreadsheet, &$addition_html) {
     
     $list_shoppe = array();
     
