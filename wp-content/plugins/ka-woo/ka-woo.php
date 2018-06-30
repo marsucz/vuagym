@@ -212,8 +212,11 @@ function function_manager_tabs_page() {
                             </select>
                             <label id="kawoo_product_numbers_label">Số lượng SP hiển thị &nbsp</label>
                             <input type="number" id="kawoo_number_of_products" name="kawoo_number_of_products" value="' . $show_products . '" min="1" required>
-                        <input type="submit" class="button" value="Áp dụng">
-                    </form>
+                        <input type="submit" class="button" value="Áp dụng">';
+                        if (!empty($_POST)) {
+                            echo '<button id="get_bulk_price_popup" type="button" style="float: right" class="btn btn-primary" title="Cập nhật giá cho nhiều sản phẩm" onclick="get_bulk_popup();"><i class="fa fa-tasks"></i> Điều chỉnh tất cả</button>';
+                        }
+                    echo '</form>
                     </div>';
 
             if (empty($_POST) && !isset($_GET['paged'])) {

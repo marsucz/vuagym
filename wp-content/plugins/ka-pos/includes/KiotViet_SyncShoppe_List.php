@@ -185,7 +185,7 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
 //                        $theid = get_the_ID();
                         // add product to array but don't add the parent of product variations
 //                        if ($theid) {
-                            $temp_products = $this->get_product_show_type_only_not_sync($theid);
+                            $temp_products = $this->get_product_show_type_only_not_sync($product_id);
                             if (!empty($temp_products)) {
                                 $list_product = array_merge($list_product, $temp_products);
                             }

@@ -89,6 +89,19 @@ class Kawoo_Product_Price_List extends WP_List_Table {
         $this->items = $list_product;
     }
     
+//    public function get_bulk_actions() {
+//        $actions = array(
+//          'delete'    => 'Delete'
+//        );
+//        return $actions;
+//    }
+    
+    function column_cb($item) {
+        return sprintf(
+            '<input type="checkbox" name="selected_products[]" value="%s" />', $item
+        );    
+    }
+    
     public function get_product_only_regular_price($product_id) {
 
         $return_products = array();
@@ -138,6 +151,7 @@ class Kawoo_Product_Price_List extends WP_List_Table {
     public function get_columns() {
         $columns = array(
 //            'no'        => 'STT',
+            'cb'        => '<input type="checkbox" />',
             'id' => 'ID',
             'edit' => '<span class="dashicons dashicons-admin-generic"></span>',
             'product' => 'Sản Phẩm',

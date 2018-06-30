@@ -52,3 +52,11 @@ Stack trace:
 #5 C:\xampp\htdocs\vuagym\wp-includes\plugin.php(453): WP_Hook->do_action(Array)
 #6 C:\xampp\htdocs\vuagym
 
+2018-07-01T00:28:39+00:00 CRITICAL Call to a member function is_type() on boolean
+
+2018-07-01T01:34:38+00:00 CRITICAL Call to undefined function int()
+
+2018-07-01T01:55:17+00:00 CRITICAL Call to undefined function is_number()
+
+2018-07-01T01:57:38+00:00 CRITICAL Call to undefined function is_number()
+
