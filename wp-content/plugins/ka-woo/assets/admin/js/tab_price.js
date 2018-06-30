@@ -127,15 +127,12 @@ jQuery(document).ready(function($) {
                 $('#bulk-price-submit').html('Save changes');
                 
                 $.each(response.data, function (index, value) {
-//                    console.log(index);
-//                    console.log(value);
-//                    console.log(value.id);
-//                    console.log(value.format_sale);
+                    $('#checkbox' + value.id).prop('disabled', true);
+                    $('#checkbox' + value.id).prop('checked', false);
                     $('#get_price_popup_' + value.id).prop('disabled', true);
                     $('#get_price_popup_' + value.id).html('<i class="fa fa-check"></i>  Đã cập nhật giá gốc = ' + value.format_sale);
                     $('#get_price_popup_' + value.id).removeClass('btn-danger');
                     $('#get_price_popup_' + value.id).addClass('btn-success');
-                    
                 });
                 
                 $('#setBulkPriceModal').modal('hide');

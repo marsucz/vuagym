@@ -201,12 +201,24 @@ function ja_ajax_kawoo_set_bulk_prices() {
     //Form Input Values
     
     $product_list = $_POST['product_list'];
+    
+    if (empty($product_list)) 
+        wp_send_json(array('error' => __('Missing Product IDs!')));
+    
     $ty_gia = $_POST['ty_gia'];
     $lam_tron = $_POST['lam_tron'];
     $lam_tron = $lam_tron * 1000;
     $products = explode(' ', $product_list);
     
+    if (!is_array($products)) {
+        wp_send_json(array('error' => __('Missing Product IDs!')));
+    }
+    
+    $return = array();
     foreach ($products as $product_id) {
+        $check_sale = get_post_meta($product_id, '_sale_price', true);
+        if ($check_sale) continue;
+        
         $regular_price = get_post_meta($product_id, '_regular_price', true);
         $sale_price = $ty_gia * $regular_price;
         

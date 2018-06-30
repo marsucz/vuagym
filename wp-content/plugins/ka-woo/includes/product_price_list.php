@@ -73,18 +73,12 @@ class Kawoo_Product_Price_List extends WP_List_Table {
                     break;
                 }
 
-                if ($count_product >= $show_products) {
-                    break;
-                }
-
             endwhile;
             wp_reset_query();
 
         }
 
-//                break;
-
-
+        $list_product = array_unique($list_product);
         $this->_column_headers = array($columns, $hidden, $sortable);
         $this->items = $list_product;
     }
@@ -98,7 +92,7 @@ class Kawoo_Product_Price_List extends WP_List_Table {
     
     function column_cb($item) {
         return sprintf(
-            '<input type="checkbox" name="selected_products[]" value="%s" />', $item
+            '<input type="checkbox" name="selected_products[]" id="checkbox%s" value="%s" />', $item, $item
         );    
     }
     

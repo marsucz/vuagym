@@ -609,8 +609,9 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
                 if ($this->sync_type != 'auto' && !empty($kv_product) && !empty($shoppe)) {
                     if ($shoppe['price'] != $kv_product['price']){
                         if (!isset($_SESSION['price'][$product_id]) || empty($_SESSION['price'][$product_id])) {
-                            $formated_price = kiotViet_formatted_price($kv_product['price']);
-                            $r .= '  <button id="updateShoppePrice_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-info" title="Cập nhật giá trên Shoppe cho sản phẩm này theo giá trên KiotViet" onclick="updateExcelCell(this,\''. $product_id .'\',\'price\',\''. $shoppe['price_pos'] .'\',\'' . $kv_product['price'] . '\');"><i class="fa fa-anchor"></i>  Update giá shoppe = ' . $formated_price . ' (theo Kiotviet)</button>';
+                            $name_string = str_replace("'", "", $shoppe['name']);
+                            $confirm_text = "Xác nhận sửa giá shoppe " . $name_string . " thành " . number_format($kv_product['price'], 0, ',', '.') . " đ (theo kiotviet)?";
+                            $r .= '  <button id="updateShoppePrice_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-warning" title="Cập nhật giá trên Shoppe cho sản phẩm này theo giá trên KiotViet" onclick="updateExcelCellPrice(this,\''. $product_id .'\',\'price\',\''. $shoppe['price_pos'] .'\',\'' . $kv_product['price'] . '\',\'' . $confirm_text .  '\');"><i class="fa fa-anchor"></i>  Update giá shoppe = ' . $formated_price . ' (theo Kiotviet)</button>';
                         } else {
                             $shoppe_price = kiotViet_formatted_price($shoppe['price']);
                             $kv_price = kiotViet_formatted_price($kv_product['price']);
@@ -622,8 +623,7 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
                     
                     if ($shoppe['quantity'] != $kv_product['quantity']) {
                         if (!isset($_SESSION['quantity'][$product_id]) || empty($_SESSION['quantity'][$product_id])) {
-                            $formated_price = kiotViet_formatted_price($kv_product['price']);
-                            $r .= '  <button id="updateShoppeStock_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-info" title="Cập nhật số lượng trên Shoppe cho sản phẩm này theo số lượng trên KiotViet" onclick="updateExcelCell(this,\''. $product_id .'\',\'quantity\',\''. $shoppe['quantity_pos'] .'\',\'' . $kv_product['quantity'] . '\');"><i class="fa fa-anchor"></i>  Update tồn kho shoppe = ' . $kv_product['quantity'] . ' (theo Kiotviet)</button>';
+                            $r .= '  <button id="updateShoppeStock_' . $woo_product['id'] . '" type="button" class="btn btn-mypos btn-info" title="Cập nhật số lượng trên Shoppe cho sản phẩm này theo số lượng trên KiotViet" onclick="updateExcelCell(this,\''. $product_id .'\',\'quantity\',\''. $shoppe['quantity_pos'] .'\',\'' . $kv_product['quantity'] . '\');"><i class="fa fa-tasks"></i>  Update tồn kho shoppe = ' . $kv_product['quantity'] . ' (theo Kiotviet)</button>';
                         } else {
                             if ($r) $r .= '<br/>';
                             $r .= "[{$shoppe['quantity_pos']}] Đã cập nhật tồn kho SP từ {$shoppe['quantity']} thành {$kv_product['quantity']}";
