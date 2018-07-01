@@ -242,6 +242,9 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
 
                     // KiotViet Process
                     if ($sku) {
+                        // Shoppe
+                        $shoppe_product = $this->get_shoppe_product_by_code($sku);
+                        
                         $store = get_post_meta($child['ID'], '_mypos_other_store', true);
                         if ($store && $store == 'yes') {
                             $sku = get_sku_store_main($sku);
@@ -249,9 +252,6 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
                         } else {
                             $kv_product = $this->get_kv_product_by_code($sku);
                         }
-                        
-                        // Shoppe
-                        $shoppe_product = $this->get_shoppe_product_by_code($sku);
                     } else {
                         $kv_product = array();
                         $shoppe_product = array();
@@ -274,6 +274,9 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
 
             // KiotViet Process
             if ($sku) {
+                // Shoppe
+                $shoppe_product = $this->get_shoppe_product_by_code($sku);
+                
                 $store = get_post_meta($product_id, '_mypos_other_store', true);
                 if ($store && $store == 'yes') {
                     $sku = get_sku_store_main($sku);
@@ -281,9 +284,6 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
                 } else {
                     $kv_product = $this->get_kv_product_by_code($sku);
                 }
-                
-                // Shoppe
-                $shoppe_product = $this->get_shoppe_product_by_code($sku);
             } else {
                 $kv_product = array();
             }
@@ -364,6 +364,9 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
 
                     // KiotViet Process
                     if ($sku) {
+                        // Shoppe
+                        $shoppe_product = $this->get_shoppe_product_by_code($sku);
+                        
                         $store = get_post_meta($child['ID'], '_mypos_other_store', true);
                         if ($store && $store == 'yes') {
                             $sku = get_sku_store_main($sku);
@@ -371,9 +374,6 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
                         } else {
                             $kv_product = $this->get_kv_product_by_code($sku);
                         }
-                        
-                        // Shoppe
-                        $shoppe_product = $this->get_shoppe_product_by_code($sku);
                     } else {
                         $kv_product = array();
                         $shoppe_product = array();
@@ -404,6 +404,9 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
 
             // KiotViet Process
             if ($sku) {
+                // Shoppe
+                $shoppe_product = $this->get_shoppe_product_by_code($sku);
+                
                 $store = get_post_meta($product_id, '_mypos_other_store', true);
                 if ($store && $store == 'yes') {
                     $sku = get_sku_store_main($sku);
@@ -411,9 +414,6 @@ class KiotViet_SyncShoppe_List extends WP_List_Table {
                 } else {
                     $kv_product = $this->get_kv_product_by_code($sku);
                 }
-                
-                // Shoppe
-                $shoppe_product = $this->get_shoppe_product_by_code($sku);
             } else {
                 $kv_product = array();
             }
