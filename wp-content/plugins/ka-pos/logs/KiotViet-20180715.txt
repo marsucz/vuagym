@@ -1,0 +1,9 @@
+
+2018-07-15 09:37:48 SKU: SP002015 not exists on KiotViet or You haven't updated the database.
+2018-07-15 09:37:54 SKU: SP002013 not exists on KiotViet or You haven't updated the database.
+2018-07-15 09:37:59 SKU: SP002020 not exists on KiotViet or You haven't updated the database.
+2018-07-15 09:38:04 SKU: SP002014 not exists on KiotViet or You haven't updated the database.
+2018-07-15 09:38:08 SKU: SP002016 not exists on KiotViet or You haven't updated the database.
+2018-07-15 09:38:13 SKU: SP002017 not exists on KiotViet or You haven't updated the database.
+2018-07-15 09:38:17 SKU: SP002018 not exists on KiotViet or You haven't updated the database.
+2018-07-15 09:38:22 SKU: SP00201 not exists on KiotViet or You haven't updated the database.

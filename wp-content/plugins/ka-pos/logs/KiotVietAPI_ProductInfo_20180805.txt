@@ -1,0 +1,11 @@
+
+2018-08-05 15:52:03 URL Get: https://public.kiotapi.com/products/14508828
+ Bad response: {"responseStatus":{"errorCode":"KvException","message":"H\u00e0ng h\u00f3a \u0111\u01b0\u1ee3c ch\u1ecdn kh\u00f4ng t\u1ed3n t\u1ea1i ho\u1eb7c \u0111\u00e3 b\u1ecb x\u00f3a kh\u1ecfi h\u1ec7 th\u1ed1ng","errors":[]}}
+2018-08-05 21:31:27 URL Get: https://public.kiotapi.com/products/14508828
+ Bad response: {"responseStatus":{"errorCode":"KvException","message":"H\u00e0ng h\u00f3a \u0111\u01b0\u1ee3c ch\u1ecdn kh\u00f4ng t\u1ed3n t\u1ea1i ho\u1eb7c \u0111\u00e3 b\u1ecb x\u00f3a kh\u1ecfi h\u1ec7 th\u1ed1ng","errors":[]}}
+2018-08-05 21:32:10 URL Get: https://public.kiotapi.com/products/14508826
+ Bad response: {"responseStatus":{"errorCode":"KvException","message":"H\u00e0ng h\u00f3a \u0111\u01b0\u1ee3c ch\u1ecdn kh\u00f4ng t\u1ed3n t\u1ea1i ho\u1eb7c \u0111\u00e3 b\u1ecb x\u00f3a kh\u1ecfi h\u1ec7 th\u1ed1ng","errors":[]}}
+2018-08-05 23:27:16 URL Get: https://public.kiotapi.com/products/14508828
+ Bad response: {"responseStatus":{"errorCode":"KvException","message":"H\u00e0ng h\u00f3a \u0111\u01b0\u1ee3c ch\u1ecdn kh\u00f4ng t\u1ed3n t\u1ea1i ho\u1eb7c \u0111\u00e3 b\u1ecb x\u00f3a kh\u1ecfi h\u1ec7 th\u1ed1ng","errors":[]}}
+2018-08-05 23:28:02 URL Get: https://public.kiotapi.com/products/14508826
+ Bad response: {"responseStatus":{"errorCode":"KvException","message":"H\u00e0ng h\u00f3a \u0111\u01b0\u1ee3c ch\u1ecdn kh\u00f4ng t\u1ed3n t\u1ea1i ho\u1eb7c \u0111\u00e3 b\u1ecb x\u00f3a kh\u1ecfi h\u1ec7 th\u1ed1ng","errors":[]}}

@@ -1,0 +1,3 @@
+
+2018-09-10 15:40:09 SKU: SP002183 not exists on KiotViet or You haven't updated the database.
+2018-09-10 20:29:26 SKU: SP002183 not exists on KiotViet or You haven't updated the database.

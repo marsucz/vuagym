@@ -1,0 +1,5 @@
+
+2018-07-23 17:16:11 SKU: SP002091 not exists on KiotViet or You haven't updated the database.
+2018-07-23 17:16:19 SKU: SP002090 not exists on KiotViet or You haven't updated the database.
+2018-07-23 17:17:36 SKU: SP002085 not exists on KiotViet or You haven't updated the database.
+2018-07-23 17:18:12 SKU: SP002085 not exists on KiotViet or You haven't updated the database.

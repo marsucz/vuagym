@@ -1,0 +1,3 @@
+
+2018-06-25 10:53:15 SKU: SP001954 not exists on KiotViet or You haven't updated the database.
+2018-06-25 10:58:37 SKU: SP001954 not exists on KiotViet or You haven't updated the database.

@@ -1,0 +1,5 @@
+
+2018-08-17 10:52:00 URL Get: https://public.kiotapi.com/products/7601449
+ Bad response: false
+2018-08-17 17:53:48 URL Get: https://public.kiotapi.com/products/13475046
+ Bad response: false
