@@ -25,4 +25,4 @@ if ( ! function_exists( 'tve_dash_load' ) ) {
 	}
 }
 
-return '2.0.31';
+return '2.0.35';

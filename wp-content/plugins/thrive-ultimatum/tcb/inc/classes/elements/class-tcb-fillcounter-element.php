@@ -116,18 +116,17 @@ class TCB_Fillcounter_Element extends TCB_Element_Abstract {
 					),
 				),
 			),
-			'layout'     => array(
+			'layout'      => array(
 				'disabled_controls' => array( 'MaxWidth', 'hr' ),
 			),
-			'typography'       => array( 'hidden' => true ),
-			'background'       => array( 'hidden' => true ),
-			'shadow'     => array(
+			'typography'  => array( 'hidden' => true ),
+			'background'  => array( 'hidden' => true ),
+			'shadow'      => array(
 				'config' => array(
-					'disabled_controls' => array( 'inner' ),
-					'css_attribute'     => 'box-shadow',
+					'disabled_controls' => array( 'inner', 'text' ),
 				),
 			),
-			'animation'  => array( 'hidden' => true ),
+			'animation'   => array( 'hidden' => true ),
 		);
 	}
 

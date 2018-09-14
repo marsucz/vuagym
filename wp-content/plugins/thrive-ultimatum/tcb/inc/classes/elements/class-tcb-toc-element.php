@@ -155,7 +155,7 @@ class TCB_TOC_Element extends TCB_Element_Abstract {
 			),
 			'typography' => array(
 				'disabled_controls' => array(
-					'LetterSpacing',
+					'[data-value="tcb-typography-letter-spacing"]',
 				),
 				'config'            => array(
 					'to'         => '.tve_ct_content',
@@ -172,6 +172,9 @@ class TCB_TOC_Element extends TCB_Element_Abstract {
 						'css_suffix' => ' .ct_column a',
 					),
 					'LineHeight' => array(
+						'css_suffix' => ' .ct_column a',
+					),
+					'FontFace'   => array(
 						'css_suffix' => ' .ct_column a',
 					),
 				),

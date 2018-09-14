@@ -36,9 +36,10 @@ $email = trim( $user->user_email );
 		?></h4>
 
 		<p class="introduction"><?php
-			$link = sprintf( '<a href="https://tinypng.com/dashboard/developers" target="_blank">%s</a>',
+			$link = sprintf( '<a href="https://tinypng.com/dashboard/api" target="_blank">%s</a>',
 				esc_html__( 'API dashboard', 'tiny-compress-images' )
 			);
+			/* translators: %s: link saying API dashboard */
 			printf( esc_html__(
 				'Enter your API key. Go to your %s to retrieve it.',
 				'tiny-compress-images'

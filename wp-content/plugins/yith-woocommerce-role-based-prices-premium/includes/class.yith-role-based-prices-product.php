@@ -467,7 +467,7 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 						$regular_price_html = wc_price( yit_get_display_price( $product, $regular_price ) ) . $this->get_price_suffix( $product, $regular_price );
 						$regular_price_txt  = get_option( 'ywcrbp_regular_price_txt' );
 
-						$regular_price_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="ywcrbp_regular_price">Giá gốc: <del>%s %s</del></span>', $regular_price_txt, $regular_price_html );
+						$regular_price_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="ywcrbp_regular_price"><del>%s %s</del></span>', $regular_price_txt, $regular_price_html );
 
 						add_filter( 'woocommerce_product_get_price', array( $this, 'get_price' ), 20, 2 );
 						add_filter( 'woocommerce_product_variation_get_price', array( $this, 'get_price' ), 20, 2 );
@@ -689,9 +689,9 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 			if ( ! empty( $regular_price_html ) ) {
 
 				if ( empty( $sale_price_html ) && empty( $your_price_html ) ) {
-					$regular_price_html = sprintf( '<span class="%s">%s %s</span>', 'ywcrbp_regular_price', 'Giá bán:', $regular_price_html ); //$regular_price_txt
+					$regular_price_html = sprintf( '<span class="%s">%s %s</span>', 'ywcrbp_regular_price', '', $regular_price_html ); //$regular_price_txt
 				} else {
-					$regular_price_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="%s">Giá gốc: <del>%s %s</del></span>', 'ywcrbp_regular_price', $regular_price_txt, $regular_price_html );
+					$regular_price_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="%s"><del>%s %s</del></span>', 'ywcrbp_regular_price', $regular_price_txt, $regular_price_html );
 				}
 			}
 		
@@ -700,9 +700,9 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 				return $regular_price_html.$your_price_html;
 			} else if ( ! empty( $sale_price_html ) ) {
 				if ( empty( $your_price_html ) ) {
-					$sale_price_html = sprintf( '<span class="%s">%s %s</span>', 'ywcrbp_sale_price', 'Giá bán:', $sale_price_html ); //$sale_price_txt
+					$sale_price_html = sprintf( '<span class="%s">%s %s</span>', 'ywcrbp_sale_price','', $sale_price_html ); //$sale_price_txt
 				} else {
-					$sale_price_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="%s">Giá bán: <del>%s %s</del></span>', 'ywcrbp_sale_price', $sale_price_txt, $sale_price_html );
+					$sale_price_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="%s"><del>%s %s</del></span>', 'ywcrbp_sale_price', $sale_price_txt, $sale_price_html );
 				}
 			}
 
@@ -808,9 +808,9 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 
 			if( $regular_price!==$your_price ) {
 				if ( $has_your_price || ! empty( $sale_price ) && $regular_price !== $sale_price && $product->is_on_sale() ) {
-					$regular_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="ywcrbp_regular_price">Giá gốc: <del>%s %s</del></span>', $regular_price_txt, $regular_price_html );
+					$regular_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="ywcrbp_regular_price"><del>%s %s</del></span>', $regular_price_txt, $regular_price_html );
 				} else {
-					$regular_html = sprintf( '<span class="ywcrbp_regular_price">%s %s</span>', 'Giá bán:', $regular_price_html ); //$regular_price_txt
+					$regular_html = sprintf( '<span class="ywcrbp_regular_price">%s %s</span>', '', $regular_price_html ); //$regular_price_txt
 				}
 			}
 
@@ -837,9 +837,9 @@ if ( ! class_exists( 'YITH_Role_Based_Prices_Product' ) ) {
 				$sale_price_html = wc_price( yit_get_display_price( $product, $sale_price ) ) . $this->get_price_suffix( $product, $sale_price );
 
 				if ( $has_your_price ) {
-					//$sale_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="ywcrbp_sale_price">Giá bán: <del>%s %s</del></span>', $sale_price_txt, $sale_price_html );
+					//$sale_html = sprintf( '<span style="color: #888 !important; font-weight: unset; font-size: small;" class="ywcrbp_sale_price"><del>%s %s</del></span>', $sale_price_txt, $sale_price_html );
 				} else {
-					$sale_html = sprintf( '<span class="ywcrbp_sale_price">%s %s</span>', 'Giá bán:', $sale_price_html ); //$sale_price_txt
+					$sale_html = sprintf( '<span class="ywcrbp_sale_price">%s %s</span>', '', $sale_price_html ); //$sale_price_txt
 				}
 			}
 

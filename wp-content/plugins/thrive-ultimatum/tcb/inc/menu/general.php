@@ -26,14 +26,6 @@
 		<i></i>
 	</div>
 	<div class="dropdown-content">
-		<div class="hide-states">
-			<div class="tve-control" data-view="ToggleControls"></div>
-
-			<div class="tve-control tcb-typography-toggle-element tcb-typography-font-size" data-view="FontSize"></div>
-			<div class="tve-control tcb-typography-toggle-element tcb-typography-line-height" data-view="LineHeight"></div>
-			<div class="tve-control tcb-typography-toggle-element tcb-typography-letter-spacing" data-view="LetterSpacing"></div>
-			<hr class="typography-font-color-hr">
-		</div>
 		<div class="tve-control" data-view="FontColor"></div>
 		<hr class="typography-text-align-style-hr">
 		<div class="row">
@@ -44,6 +36,15 @@
 			<div class="tve-control col-xs-12" data-view="TextTransform"></div>
 		</div>
 		<hr>
+		<div class="hide-states typography-button-toggle-controls">
+			<div class="tve-control" data-view="ToggleControls"></div>
+
+			<div class="tve-control tcb-typography-toggle-element tcb-typography-font-size" data-view="FontSize"></div>
+			<div class="tve-control tcb-typography-toggle-element tcb-typography-line-height" data-view="LineHeight"></div>
+			<div class="tve-control tcb-typography-toggle-element tcb-typography-letter-spacing" data-view="LetterSpacing"></div>
+			<hr class="typography-button-toggle-hr">
+		</div>
+
 		<div class="row tve-control" data-view="FontFace">
 			<div class="col-xs-12">
 				<span class="input-label"><?php echo __( 'Font Face', 'thrive-cb' ); ?></span>
@@ -54,7 +55,7 @@
 				<?php tcb_icon( 'edit', false, 'sidebar', 'tcb-input-button click', array( 'data-fn' => 'openFonts' ) ) ?>
 			</div>
 		</div>
-		<div class="tve-advanced-controls extend-grey">
+		<div class="tve-advanced-controls extend-grey hide-states">
 			<div class="dropdown-header" data-prop="advanced">
 				<span>
 					<?php echo __( 'Advanced', 'thrive-cb' ); ?>
@@ -63,23 +64,6 @@
 			</div>
 
 			<div class="dropdown-content clear-top">
-				<div class="text-shadow-component margin-bottom-10">
-					<div class="row middle-xs tcb-shadow-row margin-bottom-10 margin-top-10">
-						<div class="col-xs-6">
-							<span class="input-label"><?php echo __( 'Text Shadow', 'thrive-cb' ); ?></span>
-						</div>
-						<div class="col-xs-6">
-							<div class="row">
-								<div class="blue tve-button click" data-fn="add_shadow"><?php echo __( 'Add Shadow', 'thrive-cb' ); ?></div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-12">
-							<div id="tcb-text-shadow-list" class="tcb-relative tcb-preview-list"></div>
-						</div>
-					</div>
-				</div>
 				<div class="hide-states">
 					<div class="tve-control" data-view="Slider" data-key="p_spacing"></div>
 					<div class="tve-control" data-view="Slider" data-key="h1_spacing"></div>
@@ -146,11 +130,13 @@
 							</div>
 						<?php elseif ( isset( $tab['actions'] ) ) : ?>
 							<?php if ( $key === 'popup' ) : ?>
+							<div class="tve-select-arrow">
 								<label for="a-popup-trigger"><?php echo __( 'Trigger', 'thrive-cb' ) ?></label>
 								<select class="tcb-dark" id="a-popup-trigger">
 									<option value="click" selected><?php echo __( 'Click', 'thrive-cb' ) ?></option>
 									<option value="tve-viewport"><?php echo __( 'Comes into viewport', 'thrive-cb' ) ?></option>
 								</select>
+							</div>
 							<?php endif ?>
 							<div class="action-collection">
 								<?php
@@ -191,7 +177,8 @@
 		</div>
 		<div class="dropdown-content">
 			<div class="tve-shadow" id="tcb-shadow-buttons"></div>
-			<div id="tcb-box-shadow-list" class="tcb-relative tcb-preview-list"></div>
+			<div id="tcb-text-shadow-list" class="tcb-relative tcb-preview-list" data-shadow-type="text-shadow"></div>
+			<div id="tcb-box-shadow-list" class="tcb-relative tcb-preview-list" data-shadow-type="box-shadow"></div>
 		</div>
 	</div>
 

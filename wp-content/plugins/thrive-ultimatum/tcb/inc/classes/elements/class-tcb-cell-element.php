@@ -79,8 +79,8 @@ class TCB_Cell_Element extends TCB_Element_Abstract {
 						),
 						'extends' => 'Slider',
 					),
-					'valign'      => array(
-						'config'     => array(
+					'valign' => array(
+						'config'  => array(
 							'name'    => __( 'Vertical Align', 'thrive-cb' ),
 							'buttons' => array(
 								array(
@@ -102,7 +102,7 @@ class TCB_Cell_Element extends TCB_Element_Abstract {
 								),
 							),
 						),
-						'extends'    => 'ButtonGroup',
+						'extends' => 'ButtonGroup',
 					),
 				),
 			),
@@ -117,6 +117,11 @@ class TCB_Cell_Element extends TCB_Element_Abstract {
 			),
 			'typography'       => array(
 				'hidden' => true,
+			),
+			'shadow'           => array(
+				'config' => array(
+					'disabled_controls' => array( 'text' ),
+				),
 			),
 			'responsive'       => array(
 				'hidden' => true,

@@ -136,6 +136,11 @@ class TCB_Countdown_Element extends TCB_Element_Abstract {
 			'typography' => array(
 				'hidden' => true,
 			),
+			'shadow'     => array(
+				'config' => array(
+					'disabled_controls' => array( 'text' ),
+				),
+			),
 		);
 	}
 

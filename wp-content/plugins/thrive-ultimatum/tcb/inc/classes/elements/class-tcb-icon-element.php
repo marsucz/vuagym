@@ -60,7 +60,7 @@ class TCB_Icon_Element extends TCB_Element_Abstract {
 					'ColorPicker' => array(
 						'css_prefix' => '#tve_editor ',
 						'css_suffix' => ' > :first-child',
-						'config' => array(
+						'config'     => array(
 							'label' => __( 'Icon color', 'thrive-cb' ),
 						),
 					),
@@ -77,6 +77,11 @@ class TCB_Icon_Element extends TCB_Element_Abstract {
 				),
 			),
 			'typography' => array( 'hidden' => true ),
+			'shadow'     => array(
+				'config' => array(
+					'disabled_controls' => array( 'text' ),
+				),
+			),
 			'layout'     => array(
 				'config'            => array(),
 				'disabled_controls' => array(

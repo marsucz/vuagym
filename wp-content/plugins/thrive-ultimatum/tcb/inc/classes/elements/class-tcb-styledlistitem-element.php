@@ -55,6 +55,11 @@ class TCB_Styledlistitem_Element extends TCB_Element_Abstract {
 			'animation'        => array( 'hidden' => true ),
 			'responsive'       => array( 'hidden' => true ),
 			'styles-templates' => array( 'hidden' => true ),
+			'shadow'           => array(
+				'config' => array(
+					'disabled_controls' => array( 'text' ),
+				),
+			),
 		);
 	}
 }

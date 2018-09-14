@@ -62,6 +62,11 @@ class TU_Frontend_Handler {
 
 		$campaigns_logic = array();
 
+        //support + sign in emails
+        if ( isset( $_GET['tu_em'] ) ) {
+            $_GET['tu_em'] = str_replace(' ', '+', $_GET['tu_em'] );
+        }
+
 		foreach ( $campaigns as $campaign ) {
 			/* @var TU_Schedule_Abstract $schedule */
 			$schedule = $campaign->tu_schedule_instance;
@@ -974,7 +979,21 @@ class TU_Frontend_Handler {
 		) );
 		foreach ( $evergreen_campaigns as $campaign ) {
 			//this will trigger any campaigns for which the current request acts as a trigger
-			$campaign->tu_schedule_instance->applies();
+            /** @var TU_Schedule_Evergreen $schedule */
+            $schedule = $campaign->tu_schedule_instance;
+
+            if ( isset( $_COOKIE[ $schedule->cookie_name() ] ) && $has_email = $schedule->verify_cookie() ) {
+                $cookie = $schedule->get_cookie_data();
+                $cookie = $cookie['cookie'];
+                $email = $cookie['lockdown']['email'];
+                if( is_email( $email ) ) {
+                    $data = $schedule->set_cookie_data( $cookie );
+                    unset( $_COOKIE[ $schedule->cookie_name( $campaign->ID ) ] );
+                    $schedule->setCookie( $data['value'], $data['expire'] );
+                }
+            }
+
+            $schedule->applies();
 		}
 	}
 }

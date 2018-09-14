@@ -22,6 +22,7 @@ class TCB_Menu_Element extends TCB_Element_Abstract {
 	public function name() {
 		return __( 'Custom Menu', 'thrive-cb' );
 	}
+
 	/**
 	 * Get element alternate
 	 *
@@ -99,7 +100,7 @@ class TCB_Menu_Element extends TCB_Element_Abstract {
 						),
 						'extends' => 'ColorPicker',
 					),
-					'HoverMainBackground' => array(
+					'HoverMainBackground'  => array(
 						'config'  => array(
 							'default' => 'CE271B',
 							'label'   => __( 'Main Background', 'thrive-cb' ),
@@ -151,8 +152,12 @@ class TCB_Menu_Element extends TCB_Element_Abstract {
 					),
 				),
 			),
-			'typography'       => array(
-				'disabled_controls' => array( 'FontColor', '.typography-text-align-style-hr' ),
+			'typography' => array(
+				'disabled_controls' => array(
+					'FontColor',
+					'.typography-text-align-style-hr',
+					'.tve-advanced-controls',
+				),
 			),
 			'animation'  => array( 'hidden' => true ),
 		);

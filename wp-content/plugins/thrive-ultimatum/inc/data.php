@@ -263,6 +263,12 @@ function tve_ult_get_campaigns( $filters = array() ) {
 		);
 	}
 
+	/**
+	 * SUPP-5262 stupid conflict with s2Member - this filter is causing the page to blank out
+	 * Their code is completely un readable so we're just gonna remove the filter
+	 */
+	remove_filter( 'pre_get_posts', 'c_ws_plugin__s2member_security::security_gate_query', 100 );
+
 	$posts = get_posts( $filters );
 
 	require_once TVE_Ult_Const::plugin_path() . 'inc/classes/display_settings/class-thrive-display-settings-manager.php';
@@ -1461,6 +1467,11 @@ function tve_ult_save_email_log( $model ) {
 	}
 
 	global $tve_ult_db;
+
+    /**
+     * encrypt email address
+     */
+	$model['email'] = is_email($model['email']) ? md5($model['email']) : $model['email'];
 
 	return $tve_ult_db->save_email_log( $model );
 }

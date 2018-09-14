@@ -121,8 +121,7 @@ class TCB_Tweet_Element extends TCB_Element_Abstract {
 			),
 			'shadow'      => array(
 				'config' => array(
-					'to'            => '.thrv_tw_qs_container',
-					'css_attribute' => 'box-shadow',
+					'to' => '.thrv_tw_qs_container',
 				),
 			),
 			'animation'   => array( 'hidden' => true ),

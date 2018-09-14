@@ -172,6 +172,7 @@ class TCB_Numberedlist_Element extends TCB_Element_Abstract {
 			),
 			'typography'   => array(
 				'disabled_controls' => array(
+					'.tve-advanced-controls',
 					'LineHeight',
 					'p_spacing',
 					'h1_spacing',

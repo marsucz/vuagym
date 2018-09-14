@@ -70,7 +70,6 @@ class TCB_Lead_Generation_Radio_Element extends TCB_Element_Abstract {
 					'LineHeight'    => $controls_default_config,
 					'TextAlign'     => $controls_default_config,
 					'TextStyle'     => $controls_default_config,
-					'TextShadow'    => $controls_default_config,
 					'TextTransform' => $controls_default_config,
 				),
 			),

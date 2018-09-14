@@ -160,6 +160,7 @@ abstract class TCB_Element_Abstract {
 		return array(
 			'typography'       => array(
 				'disabled_controls' => array(
+					'.tve-advanced-controls',
 					'p_spacing',
 					'h1_spacing',
 					'h2_spacing',
@@ -169,7 +170,6 @@ abstract class TCB_Element_Abstract {
 				'config'            => array(
 					'ToggleControls' => array(
 						'config'  => array(
-							'name'    => __( 'Type', 'thrive-cb' ),
 							'buttons' => array(
 								array( 'value' => 'tcb-typography-font-size', 'text' => __( 'Font Size', 'thrive-cb' ), 'default' => true ),
 								array( 'value' => 'tcb-typography-line-height', 'text' => __( 'Line Height', 'thrive-cb' ) ),
@@ -208,9 +208,9 @@ abstract class TCB_Element_Abstract {
 						'old_suffix' => $texts, //TODO: Remove this after some time
 						'css_prefix' => '#tve_editor ',
 						'config'     => array(
-							'default' => '000',
-							'icon'    => true,
-							'options' => array(
+							'default'    => '000',
+							'label_icon' => 'format-color-text',
+							'options'    => array(
 								'output' => 'object',
 							),
 						),
@@ -218,7 +218,6 @@ abstract class TCB_Element_Abstract {
 					),
 					'TextAlign'     => array(
 						'config'  => array(
-							'name'    => __( 'Text Align', 'thrive-cb' ),
 							'buttons' => array(
 								array(
 									'icon'    => 'format-align-left',
@@ -249,7 +248,6 @@ abstract class TCB_Element_Abstract {
 						'css_suffix' => array_merge( $texts, $headings ),
 						'old_suffix' => $texts, //TODO: Remove this after some time
 						'config'     => array(
-							'name'     => __( 'Text Style', 'thrive-cb' ),
 							'checkbox' => true,
 							'buttons'  => array(
 								array(
@@ -282,7 +280,6 @@ abstract class TCB_Element_Abstract {
 					),
 					'TextTransform' => array(
 						'config'  => array(
-							'name'    => 'Text Transform',
 							'buttons' => array(
 								array(
 									'icon'    => 'none',
@@ -331,9 +328,6 @@ abstract class TCB_Element_Abstract {
 						),
 						'extends'    => 'Slider',
 					),
-					'TextShadow'    => array(
-						'config' => array(),
-					),
 					'p_spacing'     => $p_spacing,
 					'h1_spacing'    => $h1_spacing,
 					'h2_spacing'    => $h2_spacing,
@@ -380,7 +374,8 @@ abstract class TCB_Element_Abstract {
 				'order' => 150,
 			),
 			'shadow'           => array(
-				'order' => 140,
+				'order'          => 140,
+				'inline_text_to' => '',
 			),
 
 		);

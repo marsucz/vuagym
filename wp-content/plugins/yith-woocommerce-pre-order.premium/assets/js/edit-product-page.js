@@ -1,24 +1,27 @@
 jQuery( function( $ ) {
 
-	$( 'select#product-type' ).change( function () {
+    function show_and_hide_pre_order_panel() {
+        var is_preorder = $( 'input#_ywpo_preorder:checked' ).length;
+
+        var pre_order_tab = $( '.show_if_preorder' );
+        is_preorder ? pre_order_tab.show() : pre_order_tab.hide();
+    }
+
+    var $checkboxes = $( 'input#_ywpo_preorder, input#_downloadable, input#_virtual' );
+    $checkboxes.change( function() {
+        show_and_hide_pre_order_panel();
+    }).change();
+
+	var $product_type = $( 'select#product-type' );
+
+    $product_type.change( function () {
 		var select_val = $( this ).val();
 		if ( 'simple' === select_val ) {
 			$( 'input#_ywpo_preorder' ).change();
 		} else {
 			$( 'input#_ywpo_preorder' ).prop( "checked", false );
 		}
-	});
-
-	$( 'input#_ywpo_preorder, input#_downloadable, input#_virtual' ).change( function() {
-        show_and_hide_pre_order_panel();
 	}).change();
-
-	function show_and_hide_pre_order_panel() {
-		var is_preorder = $( 'input#_ywpo_preorder:checked' ).length;
-
-        var pre_order_tab = $( '.show_if_preorder' );
-		is_preorder ? pre_order_tab.show() : pre_order_tab.hide();
-	}
 	
 	var now = new Date();
 
@@ -27,7 +30,6 @@ jQuery( function( $ ) {
 		dateFormat: 'yy/mm/dd',
 		minDate: now
 	});
-
 
 	$( 'input._ywpo_price_adjustment' ).change( function() {
 		var $radio = $('input._ywpo_price_adjustment:checked');

@@ -128,7 +128,12 @@ class TCB_Label_Element extends TCB_Element_Abstract {
 			'background'       => array( 'hidden' => true ),
 			'responsive'       => array( 'hidden' => true ),
 			'styles-templates' => array( 'hidden' => true ),
-			'shadow'           => array( 'hidden' => true ),
+			'shadow'           => array(
+				'config' => array(
+					'disabled_controls' => array( 'inner', 'drop' ),
+					'with_froala'       => true,
+				),
+			),
 		);
 	}
 }

@@ -134,7 +134,7 @@ if ( ! class_exists( 'YITH_Pre_Order_Premium' ) ) {
 		}
 
 		public function init_my_account() {
-            new YITH_Pre_Order_My_Account_Premium();
+			$this->myaccount = new YITH_Pre_Order_My_Account_Premium();
         }
 
 	}

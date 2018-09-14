@@ -66,7 +66,7 @@ class Thrive_Ult_Pages_Tab extends Thrive_Ult_Tab implements Thrive_Ult_Tab_Inte
 	public function isPageAllowed( $page ) {
 		$this->hanger = 'show_options';
 
-		return $this->getSavedOption( $page )->isChecked;
+		return apply_filters( 'tu_is_page_allowed', $this->getSavedOption( $page )->isChecked, $page, $this );
 	}
 
 }

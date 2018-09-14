@@ -47,8 +47,9 @@ class TVD_SM_Admin {
 
 			$params = array(
 				'routes'                => array(
-					'scripts'       => get_rest_url() . 'script-manager/v1/scripts',
-					'scripts_order' => get_rest_url() . 'script-manager/v1/scripts-order',
+					'scripts'                  => get_rest_url() . 'script-manager/v1/scripts',
+					'scripts_order'            => get_rest_url() . 'script-manager/v1/scripts-order',
+					'clear_page_level_scripts' => get_rest_url() . 'script-manager/v1/clear-old-scripts',
 				),
 				'nonce'                 => wp_create_nonce( 'wp_rest' ),
 				'scripts'               => tah()->tvd_sm_get_scripts(),

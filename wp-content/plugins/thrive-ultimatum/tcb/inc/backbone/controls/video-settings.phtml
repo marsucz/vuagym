@@ -3,13 +3,15 @@
 		<label><?php echo __( 'Source', 'thrive-cb' ) ?></label>
 	</div>
 	<div class="col-xs-9">
-		<select class="v-source change tcb-dark" data-fn="show_section">
-			<option value=""><?php echo __( 'Select source', 'thrive-cb' ) ?></option>
-			<option value="youtube">YouTube</option>
-			<option value="vimeo">Vimeo</option>
-			<option value="wistia">Wistia</option>
-			<option value="custom">Custom</option>
-		</select>
+		<div class="tve-select-arrow pt-10">
+			<select class="v-source change tcb-dark" data-fn="show_section">
+				<option value=""><?php echo __( 'Select source', 'thrive-cb' ) ?></option>
+				<option value="youtube">YouTube</option>
+				<option value="vimeo">Vimeo</option>
+				<option value="wistia">Wistia</option>
+				<option value="custom">Custom</option>
+			</select>
+		</div>
 	</div>
 </div>
 <div class="v-settings" style="display:none" id="v-settings-youtube" data-view="Youtube"><?php tcb_template( 'actions/video-popup/youtube' ) ?></div>

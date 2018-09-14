@@ -36,11 +36,12 @@ if ( ! class_exists( 'YITH_Pre_Order_Stock_Manager' ) ) {
 				add_filter( 'woocommerce_product_variation_get_stock_status', array( $this, 'check_stock_status' ), 10, 2 );
 				add_filter( 'woocommerce_product_variation_get_stock_quantity', array( $this, 'check_stock_quantity' ), 10, 2 );
 				add_action( 'woocommerce_checkout_order_processed', array( $this, 'remove_stock_qty_and_status_filters' ) );
+				add_action( 'woocommerce_product_object_updated_props', array( $this, 'product_and_variation_set_stock' ) );
 			} else {
 				add_action( 'woocommerce_variation_set_stock_status', array( $this, 'variation_set_stock_status' ), 10, 2 );
+				add_action( 'woocommerce_product_set_stock', array( $this, 'product_and_variation_set_stock' ) );
+				add_action( 'woocommerce_variation_set_stock', array( $this, 'product_and_variation_set_stock' ) );
 			}
-			add_action( 'woocommerce_product_set_stock', array( $this, 'product_and_variation_set_stock' ) );
-			add_action( 'woocommerce_variation_set_stock', array( $this, 'product_and_variation_set_stock' ) );
 		}
 
 		public function check_stock_status( $status, $product ) {

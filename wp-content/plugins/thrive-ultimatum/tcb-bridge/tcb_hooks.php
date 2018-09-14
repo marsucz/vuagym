@@ -311,7 +311,7 @@ function tve_ult_fetch_countdown_for_editor() {
 
 	$html = '';
 	$html .= '<div class="thrive-shortcode-config" style="display: none !important">__CONFIG_ultimatum_shortcode__' . json_encode( $config ) . '__CONFIG_ultimatum_shortcode__</div>';
-	$html .= str_replace( 'id="tve_editor"', '', tve_ult_render_shortcode( $config ) );
+	$html .= str_replace( array( 'id="tve_editor"', 'tve_editor_main_content' ), '', tve_ult_render_shortcode( $config ) );
 
 	wp_send_json( $html );
 }

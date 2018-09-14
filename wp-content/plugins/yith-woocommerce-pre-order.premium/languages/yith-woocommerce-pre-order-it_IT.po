@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: YITH WooCommerce Pre Order\n"
-"POT-Creation-Date: 2018-02-14 13:24+0000\n"
-"PO-Revision-Date: 2018-02-14 13:25+0000\n"
+"POT-Creation-Date: 2018-03-21 11:24+0000\n"
+"PO-Revision-Date: 2018-03-21 11:24+0000\n"
 "Last-Translator: \n"
 "Language-Team: Your Inspiration Themes <plugins@yithemes.com>\n"
 "Language: it_IT\n"
@@ -483,12 +483,12 @@ msgstr ""
 "Attiva questa opzione per impostare questa variazione allo stato di pre-"
 "ordine."
 
-#: includes/class.yith-pre-order-frontend-premium.php:93
+#: includes/class.yith-pre-order-frontend-premium.php:94
 #, php-format
 msgid "Available on: %s at %s"
 msgstr "Disponibile il: %s alle %s"
 
-#: includes/class.yith-pre-order-frontend-premium.php:393
+#: includes/class.yith-pre-order-frontend-premium.php:414
 msgid ""
 "Sorry, is not possible to mix Regular Products and Pre-Order Products in the "
 "same cart"
@@ -496,7 +496,7 @@ msgstr ""
 "Mi dispiace, non è possibile combinare prodotti normali e prodotti "
 "prenotabili nello stesso carrello"
 
-#: includes/class.yith-pre-order-frontend-premium.php:626
+#: includes/class.yith-pre-order-frontend-premium.php:647
 msgid "Add to cart"
 msgstr "Aggiungi al carrello"
 

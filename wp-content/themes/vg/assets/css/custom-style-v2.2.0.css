@@ -4234,7 +4234,8 @@ button.single_add_to_cart_button {
 
 .btn-shoppe {
     background-color: #f0572b !important;
-    border-radius: 30px !important;
+    border-radius: 20px !important;
+    padding: 0 15px !important;
 }
 
 .fs-tooltip {

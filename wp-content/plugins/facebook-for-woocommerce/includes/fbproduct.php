@@ -6,6 +6,10 @@ if (! defined('ABSPATH')) {
   exit;
 }
 
+if (!class_exists('WC_Facebookcommerce_Utils')) {
+  include_once 'includes/fbutils.php';
+}
+
 if (! class_exists('WC_Facebook_Product')) :
 
 /**
@@ -25,6 +29,8 @@ class WC_Facebook_Product {
   const MAX_TIME = 'T23:59+00:00';
   const MIN_TIME = 'T00:00+00:00';
 
+  static $use_checkout_url = array('simple' => 1, 'variable' => 1, 'variation' => 1);
+
   public function __construct(
     $wpid, $parent_product = null) {
     $this->id = $wpid;
@@ -34,6 +40,7 @@ class WC_Facebook_Product {
     $this->gallery_urls = null;
     $this->fb_use_parent_image = null;
     $this->fb_price = 0;
+    $this->main_description = '';
 
     // Variable products should use some data from the parent_product
     // For performance reasons, that data shouldn't be regenerated every time.
@@ -45,9 +52,23 @@ class WC_Facebook_Product {
     }
   }
 
+  public function exists() {
+    return ($this->woo_product !== null && $this->woo_product !== false);
+  }
+
   // Fall back to calling method on $woo_product
   public function __call($function, $args) {
-    return call_user_func_array(array($this->woo_product, $function), $args);
+    if ($this->woo_product) {
+      return call_user_func_array(array($this->woo_product, $function), $args);
+    } else {
+      $e = new Exception();
+      $backtrace = var_export($e->getTraceAsString(), true);
+      WC_Facebookcommerce_Utils::fblog(
+        "Calling $function on Null Woo Object. Trace:\n".$backtrace,
+        array(),
+        true);
+      return null;
+    }
   }
 
   public function get_gallery_urls() {
@@ -259,16 +280,23 @@ class WC_Facebook_Product {
   }
 
   public function is_hidden() {
+    $wpid = $this->id;
+    if (WC_Facebookcommerce_Utils::is_variation_type($this->get_type())) {
+      $wpid = $this->get_parent_id();
+    }
     $hidden_from_catalog = has_term(
       'exclude-from-catalog',
       'product_visibility',
-      $this->id);
+      $wpid);
     $hidden_from_search = has_term(
       'exclude-from-search',
       'product_visibility',
-      $this->id);
+      $wpid);
+    // fb_visibility === '': after initial sync by feed
+    // fb_visibility === false: set hidden on FB metadata
+    // Explicitly check whether flip 'hide' before.
     return ($hidden_from_catalog && $hidden_from_search) ||
-      !$this->fb_visibility || !$this->get_fb_price();
+      $this->fb_visibility === false || !$this->get_fb_price();
   }
 
   public function get_price_plus_tax($price) {
@@ -372,9 +400,10 @@ class WC_Facebook_Product {
       '&',
       html_entity_decode($this->get_permalink()));
 
-    // Use product_url for external product setting.
-    if ($this->get_type() == 'external') {
-      $checkout_url = $this->get_product_url();
+    // Use product_url for external/bundle product setting.
+    $product_type = $this->get_type();
+    if (!$product_type || !isset(self::$use_checkout_url[$product_type])) {
+      $checkout_url = $product_url;
     } else if (wc_get_cart_url()) {
       $char = '?';
       // Some merchant cart pages are actually a querystring
@@ -413,6 +442,10 @@ class WC_Facebook_Product {
     }
     $categories =
       WC_Facebookcommerce_Utils::get_product_categories($id);
+    $brand = get_the_term_list($id, 'product_brand', '', ', ');
+    $brand = is_wp_error($brand) || !$brand
+      ? WC_Facebookcommerce_Utils::get_store_name()
+      : WC_Facebookcommerce_Utils::clean_string($brand);
 
     $product_data = array(
       'name' => WC_Facebookcommerce_Utils::clean_string(
@@ -422,7 +455,7 @@ class WC_Facebook_Product {
       'additional_image_urls' => array_filter($image_urls),
       'url'=> $product_url,
       'category' => $categories['categories'],
-      'brand' => WC_Facebookcommerce_Utils::get_store_name(),
+      'brand' => $brand,
       'retailer_id' => $retailer_id,
       'price' => $this->get_fb_price(),
       'currency' => get_woocommerce_currency(),
@@ -443,14 +476,15 @@ class WC_Facebook_Product {
     // IF using WPML, set the product to staging unless it is in the
     // default language. WPML >= 3.2 Supported.
     if (defined('ICL_LANGUAGE_CODE')) {
-      if (!$this->default_lang) {
-        $this->default_lang = apply_filters('wpml_default_language', null);
-      }
-      $product_lang = apply_filters('wpml_post_language_details', null, $id);
-      if ($product_lang &&
-          $product_lang['language_code'] != $this->default_lang) {
+      if (class_exists('WC_Facebook_WPML_Injector') && WC_Facebook_WPML_Injector::should_hide($id)) {
         $product_data['visibility'] = 'staging';
       }
+    }
+
+    // Exclude variations that are "virtual" products from export to Facebook &&
+    // No Visibility Option for Variations
+    if (true === $this->get_virtual()) {
+      $product_data['visibility'] = 'staging';
     }
 
     if (!$prepare_for_product_feed) {

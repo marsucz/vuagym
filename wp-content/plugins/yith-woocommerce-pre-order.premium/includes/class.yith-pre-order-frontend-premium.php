@@ -56,6 +56,7 @@ if ( ! class_exists( 'YITH_Pre_Order_Frontend_Premium' ) ) {
 				add_filter( 'woocommerce_get_stock_html', array( $this, 'show_date_on_single_product' ), 10, 3 );
 				add_filter( 'woocommerce_product_get_price', array( $this, 'edit_price' ), 10, 2 );
 				add_filter( 'woocommerce_product_variation_get_price', array( $this, 'edit_price' ), 10, 2 );
+				add_filter( 'woocommerce_show_variation_price', array( $this, 'show_variation_price' ), 10, 2 );
 				add_filter( 'woocommerce_product_get_sale_price', array( $this, 'empty_sale_price' ), 10, 2 );
 				add_filter( 'woocommerce_product_variation_get_sale_price', array( $this, 'empty_sale_price' ), 10, 2 );
 				add_filter( 'woocommerce_product_is_on_sale', array( $this, 'force_use_of_sale_price' ), 10, 2 );
@@ -225,8 +226,6 @@ if ( ! class_exists( 'YITH_Pre_Order_Frontend_Premium' ) ) {
 			return $text . $this->print_availability_date( 'pre_order_on_cart', $timestamp, $style );
 		}
 
-
-
 		public function edit_price( $price, $product ) {
 			global $sitepress;
 
@@ -253,7 +252,7 @@ if ( ! class_exists( 'YITH_Pre_Order_Frontend_Premium' ) ) {
 							return '';
 					}
 				}
-			    if ( 'yes' == get_option( 'yith_wcpo_show_regular_price' ) && 'manual' == $price_adjustment && $manual_price != '0' ) {
+			    if ( 'yes' == get_option( 'yith_wcpo_show_regular_price' ) && 'manual' == $price_adjustment && $manual_price != '0' && ! empty( $manual_price ) ) {
 				    return $this->compute_price( $product->get_regular_price(), $price_adjustment, $manual_price, $adjustment_type, $adjustment_amount );
 			    } else {
 				    return $this->compute_price( $price, $price_adjustment, $manual_price, $adjustment_type, $adjustment_amount );
@@ -261,6 +260,28 @@ if ( ! class_exists( 'YITH_Pre_Order_Frontend_Premium' ) ) {
 			}
 			return $price;
 		}
+
+		/**
+         * If all the variations have the same regular price, the price will be hidden despite the variations use the Pre-Order price. This function fixes this.
+		 * @param $bool
+		 * @param $product_variable
+		 *
+		 * @return bool
+		 */
+		public function show_variation_price( $bool, $product_variable ) {
+			$product_variable = wc_get_product( $product_variable );
+			$has_any_preorder_variation = false;
+		    foreach ( $product_variable->get_children() as $child ) {
+		        $pre_order_child = new YITH_Pre_Order_Product( $child );
+		        if ( 'yes' === $pre_order_child->get_pre_order_status() ) {
+			        $has_any_preorder_variation = true;
+                }
+            }
+            if ( $has_any_preorder_variation ) {
+		        return true;
+            }
+		    return $bool;
+        }
 
 		/**
 		 * @param $sale_price

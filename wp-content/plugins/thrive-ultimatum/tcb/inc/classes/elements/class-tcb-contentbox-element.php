@@ -62,7 +62,7 @@ class TCB_ContentBox_Element extends TCB_Element_Abstract {
 		return array(
 			'contentbox' => array(
 				'config' => array(
-					'BoxHeight' => array(
+					'BoxHeight'        => array(
 						'config'  => array(
 							'default' => '80',
 							'min'     => '1',
@@ -74,7 +74,7 @@ class TCB_ContentBox_Element extends TCB_Element_Abstract {
 						'to'      => ' > .tve-cb',
 						'extends' => 'Slider',
 					),
-					'BoxWidth'  => array(
+					'BoxWidth'         => array(
 						'config'  => array(
 							'default' => '1024',
 							'min'     => '100',
@@ -84,6 +84,14 @@ class TCB_ContentBox_Element extends TCB_Element_Abstract {
 							'css'     => 'max-width',
 						),
 						'extends' => 'Slider',
+					),
+					'MasterColor'   => array(
+						'config'  => array(
+							'default'   => '000',
+							'label'     => __( 'Master Color', 'thrive-cb' ),
+							'important' => true,
+							'affected_components' => array( 'shadow', 'background', 'borders' ),
+						),
 					),
 					'VerticalPosition' => array(
 						'config'  => array(
@@ -133,8 +141,7 @@ class TCB_ContentBox_Element extends TCB_Element_Abstract {
 			),
 			'shadow'     => array(
 				'config' => array(
-					'to'            => '>.tve-content-box-background',
-					'css_attribute' => 'box-shadow',
+					'to' => '>.tve-content-box-background',
 				),
 			),
 			'decoration' => array(

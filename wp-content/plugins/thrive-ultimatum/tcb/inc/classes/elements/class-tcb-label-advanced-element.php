@@ -36,21 +36,7 @@ class TCB_Label_Advanced_Element extends TCB_Label_Element {
 	protected function general_components() {
 		$general_components = parent::general_components();
 
-		if ( isset( $general_components['typography'] ) ) {
-			unset( $general_components['typography'] );
-		}
-		if ( isset( $general_components['animation'] ) ) {
-			unset( $general_components['animation'] );
-		}
-		if ( isset( $general_components['shadow'] ) ) {
-			unset( $general_components['shadow'] );
-		}
-		if ( isset( $general_components['responsive'] ) ) {
-			unset( $general_components['responsive'] );
-		}
-		if ( isset( $general_components['styles-templates'] ) ) {
-			unset( $general_components['styles-templates'] );
-		}
+		unset( $general_components['typography'], $general_components['animation'], $general_components['responsive'], $general_components['styles-templates'] );
 
 		return $general_components;
 	}
@@ -78,30 +64,7 @@ class TCB_Label_Advanced_Element extends TCB_Label_Element {
 		 * The functionality from here will be handled in general_components function
 		 * Reason: not to be added in the element json string
 		 */
-		if ( isset( $components['typography'] ) ) {
-			unset( $components['typography'] );
-		}
-		if ( isset( $components['borders'] ) ) {
-			unset( $components['borders'] );
-		}
-		if ( isset( $components['animation'] ) ) {
-			unset( $components['animation'] );
-		}
-		if ( isset( $components['background'] ) ) {
-			unset( $components['background'] );
-		}
-
-		if ( isset( $components['responsive'] ) ) {
-			unset( $components['responsive'] );
-		}
-
-		if ( isset( $components['styles-templates'] ) ) {
-			unset( $components['styles-templates'] );
-		}
-
-		if ( isset( $components['shadow'] ) ) {
-			unset( $components['shadow'] );
-		}
+		unset( $components['typography'], $components['borders'], $components['animation'], $components['background'], $components['responsive'], $components['styles-templates'] );
 
 		return $components;
 	}

@@ -64,7 +64,7 @@ if ( ! class_exists( 'YITH_Pre_Order_Edit_Product_Page_Premium' ) ) {
 				'preorder' => array(
 					'label'  => __( 'Pre-Order', 'yith-woocommerce-pre-order' ),
 					'target' => 'preorder_product_data',
-					'class'  => array( 'show_if_preorder', 'hide_if_grouped', 'hide_if_external', 'hide_if_variable' ),
+					'class'  => array( 'show_if_preorder' ),
 				)
 			);
 

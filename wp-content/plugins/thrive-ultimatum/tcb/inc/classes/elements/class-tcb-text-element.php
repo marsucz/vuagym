@@ -62,7 +62,6 @@ class TCB_Text_Element extends TCB_Element_Abstract {
 				'config' => array(
 					'ToggleControls' => array(
 						'config'  => array(
-							'name'    => __( 'Type', 'thrive-cb' ),
 							'buttons' => array(
 								array( 'value' => 'tcb-text-font-size', 'text' => __( 'Font Size', 'thrive-cb' ), 'default' => true ),
 								array( 'value' => 'tcb-text-line-height', 'text' => __( 'Line Height', 'thrive-cb' ) ),
@@ -185,8 +184,8 @@ class TCB_Text_Element extends TCB_Element_Abstract {
 			),
 			'shadow'     => array(
 				'config' => array(
-					'css_attribute' => 'box-shadow',
-					'important'     => true,
+					'important'   => true,
+					'with_froala' => true,
 				),
 			),
 			'typography' => array(

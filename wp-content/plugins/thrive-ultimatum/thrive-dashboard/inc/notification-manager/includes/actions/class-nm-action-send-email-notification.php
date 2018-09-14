@@ -258,10 +258,9 @@ class TD_NM_Action_Send_Email_Notification extends TD_NM_Action_Abstract {
 				'Name' => $quiz->post_title
 			),
 			'quiz_user'     => array(
-				'Result'      => $user['points'],
+				'Result'       => $user['points'],
 				'Email'        => ! empty( $user['email'] ) ? $user['email'] : __( 'unknown', TVE_DASH_TRANSLATE_DOMAIN ),
 				'Date started' => $user['date_started'],
-				'IP Address'   => $user['ip_address'],
 			),
 			'original_data' => $data,
 		);

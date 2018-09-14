@@ -204,7 +204,7 @@ class Thrive_Dash_List_Connection_ActiveCampaign extends Thrive_Dash_List_Connec
 		$update = false;
 		if ( isset( $contact['result_code'] ) && $contact['result_code'] == 1 ) {
 			foreach ( $contact['lists'] as $list ) {
-				if ( $list['id'] == $list_identifier ) {
+				if ( $list['listid'] == $list_identifier ) {
 					$update = true;
 				}
 			}

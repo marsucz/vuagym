@@ -42,14 +42,14 @@ class TVD_SM_Constants {
 	public static function get_recognized_scripts_keywords() {
 
 		return array(
+			'Google Analytics'           => array( 'Google Analytics', 'GoogleAnalyticsObject', 'gtag' ),
+			'Google Tag Manager'         => array( 'Google Tag Manager', 'gtm.start', 'gtm', 'GTM', 'gtm.js' ),
 			'Active Campaign'            => array( 'actid', 'trackcmp' ),
 			'Clicky Analytics'           => array( 'clicky', 'getclicky' ),
 			'CrazyEgg'                   => array( 'script.crazyegg.com' ),
 			'Customer.io'                => array( 'cio', '_cio' ),
 			'Drip'                       => array( 'getdrip' ),
 			'Facebook Tracking Pixel'    => array( 'fbq', 'facebook' ),
-			'Google Analytics'           => array( 'GoogleAnalyticsObject' ),
-			'Google Tag Manager'         => array( 'googletagmanager', 'gtm' ),
 			'Google Website Experiments' => array( 'utmx', 'ga_exp', 'expid' ),
 			'Heap Analytics'             => array( 'heap', 'heapanalytics' ),
 			'Hotjar'                     => array( 'hotjar', 'hjSettings' ),
@@ -69,14 +69,14 @@ class TVD_SM_Constants {
 	public static function get_recognized_scripts_data() {
 
 		return array(
+			'Google Analytics'           => array( 'placement' => 'head', 'icon' => 'google-analytics' ),
+			'Google Tag Manager'         => array( 'placement' => 'head', 'icon' => 'google-tag-manager' ),
 			'Active Campaign'            => array( 'placement' => 'head', 'icon' => 'active-campaign' ),
 			'Clicky Analytics'           => array( 'placement' => 'body_close', 'icon' => 'clicky-analytics' ),
 			'CrazyEgg'                   => array( 'placement' => 'head', 'icon' => 'crazyegg' ),
 			'Customer.io'                => array( 'placement' => 'body_close', 'icon' => 'customer-io' ),
 			'Drip'                       => array( 'placement' => 'body_close', 'icon' => 'drip' ),
 			'Facebook Tracking Pixel'    => array( 'placement' => 'body_open', 'icon' => 'facebook-tracking-pixel' ),
-			'Google Analytics'           => array( 'placement' => 'head', 'icon' => 'google-analytics' ),
-			'Google Tag Manager'         => array( 'placement' => 'head', 'icon' => 'google-tag-manager' ),
 			'Google Website Experiments' => array( 'placement' => 'head', 'icon' => 'google-website-experiments' ),
 			'Heap Analytics'             => array( 'placement' => 'head', 'icon' => 'heap-analytics' ),
 			'Hotjar'                     => array( 'placement' => 'head', 'icon' => 'hotjar' ),

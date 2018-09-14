@@ -87,7 +87,11 @@ class TCB_Responsivevideo_Element extends TCB_Element_Abstract {
 			),
 			'typography'      => array( 'hidden' => true ),
 			'background'      => array( 'hidden' => true ),
-			'shadow'          => array( 'hidden' => true ),
+			'shadow'          => array(
+				'config' => array(
+					'disabled_controls' => array( 'inner', 'text' ),
+				),
+			),
 			'animation'       => array( 'hidden' => true ),
 			'layout'          => array(
 				'config'            => array(

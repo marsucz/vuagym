@@ -59,7 +59,7 @@ class TCB_Table_Element extends TCB_Element_Abstract {
 		return array(
 			'table'        => array(
 				'config' => array(
-					'cellpadding'  => array(
+					'cellpadding'         => array(
 						'css_suffix' => array( ' .tve_table td', ' .tve_table th' ),
 						'config'     => array(
 							'min'     => 0,
@@ -69,37 +69,37 @@ class TCB_Table_Element extends TCB_Element_Abstract {
 							'um'      => array( 'px' ),
 						),
 					),
-					'sortable'     => array(
+					'sortable'            => array(
 						'to'     => '.tve_table',
 						'config' => array(
 							'label' => __( 'Make table sortable', 'thrive-cb' ),
 						),
 					),
-					'header_bg'    => array(
+					'header_bg'           => array(
 						'css_suffix' => ' > .tve_table > thead > tr > th',
 						'config'     => array(
 							'label' => __( 'Header color', 'thrive-cb' ),
 						),
 					),
-					'cell_bg'      => array(
+					'cell_bg'             => array(
 						'css_suffix' => ' > .tve_table > tbody > tr > td',
 						'config'     => array(
 							'label' => __( 'Cell color', 'thrive-cb' ),
 						),
 					),
-					'even_rows'    => array(
+					'even_rows'           => array(
 						'css_suffix' => ' > .tve_table > tbody > tr:nth-child(2n) > td',
 						'config'     => array(
 							'label' => __( 'Even rows color', 'thrive-cb' ),
 						),
 					),
-					'odd_rows'     => array(
+					'odd_rows'            => array(
 						'css_suffix' => ' > .tve_table > tbody > tr:nth-child(2n+1) > td',
 						'config'     => array(
 							'label' => __( 'Odd rows color', 'thrive-cb' ),
 						),
 					),
-					'valign'       => array(
+					'valign'              => array(
 						'css_suffix' => array( ' .tve_table td', ' .tve_table th' ),
 						'config'     => array(
 							'name'    => __( 'Vertical Align', 'thrive-cb' ),
@@ -125,14 +125,14 @@ class TCB_Table_Element extends TCB_Element_Abstract {
 						),
 						'extends'    => 'ButtonGroup',
 					),
-					'mobile_table' => array(
+					'mobile_table'        => array(
 						'config' => array(
 							'name'  => '',
 							'label' => __( 'Create mobile-responsive table', 'thrive-cb' ),
 						),
 					),
 					'mobile_header_width' => array(
-						'config'  => array(
+						'config' => array(
 							'default' => '50',
 							'min'     => '10',
 							'max'     => '90',
@@ -172,11 +172,11 @@ class TCB_Table_Element extends TCB_Element_Abstract {
 				'hidden' => true,
 			),
 			'typography'   => array(
-				'config' => array(
-					'disabled_controls' => array(
-						'LineHeight'
-					),
-					'TextAlign'         => array(
+				'disabled_controls' => array(
+					'[data-value="tcb-typography-line-height"]'
+				),
+				'config'            => array(
+					'TextAlign' => array(
 						'css_suffix' => array( ' .tve_table td', ' .tve_table th' ),
 					),
 				),

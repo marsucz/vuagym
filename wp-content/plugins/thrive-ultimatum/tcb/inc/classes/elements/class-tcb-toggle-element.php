@@ -75,8 +75,7 @@ class TCB_Toggle_Element extends TCB_Element_Abstract {
 
 			'shadow'     => array(
 				'config' => array(
-					'disabled_controls' => array( 'inner' ),
-					'css_attribute'     => 'box-shadow',
+					'disabled_controls' => array( 'inner', 'text' ),
 				),
 			),
 			'borders'    => array(

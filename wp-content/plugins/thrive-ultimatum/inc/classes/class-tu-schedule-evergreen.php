@@ -519,6 +519,13 @@ class TU_Schedule_Evergreen extends TU_Schedule_Abstract {
 			$params['start_date']['time'] = date( 'H:i:s', $this->now() );
 		}
 
+		$lockdown = array(
+		    'email' => is_email($params['lockdown']['email']) ? md5($params['lockdown']['email']) : $params['lockdown']['email'],
+            'log_id' => $params['lockdown']['log_id'],
+        );
+
+		$params['lockdown'] = $lockdown;
+
 		$value = maybe_serialize( $params );
 
 		if ( empty( $this->settings['evergreen_repeat'] ) ) {

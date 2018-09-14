@@ -77,7 +77,7 @@ class TCB_Lead_Generation_Select_Element extends TCB_Element_Abstract {
 			'typography'             => array(
 				'disabled_controls' => array(
 					'TextAlign',
-					'LineHeight',
+					'[data-value="tcb-typography-line-height"]',
 				),
 				'config'            => array(
 					'FontSize'      => $controls_default_config,
@@ -85,7 +85,6 @@ class TCB_Lead_Generation_Select_Element extends TCB_Element_Abstract {
 					'FontFace'      => $controls_default_config,
 					'LetterSpacing' => $controls_default_config,
 					'TextStyle'     => $controls_default_config,
-					'TextShadow'    => $controls_default_config,
 					'TextTransform' => $controls_default_config,
 				),
 			),

@@ -795,10 +795,11 @@ class Tve_Ult_Db {
 	 * @return array
 	 */
 	public function get_email_log( $campaign_id, $email ) {
-		$sql    = 'SELECT * FROM {emails} WHERE campaign_id = %d AND email = %s';
+		$sql    = 'SELECT * FROM {emails} WHERE campaign_id = %d AND (email = %s or email = md5(%s))';
 		$params = array(
 			'campaign_id' => $campaign_id,
 			'email'       => $email,
+			'md5_email'   => $email,
 		);
 
 		return $this->wpdb->get_row( $this->prepare( $sql, $params ), ARRAY_A );

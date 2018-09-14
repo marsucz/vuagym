@@ -24,7 +24,7 @@ var TVE_Ult_Int = window.TVE_Ult_Int = TVE_Ult_Int || {};
 			TVE.main.sidebar_settings.tve_ult_choose_template = function () {
 				var designTemplatesModal = TVE_Ult_Int.DesignTemplates.get_instance( TVE.modal.get_element( 'design-templates' ) );
 				designTemplatesModal.open( {
-					top: '15%',
+					top: '5%',
 					css: {
 						width: '80%',
 						left: '10%'

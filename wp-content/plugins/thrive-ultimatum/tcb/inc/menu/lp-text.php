@@ -19,15 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="dropdown-content">
 		<div class="tve-control tcb-hidden" data-view="ButtonGroup" data-key="LinkStates"></div>
 
-		<div class="tve-control lp-text-hide-states" data-view="ToggleControls"></div>
-		<div class="lp-text-hide-states">
-			<div class="tve-control tcb-lp-text-toggle-element tcb-lp-text-font-size" data-view="FontSize"></div>
-			<div class="tve-control tcb-lp-text-toggle-element tcb-lp-text-line-height" data-view="LineHeight"></div>
-			<div class="tve-control tcb-lp-text-toggle-element tcb-lp-text-letter-spacing" data-view="LetterSpacing"></div>
-		</div>
-
-		<hr class="lp-text-hide-states">
-
 		<div class="tve-control" data-view="FontColor"></div>
 		<hr>
 		<div class="row">
@@ -39,6 +30,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="tve-control col-xs-12 " data-view="TextStyle"></div>
 		</div>
 		<hr class="lp-text-hide-states">
+
+		<div class="tve-control lp-text-hide-states" data-view="ToggleControls"></div>
+		<div class="lp-text-hide-states">
+			<div class="tve-control tcb-lp-text-toggle-element tcb-lp-text-font-size" data-view="FontSize"></div>
+			<div class="tve-control tcb-lp-text-toggle-element tcb-lp-text-line-height" data-view="LineHeight"></div>
+			<div class="tve-control tcb-lp-text-toggle-element tcb-lp-text-letter-spacing" data-view="LetterSpacing"></div>
+		</div>
+
+		<hr class="lp-text-hide-states">
+
 		<div class="row tve-control lp-text-hide-states" data-view="FontFace">
 			<div class="col-xs-12">
 				<span class="input-label"><?php echo __( 'Font Face', 'thrive-cb' ); ?></span>
@@ -49,43 +50,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php tcb_icon( 'edit', false, 'sidebar', 'tcb-input-button click', array( 'data-fn' => 'openFonts' ) ) ?>
 			</div>
 		</div>
-		<hr class="lp-text-hide-states">
+		<hr>
 
 		<div class="tcb-text-center margin-top-10">
-				<span class="click tcb-text-uppercase clear-format" data-fn="clear_landing_page_text_formatting">
-					<?php echo __( 'Clear formatting', 'thrive-cb' ) ?>
-				</span>
+			<span class="click tcb-text-uppercase clear-format" data-fn="clear_landing_page_text_formatting">
+				<?php echo __( 'Clear formatting', 'thrive-cb' ) ?>
+			</span>
 		</div>
-
-		<div class="tve-advanced-controls extend-grey lp-text-hide-states">
-			<div class="dropdown-header" data-prop="advanced">
-				<span>
-					<?php echo __( 'Advanced', 'thrive-cb' ); ?>
-				</span>
-				<i></i>
-			</div>
-
-			<div class="dropdown-content clear-top">
-				<div class="text-shadow-component margin-bottom-10">
-					<div class="row middle-xs tcb-shadow-row margin-bottom-10">
-						<div class="col-xs-6">
-							<span class="input-label"><?php echo __( 'Text Shadow', 'thrive-cb' ); ?></span>
-						</div>
-						<div class="col-xs-6">
-							<div class="row">
-								<div class="blue tve-button click" data-fn="add_shadow"><?php echo __( 'Add Shadow', 'thrive-cb' ); ?></div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-12">
-							<div id="tcb-text-shadow-list" class="tcb-relative tcb-preview-list"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
 	</div>
 </div>
 
@@ -132,8 +103,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 		<div class="dropdown-content">
 			<div class="tve-shadow" id="tcb-shadow-buttons"></div>
-			<div id="tcb-box-shadow-list" class="tcb-relative tcb-preview-list"></div>
+			<div id="tcb-text-shadow-list" class="tcb-relative tcb-preview-list" data-shadow-type="text-shadow"></div>
+			<div id="tcb-box-shadow-list" class="tcb-relative tcb-preview-list" data-shadow-type="box-shadow"></div>
 		</div>
 	</div>
-
 </div>

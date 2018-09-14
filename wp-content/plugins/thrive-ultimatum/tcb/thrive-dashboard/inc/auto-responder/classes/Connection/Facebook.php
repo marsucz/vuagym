@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Thrive_Dash_List_Connection_Facebook extends Thrive_Dash_List_Connection_Abstract {
 
-	private static $scopes = 'user_about_me,user_posts,user_photos';
+	private static $scopes = 'email,public_profile,user_posts,user_photos';
 
 	protected $_key = 'facebook';
 

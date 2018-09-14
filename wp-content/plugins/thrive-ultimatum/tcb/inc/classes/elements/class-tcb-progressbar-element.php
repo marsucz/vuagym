@@ -115,23 +115,22 @@ class TCB_Progressbar_Element extends TCB_Element_Abstract {
 					),
 				),
 			),
-			'shadow'     => array(
+			'shadow'      => array(
 				'config' => array(
-					'to'            => '.tve-progress-bar',
-					'css_attribute' => 'box-shadow',
-					'disabled_controls' => array( 'inner' ),
+					'to'                => '.tve-progress-bar',
+					'disabled_controls' => array( 'inner', 'text' ),
 				),
 			),
-			'borders'    => array(
+			'borders'     => array(
 				'config' => array(
 					'to'      => '.tve-progress-bar',
 					'Borders' => array(),
 					'Corners' => array(),
 				),
 			),
-			'typography' => array( 'hidden' => true ),
-			'background' => array( 'hidden' => true ),
-			'animation'  => array( 'hidden' => true ),
+			'typography'  => array( 'hidden' => true ),
+			'background'  => array( 'hidden' => true ),
+			'animation'   => array( 'hidden' => true ),
 		);
 	}
 

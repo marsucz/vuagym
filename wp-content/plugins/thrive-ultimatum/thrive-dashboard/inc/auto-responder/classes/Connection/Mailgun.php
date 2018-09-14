@@ -226,7 +226,7 @@ class Thrive_Dash_List_Connection_Mailgun extends Thrive_Dash_List_Connection_Ab
 			$html_content = get_option( 'tve_leads_asset_mail_body' );
 		}
 
-		$attached_files = '';
+		$attached_files = array();
 		foreach ( $files as $file ) {
 			$attached_files[] = '<a href="' . $file['link'] . '">' . $file['link_anchor'] . '</a><br/>';
 		}

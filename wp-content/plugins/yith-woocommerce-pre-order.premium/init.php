@@ -5,10 +5,10 @@ Plugin URI: https://yithemes.com/themes/plugins/yith-woocommerce-pre-order
 Description: YITH Pre-Order for WooCommerce Premium allows your customers to purchase products even before they're available for sale
 Author: YITHEMES
 Text Domain: yith-woocommerce-pre-order
-Version: 1.4.0
+Version: 1.4.4
 Author URI: http://yithemes.com/
 WC requires at least: 3.0.0
-WC tested up to: 3.3.1
+WC tested up to: 3.4.0
 */
 
 /*
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 /* === DEFINE === */
-! defined( 'YITH_WCPO_VERSION' ) && define( 'YITH_WCPO_VERSION', '1.4.0' );
+! defined( 'YITH_WCPO_VERSION' ) && define( 'YITH_WCPO_VERSION', '1.4.4' );
 ! defined( 'YITH_WCPO_INIT' ) && define( 'YITH_WCPO_INIT', plugin_basename( __FILE__ ) );
 ! defined( 'YITH_WCPO_SLUG' ) && define( 'YITH_WCPO_SLUG', 'yith-woocommerce-pre-order' );
 ! defined( 'YITH_WCPO_SECRETKEY' ) && define( 'YITH_WCPO_SECRETKEY', 'IuVtJPflp0YXWOXGW0uW' );

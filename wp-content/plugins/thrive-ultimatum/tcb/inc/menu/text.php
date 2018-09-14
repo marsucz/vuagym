@@ -60,22 +60,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 				<div class="dropdown-content clear-top">
 					<div class="tve-control" data-key="typefocus" data-initializer="typefocus_control"></div>
-					<hr>
-					<div class="text-shadow-component">
-						<div class="row middle-xs tcb-shadow-row margin-bottom-10 margin-top-10">
-							<div class="col-xs-6">
-								<span class="input-label"><?php echo __( 'Text Shadow', 'thrive-cb' ); ?></span>
-							</div>
-							<div class="col-xs-6 tcb-text-right">
-								<div class="blue tve-button click" data-fn="add_shadow"><?php echo __( 'Add Shadow', 'thrive-cb' ); ?></div>
-							</div>
-						</div>
-						<div id="tcb-text-shadow-list" class="tcb-relative tcb-preview-list"></div>
-					</div>
-
 				</div>
 			</div>
-
 		</div>
 	</div>
 </div>

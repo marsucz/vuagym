@@ -57,15 +57,17 @@ class WC_Facebookcommerce_Info_Banner {
     }
     $redirect_url =
       esc_url('https://www.facebook.com/ads/dia/redirect/?settings_id='
-        .$this->external_merchant_settings_id);
+        .$this->external_merchant_settings_id . '&entry_point=aymt');
     $dismiss_url = $this->dismiss_url();
-    $message = __('<strong>Facebook for WooCommerce: </strong>' . 'You can now
-      optimize your Facebook Ads, based on data from your pixel.',
+    $message = __('<strong>Facebook for WooCommerce: </strong>' .
+      'Create ads that are designed for getting online sales and revenue.',
+
+
       'facebook-for-woocommerce');
     echo '<div class="updated fade"><p>' . $message . "\n";
     echo '<p><a href="' . $redirect_url . '" title="' .
       __('Click and redirect.', 'facebook-for-woocommerce').
-      '"> ' . __('Get Started', 'facebook-for-woocommerce') . '</a>' . ' | '.
+      '"> ' . __('Create Ad', 'facebook-for-woocommerce') . '</a>' . ' | '.
       '<a href="' . esc_url($dismiss_url). '" title="' .
       __('Dismiss this notice.', 'facebook-for-woocommerce').
       '"> ' . __('Dismiss', 'facebook-for-woocommerce') . '</a></p></div>';

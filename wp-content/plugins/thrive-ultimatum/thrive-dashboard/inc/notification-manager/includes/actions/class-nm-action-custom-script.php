@@ -90,10 +90,9 @@ class TD_NM_Action_Custom_Script extends TD_NM_Action_Abstract {
 				'Name' => $quiz->post_title
 			),
 			'quiz_user'     => array(
-				'result'      => $user['points'],
+				'result'       => $user['points'],
 				'email'        => ! empty( $user['email'] ) ? $user['email'] : __( 'unknown', TVE_DASH_TRANSLATE_DOMAIN ),
 				'date_started' => $user['date_started'],
-				'ip_address'   => $user['ip_address'],
 			),
 			'original_data' => $data,
 		);

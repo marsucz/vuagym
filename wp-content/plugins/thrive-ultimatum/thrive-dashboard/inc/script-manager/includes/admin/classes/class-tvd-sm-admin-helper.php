@@ -39,7 +39,7 @@ class TVD_SM_Admin_Helper {
 	 * @return array
 	 */
 	public function tvd_sm_get_scripts() {
-		return tah()->tvd_sm_get_option( 'global_lp_scripts', array() );
+		return array_values( tah()->tvd_sm_get_option( 'global_lp_scripts', array() ) );
 	}
 
 	/**

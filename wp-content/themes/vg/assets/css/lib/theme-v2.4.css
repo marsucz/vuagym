@@ -2688,7 +2688,7 @@ text-decoration: underline;
 }
 .radius.scroll-top {
   background: rgba(0, 0, 0, 0.5);
-  bottom: 80px;
+  bottom: 90px;
   color: #fff;
   display: block;
   height: 32px;

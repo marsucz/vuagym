@@ -54,15 +54,15 @@ class TCB_Lead_Generation_Submit_Element extends TCB_Element_Abstract {
 							),
 						),
 					),
-					'ButtonColor' => array(
+					'MasterColor' => array(
 						'css_suffix' => ' button',
 						'css_prefix' => '#tve_editor ',
 						'config'     => array(
-							'default'   => 'f00',
-							'label'     => __( 'Button Color', 'thrive-cb' ),
+							'default'   => '000',
+							'label'     => __( 'Master Color', 'thrive-cb' ),
 							'important' => true,
+							'affected_components' => array( 'shadow', 'background', 'borders' ),
 						),
-						'extends'    => 'ColorPicker',
 					),
 					'ButtonWidth' => array(
 						'css_prefix' => '#tve_editor ',
@@ -135,7 +135,6 @@ class TCB_Lead_Generation_Submit_Element extends TCB_Element_Abstract {
 					'FontFace'      => $controls_default_config,
 					'LineHeight'    => $controls_default_config,
 					'LetterSpacing' => $controls_default_config,
-					'TextShadow'    => $controls_default_config,
 				),
 			),
 			'layout'                 => array(

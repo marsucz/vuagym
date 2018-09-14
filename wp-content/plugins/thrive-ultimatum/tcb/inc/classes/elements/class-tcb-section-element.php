@@ -140,8 +140,7 @@ class TCB_Section_Element extends TCB_Element_Abstract {
 			),
 			'shadow'     => array(
 				'config' => array(
-					'to'            => '.tve-page-section-out',
-					'css_attribute' => 'box-shadow',
+					'to' => '.tve-page-section-out',
 				),
 			),
 			'layout'     => array(

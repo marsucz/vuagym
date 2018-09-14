@@ -198,10 +198,10 @@ if(!function_exists('s7upf_product_main_detai')){
                             if ($ka_shoppe == 'yes') {
                                 echo                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding: 0">
                                                             <div style="float:left; margin-top: 14px;">
-                                                                <img style="height: 35px; margin-top: -14px;" src="' . get_template_directory_uri() . '/assets/css/images/shopee.png">
+                                                                <img style="height: 30px; margin-top: -12px;" src="' . get_template_directory_uri() . '/assets/css/images/shopee.png">
                                                                 <div class="fs-tooltip">
-                                                                    <span style="color: green">(Freeship <i class="fa fa-exclamation-circle"></i>)</span>
-                                                                    <span class="fs-tooltiptext">Nội dung hover FreeShip</span>
+                                                                    <span style="color: green; font-size: 12px">(Freeship <i class="fa fa-exclamation-circle"></i>)</span>
+                                                                    <span class="fs-tooltiptext">Miễn phí giao hàng nhanh trên toàn quốc, hỗ trợ lên đến 40.000đ</span>
                                                                 </div>
                                                             </div>
                                                             <div style="float:right">';

@@ -90,6 +90,11 @@ class TCB_Gmap_Element extends TCB_Element_Abstract {
 			'animation'  => array(
 				'hidden' => true,
 			),
+			'shadow'     => array(
+				'config' => array(
+					'disabled_controls' => array( 'text' ),
+				),
+			),
 			'layout'     => array(
 				'disabled_controls' => array(
 					'padding',

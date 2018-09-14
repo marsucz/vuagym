@@ -79,7 +79,6 @@ class TCB_Landing_Page_Text_Element extends TCB_Element_Abstract {
 					),
 					'ToggleControls' => array(
 						'config'  => array(
-							'name'    => __( 'Type', 'thrive-cb' ),
 							'buttons' => array(
 								array( 'value' => 'tcb-lp-text-font-size', 'text' => __( 'Font Size', 'thrive-cb' ), 'default' => true ),
 								array( 'value' => 'tcb-lp-text-line-height', 'text' => __( 'Line Height', 'thrive-cb' ) ),
@@ -112,9 +111,9 @@ class TCB_Landing_Page_Text_Element extends TCB_Element_Abstract {
 					),
 					'FontColor'      => array(
 						'config'  => array(
-							'default' => '000',
-							'icon'    => true,
-							'options' => array(
+							'default'    => '000',
+							'label_icon' => 'format-color-text',
+							'options'    => array(
 								'output' => 'object',
 							),
 						),
@@ -122,7 +121,6 @@ class TCB_Landing_Page_Text_Element extends TCB_Element_Abstract {
 					),
 					'TextAlign'      => array(
 						'config'  => array(
-							'name'    => __( 'Text Align', 'thrive-cb' ),
 							'buttons' => array(
 								array(
 									'icon'    => 'format-align-left',
@@ -151,7 +149,6 @@ class TCB_Landing_Page_Text_Element extends TCB_Element_Abstract {
 					),
 					'TextStyle'      => array(
 						'config'  => array(
-							'name'     => __( 'Text Style', 'thrive-cb' ),
 							'checkbox' => true,
 							'buttons'  => array(
 								array(
@@ -184,7 +181,6 @@ class TCB_Landing_Page_Text_Element extends TCB_Element_Abstract {
 					),
 					'TextTransform'  => array(
 						'config'  => array(
-							'name'    => 'Text Transform',
 							'buttons' => array(
 								array(
 									'icon'    => 'none',
@@ -228,9 +224,6 @@ class TCB_Landing_Page_Text_Element extends TCB_Element_Abstract {
 							'css'     => 'lineHeight',
 						),
 						'extends' => 'Slider',
-					),
-					'TextShadow'     => array(
-						'config' => array(),
 					),
 				),
 			),

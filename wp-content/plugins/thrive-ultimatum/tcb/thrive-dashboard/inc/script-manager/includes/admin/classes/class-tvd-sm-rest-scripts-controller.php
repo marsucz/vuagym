@@ -29,6 +29,14 @@ class TVD_SM_REST_Scripts_Controller {
 			),
 		) );
 
+		register_rest_route( $this->namespace . $this->version, '/' . 'clear-old-scripts', array(
+			array(
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'clear_individual_scripts' ),
+				'permission_callback' => array( $this, 'general_permissions_check' ),
+			),
+		) );
+
 		register_rest_route( $this->namespace . $this->version, '/scripts/(?P<id>[\d]+)', array(
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
@@ -41,6 +49,21 @@ class TVD_SM_REST_Scripts_Controller {
 				'permission_callback' => array( $this, 'general_permissions_check' ),
 			),
 		) );
+	}
+
+
+	/**
+	 *
+	 * Clears the scripts added individually to landing pages.
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function clear_individual_scripts() {
+		foreach ( get_pages( array( 'meta_key' => 'tve_landing_page' ) ) as $page ) {
+			update_post_meta( $page->ID, 'tve_global_scripts', array( 'head' => '', 'footer' => '' ) );
+		}
+
+		return new WP_REST_Response( 1, 200 );
 	}
 
 	/**

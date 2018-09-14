@@ -3,12 +3,37 @@
 Contributors: yithemes
 Tags: woocommerce, e-commerce, shop, pre, order, pre-order, pre-purchase, buy, purchase, date, release, yit, yith, yithemes
 Requires at least: 4.0
-Tested up to: 4.9.4
-Stable tag: 1.4.0
+Tested up to: 4.9.6
+Stable tag: 1.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Changelog ==
+
+= Version 1.4.4 - Released: May 25, 2018 =
+
+* New: Support to WooCommerce 3.4.0
+* New: Support to WordPress 4.9.6
+* Update: Plugin core
+
+= Version 1.4.3 - Released: Apr 13, 2018 =
+
+* Update: Support to WC 3.3.5.
+* Update: Support to WordPress 4.9.5.
+* Update: Plugin core.
+* Fix: Automatic Pre-Order status without managing stock at product level.
+
+= Version 1.4.2 - Released: Mar 22, 2018 =
+
+* Fix: When a Pre-Order product has Sale price but no Pre-Order price, the Regular price was displayed twice.
+
+= Version 1.4.1 - Released: Mar 21, 2018 =
+
+* New: Support to WC 3.3.4.
+* Update: Plugin core.
+* Fix: Pre-Order price for variations was hidden when all the variations had the same regular price.
+* Fix: conflict with YITH Composite Products on Edit product page.
+* Fix: "Invalid D" message issue on frontend.
 
 = Version 1.4.0 - Released: Feb 14, 2018 =
 

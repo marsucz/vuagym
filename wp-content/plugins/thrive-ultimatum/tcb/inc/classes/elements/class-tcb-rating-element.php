@@ -126,6 +126,11 @@ class TCB_Rating_Element extends TCB_Element_Abstract {
 					'MaxWidth'
 				),
 			),
+			'shadow'           => array(
+				'config' => array(
+					'disabled_controls' => array( 'text' ),
+				),
+			),
 		);
 	}
 

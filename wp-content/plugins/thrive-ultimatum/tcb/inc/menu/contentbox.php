@@ -22,8 +22,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<hr>
 			<div class="tve-control" data-view="BoxHeight"></div>
 			<hr>
+<!--			<div class="tve-control" data-view="MasterColor"></div>-->
+<!--			<hr>-->
 			<div class="row">
-				<div class="col-xs-6">
+				<div class="col-xs-12">
 					<div class="tve-control" data-view="VerticalPosition"></div>
 				</div>
 			</div>

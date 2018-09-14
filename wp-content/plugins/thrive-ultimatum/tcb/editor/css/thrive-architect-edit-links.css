@@ -1,9 +1,41 @@
+.inside.thrive-architect {
+    background-color: #f1f1f1;
+    background-image: url("images/dash-admin-logo.png");
+    background-size: 100% 100%;
+    padding: 90px 0;
+    margin-top: 0 !important;
+}
+
+.inside.thrive-architect p {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+    line-height: 2em;
+}
+
 .thrive-architect-edit-link {
     text-decoration: none;
     display: inline-block;
     position: relative;
     color: #FFF;
     padding-left: 40px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.inside.thrive-architect .tcb-disable {
+    color: #666;
+    font-size: 16px;
+}
+
+.inside.thrive-architect .tcb-revert {
+    border: none;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    background: transparent;
+    font-size: 16px;
+    color: #666;
+    text-decoration: underline;
 }
 
 .thrive-architect-edit-link.thrive-architect-edit-disabled {
@@ -14,21 +46,23 @@
 .thrive-architect-edit-link:focus, .thrive-architect-edit-link:hover, .thrive-architect-edit-link:active {
     outline: none;
     color: #FFF;
-    box-shadow: none;
+    -webkit-box-shadow: none;
+            box-shadow: none;
 }
 
 .thrive-architect-edit-link:hover {
-    box-shadow: rgba(83, 83, 83, 0.4) 0px 0px 12px 0px;
+    -webkit-box-shadow: rgba(83, 83, 83, 0.4) 0px 0px 12px 0px;
+            box-shadow: rgba(83, 83, 83, 0.4) 0px 0px 12px 0px;
 }
 
 .thrive-architect-admin-text {
     background: #2e8c00;
-    padding: 10px 15px;
-    padding-left: 25px;
+    padding: 5px 25px;
     position: relative;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 30px;
     margin-left: 10px;
+    font-weight: 600;
 }
 
 .thrive-architect-admin-text::before {
@@ -49,13 +83,14 @@
     left: 0;
     top: 0;
     padding: 5px 10px;
-    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
 
 }
 
 .thrive-architect-admin-icon {
     background: url('images/thrive-architect-logo-white.png') no-repeat 0 0;
     background-size: cover;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
 }

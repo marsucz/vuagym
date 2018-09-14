@@ -62,6 +62,14 @@ if ( ! class_exists( 'YITH_Pre_Order' ) ) {
 		public $frontend = null;
 
 		/**
+		 * Main My Account Instance
+		 *
+		 * @var YITH_Pre_Order_Frontend
+		 * @since 1.0
+		 */
+		public $myaccount = null;
+
+		/**
 		 * Main Download Links manager Instance
 		 *
 		 * @var YITH_Pre_Order_Download_Links
@@ -145,7 +153,7 @@ if ( ! class_exists( 'YITH_Pre_Order' ) ) {
 		}
 
 		public function init_my_account() {
-            new YITH_Pre_Order_My_Account();
+			$this->myaccount = new YITH_Pre_Order_My_Account();
         }
 	}
 

@@ -1,4 +1,4 @@
-<div class="animation-container">
+<div class="animation-container tve-select-arrow">
 	<label for="anim-animation"><?php esc_html_e( 'Animation', 'thrive-cb' ) ?></label>
 	<select class="change tcb-dark" data-fn="select" id="anim-animation">
 		<?php foreach ( $data as $key => $group ) : ?>
@@ -11,7 +11,7 @@
 	</select>
 </div>
 <div class="sep"></div>
-<div class="trigger-container" id="anim-trigger" style="display: none">
+<div class="trigger-container tve-select-arrow" id="anim-trigger" style="display: none">
 	<label for="animation-trigger"><?php echo __( 'Animation Trigger', 'thrive-cb' ) ?></label>
 	<select id="animation-trigger" class="change tcb-select tcb-dark" data-fn="change_trigger"></select>
 </div>

@@ -229,7 +229,7 @@ class TCB_Image_Element extends TCB_Element_Abstract {
 			),
 			'shadow'        => array(
 				'config' => array(
-					'disabled_controls' => array( 'inner' ),
+					'disabled_controls' => array( 'inner', 'text' ),
 				),
 			),
 		);

@@ -4,6 +4,11 @@
 	<div class="col col-xs-12">
 		<?php
 		tcb_remove_tinymce_conflicts();
+		/* TODO: this can be removed after moving to admin */
+		if (!function_exists('get_current_screen')) {
+			/* fixes a conflict with tasty recipes plugin */
+			require ABSPATH . 'wp-admin/includes/screen.php';
+		}
 		wp_editor( '', 'tve_tinymce_shortcode', array(
 			'dfw'               => true,
 			'tabfocus_elements' => 'insert-media-button,save-post',

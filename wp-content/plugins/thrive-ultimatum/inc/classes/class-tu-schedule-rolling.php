@@ -111,7 +111,7 @@ class TU_Schedule_Rolling extends TU_Schedule_Abstract {
 	public function get_current_weekly_intervals() {
 		// let's make our variable names shorter so the code is more readable
 		$start  = $this->settings['start'];
-		$repeat = $this->settings['repeat'];
+		$repeat = (int) $this->settings['repeat'];
 
 		// get the first day of the week before the start date so we can do the week difference
 		$start_date = date( 'w', strtotime( $start['date'] ) );
@@ -264,6 +264,7 @@ class TU_Schedule_Rolling extends TU_Schedule_Abstract {
 	 */
 	public function check_repeat_weekly() {
 		$display_intervals = $this->get_current_weekly_intervals();
+
 
 		// check if today is in any of the display intervals
 		foreach ( $display_intervals as $interval ) {

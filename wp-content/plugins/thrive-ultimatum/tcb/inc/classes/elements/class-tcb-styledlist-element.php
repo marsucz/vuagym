@@ -98,7 +98,8 @@ class TCB_Styledlist_Element extends TCB_Element_Abstract {
 			),
 			'typography' => array(
 				'disabled_controls' => array(
-					'LineHeight',
+					'[data-value="tcb-typography-line-height"] ',
+					'.tve-advanced-controls',
 					'p_spacing',
 					'h1_spacing',
 					'h2_spacing',

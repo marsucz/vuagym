@@ -11,7 +11,6 @@
 
 		events: {
 			'click .tvd-add-modal': 'addScript',
-			'click .tvd-delete-modal': 'deleteScript',
 			'click #tvd-sm-theme-link': 'setLinkTarget'
 		},
 
@@ -21,6 +20,10 @@
 			} );
 
 			this.render();
+
+			$( '#tvd-delete-page-level-scripts-modal' ).on( 'click', function () {
+				TVE_Dash.modal( views.DeletePageLevelScriptsModal );
+			} );
 
 			scriptsCollection = new models.collections.ScriptCollection( TVD_SM_CONST.scripts );
 
@@ -253,7 +256,6 @@
 		deleteScript: function () {
 			TVE_Dash.modal( views.DeleteScriptModal, {
 				model: this.model,
-				// 'max-width': '25%',
 				className: 'tvd-modal tvd-sm-delete-script'
 			} );
 		}
@@ -423,8 +425,31 @@
 		},
 
 		delete: function () {
-			console.log( '???' );
 			this.model.destroy( {
+				error: function () {
+					TVE_Dash.err( TVD_SM_TVD_SM_CONST.translations.delete_page_level_error );
+				}
+			} );
+			this.close();
+		}
+	} );
+
+	/* Deletes all page-level scripts. */
+	views.DeletePageLevelScriptsModal = TVE_Dash.views.Modal.extend( {
+		template: utils._t( 'modal-delete-page-level-scripts' ),
+		events: {
+			'click .tvd-submit': 'delete'
+		},
+
+		delete: function () {
+			$.post( {
+				headers: {
+					'X-WP-Nonce': TVD_SM_CONST.nonce
+				},
+				url: TVD_SM_CONST.routes.clear_page_level_scripts,
+				success: function () {
+					TVE_Dash.success( TVD_SM_CONST.translations.delete_page_level_success );
+				},
 				error: function () {
 					TVE_Dash.err( TVD_SM_TVD_SM_CONST.translations.delete_error );
 				}
