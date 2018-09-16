@@ -1101,10 +1101,10 @@ function read_xlsx_and_get_shoppe_list($file_input, &$spreadsheet, &$addition_ht
 
     }
 
-    //                            echo '<pre>';
-    //                            print_r($import_rows);
-    //                            echo '<pre>';
-    //                            exit;
+//                                echo '<pre>';
+//                                print_r($import_rows);
+//                                echo '<pre>';
+//                                exit;
 
     $check_format = true;
 
@@ -1117,6 +1117,7 @@ function read_xlsx_and_get_shoppe_list($file_input, &$spreadsheet, &$addition_ht
             && $format_row[4]['value'] == 'ps_product_weight'
             && $format_row[5]['value'] == 'ps_price'
             && $format_row[6]['value'] == 'ps_stock'
+            && $format_row[7]['value'] == 'ps_product_dts'
             ) {
         // Correct Format
     } else {
@@ -1127,7 +1128,7 @@ function read_xlsx_and_get_shoppe_list($file_input, &$spreadsheet, &$addition_ht
     }
 
     // Init data
-    $base_col = 7;
+    $base_col = 8;
     $num_info = 5;
 
     // Kiem tra format cac bien the
@@ -1190,6 +1191,7 @@ function read_xlsx_and_get_shoppe_list($file_input, &$spreadsheet, &$addition_ht
                 $shoppe['quantity'] = $row[6]['value'];
                 $shoppe['price_pos'] = $row[5]['pos'];
                 $shoppe['quantity_pos'] = $row[6]['pos'];
+                $shoppe['product_dts'] = $row[7]['value'];
                 $list_shoppe[] = $shoppe;
             }
         }
