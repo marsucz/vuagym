@@ -113,11 +113,11 @@ function enqueue_select2_jquery() {
     wp_enqueue_script( 'kawoo_select2' );
 }
 
-//function kawoo_load_assets_dataTable() {
-//    wp_register_script('prefix_datatable', KAWOO_PLUGIN_URL . 'assets/admin/lib/jquery.dataTables.min.js');
-//    wp_enqueue_script('prefix_datatable');
-//    wp_register_style('prefix_datatable', KAWOO_PLUGIN_URL . 'assets/admin/css/jquery.dataTables.min.css');
-//    wp_enqueue_style('prefix_datatable');
-//}
+function kawoo_load_assets_dataTable() {
+    wp_register_script('prefix_datatable', KAWOO_PLUGIN_URL . 'assets/admin/lib/jquery.dataTables.min.js');
+    wp_enqueue_script('prefix_datatable');
+    wp_register_style('prefix_datatable', KAWOO_PLUGIN_URL . 'assets/admin/css/jquery.dataTables.min.css');
+    wp_enqueue_style('prefix_datatable');
+}
 
 ?>
